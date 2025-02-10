@@ -7,7 +7,10 @@ const HomePage = () => {
             <h1 className="text-amber-600">Hello Im Namo</h1>
             <h1 className="text-amber-600">Hello Im Namo</h1>
             <h1 className="text-amber-600">Hello Im Namo</h1>
-            
+            <h1 className="text-amber-600">Hello Im Namo</h1>
+            <h1 className="text-amber-600">Hello Im Namo</h1>
+            <h1 className="text-amber-600">Hello Im Namo</h1>
+            <h1 className="text-amber-600">Hello Im Namo</h1>
         </div>
     );
 }

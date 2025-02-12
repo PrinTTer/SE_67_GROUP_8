@@ -6,7 +6,7 @@ const HomePage = () => {
       
                 <div className="flex flex-1 flex-col  border-solid border-r-2  sticky top-0 h-screen items-center ">
                     
-                    <p className=" mt-4 font-bold ">ThaiXplore</p>
+                    <p className=" mt-4 font-bold ">Thai</p>
                     <div className="flex-col">
                       <IconSideBar iconName={"Home"}          iconFont={faHouse}      />
                       <IconSideBar iconName={"Category"}      iconFont={faList}       />

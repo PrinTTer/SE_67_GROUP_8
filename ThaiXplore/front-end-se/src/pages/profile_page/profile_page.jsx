@@ -1,27 +1,10 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBell, faCircleUser, faHouse, faComments, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
+import { NavBarWithOutText } from "../../component/navbar";
 
 const ProfilePage = () => {
    return(
     <div className="flex flex-1 items-center justify-center">
-        <nav className="flex flex-1 flex-col bg-white h-screen border-r-2 items-center p-4">
-            <h1 className="text-4xl text-black font-bold my-5">ThaiXplore</h1>
-            <button  className="w-16 h-16 rounded-full hover:bg-gray-400 hover:shadow-lg active:shadow-inner transition duration-400">
-                <FontAwesomeIcon icon={faHouse} size="2x"/>
-            </button>
-            <button  className="w-16 h-16 rounded-full hover:bg-gray-400 hover:shadow-lg active:shadow-inner transition duration-400">
-                <FontAwesomeIcon icon={faMagnifyingGlass} size="2x"/>
-            </button>
-            <button  className="w-16 h-16 rounded-full hover:bg-gray-400 hover:shadow-lg active:shadow-inner transition duration-400">
-                <FontAwesomeIcon icon={faComments} size="2x"/>
-            </button>
-            <button  className="w-16 h-16 rounded-full hover:bg-gray-400 hover:shadow-lg active:shadow-inner transition duration-400">
-                <FontAwesomeIcon icon={faBell} size="2x"/>
-            </button>
-            <button  className="w-16 h-16 rounded-full hover:bg-gray-400 hover:shadow-lg active:shadow-inner transition duration-400">
-                <FontAwesomeIcon icon={faCircleUser} size="2x"/>
-            </button>
-        </nav>
+        <NavBarWithOutText/>
         <div className="flex flex-5 flex-col bg-amber-50 h-screen">
             <h1 className="text-2xl font-bold mx-5 my-5">Profile</h1>
             <div className="flex flex-1 bg-white mx-5 my-20 gap-10 relative border-1 shadow-black">

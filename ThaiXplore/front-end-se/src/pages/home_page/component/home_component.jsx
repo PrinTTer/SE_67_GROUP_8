@@ -18,8 +18,8 @@ export const Category  =()=>{
   };
 
 
-export const CategoryGrid = ({link , image }) =>{
-  
+export const CategoryGrid = (prop) =>{
+  const {link , image } = prop
   return(   
             <div className='shadow-md '> 
               <Link to={link}>
@@ -31,8 +31,8 @@ export const CategoryGrid = ({link , image }) =>{
   
   
   
-export const Section = ({title}) => {
-    
+export const Section = (prop) => {
+    const {title} = prop
     let post_list = getData( title ) ;
    
     return (
@@ -45,6 +45,7 @@ export const Section = ({title}) => {
         </div>
         { post_list.map((element)=>{
           
+          // eslint-disable-next-line react/jsx-key
           return <Post name={element.name} address={element.address}/>
           })
         }
@@ -52,7 +53,8 @@ export const Section = ({title}) => {
     );
   };
   
-export const Post =({name , address})=>{
+export const Post =(prop)=>{
+  const {name , address} = prop
     const link  = "/Detail/"+name; 
     return(
       <Link to={link}>
@@ -71,5 +73,34 @@ export const Post =({name , address})=>{
       </Link>
     );
   }
+
+  export const RightBar = () =>{
+    return(
+      <div className="flex flex-1 flex-col  items-center border-solid border-l-2 sticky top-0 h-screen">
+              <input type="text" className='bg-amber-300 rounded-4xl border-1 mt-4'/>
+              <div>
+                 <p>Business</p>
+                  <ChkBox />
+                  <ChkBox />
+                  <ChkBox />
+              </div>
+              <div>
+                
+              </div>
+              <div>
+                
+              </div>
+      </div>
+    );
+  }
+
+   const ChkBox = (prop) =>{ 
+    const {title} = prop
+    return(
+      <div className='items-center just'>
+        <input type="radio" name="Business"  /> {title}
+      </div>
+    );
+   }
   
   

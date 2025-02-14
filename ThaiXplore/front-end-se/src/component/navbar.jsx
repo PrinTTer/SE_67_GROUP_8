@@ -33,7 +33,8 @@ export const NavBarWithOutText = () =>{
         </div>
     );
 }
-export const IconSideBar = ({ iconName, iconFont }) => {
+export const IconSideBar = (prop) => {
+  const { iconName, iconFont } = prop
   return (
     <div className=" flex  items-center p-3 m-2 rounded-full hover:bg-gray-300 cursor-pointer">
       <FontAwesomeIcon icon={iconFont} className="mr-3 text-lg" />
@@ -42,7 +43,8 @@ export const IconSideBar = ({ iconName, iconFont }) => {
   );
 };
 
-export const IconSideBarIconOnly = ({iconFont}) => {
+export const IconSideBarIconOnly = (prop) => {
+  const {  iconFont } = prop
   return (
     <div className=" flex justify-center items-center w-12 h-12 m-2 rounded-full hover:bg-gray-300 cursor-pointer">
       <FontAwesomeIcon icon={iconFont} size="lg" />

@@ -1,16 +1,5 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Link } from 'react-router-dom';
 import { getData } from '../../../data';
-
-export const IconSideBar = ({ iconName, iconFont }) => {
-  return (
-    <div className=" flex items-center p-3 m-2 rounded-full hover:bg-gray-300 cursor-pointer">
-      <FontAwesomeIcon icon={iconFont} className="mr-3 text-lg" />
-      <span>{iconName}</span>
-    </div>
-  );
-};
-
 
 export const Category  =()=>{
     return (
@@ -27,6 +16,7 @@ export const Category  =()=>{
       </div>
     );
   };
+
 
 export const CategoryGrid = ({link , image }) =>{
   
@@ -54,6 +44,7 @@ export const Section = ({title}) => {
           </h2>
         </div>
         { post_list.map((element)=>{
+          
           return <Post name={element.name} address={element.address}/>
           })
         }
@@ -62,7 +53,7 @@ export const Section = ({title}) => {
   };
   
 export const Post =({name , address})=>{
-    const link  = "/Detail/"+name ; 
+    const link  = "/Detail"; 
     return(
       <Link to={link}>
           <div className="flex flex-row  shadow-md m p-4">

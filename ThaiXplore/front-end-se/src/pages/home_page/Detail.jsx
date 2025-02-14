@@ -1,19 +1,17 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Link } from 'react-router-dom';
-import {IconSideBar  } from './component/home_component' ;
+import {NavBarWithOutText  } from '../../component/navbar' ;
+import {  faMessage,faFileInvoice } from '@fortawesome/free-solid-svg-icons';
 
-import {NaviBarWithOutText  } from '../../component/navbar' ;
-import { faBell, faCircleUser, faHouse,faList, faMessage,faFileInvoice } from '@fortawesome/free-solid-svg-icons';
-import { useParams } from 'react-router-dom';
 
 
 function Detail() {
   
-  let { title } = useParams();
+  
   return (
     <div className = "flex flex-1 flex-row">
       
-      <NaviBarWithOutText />
+      <NavBarWithOutText />
 
      
       <div className='flex flex-4 flex-col m-5'>
@@ -51,8 +49,8 @@ function Detail() {
         </div>
         <div className='flex-6  m-5'>
               <div className=' grid grid-cols-2 grid-rows-1  '>
-                    <div className='rounded-t-lg  w-2xs text-center  bg-gray-100 hover: cursor-pointer' onClick={() => alert("hello")}>Hotel</div>
-                    <div className='rounded-t-lg  w-2xs text-center  bg-gray-100 hover: cursor-pointer' onClick={() => alert("hello")}>Package</div>
+                    <div className='rounded-t-lg  w-2xs text-center  bg-gray-100 hover: cursor-pointer' >Hotel</div>
+                    <div className='rounded-t-lg  w-2xs text-center  bg-gray-100 hover: cursor-pointer' >Package</div>
               </div>    
               
               <div className='grid grid-cols-1 grid-rows-1 bg-gray-100  '>

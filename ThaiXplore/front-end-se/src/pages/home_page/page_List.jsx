@@ -1,8 +1,8 @@
 
-import {IconSideBar  , Section} from './component/home_component' ;
-import { faBell, faCircleUser, faHouse,faList, faMessage } from '@fortawesome/free-solid-svg-icons';
+import {  Section} from './component/home_component' ;
+
 import { useParams } from 'react-router-dom';
-import {NavBarWithText} from '../../component/navbar'
+import {NavBarWithText} from '../../component/navbar';
 
 
 

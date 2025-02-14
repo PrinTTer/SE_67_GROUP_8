@@ -1,31 +1,38 @@
-const data ={
-        "1":{
+const data =[
+        {
             "name" : "Hotel A",
-            "type" : "hotel"
+            "type" : "hotel",
+            "address" : "Kabi"
         },
-        "2":{
+        {
             "name" : "Hotel B",
-            "type" : "hotel"
+            "type" : "hotel",
+            "address" : "KUKPS"
         },
-        "3":{
+        {
             "name" : "Event C",
-            "type" : "event"
+            "type" : "event",
+            "address" : "KUBK"
         },
-        "4":{
+        {
             "name" : "Hotel D",
-            "type" : "event"
+            "type" : "hotel",
+            "address" : "Bangkok"
         },
-        "5":{
+        {
             "name" : "Food F",
-            "type" : "food"
+            "type" : "food",
+            "address" : "Bangkok"
         }
-}
-
-export const getData = ({type}) =>{
-    let business
-    if(type != null)
+]
+const types = ['hotel' , 'event' , 'food' ,'car'];
+export const getData = (type) =>{
+    
+    let business;
+    console.log(type)
+    if(types.includes(type))
     {
-        business = Object.values(data).filter(item => item.type === type);
+        business = Object.values(data).filter(item => item.type == type);
     }
     else
     {

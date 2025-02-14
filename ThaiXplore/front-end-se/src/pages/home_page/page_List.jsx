@@ -1,13 +1,14 @@
 
 import {IconSideBar  , Section} from './component/home_component' ;
 import { faBell, faCircleUser, faHouse,faList, faMessage } from '@fortawesome/free-solid-svg-icons';
+import { useParams } from 'react-router-dom';
 
 
 
 function ListPage() {
   
-
-  return (
+  let { title } = useParams();
+  return (-
     <div className = "flex flex-1 flex-row">
       
       <div className="flex flex-1 flex-col  border-solid border-r-2  sticky top-0 h-screen items-center ">
@@ -25,7 +26,7 @@ function ListPage() {
      
       <div className='flex flex-4 flex-col'>
           
-          <Section title="Hello"/>
+          <Section title={title}/>
           
           
       </div>

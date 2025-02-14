@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Link } from 'react-router-dom';
-
+import { getData } from '../../../data';
 
 export const IconSideBar = ({ iconName, iconFont }) => {
   return (
@@ -17,10 +17,10 @@ export const Category  =()=>{
       <div className=" p-10  rounded-lg  w-lvh h-lg self-center">
         
           <div className='grid grid-cols-2 grid-rows-2 gap-4'>
-            <CategoryGrid link='/ListPage/hotel' image='https://cdn.pixabay.com/photo/2021/06/01/12/39/beach-6301597_1280.jpg' type='hotel' />
-            <CategoryGrid link='/ListPage' image='https://cdn.pixabay.com/photo/2021/06/01/12/39/beach-6301597_1280.jpg' type='event'/>
-            <CategoryGrid link='/ListPage' image='https://cdn.pixabay.com/photo/2021/06/01/12/39/beach-6301597_1280.jpg' type='car'/>
-            <CategoryGrid link='/ListPage' image='https://cdn.pixabay.com/photo/2021/06/01/12/39/beach-6301597_1280.jpg' type='food'/>
+            <CategoryGrid link='/ListPage/hotel' image='https://cdn.pixabay.com/photo/2021/06/01/12/39/beach-6301597_1280.jpg'  />
+            <CategoryGrid link='/ListPage/event' image='https://cdn.pixabay.com/photo/2021/06/01/12/39/beach-6301597_1280.jpg'  />
+            <CategoryGrid link='/ListPage/food' image='https://cdn.pixabay.com/photo/2021/06/01/12/39/beach-6301597_1280.jpg'   />
+            <CategoryGrid link='/ListPage/car' image='https://cdn.pixabay.com/photo/2021/06/01/12/39/beach-6301597_1280.jpg'    />
           </div>
         
         
@@ -43,6 +43,8 @@ export const CategoryGrid = ({link , image }) =>{
   
 export const Section = ({title}) => {
     
+    let post_list = getData( title ) ;
+   
     return (
       <div className="flex flex-col p-4 rounded-lg mb-4 shadow-md">
         <div className="flex flex-row">
@@ -51,19 +53,18 @@ export const Section = ({title}) => {
             View All
           </h2>
         </div>
-        <Post />
-        <Post />
-        <Post />
-        <Post />
-        <Post />
-        <Post />
+        { post_list.map((element)=>{
+          return <Post name={element.name} address={element.address}/>
+          })
+        }
       </div>
     );
   };
   
-export const Post =()=>{
+export const Post =({name , address})=>{
+    const link  = "/Detail/"+name ; 
     return(
-      <Link to="/Detail">
+      <Link to={link}>
           <div className="flex flex-row  shadow-md m p-4">
           
             <img
@@ -71,8 +72,8 @@ export const Post =()=>{
               src="https://cdn.pixabay.com/photo/2021/06/01/12/39/beach-6301597_1280.jpg"
             />
             <div className="w-1/2  ">
-              <h1 className="text-xl font-bold"> Hotel</h1>
-              <h2 > Bangkok</h2>
+              <h1 className="text-xl font-bold"> {name}</h1>
+              <h2 > {address}</h2>
             </div>
             
           </div>

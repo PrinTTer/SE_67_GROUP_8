@@ -1,6 +1,8 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Link } from 'react-router-dom';
 import {IconSideBar  } from './component/home_component' ;
+
+import {NaviBarWithOutText  } from '../../component/navbar' ;
 import { faBell, faCircleUser, faHouse,faList, faMessage,faFileInvoice } from '@fortawesome/free-solid-svg-icons';
 import { useParams } from 'react-router-dom';
 
@@ -11,17 +13,7 @@ function Detail() {
   return (
     <div className = "flex flex-1 flex-row">
       
-      <div className="flex flex-1 flex-col  border-solid border-r-2  sticky top-0 h-screen items-center ">
-        
-        <h2 className=" mt-4 font-bold">ThaiXplore</h2>
-        <div className="flex-col">
-                <IconSideBar   iconFont={faHouse}      />
-                <IconSideBar   iconFont={faList}       />
-                <IconSideBar   iconFont={faMessage}    />
-                <IconSideBar   iconFont={faBell}       />
-                <IconSideBar   iconFont={faCircleUser} />
-        </div>
-      </div>
+      <NaviBarWithOutText />
 
      
       <div className='flex flex-4 flex-col m-5'>

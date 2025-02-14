@@ -2,26 +2,17 @@
 import {IconSideBar  , Section} from './component/home_component' ;
 import { faBell, faCircleUser, faHouse,faList, faMessage } from '@fortawesome/free-solid-svg-icons';
 import { useParams } from 'react-router-dom';
+import {NavBarWithText} from '../../component/navbar'
 
 
 
 function ListPage() {
   
   let { title } = useParams();
-  return (-
+  return (
     <div className = "flex flex-1 flex-row">
       
-      <div className="flex flex-1 flex-col  border-solid border-r-2  sticky top-0 h-screen items-center ">
-        
-        <h2 className=" mt-4 font-bold">ThaiXplore</h2>
-        <div className="flex-col">
-                <IconSideBar iconName={"Home"}          iconFont={faHouse}      />
-                <IconSideBar iconName={"Category"}      iconFont={faList}       />
-                <IconSideBar iconName={"Message"}       iconFont={faMessage}    />
-                <IconSideBar iconName={"Notification"}  iconFont={faBell}       />
-                <IconSideBar iconName={"Profile"}       iconFont={faCircleUser} />
-        </div>
-      </div>
+      <NavBarWithText />
 
      
       <div className='flex flex-4 flex-col'>

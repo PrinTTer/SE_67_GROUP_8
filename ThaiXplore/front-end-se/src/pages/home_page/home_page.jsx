@@ -1,20 +1,10 @@
-import { faBell, faCircleUser, faHouse,faList, faMessage } from '@fortawesome/free-solid-svg-icons';
-import {IconSideBar , Category , Section} from './component/home_component' ;
+import { Category , Section} from './component/home_component' ;
+import {NavBarWithText} from '../../component/navbar';
 const HomePage = () => {
     return (
         <div className = "flex flex-1 flex-row ">
       
-                <div className="flex flex-1 flex-col  border-solid border-r-2  sticky top-0 h-screen items-center ">
-                    
-                    <p className=" mt-4 font-bold ">Thai</p>
-                    <div className="flex-col">
-                      <IconSideBar iconName={"Home"}          iconFont={faHouse}      />
-                      <IconSideBar iconName={"Category"}      iconFont={faList}       />
-                      <IconSideBar iconName={"Message"}       iconFont={faMessage}    />
-                      <IconSideBar iconName={"Notification"}  iconFont={faBell}       />
-                      <IconSideBar iconName={"Profile"}       iconFont={faCircleUser} />
-                    </div>
-                </div>
+               <NavBarWithText />
 
                 
                 <div className='flex flex-4 flex-col'>

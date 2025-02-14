@@ -35,7 +35,7 @@ export const NavBarWithOutText = () =>{
 }
 export const IconSideBar = ({ iconName, iconFont }) => {
   return (
-    <div className=" flex items-center p-3 m-2 rounded-full hover:bg-gray-300 cursor-pointer">
+    <div className=" flex  items-center p-3 m-2 rounded-full hover:bg-gray-300 cursor-pointer">
       <FontAwesomeIcon icon={iconFont} className="mr-3 text-lg" />
       <span>{iconName}</span>
     </div>

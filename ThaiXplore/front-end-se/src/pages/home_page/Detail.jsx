@@ -1,12 +1,14 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import {NavBarWithOutText  } from '../../component/navbar' ;
 import {  faMessage,faFileInvoice } from '@fortawesome/free-solid-svg-icons';
+import { useState } from "react";
 
+import { faBed, faStar } from "@fortawesome/free-solid-svg-icons";
 
 
 function Detail() {
-  
+  const {title}  = useParams()
   
   return (
     <div className = "flex flex-1 flex-row">
@@ -21,7 +23,7 @@ function Detail() {
         </div>
         <div className='flex flex-2 m-5'>
             <div className='flex-2 '>
-                  <p className='font-bold text-2xl'>Hotel A</p> 
+                  <p className='font-bold text-2xl'>{title}</p> 
                   <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
             </div>
             <div className='flex flex-2 justify-end'>
@@ -48,14 +50,7 @@ function Detail() {
             </div>
         </div>
         <div className='flex-6  m-5'>
-              <div className=' grid grid-cols-2 grid-rows-1  '>
-                    <div className='rounded-t-lg  w-2xs text-center  bg-gray-100 hover: cursor-pointer' >Hotel</div>
-                    <div className='rounded-t-lg  w-2xs text-center  bg-gray-100 hover: cursor-pointer' >Package</div>
-              </div>    
-              
-              <div className='grid grid-cols-1 grid-rows-1 bg-gray-100  '>
-                Detail
-              </div>
+              <DetailTabs />
               
         </div>
           
@@ -70,6 +65,50 @@ function Detail() {
   )
 }
 
+const Info =({title})=>{
+  return(
+    <div className='border m-4 rounded p-2'>
+        <h1>{title}</h1>
+      
 
+    </div>
+  );
+}
+
+const DetailTabs = () => {
+  const [activeTab, setActiveTab] = useState("Accommodation");
+
+  return (
+    <div className="w-full max-w-3xl mx-auto">
+      {/* Tabs */}
+      <div className="flex  justify-start gap-4 ">
+        {["Accommodation", "News & Package"].map((tab) => (
+          <button className='py-2 px-6 text-sm font-medium rounded-t-lg bg-gray-300' onClick={() => setActiveTab(tab)}>
+            {tab}
+          </button>
+        ))}
+      </div>
+
+      {/* Content Box */}
+      <div className="bg-gray-300 p-4 rounded-b-lg">
+        <div className="flex items-center border-b pb-2 font-semibold">
+          <FontAwesomeIcon icon={faBed} className="mr-2 text-lg" />
+          Hotel Information
+        </div>
+
+        <div className="grid grid-cols-2 gap-4 mt-2 text-sm">
+          <div className="flex items-center">
+            <FontAwesomeIcon icon={faStar} className="mr-2 text-lg" />
+            <span>Hotel Standard</span>
+          </div>
+          <div className="text-right">Total number of rooms</div>
+
+          <div className="ml-6">⭐ 3 Stars</div>
+          <div className="text-right">60 Units</div>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 export default Detail;

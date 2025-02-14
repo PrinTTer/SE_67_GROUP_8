@@ -53,7 +53,7 @@ export const Section = ({title}) => {
   };
   
 export const Post =({name , address})=>{
-    const link  = "/Detail"; 
+    const link  = "/Detail/"+name; 
     return(
       <Link to={link}>
           <div className="flex flex-row  shadow-md m p-4">

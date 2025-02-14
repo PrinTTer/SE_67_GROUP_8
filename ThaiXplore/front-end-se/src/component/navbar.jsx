@@ -1,5 +1,6 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBell, faCircleUser, faHouse,faList, faMessage } from '@fortawesome/free-solid-svg-icons';
+import { useState } from 'react';
 
 export const NavBarWithText = () =>{
     return(
@@ -19,8 +20,13 @@ export const NavBarWithText = () =>{
 
 
 export const NavBarWithOutText = () =>{
+    const [isOpen, setIsOpen] = useState(false);
+    const updateIsOpen = () => {
+      setIsOpen(!isOpen)
+    }
+
     return(
-        <div className="flex flex-1 flex-col  border-solid border-r-2  sticky top-0 h-screen items-center ">
+        <div className="flex flex-1 flex-col  border-solid border-r-2  sticky top-0 h-screen items-center z-50">
         
             <h2 className=" mt-4 font-bold">ThaiXplore</h2>
             <div className="flex-col">
@@ -28,15 +34,28 @@ export const NavBarWithOutText = () =>{
                     <IconSideBarIconOnly iconFont={faList}/>
                     <IconSideBarIconOnly iconFont={faMessage}/>
                     <IconSideBarIconOnly iconFont={faBell}/>
-                    <IconSideBarIconOnly iconFont={faCircleUser}/>
+                    <div onClick={updateIsOpen}>
+                      <IconSideBarIconOnly iconFont={faCircleUser}/>
+                    </div>
+                    
+                    <div className={`${!isOpen ? 'hidden' : 'w-30 h-lg'} absolute justify-center items-center text-center bg-white border-2 border-l-0 w-30 h-lg -right-30 top-70`}>
+                      <h1 className="text-5xl">test</h1>
+                      <h1>test</h1>
+                      <h1>test</h1>
+                      <h1>test</h1>
+                    </div>
             </div>
         </div>
     );
 }
 export const IconSideBar = (prop) => {
+<<<<<<< HEAD
   const { iconName, iconFont } = prop ;
+=======
+  const { iconName , iconFont } = prop;
+>>>>>>> 33b299290c832c520a0ad05f85189212f2fa0f97
   return (
-    <div className=" flex  items-center p-3 m-2 rounded-full hover:bg-gray-300 cursor-pointer">
+    <div className=" flex items-center p-3 m-2 rounded-full hover:bg-gray-300 cursor-pointer">
       <FontAwesomeIcon icon={iconFont} className="mr-3 text-lg" />
       <span>{iconName}</span>
     </div>
@@ -44,7 +63,11 @@ export const IconSideBar = (prop) => {
 };
 
 export const IconSideBarIconOnly = (prop) => {
+<<<<<<< HEAD
   const {  iconFont } = prop ;
+=======
+  const { iconFont } = prop;
+>>>>>>> 33b299290c832c520a0ad05f85189212f2fa0f97
   return (
     <div className=" flex justify-center items-center w-12 h-12 m-2 rounded-full hover:bg-gray-300 cursor-pointer">
       <FontAwesomeIcon icon={iconFont} size="lg" />

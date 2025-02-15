@@ -5,6 +5,7 @@ import businesses from "./business.routes";
 import rooms from "./room.routes";
 import businessDetail from "./businessDetail.routes";
 import cars from "./car.routes"
+import courses from "./course.routes"
 
 const router = express.Router();
 
@@ -15,6 +16,7 @@ export default () => {
     rooms(router);
     businessDetail(router);
     cars(router)
+    courses(router)
     
     return router;
 }

@@ -2,7 +2,7 @@ import { NavBarWithOutText } from "../../component/navbar";
 
 const ProfilePage = () => {
    return(
-    <div className="flex flex-1 items-center justify-center">
+    <div className="flex flex-col-reverse lg:flex-row flex-1 items-center justify-center">
         <NavBarWithOutText/>
         <div className="flex flex-5 flex-col bg-amber-50 h-screen">
             <h1 className="text-2xl font-bold mx-5 my-5">Profile</h1>

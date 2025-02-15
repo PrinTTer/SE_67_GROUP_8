@@ -4,6 +4,7 @@ import HomePage from './pages/home_page/home_page'
 import ListPage from './pages/home_page/page_List'
 import Detail from './pages/home_page/Detail'
 import ProfilePage from './pages/profile_page/profile_page'
+import CreateBusiness from './pages/business_page/create_business'
 function App() {
   
   return (
@@ -12,7 +13,7 @@ function App() {
       <Route path='/ListPage/:title' element={<ListPage />}/>
       <Route path='/Detail/:title' element={<Detail />}/>
       <Route path='/profile' element={<ProfilePage />}/>
-
+      <Route path='/profile/editBusiness/createBusiness' element={<CreateBusiness/>}/>
     </Routes>
   )
 }

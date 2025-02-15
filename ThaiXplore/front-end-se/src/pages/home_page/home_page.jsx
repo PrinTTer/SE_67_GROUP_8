@@ -2,7 +2,7 @@ import { Category , Section , RightBar} from './component/home_component' ;
  import {NavBarWithText} from '../../component/navbar';
 const HomePage = () => {
     return (
-        <div className = "flex flex-1 flex-row ">
+<div className = "flex flex-1 flex-col-reverse  lg:flex-row">
       
           <NavBarWithText />
 

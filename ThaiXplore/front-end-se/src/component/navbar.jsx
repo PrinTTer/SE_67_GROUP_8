@@ -20,22 +20,26 @@ export const NavBarWithText = () =>{
 
 
 export const NavBarWithOutText = () =>{
+    
     const [isOpen, setIsOpen] = useState(false);
     const updateIsOpen = () => {
       setIsOpen(!isOpen)
     }
 
     return(
-        <div className="flex flex-1 flex-col  border-solid border-r-2  sticky top-0 h-screen items-center z-50">
+      <div className="flex flex-1 flex-col  border-solid border-r-2  sticky top-0 h-screen items-center ">
+
         
-            <h2 className=" mt-4 font-bold">ThaiXplore</h2>
-            <div className="flex-col">
-                    <IconSideBarIconOnly iconFont={faHouse}/>
-                    <IconSideBarIconOnly iconFont={faList}/>
-                    <IconSideBarIconOnly iconFont={faMessage}/>
-                    <IconSideBarIconOnly iconFont={faBell}/>
+        <h2 className="mt-4 font-bold hidden lg:block">ThaiXplore</h2>
+
+            <div className="flex lg:flex-col  ">
+                              <IconSideBarIconOnly iconName={"Home"}          iconFont={faHouse}      />
+                              <IconSideBarIconOnly iconName={"Category"}      iconFont={faList}       />
+                              <IconSideBarIconOnly iconName={"Message"}       iconFont={faMessage}    />
+                              <IconSideBarIconOnly iconName={"Notification"}  iconFont={faBell}       />
+                              
                     <div onClick={updateIsOpen}>
-                      <IconSideBarIconOnly iconFont={faCircleUser}/>
+                      <IconSideBarIconOnly iconName={"Profile"} iconFont={faCircleUser}/>
                     </div>
                     
                     <div className={`${!isOpen ? 'hidden' : 'w-30 h-lg'} absolute justify-center items-center text-center bg-white border-2 border-l-0 w-30 h-lg -right-30 top-70`}>

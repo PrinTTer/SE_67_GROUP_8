@@ -105,7 +105,7 @@ export const Post =(prop)=>{
                   
                   <div className='mb-5'>
                     <div className='border-l-3 border-[#F96868] pl-1 text-[#007CE8] font-bold'>Price Range</div>
-                    
+                   
                   </div>
 
               </div>

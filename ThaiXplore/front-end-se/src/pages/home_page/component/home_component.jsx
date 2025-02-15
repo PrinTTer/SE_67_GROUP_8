@@ -75,32 +75,66 @@ export const Post =(prop)=>{
   }
 
   export const RightBar = () =>{
+    
     return(
       <div className="flex flex-1 flex-col  items-center border-solid border-l-2 sticky top-0 h-screen">
-              <input type="text" className='bg-amber-300 rounded-4xl border-1 mt-4'/>
-              <div>
-                 <p>Business</p>
-                  <ChkBox />
-                  <ChkBox />
-                  <ChkBox />
+              <div className='flex-1'>
+                <input type="text" className='bg-amber-300 rounded-4xl border-1 mt-4'/>
               </div>
-              <div>
+
+              <div className='flex-8'>
+
+                  <div className='mb-5'>
+                  <div className='border-l-3 border-[#F96868] pl-1 text-[#007CE8] font-bold'>Business</div>
+                    <ChkBox title="Accommodation"       group="Business"/>
+                    <ChkBox title="Restaurant/Beverage" group="Business"/>
+                    <ChkBox title="Event/Festival"      group="Business"/>
+                    <ChkBox title="Logistics"           group="Business"/>
+                  </div>
+
+                  <div className='mb-5'>
+                    <div className='border-l-3 border-[#F96868] pl-1 text-[#007CE8] font-bold'>News/Package</div>
+                    <ChkBox title="News"      group="Package"/>
+                    <ChkBox title="Package"   group="Package"/>
+                  </div>
+                  
+                  <div className='mb-5'>
+                    <div className='border-l-3 border-[#F96868] pl-1 text-[#007CE8] font-bold'>Recommend by ThaiXplore</div>
+                    <ChkBox title="Recommended" group="Recommended"/>
+                  </div>
+                  
+                  <div className='mb-5'>
+                    <div className='border-l-3 border-[#F96868] pl-1 text-[#007CE8] font-bold'>Price Range</div>
+                    
+                  </div>
+
+              </div>
+      <div>
                 
               </div>
-              <div>
-                
-              </div>
+             
       </div>
     );
   }
 
    const ChkBox = (prop) =>{ 
-    const {title} = prop
+    const {title , group} = prop
     return(
-      <div className='items-center just'>
-        <input type="radio" name="Business"  /> {title}
-      </div>
+      <label className="flex items-center gap-2">
+        <input
+            type="radio"
+            name={group}
+            className="w-3 h-3 appearance-none rounded-[35%] border border-gray-500 checked:bg-blue-500"
+        />
+          <span>{title}</span>
+      </label>
+
     );
    }
+
+   
+   
+
+
   
   

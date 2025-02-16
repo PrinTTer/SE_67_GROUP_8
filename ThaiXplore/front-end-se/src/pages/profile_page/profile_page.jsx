@@ -1,5 +1,5 @@
 import { NavBarWithOutText } from "../../component/navbar";
-import ProfileForm from "../../component/ProfileForm";
+import ProfileForm from "./component/ProfileForm";
 
 const ProfilePage = () => {
    return(
@@ -19,7 +19,6 @@ const ProfilePage = () => {
                     <h1 className="text-md lg:text-2xl text-black font-bold">Edit Profile</h1>
                 </button>
 
-                
                 <ProfileForm/>
             </div>
         </div>

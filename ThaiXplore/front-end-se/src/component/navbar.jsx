@@ -5,6 +5,11 @@ import { useState } from 'react';
 
 
 export const NavBarWithText = () =>{
+  const [isOpen, setIsOpen] = useState(false);
+  const updateIsOpen = () => {
+    setIsOpen(!isOpen)
+  }
+
     return(
          <div className="flex flex-1 flex-col  border-solid border-r-2  sticky top-0 h-screen items-center z-50">
                             
@@ -13,7 +18,10 @@ export const NavBarWithText = () =>{
                               <IconSideBar iconName={"Home"}          iconFont={faHouse}      />
                               <IconSideBar iconName={"Category"}      iconFont={faList}       />
                               <IconSideBar iconName={"Notification"}  iconFont={faBell}       />
-                              <IconSideBar iconName={"Profile"}       iconFont={faCircleUser} />
+                              <div onClick={updateIsOpen}>
+                                <IconSideBar iconName={"Profile"}       iconFont={faCircleUser} />
+                              </div>
+                              <ToggleSideBar updateOpen={isOpen}/>
                             </div>
                         </div>
     );

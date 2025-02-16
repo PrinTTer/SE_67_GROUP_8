@@ -7,7 +7,7 @@ const BusinessForm = () => {
     
     return(
         <div className="flex flex-1 w-full h-full bg-gray-200 items-center justify-center">
-            <div className="w-19/20 h-19/20 p-10 bg-white border-1 shadow-black shadow-md">
+            <div className="flex flex-1 flex-col p-10 m-10 bg-white border-1 shadow-black shadow-md">
                 <div>
                     <label className="block text-xl font-bold">Business</label>
                     <input type="text" className="p-2 mt-2 text-xl border rounded-md" />
@@ -70,25 +70,35 @@ const BusinessForm = () => {
                         <label className="block font-medium">Postal Code</label>
                         <input type="text" className="p-2 mt-2 text-xl border rounded-md" />
                     </div>
-                </form>
-                <div className="flex flex-col mt-2">
-                    <label className="ml-8 font-medium">Upload Business image</label>
-                    <div className="flex w-32 h-32 mt-2 ml-8 bg-gray-400 rounded-md items-center justify-center">
-                        <button className="bg-blue-400 p-2 m-4 rounded-full hover:bg-blue-800 cursor-pointer">
-                            <h1 className="text-white font-bold">Upload</h1>
-                        </button>
-                    </div>
-                </div>
-                <div className="flex flex-row absolute bottom-16 right-20">
-                    <Link to={"/profile/mainBusiness"}>
-                        <div className="flex text-center p-4 mx-4 bg-gray-600 rounded-2xl hover:bg-gray-800">
-                            <h2 className="text-white font-medium">Back</h2>
+
+                    <div className="flex flex-col mt-2">
+                        <label className="font-medium">Upload Business image</label>
+                        <div className="flex w-32 h-32 mt-2 ml-8 bg-gray-400 rounded-md items-center justify-center">
+                            <button className="bg-blue-400 p-2 m-4 rounded-full hover:bg-blue-800 cursor-pointer">
+                                <h1 className="text-white font-bold">Upload</h1>
+                            </button>
                         </div>
-                    </Link>
-                    <div className="flex justify-items-center p-4 mx-4 bg-green-500 rounded-2xl hover:bg-green-700">
-                        <h2 className="text-white text-center font-medium">Confirm</h2>
                     </div>
+                    <div className="flex flex-row mt-2 col-end-5 justify-center items-center">
+                        <div>
+                            <Link to={"/profile/mainBusiness"}>
+                                <div className="flex text-center p-4 mx-4 bg-gray-600 rounded-2xl hover:bg-gray-800">
+                                    <h2 className="text-white font-medium">Back</h2>
+                                </div>
+                            </Link>
+                        </div>
+                        <div>
+                            <Link>
+                                <div className="flex p-4 mx-4 bg-green-500 rounded-2xl hover:bg-green-700">
+                                    <h2 className="text-white text-center font-medium">Confirm</h2>
+                                </div>
+                            </Link>
+                        </div>
+                        
+                            
                 </div>
+                </form>
+                
             </div>
         </div>
         

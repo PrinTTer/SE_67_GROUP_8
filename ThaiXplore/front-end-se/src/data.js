@@ -8,7 +8,38 @@ const data =[
                             "second" : "https://i.pinimg.com/736x/6c/88/6a/6c886a58955b62b80b29d29a69432904.jpg",
                             "thrid" : "https://i.pinimg.com/736x/28/43/33/2843338424bf5bfe0bfa8ce859f6bb06.jpg",
                             "fourth" : "https://i.pinimg.com/736x/1a/d6/bf/1ad6bfed676eed221798220774924745.jpg"
-                        }
+                        },
+            "info"  :   {   
+                            "Hotel Information" :{
+                                "Hotel Standard " : 3,
+                                "Total number of rooms" : 60
+                            },
+                            "Specify food and beverage service information" :["24 hour reception" , "Coffee Shop" ,"WiFi in room"],
+                            "Recreation facility" :["Swimming pool","Beachside"],
+                            "Description" : "We are passionate about taking the best care of our guests and making them feel at home. With more than two decades, Talay Hotel & Villa has opened its door in the heart of Cha-Am and provided our special guests with warm welcome and friendly service. Designed for both business and leisure travel, Talay Hotel & Villa is ideally situated in Cha Am beachfront; one of the citys most popular locales. From here, guests can enjoy easy access to all that the lively city has to offer.",
+
+                        },
+            "service" : [
+                            {
+                                "roomType"              : "Standard",
+                                "room"                  : 100,
+                                "size"                  : 20.00,
+                                "Number of guests/room" : 2
+                            },
+                            {
+                                "roomType"              : "Deluxe",
+                                "room"                  : 500,
+                                "size"                  : 50.00,
+                                "Number of guests/room" : 5
+                            },
+                            {
+                                "roomType": "Suite",
+                                "room": 30,
+                                "size": 45.00,
+                                "Number of guests/room": 3
+                            },
+                        
+                        ]
         },
         {
             "name" : "Hotel B",
@@ -19,7 +50,31 @@ const data =[
                             "second" : "https://i.pinimg.com/736x/6c/88/6a/6c886a58955b62b80b29d29a69432904.jpg",
                             "thrid" : "https://i.pinimg.com/736x/28/43/33/2843338424bf5bfe0bfa8ce859f6bb06.jpg",
                             "fourth" : "https://i.pinimg.com/736x/1a/d6/bf/1ad6bfed676eed221798220774924745.jpg"
-                        }
+                        },
+            "info"  :   {   
+                            "Hotel Information" :{
+                                "Hotel Standard " : 4,
+                                "Total number of rooms" : 150
+                            },
+                            "Specify food and beverage service information" :["24 hour reception" ,"WiFi in room","spa"],
+                            "Recreation facility" :["Swimming pool","Beachside"],
+                            "Description" : "We are passionate about taking the best care of our guests and making them feel at home. With more than two decades, Talay Hotel & Villa has opened its door in the heart of Cha-Am and provided our special guests with warm welcome and friendly service. Designed for both business and leisure travel, Talay Hotel & Villa is ideally situated in Cha Am beachfront; one of the citys most popular locales. From here, guests can enjoy easy access to all that the lively city has to offer.",
+
+                        },
+            "service" :[
+                            {
+                                "roomType"              : "Deluxe",
+                                "room"                  : 500,
+                                "size"                  : 50.00,
+                                "Number of guests/room" : 5
+                            },
+                            {
+                                "roomType": "Family Suite",
+                                "room": 20,
+                                "size": 60.00,
+                                "Number of guests/room": 4
+                            },
+                        ]
         },
         {
             "name" : "Event C",
@@ -30,7 +85,37 @@ const data =[
                             "second" : "https://i.pinimg.com/736x/bf/08/dc/bf08dc21abb41dff6b17e7d8d82cfbef.jpg",
                             "thrid" : "https://i.pinimg.com/736x/4c/8e/24/4c8e24335f110f6abdf3f938ffabc0d0.jpg",
                             "fourth" : "https://i.pinimg.com/736x/0d/b2/58/0db258db5e2d343fc930aeef0ead3a38.jpg"
-                        }
+                        },
+            "info"  :   {   
+                            "Event Information" :{
+                                "Start Date" : "10/02/2025",
+                                "End Date" : "20/02/2025",
+                                "Start Sale Period" :"01/01/2025",
+                                
+                            },
+                            "Description" : "We are passionate about taking the best care of our guests and making them feel at home. With more than two decades, Talay Hotel & Villa has opened its door in the heart of Cha-Am and provided our special guests with warm welcome and friendly service. Designed for both business and leisure travel, Talay Hotel & Villa is ideally situated in Cha Am beachfront; one of the citys most popular locales. From here, guests can enjoy easy access to all that the lively city has to offer.",
+
+                        },
+            "service" :[
+                {
+                    "TicketType"             : "Standard",
+                    "Price"                  : 500,
+                    "Quantity"               : 50,
+                    "Round" : {
+                        "start" : "10/02/2025",
+                        "end" :   "15/02/2025"
+                    }
+                },
+                {
+                    "TicketType"             : "VIP",
+                    "Price"                  : 1000,
+                    "Quantity"               : 25,
+                    "Round" : {
+                        "start" : "16/02/2025",
+                        "end" :   "20/02/2025"
+                    }
+                },
+            ]
         },
         {
             "name" : "Hotel E",
@@ -41,7 +126,31 @@ const data =[
                             "second" : "https://i.pinimg.com/736x/6c/88/6a/6c886a58955b62b80b29d29a69432904.jpg",
                             "thrid" : "https://i.pinimg.com/736x/28/43/33/2843338424bf5bfe0bfa8ce859f6bb06.jpg",
                             "fourth" : "https://i.pinimg.com/736x/1a/d6/bf/1ad6bfed676eed221798220774924745.jpg"
-                        }
+                        },
+            "info"  :   {   
+                            "Hotel Information" :{
+                                            "Hotel Standard " : 4,
+                                            "Total number of rooms" : 150                        
+                                        },
+                            "Specify food and beverage service information" :["24 hour reception" ,"WiFi in room","spa"],
+                            "Recreation facility" :["Swimming pool","Beachside"],
+                            "Description" : "We are passionate about taking the best care of our guests and making them feel at home. With more than two decades, Talay Hotel & Villa has opened its door in the heart of Cha-Am and provided our special guests with warm welcome and friendly service. Designed for both business and leisure travel, Talay Hotel & Villa is ideally situated in Cha Am beachfront; one of the citys most popular locales. From here, guests can enjoy easy access to all that the lively city has to offer.",
+            
+                                    },
+            "service" :[
+                            {
+                                 "roomType"              : "Deluxe",
+                                 "room"                  : 500,
+                                 "size"                  : 50.00,
+                                 "Number of guests/room" : 5
+                            },
+                            {
+                                "roomType": "Family Suite",
+                                "room": 20,
+                                "size": 60.00,
+                                "Number of guests/room": 4
+                            },
+                        ]
         },
         {
             "name" : "Food F",
@@ -52,10 +161,35 @@ const data =[
                             "second" : "https://i.pinimg.com/736x/67/45/91/6745910f00688d4e49ab86be2e5db06b.jpg",
                             "thrid" : "https://i.pinimg.com/736x/b5/53/6c/b5536c69aeaaa2026c9e7cb110f04095.jpg",
                             "fourth" : "https://i.pinimg.com/736x/56/fd/90/56fd9032c6eb2c1ad41ca5d2cb1dbdf1.jpg"
-                        }
+                        },
+            "info"  :   {   
+                            "Working Date Information" :["Monday 09.30-16.30","Tuesday 09.30-16.30","Wednesday 09.30-16.30","Friday 09.30-17.30"]
+                        },
+            "service" :[
+                            {
+                                 "Course Name"            : "Deluxe",
+                                 "price"                  : 500,
+                                 "Menu List" : {
+                                    "PadThai" : 3,
+                                    "Noodle" : 2
+                                },
+                            },
+                            {
+                                "Course Name": "Family",
+                                "price": 300,
+                                "Menu List" : {
+                                    "Somtum" : 2,
+                                    "PadThai" : 2
+                                },
+                            },
+                        ]
         }
 ]
-const types = ['hotel' , 'event' , 'food' ,'car'];
+const types = ['hotel', 'event', 'food','car'];
+// const Hotel = ["Hotel Information", "Specify food and beverage service information", "Recreation facility", "Description"]
+// const Event = ["Event Information", "Description"]
+// const Any   = ["Working Date Information"]
+
 export const getData = (type) =>{
     
     let business;
@@ -72,9 +206,39 @@ export const getData = (type) =>{
     return business ;
 }
 
-export const getImage =(name)=> {
+export const getBusiness =(name)=> {
     
     let business;
     business=data.find(item => item.name == name);
     return business;
 }
+export const getInfo = (props) => {
+    const { info } = props;
+    return Object.keys(info);  
+};
+export const getBusinessDescription = ({ title, infoTitle }) => {
+    const business = getBusiness(title);
+    
+    
+
+    if (business.type === "hotel") {
+        if (infoTitle !== "Hotel Information") {
+            return business.info[infoTitle] ;  // Avoid undefined
+        }
+       
+      
+    }
+    
+    return ["No relevant information"];  // Always return an array
+};
+
+
+console.log(getBusinessDescription({ title: "Hotel A", infoTitle: "Hotel Information" }));
+
+
+
+
+
+
+
+ 

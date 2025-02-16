@@ -1,19 +1,21 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Link, useParams } from 'react-router-dom';
-import {NavBarWithText  } from '../../component/navbar' ;
+import {NavBarWithOutText  } from '../../component/navbar' ;
 import {  faPlus,faFileInvoice } from '@fortawesome/free-solid-svg-icons';
-import { getImage } from '../../data';
+import { getBusiness,getInfo,getBusinessDescription} from '../../data';
 import { faBed } from '@fortawesome/free-solid-svg-icons';
 
 
 
 function Detail() {
   const {title}  = useParams()
-  const business = getImage(title)
+  const business = getBusiness(title)
+  const ArrTitle = getInfo(business)
+  
   return (
     <div className = "flex flex-1 flex-col-reverse lg:flex-row ">
       
-      <NavBarWithText />
+      <NavBarWithOutText />
 
       {/* Mid Bar */}
       <div className='flex flex-4 flex-col '>
@@ -56,11 +58,15 @@ function Detail() {
                 </div>
                 <div className='flex-6  bg-[#F1F5F9]'>
                   <div className='m-4'>
-                      <Tab type={business.type}/>       
-                      <Info />    
-                      <Info /> 
-                      <Info />    
-                      
+                      <Tab type={business.type}/> 
+                       {
+                        ArrTitle.map((element)=>{
+                                  
+                                  // eslint-disable-next-line react/jsx-key
+                                  return <Info infoTitle={element}/>
+                        })
+                       }  
+                        
                   </div>
                 </div>
           
@@ -87,19 +93,34 @@ const Tab =(prop)=>{
   );
 }
 
-const Info =(prop)=>{
-  const {infoTitle} = prop
-  return(
-    <div className='grid grid-cols-2  p-4 rounded-lg  gap-5 mb-5  bg-yellow-50 shadow-md'>
-        <div className='col-span-2 border-b-2 p-2' >
-              <FontAwesomeIcon icon={faBed} className="mr-3 text-lg" />
-              <span>Hotel Info</span>
-              
-        </div>
-        
+const Info = ({ infoTitle }) => {
+  const { title } = useParams();
+  const descriptionList = getBusinessDescription({ title, infoTitle });
+
+  return (
+    <div className="p-4 rounded-lg gap-5 mb-5 bg-yellow-50 shadow-md border border-gray-300">
+      
+      <div className="col-span-2 border-b-2 p-2 flex items-center font-bold">
+        <FontAwesomeIcon icon={faBed} className="mr-3 text-lg" />
+        <span>{infoTitle}</span>
+      </div>
+
+      
+      <div className={`grid ${Array.isArray(descriptionList) ? "grid-cols-2" : "grid-cols-1"} gap-4 p-2`}>
+        {Array.isArray(descriptionList) ? (
+          descriptionList.map((item, index) => (
+            <div key={index} className="text-gray-700">
+              {item}
+            </div>
+          ))
+        ) : (
+          <p className="text-gray-700">{descriptionList}</p>
+        )}
+      </div>
     </div>
   );
-}
+};
+
 
 
 

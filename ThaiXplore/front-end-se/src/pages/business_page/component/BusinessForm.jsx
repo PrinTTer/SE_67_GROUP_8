@@ -14,19 +14,19 @@ const BusinessForm = () => {
                 <div className="flex flex-col mt-2">
                     <label className="text-xl font-bold">Main Business</label>
                         <div className="grid grid-cols-4 bg-gray-400 p-2 my-2 mx-60 rounded-md gap-4">
-                            <div className="bg-white p-2 mx-4 flex flex-col items-center justify-center rounded-md">
+                            <div className="bg-white p-2 mx-4 flex flex-col items-center justify-center rounded-md hover:bg-blue-500">
                                 <FontAwesomeIcon icon={faCalendarCheck} size="7x"/>
                                 <h2 className="font-medium mt-1">Event</h2>
                             </div>
-                            <div className="bg-white p-2 mx-4 flex flex-col items-center justify-center rounded-md">
+                            <div className="bg-white p-2 mx-4 flex flex-col items-center justify-center rounded-md hover:bg-blue-500">
                                 <FontAwesomeIcon icon={faHotel} size="7x"/>
                                 <h2 className="font-medium mt-1">Hotel</h2>
                             </div>
-                            <div className="bg-white p-2 mx-4 flex flex-col items-center justify-center rounded-md">
+                            <div className="bg-white p-2 mx-4 flex flex-col items-center justify-center rounded-md hover:bg-blue-500">
                                 <FontAwesomeIcon icon={faUtensils} size="7x"/>
                                 <h2 className="font-medium mt-1">Restaurant</h2>
                             </div>
-                            <div className="bg-white p-2 mx-4 flex flex-col items-center justify-center rounded-md">
+                            <div className="bg-white p-2 mx-4 flex flex-col items-center justify-center rounded-md hover:bg-blue-500">
                                 <FontAwesomeIcon icon={faCar} size="7x"/>
                                 <h2 className="font-medium mt-1">Logistic</h2>
                             </div>

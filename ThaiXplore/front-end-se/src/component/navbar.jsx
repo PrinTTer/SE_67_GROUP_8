@@ -12,7 +12,6 @@ export const NavBarWithText = () =>{
                             <div className="flex-col">
                               <IconSideBar iconName={"Home"}          iconFont={faHouse}      />
                               <IconSideBar iconName={"Category"}      iconFont={faList}       />
-                              <IconSideBar iconName={"Message"}       iconFont={faMessage}    />
                               <IconSideBar iconName={"Notification"}  iconFont={faBell}       />
                               <IconSideBar iconName={"Profile"}       iconFont={faCircleUser} />
                             </div>
@@ -37,7 +36,6 @@ export const NavBarWithOutText = () =>{
             <div className="flex lg:flex-col  ">
                               <IconSideBarIconOnly iconName={"Home"}          iconFont={faHouse}      />
                               <IconSideBarIconOnly iconName={"Category"}      iconFont={faList}       />
-                              <IconSideBarIconOnly iconName={"Message"}       iconFont={faMessage}    />
                               <IconSideBarIconOnly iconName={"Notification"}  iconFont={faBell}       />
                               
                     <div onClick={updateIsOpen}>

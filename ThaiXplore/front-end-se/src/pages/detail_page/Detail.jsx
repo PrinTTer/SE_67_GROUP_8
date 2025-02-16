@@ -3,7 +3,7 @@ import { Link, useParams } from 'react-router-dom';
 import {NavBarWithOutText  } from '../../component/navbar' ;
 import {  faPlus,faFileInvoice } from '@fortawesome/free-solid-svg-icons';
 import { getBusiness,getInfo,getBusinessDescription} from '../../data';
-import { faBed } from '@fortawesome/free-solid-svg-icons';
+import { faBed,faStar } from '@fortawesome/free-solid-svg-icons';
 
 
 
@@ -93,7 +93,8 @@ const Tab =(prop)=>{
   );
 }
 
-const Info = ({ infoTitle }) => {
+const Info = (prop) => {
+  const { infoTitle } = prop
   const { title } = useParams();
   const descriptionList = getBusinessDescription({ title, infoTitle });
 
@@ -109,7 +110,11 @@ const Info = ({ infoTitle }) => {
       <div className={`grid ${Array.isArray(descriptionList) ? "grid-cols-2" : "grid-cols-1"} gap-4 p-2`}>
         {Array.isArray(descriptionList) ? (
           descriptionList.map((item, index) => (
+            
             <div key={index} className="text-gray-700">
+                  {index == 2 && infoTitle == "Hotel Information" &&(
+                  <FontAwesomeIcon icon={faStar} className="mr-2" />
+                )}
               {item}
             </div>
           ))

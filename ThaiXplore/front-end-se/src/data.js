@@ -1,3 +1,5 @@
+
+
 const data =[
         {
             "name" : "Hotel A",
@@ -11,7 +13,7 @@ const data =[
                         },
             "info"  :   {   
                             "Hotel Information" :{
-                                "Hotel Standard " : 3,
+                                "Hotel Standard" : 3,
                                 "Total number of rooms" : 60
                             },
                             "Specify food and beverage service information" :["24 hour reception" , "Coffee Shop" ,"WiFi in room"],
@@ -53,7 +55,7 @@ const data =[
                         },
             "info"  :   {   
                             "Hotel Information" :{
-                                "Hotel Standard " : 4,
+                                "Hotel Standard" : 4,
                                 "Total number of rooms" : 150
                             },
                             "Specify food and beverage service information" :["24 hour reception" ,"WiFi in room","spa"],
@@ -129,7 +131,7 @@ const data =[
                         },
             "info"  :   {   
                             "Hotel Information" :{
-                                            "Hotel Standard " : 4,
+                                            "Hotel Standard" : 4,
                                             "Total number of rooms" : 150                        
                                         },
                             "Specify food and beverage service information" :["24 hour reception" ,"WiFi in room","spa"],
@@ -216,6 +218,8 @@ export const getInfo = (props) => {
     const { info } = props;
     return Object.keys(info);  
 };
+
+
 export const getBusinessDescription = ({ title, infoTitle }) => {
     const business = getBusiness(title);
     
@@ -225,8 +229,17 @@ export const getBusinessDescription = ({ title, infoTitle }) => {
         if (infoTitle !== "Hotel Information") {
             return business.info[infoTitle] ;  // Avoid undefined
         }
-       
-      
+        else if(infoTitle === "Hotel Information"){
+            return ["Hotel Standard" ,"Total number of rooms" ,business.info["Hotel Information"]["Hotel Standard"] ,business.info["Hotel Information"]["Total number of rooms"]]
+        }
+    }
+    else if(business.type === "event"){
+        if (infoTitle !== "Event Information") {
+            return business.info[infoTitle] ;  // Avoid undefined
+        }
+        else if(infoTitle === "Event Information"){
+            return [business.info["Event Information"]["Start Date"],business.info["Event Information"]["End Date"] ,business.info["Event Information"]["Start Sale Period"]]
+        }
     }
     
     return ["No relevant information"];  // Always return an array

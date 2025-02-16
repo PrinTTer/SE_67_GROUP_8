@@ -7,7 +7,7 @@ const CreateBusiness = () => {
             <NavBarWithOutText/>
             <div className="flex flex-5 items-center justify-center flex-col">
                 <BusinessForm/>
-                <BusinessForm/>
+               
             </div>
         </div>
     );

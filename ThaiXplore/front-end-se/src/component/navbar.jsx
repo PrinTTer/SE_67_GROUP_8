@@ -1,14 +1,14 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faBell, faCircleUser, faHouse,faList, faMessage } from '@fortawesome/free-solid-svg-icons';
+import { faBell, faCircleUser, faHouse,faList } from '@fortawesome/free-solid-svg-icons';
 import { faCircleUser as faCircleUserRegular } from '@fortawesome/free-regular-svg-icons';
 import { useState } from 'react';
 
 
 export const NavBarWithText = () =>{
     return(
-         <div className="flex flex-1 flex-col  border-solid border-r-2  sticky top-0 h-screen items-center ">
+         <div className="flex flex-1 flex-col  border-solid border-r-2  sticky top-0 h-screen items-center z-50">
                             
-                            <p className=" mt-4 font-bold ">ThaiXplore</p>
+                            <p className=" mt-4 text-2xl font-bold ">ThaiXplore</p>
                             <div className="flex-col">
                               <IconSideBar iconName={"Home"}          iconFont={faHouse}      />
                               <IconSideBar iconName={"Category"}      iconFont={faList}       />
@@ -28,10 +28,10 @@ export const NavBarWithOutText = () =>{
     }
 
     return(
-      <div className="flex flex-1 flex-col  border-solid border-r-2  sticky top-0 h-screen items-center ">
+      <div className="flex flex-1 flex-col  border-solid lg:border-r-2  sticky top-0 h-screen items-center z-50">
 
         
-        <h2 className="mt-4 font-bold hidden lg:block">ThaiXplore</h2>
+        <h2 className="mt-4 text-2xl font-bold hidden lg:block">ThaiXplore</h2>
 
             <div className="flex lg:flex-col  ">
                               <IconSideBarIconOnly iconName={"Home"}          iconFont={faHouse}      />
@@ -81,11 +81,3 @@ export const IconSideBarIconOnly = (prop) => {
     </div>
   );
 };
-
-/*<div className={`${!isOpen ? 'hidden' : 'w-30 h-lg'} absolute justify-center items-center text-center bg-white border-2 border-l-0 w-30 h-lg -right-30 top-70`}>
-                      <h1 className="text-5xl">test</h1>
-                      <h1>test</h1>
-                      <h1>test</h1>
-                      <h1>test</h1>
-                    </div>
-*/

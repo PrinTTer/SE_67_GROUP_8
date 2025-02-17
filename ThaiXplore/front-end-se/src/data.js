@@ -24,21 +24,27 @@ const data =[
             "service" : [
                             {
                                 "roomType"              : "Standard",
-                                "room"                  : 100,
+                                "price"                  : 100,
                                 "size"                  : 20.00,
-                                "Number of guests/room" : 2
+                                "Number of guests/room" : 2,
+                                "img" : "https://cdn.pixabay.com/photo/2017/04/05/15/58/hotelroom-2205447_1280.jpg",
+                                "Room Facilities" : "Air conditioner"
                             },
                             {
                                 "roomType"              : "Deluxe",
-                                "room"                  : 500,
+                                "price"                  : 500,
                                 "size"                  : 50.00,
-                                "Number of guests/room" : 5
+                                "Number of guests/room" : 5,
+                                "img" : "https://cdn.pixabay.com/photo/2020/10/18/09/16/bedroom-5664221_640.jpg",
+                                "Room Facilities" : "Air conditioner"
                             },
                             {
                                 "roomType": "Suite",
-                                "room": 30,
+                                "price": 30,
                                 "size": 45.00,
-                                "Number of guests/room": 3
+                                "Number of guests/room": 3,
+                                "img" : "https://cdn.pixabay.com/photo/2017/07/08/09/21/room-beach-view-2483881_1280.jpg",
+                                "Room Facilities" : "Air conditioner"
                             },
                         
                         ]
@@ -66,15 +72,19 @@ const data =[
             "service" :[
                             {
                                 "roomType"              : "Deluxe",
-                                "room"                  : 500,
+                                "price"                  : 500,
                                 "size"                  : 50.00,
-                                "Number of guests/room" : 5
+                                "Number of guests/room" : 5,
+                                "img" : "https://cdn.pixabay.com/photo/2017/04/05/15/58/hotelroom-2205447_1280.jpg",
+                                "Room Facilities" : "Air conditioner"
                             },
                             {
                                 "roomType": "Family Suite",
-                                "room": 20,
+                                "price": 20,
                                 "size": 60.00,
-                                "Number of guests/room": 4
+                                "Number of guests/room": 4,
+                                "img" : "https://cdn.pixabay.com/photo/2017/04/05/15/58/hotelroom-2205447_1280.jpg",
+                                "Room Facilities" : "Air conditioner"
                             },
                         ]
         },
@@ -90,9 +100,9 @@ const data =[
                         },
             "info"  :   {   
                             "Event Information" :{
-                                "Start Date" : "10/02/2025",
-                                "End Date" : "20/02/2025",
-                                "Start Sale Period" :"01/01/2025",
+                                "Start Date" : "10 Feb 2025",
+                                "End Date" : "20 Feb 2025",
+                                "Start Sale Period" :"01 Jan 2025",
                                 
                             },
                             "Description" : "We are passionate about taking the best care of our guests and making them feel at home. With more than two decades, Talay Hotel & Villa has opened its door in the heart of Cha-Am and provided our special guests with warm welcome and friendly service. Designed for both business and leisure travel, Talay Hotel & Villa is ideally situated in Cha Am beachfront; one of the citys most popular locales. From here, guests can enjoy easy access to all that the lively city has to offer.",
@@ -104,18 +114,20 @@ const data =[
                     "Price"                  : 500,
                     "Quantity"               : 50,
                     "Round" : {
-                        "start" : "10/02/2025",
-                        "end" :   "15/02/2025"
-                    }
+                        "start" : "10 Feb 2025",
+                        "end" :   "15 Feb 2025"
+                    },
+                    "img" : "https://i.pinimg.com/736x/d2/c8/b8/d2c8b883a9ba9907b12a73f76c18f385.jpg"
                 },
                 {
                     "TicketType"             : "VIP",
                     "Price"                  : 1000,
                     "Quantity"               : 25,
                     "Round" : {
-                        "start" : "16/02/2025",
-                        "end" :   "20/02/2025"
-                    }
+                        "start" : "16 Feb 2025",
+                        "end" :   "20 Feb 2025"
+                    },
+                    "img" : "https://i.pinimg.com/736x/d2/c8/b8/d2c8b883a9ba9907b12a73f76c18f385.jpg"
                 },
             ]
         },
@@ -142,15 +154,19 @@ const data =[
             "service" :[
                             {
                                  "roomType"              : "Deluxe",
-                                 "room"                  : 500,
+                                 "price"                  : 500,
                                  "size"                  : 50.00,
-                                 "Number of guests/room" : 5
+                                 "Number of guests/room" : 5,
+                                 "img" : "https://cdn.pixabay.com/photo/2017/04/05/15/58/hotelroom-2205447_1280.jpg",
+                                 "Room Facilities" : "Air conditioner"
                             },
                             {
                                 "roomType": "Family Suite",
-                                "room": 20,
+                                "price": 20,
                                 "size": 60.00,
-                                "Number of guests/room": 4
+                                "Number of guests/room": 4,
+                                "img" : "https://cdn.pixabay.com/photo/2017/04/05/15/58/hotelroom-2205447_1280.jpg",
+                                "Room Facilities" : "Air conditioner"
                             },
                         ]
         },
@@ -169,12 +185,13 @@ const data =[
                         },
             "service" :[
                             {
-                                 "Course Name"            : "Deluxe",
-                                 "price"                  : 500,
-                                 "Menu List" : {
+                                "Course Name"            : "Deluxe",
+                                "price"                  : 500,
+                                "Menu List" : {
                                     "PadThai" : 3,
                                     "Noodle" : 2
                                 },
+                                "img":"https://cdn.pixabay.com/photo/2020/03/07/16/29/food-4910224_640.jpg"
                             },
                             {
                                 "Course Name": "Family",
@@ -183,11 +200,41 @@ const data =[
                                     "Somtum" : 2,
                                     "PadThai" : 2
                                 },
+                                "img":"https://cdn.pixabay.com/photo/2018/09/26/13/22/food-3704606_640.jpg"
                             },
+                        ]
+        },
+        {
+            "name" : "Car F",
+            "type" : "car",
+            "address" : "Bangkok",
+            "image" : {
+                            "main" : "https://cdn.pixabay.com/photo/2024/02/27/17/44/ai-generated-8600551_640.jpg",
+                            "second" : "https://cdn.pixabay.com/photo/2017/08/04/15/50/lamborghini-2580483_1280.jpg",
+                            "thrid" : "https://cdn.pixabay.com/photo/2024/01/21/12/51/ai-generated-8523068_640.jpg",
+                            "fourth" : "https://cdn.pixabay.com/photo/2024/03/10/13/50/vintage-car-8624754_640.jpg"
+                        },
+            "info"  :   {   
+                            "Working Date Information" :["Monday 09.30-16.30","Tuesday 09.30-16.30","Wednesday 09.30-16.30","Friday 09.30-17.30"]
+                        },
+            "service" :[
+                            {
+                                 "band"             : "Honda",
+                                 "amountSeat"       : 4,
+                                 "price"            : 1500,
+                                 "img"              : "https://cdn.pixabay.com/photo/2021/08/20/15/22/honda-civic-si-6560708_1280.jpg"
+                            },
+                            {
+                                "band"              : "Bike",
+                                "amountSeat"        : 2,
+                                "price"             : 1500,
+                                "img"               : "https://cdn.pixabay.com/photo/2022/08/19/06/27/motorcycle-7396190_1280.jpg"
+                           },
                         ]
         }
 ]
 const types = ['hotel', 'event', 'food','car'];
+const serviceHotel = ['Room Type', 'Room Facilities','Size (sq.m.)', 'Number of guests/room'];
 // const Hotel = ["Hotel Information", "Specify food and beverage service information", "Recreation facility", "Description"]
 // const Event = ["Event Information", "Description"]
 // const Any   = ["Working Date Information"]
@@ -214,18 +261,15 @@ export const getBusiness =(name)=> {
     business=data.find(item => item.name == name);
     return business;
 }
-export const getInfo = (props) => {
-    const { info } = props;
+export const getInfo = (prop) => {
+    const { info } = prop;
     return Object.keys(info);  
 };
 
 
 export const getBusinessDescription = ({ title, infoTitle }) => {
     const business = getBusiness(title);
-    
-    
-
-    if (business.type === "hotel") {
+    if (business.type === "hotel")  {
         if (infoTitle !== "Hotel Information") {
             return business.info[infoTitle] ;  // Avoid undefined
         }
@@ -238,15 +282,20 @@ export const getBusinessDescription = ({ title, infoTitle }) => {
             return business.info[infoTitle] ;  // Avoid undefined
         }
         else if(infoTitle === "Event Information"){
-            return [business.info["Event Information"]["Start Date"],business.info["Event Information"]["End Date"] ,business.info["Event Information"]["Start Sale Period"]]
+            return ["Start Date : "+business.info["Event Information"]["Start Date"],"End Date : "+business.info["Event Information"]["End Date"] ,"Sale Period : "+business.info["Event Information"]["Start Sale Period"]]
         }
+    }
+    else{
+        return business.info["Working Date Information"]
     }
     
     return ["No relevant information"];  // Always return an array
 };
 
 
-console.log(getBusinessDescription({ title: "Hotel A", infoTitle: "Hotel Information" }));
+
+
+
 
 
 

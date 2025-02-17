@@ -4,7 +4,9 @@ import {NavBarWithOutText  } from '../../component/navbar' ;
 import {  faPlus,faFileInvoice } from '@fortawesome/free-solid-svg-icons';
 import { getBusiness,getInfo,getBusinessDescription} from '../../data';
 import { faBed,faStar } from '@fortawesome/free-solid-svg-icons';
-import { RightSideBar } from './component/RightBar'
+import { RightSideBar } from './component/RightBar' ;
+import { Service } from './component/Service' ;
+import { useState } from 'react';
 
 
 
@@ -12,7 +14,16 @@ function Detail() {
   const {title}  = useParams()
   const business = getBusiness(title)
   const ArrTitle = getInfo(business)
-  
+  const [show, setShow] = useState(true)
+  const [head, setHead] = useState(business.type)
+  const toggle = (prop) => {
+    const {title} = prop
+    if(head != title){
+      setShow(!show)
+    }
+    setHead(title)
+    
+  };
   return (
     <div className = "flex flex-1 flex-col-reverse lg:flex-row ">
       
@@ -59,14 +70,22 @@ function Detail() {
                 </div>
                 <div className='flex-6  bg-[#F1F5F9]'>
                   <div className='m-4'>
-                      <Tab type={business.type}/> 
-                       {
-                        ArrTitle.map((element)=>{
-                                  
-                                  // eslint-disable-next-line react/jsx-key
-                                  return <Info infoTitle={element}/>
+                     
+                      <div className='flex   rounded  gap-5 ml-2'>
+                          <div  className=' p-2 rounded-t-lg   bg-yellow-50 cursor-pointer ' onClick={() => toggle({ title: business.type })} >{business.type}</div>
+                          <div  className=' p-2 rounded-t-lg   bg-yellow-50 cursor-pointer ' onClick={() => toggle({ title: "News&Package" })}>News&Package</div>
+
+                      </div>
+                      <div className={show ? 'block' : 'hidden'}>
+                        {
+                        ArrTitle.map((element,index)=>{
+  
+                          return <Info key={index} infoTitle={element}/>
                         })
-                       }  
+                       } 
+                       <Service title={title} />
+                      </div>
+                       
                         
                   </div>
                 </div>
@@ -81,16 +100,6 @@ function Detail() {
 }
 
 
-const Tab =(prop)=>{
-  const {type} = prop
-  return(
-    <div className='flex   rounded  gap-5 ml-2'>
-        <div  className=' p-2 rounded-t-lg   bg-yellow-50  ' >{type}</div>
-        <div  className=' p-2 rounded-t-lg   bg-yellow-50  '>News&Package</div>
-
-    </div>
-  );
-}
 
 const Info = (prop) => {
   const { infoTitle } = prop

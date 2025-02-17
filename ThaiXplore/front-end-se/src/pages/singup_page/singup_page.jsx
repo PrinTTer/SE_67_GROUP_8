@@ -1,28 +1,28 @@
 import { useState } from "react";
-import { FaEye, FaEyeSlash } from "react-icons/fa"; // Import ไอคอนจาก Font Awesome
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 
-const SingupPage = () => {
+const SignupPage = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
     return (
-        <div className="flex justify-center items-center min-h-screen bg-gray-100">
-            <div className="flex bg-white shadow-lg rounded-lg w-[900px]">
+        <div className="flex justify-center items-center min-h-screen bg-gray-100 mx-auto ">
+            <div className="flex flex-col md:flex-row bg-white shadow-lg rounded-lg w-full max-w-[1000px] h-[500] overflow-hidden">
                 {/* ส่วนของรูปภาพ */}
-                <div className="w-1/2">
+                <div className="w-full md:w-1/2 md:shrink-0">
                     <img
                         src="/business.svg"
                         alt="Business"
-                        className="w-full h-full object-cover rounded-l-lg"
+                        className="w-full h-full object-contain rounded-l-lg"
                     />
                 </div>
 
-
                 {/* ส่วนของฟอร์ม */}
-                <div className="w-1/2 p-8">
+                <div className="w-full md:w-1/2 p-8">
                     <h2 className="text-2xl font-bold text-center mb-6">ThaiXplore</h2>
 
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {/* First Name */}
                         <div>
                             <label htmlFor="first-name" className="block text-gray-700">First Name</label>
@@ -51,23 +51,22 @@ const SingupPage = () => {
                         <div className="relative">
                             <label htmlFor="password" className="block text-gray-700">Password</label>
                             <div className="flex items-center border rounded w-full">
-                                <button
-                                    type="button"
-                                    className="p-2"
-                                    onClick={() => setShowPassword(!showPassword)}
-                                >
-                                    {showPassword ? (
-                                        <FaEyeSlash className="h-5 w-5 text-gray-500" />
-                                    ) : (
-                                        <FaEye className="h-5 w-5 text-gray-500" />
-                                    )}
-                                </button>
                                 <input
                                     id="password"
                                     type={showPassword ? "text" : "password"}
                                     placeholder="Password"
                                     className="p-2 w-full outline-none"
                                 />
+                                <button
+                                    type="button"
+                                    className="p-2"
+                                    onClick={() => setShowPassword(!showPassword)}
+                                >
+                                    <FontAwesomeIcon
+                                        icon={showPassword ? faEyeSlash : faEye}
+                                        className="h-5 w-5 text-gray-500"
+                                    />
+                                </button>
                             </div>
                         </div>
 
@@ -75,27 +74,25 @@ const SingupPage = () => {
                         <div className="relative">
                             <label htmlFor="confirm-password" className="block text-gray-700">Confirm Password</label>
                             <div className="flex items-center border rounded w-full">
-                                <button
-                                    type="button"
-                                    className="p-2"
-                                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                                >
-                                    {showConfirmPassword ? (
-                                        <FaEyeSlash className="h-5 w-5 text-gray-500" />
-                                    ) : (
-                                        <FaEye className="h-5 w-5 text-gray-500" />
-                                    )}
-                                </button>
                                 <input
                                     id="confirm-password"
                                     type={showConfirmPassword ? "text" : "password"}
                                     placeholder="Confirm password"
                                     className="p-2 w-full outline-none"
                                 />
+                                <button
+                                    type="button"
+                                    className="p-2"
+                                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                >
+                                    <FontAwesomeIcon
+                                        icon={showConfirmPassword ? faEyeSlash : faEye}
+                                        className="h-5 w-5 text-gray-500"
+                                    />
+                                </button>
                             </div>
                         </div>
                     </div>
-
 
                     <div className="flex justify-between items-center mt-6">
                         <a href="#" className="text-gray-600">Sign in</a>
@@ -107,4 +104,4 @@ const SingupPage = () => {
     );
 }
 
-export default SingupPage;
+export default SignupPage;

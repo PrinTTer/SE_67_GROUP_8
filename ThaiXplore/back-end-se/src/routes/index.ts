@@ -6,6 +6,7 @@ import rooms from "./room.routes";
 import businessDetail from "./businessDetail.routes";
 import events from "./event.routes";
 import bookings from "./booking.routes";
+import packages from "./package.routes";
 
 const router = express.Router();
 
@@ -17,6 +18,7 @@ export default () => {
     businessDetail(router);
     events(router);
     bookings(router);
+    packages(router);
 
     return router;
 }

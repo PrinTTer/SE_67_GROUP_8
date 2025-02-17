@@ -3,6 +3,6 @@ export interface BusinessCategoryStrategy {
     getProvideService() : object;
     getPackageList() : object;
     getProvideServiceById(id:String) : object;
-    updateBookedDatesById(id: String , date: Date , bookedAmount: Number) : object;
+    updateBookedDatesById(id: String , date: Date , bookedAmount: Number , status: Boolean) : object;
     getProvideServiceBookedDates(id: String , date: Date): object;
 }

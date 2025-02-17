@@ -5,6 +5,7 @@ const BookingSchema = new mongoose.Schema({
     businessId : {type : String , require : true},
     bookingDate : {type : Date , require : true},
     status : {type : String , require : true},
+    bookingType : {type : String , require : true},
     bookingTransaction : {
         paymentMethod : {type : String , require : true},
         transactionDate : {type : Date , require : true}

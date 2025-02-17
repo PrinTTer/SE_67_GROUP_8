@@ -26,11 +26,23 @@ export class EventCategory implements BusinessCategoryStrategy {
     }
 
     getProvideServiceBookedDates(id: String, date: Date): object {
-        return EventModel.findOne({ _id: id, "bookedDates.date": date });
+        return EventModel.find(
+            {
+                _id: id,
+                "bookedDates.date": date
+            },
+            {
+                bookedDates: {
+                    $elemMatch: {
+                        date: date
+                    }
+                }
+            }
+        );
     }
 
-    updateBookedDatesById(id: String, date: Date, bookedAmount: Number): object {
-        if (bookedAmount === 1) {
+    updateBookedDatesById(id: String, date: Date, bookedAmount: Number , status: Boolean): object {
+        if (status) {
             return EventModel.updateOne(
                 {
                     _id: id,

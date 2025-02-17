@@ -42,8 +42,8 @@ export class HotelCategory implements BusinessCategoryStrategy {
         );
     }
 
-    updateBookedDatesById(id: String, date: Date, bookedAmount: Number): object {
-        if (bookedAmount === 1) {
+    updateBookedDatesById(id: String, date: Date, bookedAmount: Number  , status: Boolean): object {
+        if (status) {
             return RoomModel.updateOne(
                 {
                     _id: id,

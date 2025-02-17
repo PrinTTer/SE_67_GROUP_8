@@ -8,7 +8,7 @@ npm start
 ```
 ## Installation Issue
 
-- If you encounter issues with nodemon after npm install, try reinstalling it.
+- If you encounter any problems with nodemon after installing npm, try reinstalling nodemon.
 
 ```bash
 

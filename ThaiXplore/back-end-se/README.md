@@ -6,7 +6,15 @@ cd ThaiXplore/back-end-se
 npm install
 npm start
 ```
+## Installation Issue
 
+- If you encounter issues with nodemon after npm install, try reinstalling it.
+
+```bash
+
+npm i nodemon
+
+```
 
 ## Structure
 

@@ -6,10 +6,10 @@ export const Category  =()=>{
       <div className=" p-10  rounded-lg  w-lvh h-lg self-center">
         
           <div className='grid grid-cols-2 grid-rows-2 gap-4'>
-            <CategoryGrid link='/ListPage/Hotel' image='https://cdn.pixabay.com/photo/2021/06/01/12/39/beach-6301597_1280.jpg' title='Hotel' />
-            <CategoryGrid link='/ListPage/Event' image='https://cdn.pixabay.com/photo/2016/11/23/15/48/audience-1853662_1280.jpg' title='Event' />
-            <CategoryGrid link='/ListPage/Food' image='https://cdn.pixabay.com/photo/2016/11/18/14/05/brick-wall-1834784_1280.jpg'  title='Food' />
-            <CategoryGrid link='/ListPage/Car' image='https://cdn.pixabay.com/photo/2017/10/02/11/59/toys-2808599_1280.jpg'   title='Car' />
+            <CategoryGrid link='/ListPage/hotel' image='https://cdn.pixabay.com/photo/2021/06/01/12/39/beach-6301597_1280.jpg' title='Hotel' />
+            <CategoryGrid link='/ListPage/event' image='https://cdn.pixabay.com/photo/2016/11/23/15/48/audience-1853662_1280.jpg' title='Event' />
+            <CategoryGrid link='/ListPage/food' image='https://cdn.pixabay.com/photo/2016/11/18/14/05/brick-wall-1834784_1280.jpg'  title='Food' />
+            <CategoryGrid link='/ListPage/car' image='https://cdn.pixabay.com/photo/2017/10/02/11/59/toys-2808599_1280.jpg'   title='Car' />
           </div>
         
         
@@ -66,7 +66,7 @@ export const Post =(prop)=>{
           <div className="flex flex-row  shadow-md m p-4">
           
             <img
-              className="w-80 h-80  rounded-lg mr-5"
+              className="w-100 h-60  rounded-lg mr-5"
               src={business.image.main}
             />
             <div className="w-1/2  ">

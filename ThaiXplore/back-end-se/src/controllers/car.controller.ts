@@ -24,7 +24,7 @@ export const registerCar = async (
     }
 
     const car = await createCar({
-      businessId : businessId,
+      businessId: businessId,
       carBrand,
       licensePlate,
       amountSeat,

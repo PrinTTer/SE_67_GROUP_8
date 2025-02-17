@@ -74,11 +74,11 @@ npm start
 ```
 
 # Todo
-- [x] User Authentication.
-- [x] An entrepreneur can create a business.
-- [x] Businesses can create packages or services.
-- [ ] An entrepreneur can provide quotations to other entrepreneurs.
-- [x] Tourist users can book packages or services.
+- [x] ✅ User Authentication.
+- [x] 🏢 An entrepreneur can create a business.
+- [x] 📦 Businesses can create packages or services.
+- [ ] 🤝 An entrepreneur can provide quotations to other entrepreneurs.
+- [x] 🎫 Tourist users can book packages or services.
 - [ ] User Notification.
 - [ ] CRUD all models.
 - [ ] Swagger API documentation.

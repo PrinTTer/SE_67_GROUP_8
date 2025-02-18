@@ -65,10 +65,12 @@ export const Post =(prop)=>{
       <Link to={link}>
           <div className="flex flex-row  shadow-md m p-4">
           
-            <img
-              className="w-100 h-60  rounded-lg mr-5"
-              src={business.image.main}
-            />
+          <img
+            className="w-80 h-50 rounded-lg mr-5 object-cover"
+            src={business.image.main}
+            alt="Business"
+          />
+
             <div className="w-1/2  ">
               <h1 className="text-xl font-bold"> {name}</h1>
               <h2 > {address}</h2>
@@ -92,21 +94,27 @@ export const Post =(prop)=>{
 
                   <div className='mb-5'>
                   <div className='border-l-3 border-[#F96868] pl-1 text-[#007CE8] font-bold'>Business</div>
-                    <ChkBox title="Accommodation"       group="Business"/>
-                    <ChkBox title="Restaurant/Beverage" group="Business"/>
-                    <ChkBox title="Event/Festival"      group="Business"/>
-                    <ChkBox title="Logistics"           group="Business"/>
+                    <form method='post'>
+                      <ChkBox title="Accommodation"       group="Business"/>
+                      <ChkBox title="Restaurant/Beverage" group="Business"/>
+                      <ChkBox title="Event/Festival"      group="Business"/>
+                      <ChkBox title="Logistics"           group="Business"/>
+                    </form>
                   </div>
-
+              
                   <div className='mb-5'>
                     <div className='border-l-3 border-[#F96868] pl-1 text-[#007CE8] font-bold'>News/Package</div>
-                    <ChkBox title="News"      group="Package"/>
-                    <ChkBox title="Package"   group="Package"/>
+                    <form method='post'>
+                      <ChkBox title="News"      group="Package"/>
+                      <ChkBox title="Package"   group="Package"/>
+                    </form>
                   </div>
                   
                   <div className='mb-5'>
                     <div className='border-l-3 border-[#F96868] pl-1 text-[#007CE8] font-bold'>Recommend by ThaiXplore</div>
-                    <ChkBox title="Recommended" group="Recommended"/>
+                    <form method='post'>
+                      <ChkBox title="Recommended" group="Recommended"/>
+                    </form>
                   </div>
                   
                   <div className='mb-5'>

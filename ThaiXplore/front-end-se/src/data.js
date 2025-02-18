@@ -233,8 +233,39 @@ const data =[
                         ]
         }
 ]
+
+
+const topic =[
+    {
+        "type" : "hotel",
+        "Hotel Information" : ["Hotel Standard ", "Total number of rooms"],
+        "Room details" : ["Room Type","Number of guests/room","Size (sq.m.)","Room Facilities","Price","Image"],
+        "Specify food and beverage service information" : "service detail",
+        "Recreation facility" : "facility detail",
+        "Description" : "description"
+
+    },
+    {
+        "type" : "event",
+        "Event Information" : ["Start Date", "End Date", "Sale Period","Image"],
+        "Ticket details" : ["Ticket Type","Price","Quantity","Round"],
+        "Description" : "description"
+    },
+    { 
+        "type" : "car",
+        "Working Date Information" : ["Date", "Time"],
+        "Car details" :["Band","License plate","Price","Amount Seat"],
+        "Description" : "description"
+    },
+    {
+        "type" : "food",
+        "Working Date Information" : ["Date", "Time"],
+        "Course details" :["Course Name","Menu List","Price","Amount"],
+        "Description" : "description"
+    }
+]
 const types = ['hotel', 'event', 'food','car'];
-const serviceHotel = ['Room Type', 'Room Facilities','Size (sq.m.)', 'Number of guests/room'];
+// const serviceHotel = ['Room Type', 'Room Facilities','Size (sq.m.)', 'Number of guests/room'];
 // const Hotel = ["Hotel Information", "Specify food and beverage service information", "Recreation facility", "Description"]
 // const Event = ["Event Information", "Description"]
 // const Any   = ["Working Date Information"]
@@ -293,6 +324,16 @@ export const getBusinessDescription = ({ title, infoTitle }) => {
 };
 
 
+
+export const getTopic =(prop)=> {
+    const { title,type } = prop
+    let detail;
+    detail=topic.find(item => item.type == type);
+    return detail[title];
+}
+
+console.log({title : "Hotel Information", type : "hotel"})
+console.log({title : "Hotel Information", type : "hotel"})
 
 
 

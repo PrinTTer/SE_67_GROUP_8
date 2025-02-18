@@ -1,7 +1,7 @@
 import { NavBarWithOutText } from "../../component/navbar";
 import { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {  faPlus } from '@fortawesome/free-solid-svg-icons';
+import {  faPlus,faTimes,faTimesCircle,faCheckCircle } from '@fortawesome/free-solid-svg-icons';
 import { getTopic } from "../../data";
 
 
@@ -72,24 +72,19 @@ const Addblock = (prop) =>{
                     </button>
                 </div>
             </div>
-            <div className={`${!show ? "block" : "hidden"} grid grid-cols-2`}>
-                    <div className={`grid ${Array.isArray(detail) ? "grid-cols-2" : "grid-cols-1"} gap-4 p-2`}>
+            <div className={`${!show ? "block" : "hidden"} `}>
+                    <div className={`grid ${Array.isArray(detail) ? " grid-cols-2" : "grid-cols-1"} gap-4 p-2`}>
                     {Array.isArray(detail) ? (
                         detail.map((item, index) => (
                         
-                        <div key={index} className="text-gray-700 font-bold">
-                          {item}
+                        <div key={index} className="text-gray-700 font-bold mr-20">
+                          <div>{item}</div>
                           <input type="text" className="bg-amber-50 p-2 rounded-md" />
                         </div>
                       ))
                     ) : (
-                        <div>
-                            <div className="flex items-center">
-                                <p className="text-gray-700">{detail}</p>
-                                <FontAwesomeIcon icon={faPlus} className="ml-3 border rounded-full  cursor-pointer" onClick={() => createInput()} />
-                            </div>
-                            <input type="text" className={`bg-amber-50  rounded-md ${detail=="description" ? "p-4" : "p-1"} ` }/>
-                            
+                        <div className="flex ">
+                           <BlockInput detail={detail} />
                         </div>
                     )}
                   </div>
@@ -98,7 +93,55 @@ const Addblock = (prop) =>{
         </div>
     );
 }
-const createInput=({detail})=>{
-    return(<input type="text" className={`bg-amber-50  rounded-md ${detail=="description" ? "p-4" : "p-1"} ` }/>)
+const BlockInput=(prop)=>{
+    const [inputs, setInputs] = useState([]);
+    const {detail} = prop
+    const addInput = () => {
+        setInputs([...inputs, ""]);
+      };
+    
+      // Function to remove an input field
+      const removeInput = (index) => {
+        setInputs(inputs.filter((_, i) => i !== index));
+      };
+    
+      // Function to handle input changes
+      const handleInputChange = (index, value) => {
+        const newInputs = [...inputs];
+        newInputs[index] = value;
+        setInputs(newInputs);
+      };
+    return( 
+        <div className="flex flex-col flex-1 border m-4 p-4 rounded-md bg-[#69A4DA] w-full  ">
+        <div className="flex justify-between items-center  p-1 text-lg">
+          <div className="flex items-center space-x-2">
+            <FontAwesomeIcon icon={faPlus} className="cursor-pointer" onClick={addInput} />
+            <p className="text-gray-700 font-bold">{detail}</p>
+          </div>
+        </div>
+  
+        <div className="grid grid-cols-2 gap-4 p-4">
+          {inputs.map((value, index) => (
+            <div key={index} className="flex items-center space-x-2">
+              <input
+                type="text"
+                className="bg-white p-2 rounded-md border"
+                value={value}
+                onChange={(e) => handleInputChange(index, e.target.value)}
+              />
+              <FontAwesomeIcon
+                icon={faTimes}
+                className="cursor-pointer text-red-500"
+                onClick={() => removeInput(index)}
+              />
+            </div>
+          ))}
+        </div>
+        <div className="self-end ">
+                <FontAwesomeIcon icon={faTimesCircle} className="text-red-500 text-4xl mr-2 border rounded-full bg-white" />
+                <FontAwesomeIcon icon={faCheckCircle} className="text-green-500 text-4xl rounded-full bg-white" />
+        </div>
+      </div>
+    );
 }
 export default AddBusiness;

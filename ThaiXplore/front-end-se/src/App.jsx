@@ -17,7 +17,7 @@ function App() {
       <Route path='/profile' element={<ProfilePage />}/>
       <Route path='/profile/mainBusiness' element={<MainBusiness/>}/>
       <Route path='/profile/mainBusiness/createBusiness' element={<CreateBusiness/>}/>
-      <Route path='/Detail/:title/booking' element={<Booking />}/>
+      <Route path='/Detail/booking/:title/:index' element={<Booking />}/>
     </Routes>
   )
 }

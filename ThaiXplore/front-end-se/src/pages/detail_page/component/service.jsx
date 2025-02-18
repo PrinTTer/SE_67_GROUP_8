@@ -1,10 +1,13 @@
 import {  getBusiness } from "../../../data";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBed } from "@fortawesome/free-solid-svg-icons";
+import { Link } from "react-router-dom";
+
 
 export const Service = (prop) => {
     const { title } = prop
     const business = getBusiness(title);
+    const linkTo = "/Detail/booking/"+title;
     
     return (
         <div className="p-4 rounded-lg gap-5 mb-5 bg-yellow-50 shadow-md border border-gray-300">
@@ -38,12 +41,11 @@ export const Service = (prop) => {
                             {item["Number of guests/room"] + " Unit"} 
                         </div>
                         <div className="flex justify-start items-center font-bold row-span-2">
-                            <button 
-                                onClick={() => alert("Hello")} 
-                                className="border py-2 px-6 rounded-2xl bg-[#007CE8] text-white cursor-pointer hover:bg-[#8bc7fc]"
-                            >
+                        <Link to={linkTo+"/"+index.toString()}>
+                            <button className="border py-2 px-6 rounded-2xl bg-[#007CE8] text-white cursor-pointer hover:bg-[#8bc7fc]">
                                 Choose
                             </button> 
+                        </Link>    
                         </div>
                         <div className="font-bold">
                             {item.price + " THB"} 
@@ -77,7 +79,6 @@ export const Service = (prop) => {
                                     </button> 
                                 </div>
                             </div>
-                            
                             
                             
 
@@ -138,11 +139,11 @@ export const Service = (prop) => {
                                 </div>
                                 <div className="flex justify-start items-center font-bold row-span-2">
                                     <button 
-                                        onClick={() => alert("Hello")} 
-                                        className="border py-2 px-6 rounded-2xl bg-[#007CE8] text-white cursor-pointer hover:bg-[#8bc7fc]"
-                                    >
+                                        className="border py-2 px-6 rounded-2xl bg-[#007CE8] text-white cursor-pointer hover:bg-[#8bc7fc]">
                                         Choose
                                     </button> 
+                                
+                                    
                                 </div>
                             </div>
                         </div>

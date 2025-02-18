@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 const ProfileForm = () => {
     const [ isEditing, setIsEditing ] = useState(false);

@@ -70,12 +70,12 @@ function Detail() {
                 </div>
                 <div className='flex-6  bg-[#F1F5F9]'>
                   <div className='m-4'>
-                     
+                     {/* Tab */}
                       <div className='flex   rounded  gap-5 ml-2'>
-                          <div  className=' p-2 rounded-t-lg   bg-yellow-50 cursor-pointer ' onClick={() => toggle({ title: business.type })} >{business.type}</div>
-                          <div  className=' p-2 rounded-t-lg   bg-yellow-50 cursor-pointer ' onClick={() => toggle({ title: "News&Package" })}>News&Package</div>
-
+                          <div  className=' px-5 py-2 rounded-t-lg    bg-yellow-50 cursor-pointer ' onClick={() => toggle({ title: business.type })} >{business.type}</div>
+                          <div  className=' px-5 py-2 rounded-t-lg    bg-yellow-50 cursor-pointer ' onClick={() => toggle({ title: "News&Package" })}>News&Package</div>
                       </div>
+                      {/* Info */}
                       <div className={show ? 'block' : 'hidden'}>
                         {
                         ArrTitle.map((element,index)=>{
@@ -84,6 +84,9 @@ function Detail() {
                         })
                        } 
                        <Service title={title} />
+                      </div>
+                      <div className={!show ? 'block' : 'hidden'}>
+                        <Service title={title} />
                       </div>
                        
                         

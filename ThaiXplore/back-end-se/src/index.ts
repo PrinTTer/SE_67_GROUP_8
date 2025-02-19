@@ -7,6 +7,8 @@ import cookieParser from "cookie-parser";
 import {config} from "./configs/config";
 import mongoose from "mongoose";
 import router from "./routes/index"
+import swaggerUi from 'swagger-ui-express';
+import swaggerConfig from './configs/swagger-output.json';
 
 const app = express();
 
@@ -14,6 +16,7 @@ app.use(cors({
     credentials: true,
 }));
 
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerConfig));
 app.use(compression());
 app.use(cookieParser());
 app.use(bodyParser.json());

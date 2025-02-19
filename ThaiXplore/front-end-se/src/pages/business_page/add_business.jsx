@@ -104,6 +104,7 @@ const Addblock = (prop) =>{
         </div>
     );
 }
+
 const BlockInput=(prop)=>{
     const [inputs, setInputs] = useState([]);
     const {detail} = prop
@@ -134,6 +135,7 @@ const BlockInput=(prop)=>{
         </div>
   
         <div className={`grid grid-cols-2 gap-4 p-4  ${detail != "description" ? "block" : "hidden"}`}>
+          
           {inputs.map((value, index) => (
             <div key={index} className="flex items-center space-x-2">
               <input

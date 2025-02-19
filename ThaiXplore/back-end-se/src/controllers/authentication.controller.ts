@@ -57,6 +57,7 @@ export const register = async (req:express.Request , res:express.Response):Promi
             firstName,
             lastName,
             phoneNumber,
+            address,
             role,
             dateCreate,
         });

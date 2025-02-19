@@ -1,17 +1,21 @@
 import './App.css'
 import { Route, Routes } from 'react-router-dom'
 
-import SingupPage from './pages/singup_page/singup_page'
+import SignupPage from './pages/singup_page/singup_page'
+import RolePage from './pages/singup_page/role_page'
+import ThxPage from './pages/singup_page/finishsignup_page'
 import LoginPage from './pages/login_page/login_page'
-import ChatPage from './pages/chat_page/chat_page'
+import HomePage from './pages/home_page/home_page'
 
 function App() {
   
   return (
     <Routes>
       <Route path='/' element={<LoginPage />}/>
-      <Route path='/singup' element={<SingupPage />}/>
-      <Route path='/chat' element={<ChatPage />}/>
+      <Route path='/signup' element={<SignupPage />}/>
+      <Route path='/signup/role' element={<RolePage />}/>
+      <Route path='/signup/finishsignup' element={<ThxPage />}/>
+      <Route path='/home' element={<HomePage />}/>
     </Routes>
   )
 }

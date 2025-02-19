@@ -4,11 +4,9 @@ import {  Section} from './component/home_component' ;
 import { useParams } from 'react-router-dom';
 import {NavBarWithText} from '../../component/navbar';
 
-
-
 function ListPage() {
-  
   let { title } = useParams();
+
   return (
     <div className = "flex flex-1 flex-row">
       

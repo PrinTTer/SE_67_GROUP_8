@@ -85,9 +85,7 @@ function Detail() {
                        } 
                        <Service title={title} />
                       </div>
-                      <div className={!show ? 'block' : 'hidden'}>
-                        <Service title={title} />
-                      </div>
+                      
                        
                         
                   </div>

@@ -6,7 +6,7 @@ import { getTopic } from "../../data";
 
 
 const AddBusiness = () => {
-    const type = "car"
+    const type = "hotel"
     let topicBusines
     if (type == "hotel"){
         topicBusines =["Hotel Information", "Room details", "Specify food and beverage service information", "Recreation facility", "Description"]

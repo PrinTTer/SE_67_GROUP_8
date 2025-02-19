@@ -1,5 +1,3 @@
-
-
 const data =[
         {
             "name" : "Hotel A",
@@ -23,27 +21,30 @@ const data =[
                         },
             "service" : [
                             {
+                                "img" : "https://cdn.pixabay.com/photo/2017/04/05/15/58/hotelroom-2205447_1280.jpg",
                                 "roomType"              : "Standard",
                                 "price"                  : 100,
                                 "size"                  : 20.00,
                                 "Number of guests/room" : 2,
-                                "img" : "https://cdn.pixabay.com/photo/2017/04/05/15/58/hotelroom-2205447_1280.jpg",
+                                
                                 "Room Facilities" : "Air conditioner"
                             },
                             {
+                                "img" : "https://cdn.pixabay.com/photo/2020/10/18/09/16/bedroom-5664221_640.jpg",
                                 "roomType"              : "Deluxe",
                                 "price"                  : 500,
                                 "size"                  : 50.00,
                                 "Number of guests/room" : 5,
-                                "img" : "https://cdn.pixabay.com/photo/2020/10/18/09/16/bedroom-5664221_640.jpg",
+                                
                                 "Room Facilities" : "Air conditioner"
                             },
                             {
+                                "img" : "https://cdn.pixabay.com/photo/2017/07/08/09/21/room-beach-view-2483881_1280.jpg",
                                 "roomType": "Suite",
                                 "price": 30,
                                 "size": 45.00,
                                 "Number of guests/room": 3,
-                                "img" : "https://cdn.pixabay.com/photo/2017/07/08/09/21/room-beach-view-2483881_1280.jpg",
+                                
                                 "Room Facilities" : "Air conditioner"
                             },
                         
@@ -71,19 +72,21 @@ const data =[
                         },
             "service" :[
                             {
+                                "img" : "https://cdn.pixabay.com/photo/2017/04/05/15/58/hotelroom-2205447_1280.jpg",
                                 "roomType"              : "Deluxe",
                                 "price"                  : 500,
                                 "size"                  : 50.00,
                                 "Number of guests/room" : 5,
-                                "img" : "https://cdn.pixabay.com/photo/2017/04/05/15/58/hotelroom-2205447_1280.jpg",
+                                
                                 "Room Facilities" : "Air conditioner"
                             },
                             {
+                                "img" : "https://cdn.pixabay.com/photo/2017/04/05/15/58/hotelroom-2205447_1280.jpg",
                                 "roomType": "Family Suite",
                                 "price": 20,
                                 "size": 60.00,
                                 "Number of guests/room": 4,
-                                "img" : "https://cdn.pixabay.com/photo/2017/04/05/15/58/hotelroom-2205447_1280.jpg",
+                                
                                 "Room Facilities" : "Air conditioner"
                             },
                         ]
@@ -109,25 +112,27 @@ const data =[
 
                         },
             "service" :[
-                {
+                { 
+                    "img" : "https://i.pinimg.com/736x/d2/c8/b8/d2c8b883a9ba9907b12a73f76c18f385.jpg",
                     "TicketType"             : "Standard",
                     "Price"                  : 500,
                     "Quantity"               : 50,
                     "Round" : {
                         "start" : "10 Feb 2025",
                         "end" :   "15 Feb 2025"
-                    },
-                    "img" : "https://i.pinimg.com/736x/d2/c8/b8/d2c8b883a9ba9907b12a73f76c18f385.jpg"
+                    }
+                   
                 },
-                {
+                {   
+                    "img" : "https://i.pinimg.com/736x/d2/c8/b8/d2c8b883a9ba9907b12a73f76c18f385.jpg",
                     "TicketType"             : "VIP",
                     "Price"                  : 1000,
                     "Quantity"               : 25,
                     "Round" : {
                         "start" : "16 Feb 2025",
                         "end" :   "20 Feb 2025"
-                    },
-                    "img" : "https://i.pinimg.com/736x/d2/c8/b8/d2c8b883a9ba9907b12a73f76c18f385.jpg"
+                    }
+                    
                 },
             ]
         },
@@ -152,20 +157,22 @@ const data =[
             
                                     },
             "service" :[
-                            {
+                            {   
+                                "img" : "https://cdn.pixabay.com/photo/2017/04/05/15/58/hotelroom-2205447_1280.jpg",
                                  "roomType"              : "Deluxe",
                                  "price"                  : 500,
                                  "size"                  : 50.00,
                                  "Number of guests/room" : 5,
-                                 "img" : "https://cdn.pixabay.com/photo/2017/04/05/15/58/hotelroom-2205447_1280.jpg",
+                                 
                                  "Room Facilities" : "Air conditioner"
                             },
-                            {
+                            {   
+                                "img" : "https://cdn.pixabay.com/photo/2017/04/05/15/58/hotelroom-2205447_1280.jpg",
                                 "roomType": "Family Suite",
                                 "price": 20,
                                 "size": 60.00,
                                 "Number of guests/room": 4,
-                                "img" : "https://cdn.pixabay.com/photo/2017/04/05/15/58/hotelroom-2205447_1280.jpg",
+                                
                                 "Room Facilities" : "Air conditioner"
                             },
                         ]
@@ -184,23 +191,23 @@ const data =[
                             "Working Date Information" :["Monday 09.30-16.30","Tuesday 09.30-16.30","Wednesday 09.30-16.30","Friday 09.30-17.30"]
                         },
             "service" :[
-                            {
+                            {   "img":"https://cdn.pixabay.com/photo/2020/03/07/16/29/food-4910224_640.jpg",
                                 "Course Name"            : "Deluxe",
                                 "price"                  : 500,
                                 "Menu List" : {
                                     "PadThai" : 3,
                                     "Noodle" : 2
-                                },
-                                "img":"https://cdn.pixabay.com/photo/2020/03/07/16/29/food-4910224_640.jpg"
+                                }
+                                
                             },
-                            {
+                            {   "img":"https://cdn.pixabay.com/photo/2018/09/26/13/22/food-3704606_640.jpg",
                                 "Course Name": "Family",
                                 "price": 300,
                                 "Menu List" : {
                                     "Somtum" : 2,
                                     "PadThai" : 2
-                                },
-                                "img":"https://cdn.pixabay.com/photo/2018/09/26/13/22/food-3704606_640.jpg"
+                                }
+                                
                             },
                         ]
         },
@@ -218,17 +225,17 @@ const data =[
                             "Working Date Information" :["Monday 09.30-16.30","Tuesday 09.30-16.30","Wednesday 09.30-16.30","Friday 09.30-17.30"]
                         },
             "service" :[
-                            {
+                            {   "img"              : "https://cdn.pixabay.com/photo/2021/08/20/15/22/honda-civic-si-6560708_1280.jpg",
                                  "band"             : "Honda",
                                  "amountSeat"       : 4,
-                                 "price"            : 1500,
-                                 "img"              : "https://cdn.pixabay.com/photo/2021/08/20/15/22/honda-civic-si-6560708_1280.jpg"
+                                 "price"            : 1500
+                                 
                             },
-                            {
+                            {   "img"               : "https://cdn.pixabay.com/photo/2022/08/19/06/27/motorcycle-7396190_1280.jpg",
                                 "band"              : "Bike",
                                 "amountSeat"        : 2,
-                                "price"             : 1500,
-                                "img"               : "https://cdn.pixabay.com/photo/2022/08/19/06/27/motorcycle-7396190_1280.jpg"
+                                "price"             : 1500
+                                
                            },
                         ]
         }
@@ -332,14 +339,21 @@ export const getTopic =(prop)=> {
     return detail[title];
 }
 
-console.log({title : "Hotel Information", type : "hotel"})
-console.log({title : "Hotel Information", type : "hotel"})
+export const getService = (title) => {
+    
+    const business = getBusiness(title);
+
+    if (!business || !business.service) {
+        return "No service available";
+    }
+    
+    return Object.keys(business.service[0]);
+};
 
 
-
-
-
-
+console.log(getService("Hotel A")) 
+console.log(getService("Food F" ))
+console.log(getService("Event C")) 
 
 
 

@@ -7,12 +7,13 @@ const BusinessSchema = new mongoose.Schema({
     address : {type : String , require : true},
     phoneNumber : {type : String , require : true},
     email : {type : String , require : true},
-    categories : [String],
-    media : [],
+    media : {type : [String] , require : false},
+    category : {type : String , require : true},
     verify : {
-        document : [],
-        status : {type : String , require : true}
-    }
+        document : {type : [String] , require : false},
+        status : {type : String , require : false}
+    },
+    followBusiness : {type : [String] , require : false},
 });
 
 export const BusinessModel = mongoose.model("Business" , BusinessSchema);

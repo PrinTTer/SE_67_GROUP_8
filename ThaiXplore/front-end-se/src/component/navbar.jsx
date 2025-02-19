@@ -58,7 +58,6 @@ export const NavBarWithOutText = () =>{
                                    size="md"
                                    className={`transition-transform duration-400 ${isOpen ? "translate-x-[-5px]" : "translate-x-[-5px]"}`}/>
                             </div>
-                            
                             <ToggleSideBar updateOpen={isOpen}/>
             </div>
         </div>

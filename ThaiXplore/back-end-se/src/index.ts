@@ -13,6 +13,7 @@ import swaggerConfig from './configs/swagger-output.json';
 const app = express();
 
 app.use(cors({
+    origin: 'http://localhost:5173',
     credentials: true,
 }));
 

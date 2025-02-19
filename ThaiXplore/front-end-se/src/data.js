@@ -254,13 +254,13 @@ const topic =[
     { 
         "type" : "car",
         "Working Date Information" : ["Date", "Time"],
-        "Car details" :["Band","License plate","Price","Amount Seat"],
+        "Car details" :["Band","License plate","Price","Amount Seat","Image"],
         "Description" : "description"
     },
     {
         "type" : "food",
         "Working Date Information" : ["Date", "Time"],
-        "Course details" :["Course Name","Menu List","Price","Amount"],
+        "Course details" :["Course Name", "Price", "Menu List","Amount","Image"],
         "Description" : "description"
     }
 ]

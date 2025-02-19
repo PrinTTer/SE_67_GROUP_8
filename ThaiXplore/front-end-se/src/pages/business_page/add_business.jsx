@@ -6,17 +6,20 @@ import { getTopic } from "../../data";
 
 
 const AddBusiness = () => {
-    const type = "hotel"
+    const type = "car"
     let topicBusines
     if (type == "hotel"){
-        topicBusines =["Hotel Information", "Service", "Specify food and beverage service information", "Recreation facility", "Description"]
+        topicBusines =["Hotel Information", "Room details", "Specify food and beverage service information", "Recreation facility", "Description"]
     }
     else if(type == "event") {
-        topicBusines =["Event Information", "Service", "Description"]
+        topicBusines =["Event Information", "Ticket details", "Description"]
     }
-    else{
-        topicBusines =["Working Date Information", "Service"]
+    else if(type == "food"){
+        topicBusines =["Working Date Information", "Course details", "Description"]
     }
+    else if(type == "car"){
+      topicBusines =["Working Date Information", "Car details", "Description"]
+  }
 
       const [show, setShow] = useState(true)
       const [head, setHead] = useState(type)
@@ -73,20 +76,28 @@ const Addblock = (prop) =>{
                 </div>
             </div>
             <div className={`${!show ? "block" : "hidden"} `}>
-                    <div className={`grid ${Array.isArray(detail) ? " grid-cols-2" : "grid-cols-1"} gap-4 p-2`}>
+                  <div className={`grid ${Array.isArray(detail) ? " grid-cols-2" : "grid-cols-1"} gap-4 p-2 bg-[#69A4DA]   border rounded-md mt-2`}>
                     {Array.isArray(detail) ? (
                         detail.map((item, index) => (
                         
-                        <div key={index} className="text-gray-700 font-bold mr-20">
-                          <div>{item}</div>
-                          <input type="text" className="bg-amber-50 p-2 rounded-md" />
-                        </div>
+                        
+                          <div key={index} className="text-gray-700 font-bold mr-20">
+                            <div>{item}</div>
+                            <input type="text" className="bg-amber-50 p-2 rounded-md" />
+                          </div>
+                        
                       ))
                     ) : (
                         <div className="flex ">
                            <BlockInput detail={detail} />
                         </div>
                     )}
+                    <div className="flex justify-end  col-span-2">
+                      <div>
+                        <FontAwesomeIcon icon={faTimesCircle} className="text-red-500 text-4xl mr-2 border rounded-full bg-white" />
+                        <FontAwesomeIcon icon={faCheckCircle} className="text-green-500 text-4xl rounded-full bg-white" />
+                      </div>
+                    </div>
                   </div>
             </div>
             
@@ -112,20 +123,22 @@ const BlockInput=(prop)=>{
         setInputs(newInputs);
       };
     return( 
-        <div className="flex flex-col flex-1 border m-4 p-4 rounded-md bg-[#69A4DA] w-full  ">
+        <div className="flex flex-col flex-1     ">
         <div className="flex justify-between items-center  p-1 text-lg">
           <div className="flex items-center space-x-2">
-            <FontAwesomeIcon icon={faPlus} className="cursor-pointer" onClick={addInput} />
+            <div className={`cursor-pointer ${detail != "description" ? "block" : "hidden"} `}>
+            <FontAwesomeIcon icon={faPlus} className={`cursor-pointer  `}  onClick={addInput} />
+            </div>
             <p className="text-gray-700 font-bold">{detail}</p>
           </div>
         </div>
   
-        <div className="grid grid-cols-2 gap-4 p-4">
+        <div className={`grid grid-cols-2 gap-4 p-4  ${detail != "description" ? "block" : "hidden"}`}>
           {inputs.map((value, index) => (
             <div key={index} className="flex items-center space-x-2">
               <input
                 type="text"
-                className="bg-white p-2 rounded-md border"
+                className="bg-amber-50 p-2 rounded-md border"
                 value={value}
                 onChange={(e) => handleInputChange(index, e.target.value)}
               />
@@ -136,11 +149,12 @@ const BlockInput=(prop)=>{
               />
             </div>
           ))}
+          
         </div>
-        <div className="self-end ">
-                <FontAwesomeIcon icon={faTimesCircle} className="text-red-500 text-4xl mr-2 border rounded-full bg-white" />
-                <FontAwesomeIcon icon={faCheckCircle} className="text-green-500 text-4xl rounded-full bg-white" />
+        <div className={` p-4   ${detail == "description" ? "block" : "hidden"}`}>
+            <input type="textarea" className="bg-amber-50 p-2   rounded-md "  />
         </div>
+       
       </div>
     );
 }

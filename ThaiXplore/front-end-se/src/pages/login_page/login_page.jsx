@@ -1,12 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect  } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { Link, useNavigate } from 'react-router-dom';
+import axios from "axios";
 
-const DATA = [
-    { email: "p@gmail.com", password: "123" },
-    { email: "user@example.com", password: "password123" }
-];
 
 const LoginPage = () => {
     const [showPassword, setShowPassword] = useState(false);
@@ -14,6 +11,125 @@ const LoginPage = () => {
     const [password, setPassword] = useState("");
     const [errors, setErrors] = useState({ email: "", password: "" });
     const [loginError, setLoginError] = useState("");
+    const [data, setData] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
+
+//     const fetchData = async () => {
+//         try {
+//           setIsLoading(true);
+//           const resAuth = await axios.post(`http://localhost:3000/auth/login`,{
+//             email : email,
+//             password : password
+
+// //             0
+// // : 
+// // authentication
+// // : 
+// // {salt: '6RH6rjYjUKAIUYqt9yPnX3wr6Q/Q2iVsnkVmXDvPnlmr8tXEfS…xF4DIyjtMi2rlJlPP4jB2h2paoHTI2tmnz38IyixdQCzvY2w='}
+// // dateCreate
+// // : 
+// // "2025-02-06T06:08:34.158Z"
+// // email
+// // : 
+// // "aum3523@gmail.com"
+// // firstName
+// // : 
+// // "Hatsawat"
+// // lastName
+// // : 
+// // "Intrasod"
+// // phoneNumber
+// // : 
+// // "0123456789"
+// // role
+// // : 
+// // "tourist"
+// // __v
+// // : 
+// // 0
+// // _id
+// // : 
+// // "67a451e2ea425495dae228ea"
+// // [[Prototype]]
+// // : 
+// // Object
+// // 1
+// // : 
+// // authentication
+// // : 
+// // {salt: 'Cjzi0cQJTQJPqyqOYpGSJ7uuWtyauloZ1qOtE+gbDMejzUEQ3H…2XkIVLVZSXfRQRTSnJL5hzkbIjhBNM8F1k4OAz2v6ZUkma+o='}
+// // dateCreate
+// // : 
+// // "2025-02-13T10:27:10.130Z"
+// // email
+// // : 
+// // "hatsawat.i@ku.th"
+// // firstName
+// // : 
+// // "Hatsawat"
+// // lastName
+// // : 
+// // "Intrasod"
+// // phoneNumber
+// // : 
+// // "0123456789"
+// // role
+// // : 
+// // "entrepreneur"
+// // __v
+// // : 
+// // 0
+// // _id
+// // : 
+// // "67adc8fee5186ebc0dcfaea6"
+// // [[Prototype]]
+// // : 
+// // Object
+//           },{ withCredentials: true });
+
+//           const res = await axios.get(`http://localhost:3000/users`,{ withCredentials: true });
+//           setData(res.data);
+//         } catch(error) {
+//           setErrors(error);
+//         } finally {
+//           setIsLoading(false);
+//         }
+//       };
+
+      const fetchData = async () => {
+        try {
+            setIsLoading(true);
+            const resAuth = await axios.post(`http://localhost:3000/auth/login`, {
+                email: email,
+                password: password
+            }, { withCredentials: true });
+            
+            console.log("Response from API:", resAuth);
+
+            if (resAuth.data && resAuth.data.authentication && resAuth.data.authentication.sessionToken) {
+    localStorage.setItem("token", resAuth.data.authentication.sessionToken);
+    navigate("/home");
+} else {
+    setLoginError("Invalid email or password.");
+}
+
+        } catch (error) {
+            setLoginError("Invalid email or password.");
+        } finally {
+            setIsLoading(false);
+        }
+    };
+    
+
+    //   useEffect(() => {
+    //     fetchData();
+    //   },[email, password]);
+
+    useEffect(() => {
+        // ไม่ควรเรียก fetchData ทันทีเมื่อ email/password เปลี่ยน
+    }, []);
+    
+    console.log(data);
 
     const navigate = useNavigate();
 
@@ -35,28 +151,18 @@ const LoginPage = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
         let newErrors = { email: "", password: "" };
-        setLoginError(""); // ล้าง error ก่อนหน้า
-
-        if (!email.trim()) {
-            newErrors.email = "Please enter email.";
-        }
-        if (!password.trim()) {
-            newErrors.password = "Please enter password.";
-        }
-
+        setLoginError("");
+    
+        if (!email.trim()) newErrors.email = "Please enter email.";
+        if (!password.trim()) newErrors.password = "Please enter password.";
+    
         setErrors(newErrors);
-
-        if (newErrors.email || newErrors.password) return;
-
-        const user = DATA.find(user => user.email === email && user.password === password);
-
-        if (user) {
-            console.log("Login successful");
-            navigate("/home");
-        } else {
-            setLoginError("Invalid email or password.");
+    
+        if (!newErrors.email && !newErrors.password) {
+            fetchData(); // เรียกฟังก์ชัน fetchData เมื่อกดปุ่ม login
         }
     };
+    
 
     return (
         <div className="flex justify-center items-center min-h-screen bg-gray-100 mx-auto">
@@ -116,7 +222,7 @@ const LoginPage = () => {
                             <h5 className="text-gray-700 mr-1">New to ThaiXplore?</h5>
                             <Link to="/signup" className="text-blue-600">Sign up</Link>
                         </div>
-
+            
                         <Link to="/home" className="text-blue-600">Visit as Guest</Link>
                     </div>
                 </div>

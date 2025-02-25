@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { Link, useNavigate } from "react-router-dom";
 
+
 const SignupPage = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -10,12 +11,15 @@ const SignupPage = () => {
         firstName: "",
         lastName: "",
         email: "",
-        phone: "",
+        phoneNumber: "",
+        address: "",
         password: "",
-        confirmPassword: ""
+        confirmPassword: "",
     });
+    
     const [errors, setErrors] = useState({});
     const navigate = useNavigate();
+    
 
     const handleChange = (e) => {
         const { id, value } = e.target;
@@ -45,8 +49,12 @@ const SignupPage = () => {
     
         if (!formData.firstName.trim()) newErrors.firstName = "Please enter first name.";
         if (!formData.lastName.trim()) newErrors.lastName = "Please enter last name.";
-        if (!formData.email.trim()) newErrors.email = "Please enter email.";
-        if (!formData.phone.trim()) newErrors.phone = "Please enter phone number.";
+        if (!formData.email.trim()) {
+            newErrors.email = "Please enter email.";
+        } else if (!formData.email.includes('@')) {
+            newErrors.email = "Please include an '@' in the email address.";
+        }
+        if (!formData.phoneNumber.trim()) newErrors.phoneNumber = "Please enter phone number.";
         
         // ตรวจสอบ password ทีละเงื่อนไข
         if (!formData.password.trim()) {
@@ -64,7 +72,7 @@ const SignupPage = () => {
     
         setErrors(newErrors);
         if (Object.keys(newErrors).length === 0) {
-            navigate("/signup/role"); // ไปหน้าถัดไปถ้าข้อมูลถูกต้อง
+            navigate("/signup/role", { state: formData}); // ไปหน้าถัดไปถ้าข้อมูลถูกต้อง
         }
     };
     
@@ -126,18 +134,18 @@ const SignupPage = () => {
                                 {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
                             </div>
 
-                            {/* Phone */}
+                            {/* PhoneNumber */}
                             <div>
-                                <label htmlFor="phone" className="block text-gray-700">Phone</label>
+                                <label htmlFor="phoneNumber" className="block text-gray-700">Phone</label>
                                 <input
-                                    id="phone"
+                                    id="phoneNumber"
                                     type="text"
-                                    value={formData.phone}
+                                    value={formData.phoneNumber}
                                     onChange={handleChange}
                                     placeholder="Phone number"
-                                    className={`border p-2 rounded w-full ${errors.phone ? "border-red-500" : ""}`}
+                                    className={`border p-2 rounded w-full ${errors.phoneNumber ? "border-red-500" : ""}`}
                                 />
-                                {errors.phone && <p className="text-red-500 text-sm">{errors.phone}</p>}
+                                {errors.phoneNumber && <p className="text-red-500 text-sm">{errors.phoneNumber}</p>}
                             </div>
 
                             {/* Password */}

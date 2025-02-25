@@ -1,8 +1,48 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link,useLocation, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const RolePage = () => {
-    const [selectedRole, setSelectedRole] = useState(""); // ใช้ string แทน object
+    const location = useLocation();
+    const navigate = useNavigate();
+    const { firstName, lastName, email, phoneNumber, password, address } = location.state; // รับข้อมูลที่ส่งมาจาก SignupPage
+    const [selectedRole, setSelectedRole] = useState("");
+    
+    console.log(location.state);
+    console.log(selectedRole);
+
+    const handleRoleSubmit = async () => {
+        if (!selectedRole) {
+            console.error("Error: Role is not selected.");
+            return;
+        }
+    
+        const requestData = {
+            email,
+            password,
+            firstName,
+            lastName,
+            phoneNumber, // ✅ ใช้ phoneNumber ให้ตรงกับ Backend
+            address,
+            role: selectedRole, 
+        };
+    
+        console.log("Sending request data:", requestData); // ✅ Log ข้อมูลที่ส่งไป
+    
+        try {
+            const response = await axios.post("http://localhost:3000/auth/register", requestData, {
+                headers: { "Content-Type": "application/json" },
+            });
+    
+            console.log("User registered successfully:", response.data);
+            navigate("/signup/finishsignup");
+        } catch (error) {
+            console.error("Error registering user:", error.response?.data || error.message);
+        }
+    };
+    
+
+    
 
     return (
         <div className="flex justify-center items-center min-h-screen bg-gray-100 mx-auto">
@@ -51,10 +91,14 @@ const RolePage = () => {
                     </div>
                     {/* ปุ่ม Navigation */}
                     <div className="flex justify-between items-center mt-6">
-                            <Link to="/signup" className="text-gray-700">Back</Link>
-                            <Link to="/signup/finishsignup" className={`text-blue-600 ${selectedRole ? "" : "opacity-50 pointer-events-none"}`}>
-                                Next
-                            </Link>
+                        <Link to="/signup" className="text-gray-700">Back</Link>
+                        <button
+                            onClick={handleRoleSubmit}
+                            className={`text-blue-600 ${selectedRole ? "" : "opacity-50 pointer-events-none"}`}
+                            disabled={!selectedRole}
+                        >
+                            Next
+                        </button>
                     </div>
                 </div>
             </div>

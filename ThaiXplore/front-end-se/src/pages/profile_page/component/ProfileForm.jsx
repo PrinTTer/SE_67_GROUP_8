@@ -1,15 +1,19 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
-const ProfileForm = () => {
+const ProfileForm = (prop) => {
+    const {dataUser} = prop
     const [ isEditing, setIsEditing ] = useState(false);
-    const [data, setData] = useState({
-        firstName: "Hatsawat",
-        lastName: "Intrasod",
-        email: "hatsawat.i@ku.th",
-        phoneNumber: "0123456789",
-        password: "root1",
-        address: "Buriram",
-    });
+    const [data, setData] = useState(dataUser);
+
+    console.log("ProfileForm dataUser:", dataUser);
+
+    // console.log(dataUser);
+
+    useEffect(() => {
+        if (dataUser) {
+            setData(dataUser);
+        }
+    }, [dataUser]);
 
     const handleChange = (field, value) => {
         setData((prev) => ({
@@ -89,20 +93,3 @@ export const EditingField = (prop) => {
 }
 
 export default ProfileForm;
-
-/*
-useEffect(() => {
-        const fetchData = async () =>{
-        const jsonData = {
-                "email" : "hatsawat.i@ku.th",
-                "password" : "root1",
-                "firstName" : "Hatsawat",
-                "lastName" : "Intrasod",
-                "address" : "Buriram",
-                "phoneNumber" : "0123456789",
-                "role" : "tourist"
-            };
-            setData(jsonData);
-        }; fetchData();
-    }, []);
-*/

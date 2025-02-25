@@ -2,6 +2,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBell, faCircleUser, faHouse, faList, faCaretRight, faCaretLeft } from '@fortawesome/free-solid-svg-icons';
 import { faCircleUser as faCircleUserRegular } from '@fortawesome/free-regular-svg-icons';
 import { useState } from 'react';
+import { SideBarWithRole } from './sidebarWithRole';
 import { Link } from 'react-router-dom';
 
 
@@ -70,10 +71,7 @@ export const ToggleSideBar = (prop) => {
     <div className={`${!updateOpen ? 'hidden' : 'w-40 h-lg'} absolute justify-center items-center text-center bg-white border-2 border-l-0 rounded-r-lg w-40 h-lg -right-40 top-68 
         cursor-pointer transition-transform`}>
         <ul className='relative p-1 my-2 w-full'>
-          <Link to={"/profile"} className=" p-1.5 hover:bg-gray-300 rounded-full">
-            <FontAwesomeIcon icon={faCircleUserRegular} size="lg"/>
-            <span className="text-lg"> Profile</span>
-          </Link>
+          <SideBarWithRole role={"entrepreneur"}/>
         </ul>
       </div>
   );

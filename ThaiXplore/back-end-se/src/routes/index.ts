@@ -7,6 +7,7 @@ import businessDetail from "./businessDetail.routes";
 import events from "./event.routes";
 import bookings from "./booking.routes";
 import packages from "./package.routes";
+import quotations from "./quotation.routes";
 
 const router = express.Router();
 
@@ -19,6 +20,7 @@ export default () => {
     events(router);
     bookings(router);
     packages(router);
+    quotations(router);
 
     return router;
 }

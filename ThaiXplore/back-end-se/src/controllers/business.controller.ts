@@ -1,6 +1,6 @@
 import express from "express";
 import { get } from 'lodash';
-import {createBusiness, getBusinessById, getBusinessByuserId} from "../models/business";
+import {createBusiness, getBusiness, getBusinessById, getBusinessByuserId} from "../models/business";
 import { getUserById } from "../models/users";
 import { BusinessCategoryFactory } from "../factory/BusinessCategoryFactory";
 
@@ -38,7 +38,7 @@ export const registerBusiness = async (req: express.Request , res: express.Respo
     }
 };
 
-export const getAllBusiness = async (req:express.Request , res:express.Response):Promise <any> => {
+export const getMyAllBusiness = async (req:express.Request , res:express.Response):Promise <any> => {
     try {
         const currentUserId:string = get(req , 'identity._id');
         const user = await getUserById(currentUserId);
@@ -56,7 +56,7 @@ export const getAllBusiness = async (req:express.Request , res:express.Response)
     }
 }
 
-export const getOwnBusiness = async (req:express.Request , res:express.Response):Promise <any> => {
+export const getMyBusiness = async (req:express.Request , res:express.Response):Promise <any> => {
     try {
         const currentUserId:string = get(req , 'identity._id');
         const user = await getUserById(currentUserId);
@@ -90,3 +90,14 @@ export const getOwnBusiness = async (req:express.Request , res:express.Response)
         return res.sendStatus(400);
     }
 }
+
+export const getAllBusinesses = async (req:express.Request , res:express.Response): Promise <any> => {
+    try {
+        const businesses = await getBusiness();
+        return res.status(200).json(businesses);
+    } catch (err) {
+        console.log(err);
+        return res.sendStatus(400);
+    }
+}
+

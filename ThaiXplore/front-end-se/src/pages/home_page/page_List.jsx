@@ -7,8 +7,10 @@ import {NavBarWithText} from '../../component/navbar';
 function ListPage() {
   let { title } = useParams();
 
+ 
   return (
     <div className = "flex flex-1 flex-row">
+
       
       <NavBarWithText />
 

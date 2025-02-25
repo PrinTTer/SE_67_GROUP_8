@@ -2,20 +2,23 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Link, useParams } from 'react-router-dom';
 import {NavBarWithOutText  } from '../../component/navbar' ;
 import {  faPlus,faFileInvoice } from '@fortawesome/free-solid-svg-icons';
-import { getBusiness,getInfo,getBusinessDescription} from '../../data';
-import { faBed,faStar } from '@fortawesome/free-solid-svg-icons';
+import { getBusiness, getInfo} from '../../data';
+import { faBed, faStar } from '@fortawesome/free-solid-svg-icons';
 import { RightSideBar } from './component/RightBar' ;
 import { Service } from './component/Service' ;
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 
 
 
 function Detail() {
-  const {title}  = useParams()
-  const business = getBusiness(title)
+  const { id }  = useParams()
+  const business = getBusiness("Hotel A")
   const ArrTitle = getInfo(business)
   const [show, setShow] = useState(true)
   const [head, setHead] = useState(business.type)
+  
+  
   const toggle = (prop) => {
     const {title} = prop
     if(head != title){
@@ -24,6 +27,46 @@ function Detail() {
     setHead(title)
     
   };
+  
+  //fetch from axios
+
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  
+  const fetchData = async () => {
+      try {
+        
+          setLoading(true);
+          // eslint-disable-next-line no-unused-vars
+          const loginRes = await axios.post("http://localhost:3000/auth/login", {
+              email: "hatsawat.i@ku.th",
+              password: "root2"
+          },{withCredentials : true});
+          
+          
+          const res = await axios.get(`http://localhost:3000/businesses/${id}`,{withCredentials : true});
+          const data_format = await res.data;
+          console.log("Here");
+          console.log(data_format);
+          setData(data_format);
+      } catch (error) {
+          setError(error.message);
+      } finally {
+          setLoading(false);
+      }
+  };
+
+      useEffect(() => {
+        fetchData();
+    }, []);
+
+   
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p className="text-red-500">Error: {error}</p>;
+    
+    
   return (
     <div className = "flex flex-1 flex-col-reverse lg:flex-row ">
       
@@ -42,8 +85,9 @@ function Detail() {
 
                 <div className='flex flex-2 m-5'>
                     <div className='flex-2 '>
-                          <p className='font-bold text-2xl'>{title}</p> 
-                          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                    <p className='font-bold text-2xl'>{data?.business?.businessName}</p>
+                    <p>{data?.business?.address }</p>
+
                     </div>
                       <div className='flex flex-2 justify-end'>
                             
@@ -72,18 +116,18 @@ function Detail() {
                   <div className='m-4'>
                      {/* Tab */}
                       <div className='flex   rounded  gap-5 ml-2'>
-                          <div  className=' px-5 py-2 rounded-t-lg    bg-yellow-50 cursor-pointer ' onClick={() => toggle({ title: business.type })} >{business.type}</div>
+                          <div  className=' px-5 py-2 rounded-t-lg    bg-yellow-50 cursor-pointer ' onClick={() => toggle({ title: data?.business?.category })} >{data?.business?.category}</div>
                           <div  className=' px-5 py-2 rounded-t-lg    bg-yellow-50 cursor-pointer ' onClick={() => toggle({ title: "News&Package" })}>News&Package</div>
                       </div>
                       {/* Info */}
                       <div className={show ? 'block' : 'hidden'}>
                         {
-                        ArrTitle.map((element,index)=>{
+                        data?.details?.map((element,index)=>{
   
                           return <Info key={index} infoTitle={element}/>
                         })
                        } 
-                       <Service title={title} />
+                        <Service title={data.services} category={data?.business?.category} id = {data?.business?._id} /> 
                       </div>
                       
                        
@@ -105,31 +149,26 @@ function Detail() {
 const Info = (prop) => {
   const { infoTitle } = prop
   const { title } = useParams();
-  const descriptionList = getBusinessDescription({ title, infoTitle });
-
+  
+  
   return (
     <div className="p-4 rounded-lg gap-5 mb-5 bg-yellow-50 shadow-md border border-gray-300">
-      
+      {/* map detail */}
       <div className="col-span-2 border-b-2 p-2 flex items-center font-bold">
         <FontAwesomeIcon icon={faBed} className="mr-3 text-lg" />
-        <span>{infoTitle}</span>
+        <span>{infoTitle.informationName}</span>
       </div>
 
       
-      <div className={`grid ${Array.isArray(descriptionList) ? "grid-cols-2" : "grid-cols-1"} gap-4 p-2`}>
-        {Array.isArray(descriptionList) ? (
-          descriptionList.map((item, index) => (
-            
-            <div key={index} className="text-gray-700">
-                  {index == 2 && infoTitle == "Hotel Information" &&(
-                  <FontAwesomeIcon icon={faStar} className="mr-2" />
-                )}
-              {item}
+      <div className={`grid ${Array.isArray(infoTitle.details) ? "grid-cols-2" : "grid-cols-1"} gap-4 p-2`}>
+        {infoTitle.details.map((element, index) => {
+          return (
+            <div key={index} className="flex items-center">
+              <FontAwesomeIcon icon={faStar} className="mr-3 text-lg" />
+              <span>{element}</span>
             </div>
-          ))
-        ) : (
-          <p className="text-gray-700">{descriptionList}</p>
-        )}
+          );
+        })}
       </div>
     </div>
   );

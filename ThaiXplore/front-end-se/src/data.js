@@ -271,7 +271,7 @@ const topic =[
         "Description" : "description"
     }
 ]
-const types = ['hotel', 'event', 'food','car'];
+const types = ['hotel', 'event', 'restaurant','carRental'];
 // const serviceHotel = ['Room Type', 'Room Facilities','Size (sq.m.)', 'Number of guests/room'];
 // const Hotel = ["Hotel Information", "Specify food and beverage service information", "Recreation facility", "Description"]
 // const Event = ["Event Information", "Description"]
@@ -350,6 +350,22 @@ export const getService = (title) => {
     return Object.keys(business.service[0]);
 };
 
+
+export const getDataBusiness = ({category , json}) =>{
+    
+    let business;
+    
+    if(types.includes(category))
+    {
+        business = Object.values(json).filter(item => item.category == category);
+    }
+    else
+    {
+        business = Object.values(json)
+    }
+    
+    return business ;
+}
 
 console.log(getService("Hotel A")) 
 console.log(getService("Food F" ))

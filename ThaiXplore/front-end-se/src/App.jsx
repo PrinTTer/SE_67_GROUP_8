@@ -14,11 +14,11 @@ function App() {
     <Routes>
       <Route path='/' element={<HomePage />}/>
       <Route path='/ListPage/:title' element={<ListPage />}/>
-      <Route path='/Detail/:title' element={<Detail />}/>
+      <Route path='/Detail/:id' element={<Detail />}/>
       <Route path='/profile' element={<ProfilePage />}/>
       <Route path='/profile/mainBusiness' element={<MainBusiness/>}/>
       <Route path='/profile/mainBusiness/createBusiness' element={<CreateBusiness/>}/>
-      <Route path='/Detail/booking/:title/:index' element={<Booking />}/>
+      <Route path='/Detail/booking/:id/:index' element={<Booking />}/>
       <Route path='/Detail/:title/booking' element={<Booking />}/>
       <Route path='/profile/mainBusiness/createBusiness/addBusiness' element={<AddBusiness />}/>
     </Routes>

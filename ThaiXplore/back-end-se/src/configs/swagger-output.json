@@ -108,10 +108,16 @@
         }
       }
     },
-    "/businesses": {
+    "/users/{id}/businesses": {
       "post": {
         "description": "",
         "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
           {
             "name": "body",
             "in": "body",
@@ -154,7 +160,9 @@
             "description": "Unauthorized"
           }
         }
-      },
+      }
+    },
+    "/businesses": {
       "get": {
         "description": "",
         "responses": {
@@ -194,7 +202,7 @@
         }
       }
     },
-    "/businessdetails/{businessId}": {
+    "/businesses/{businessId}/businessdetails": {
       "post": {
         "description": "",
         "parameters": [
@@ -233,7 +241,7 @@
         }
       }
     },
-    "/cars/{businessId}": {
+    "/businesses/{businessId}/cars": {
       "post": {
         "description": "",
         "parameters": [
@@ -281,7 +289,7 @@
         }
       }
     },
-    "/courses/{businessId}": {
+    "/businesses/{businessId}/courses": {
       "post": {
         "description": "",
         "parameters": [
@@ -299,7 +307,7 @@
         }
       }
     },
-    "/events/{businessId}": {
+    "/businesses/{businessId}/events": {
       "post": {
         "description": "",
         "parameters": [
@@ -350,7 +358,7 @@
         }
       }
     },
-    "/packages/{businessId}": {
+    "/businesses/{businessId}/packages": {
       "post": {
         "description": "",
         "parameters": [
@@ -368,7 +376,7 @@
         }
       }
     },
-    "/rooms/{businessId}": {
+    "/businesses/{businessId}/rooms": {
       "post": {
         "description": "",
         "parameters": [

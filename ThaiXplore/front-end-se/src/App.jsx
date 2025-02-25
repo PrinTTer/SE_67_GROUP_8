@@ -1,5 +1,10 @@
 import './App.css'
 import { Route, Routes } from 'react-router-dom'
+
+import SignupPage from './pages/singup_page/singup_page'
+import RolePage from './pages/singup_page/role_page'
+import ThxPage from './pages/singup_page/finishsignup_page'
+import LoginPage from './pages/login_page/login_page'
 import HomePage from './pages/home_page/home_page'
 import ListPage from './pages/home_page/page_List'
 import Detail from './pages/detail_page/Detail'
@@ -21,6 +26,11 @@ function App() {
       <Route path='/Detail/booking/:id/:index' element={<Booking />}/>
       <Route path='/Detail/:title/booking' element={<Booking />}/>
       <Route path='/profile/mainBusiness/createBusiness/addBusiness' element={<AddBusiness />}/>
+      <Route path='/' element={<LoginPage />}/>
+      <Route path='/signup' element={<SignupPage />}/>
+      <Route path='/signup/role' element={<RolePage />}/>
+      <Route path='/signup/finishsignup' element={<ThxPage />}/>
+      
     </Routes>
   )
 }

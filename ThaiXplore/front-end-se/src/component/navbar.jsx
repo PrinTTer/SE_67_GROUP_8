@@ -70,7 +70,7 @@ export const ToggleSideBar = (prop) => {
   return(
     <div className={`${!updateOpen ? 'hidden' : 'w-40 h-lg'} absolute justify-center items-center text-center bg-white border-2 border-l-0 rounded-r-lg w-40 h-lg -right-40 top-68 
         cursor-pointer transition-transform`}>
-        <ul className='relative p-1 my-2 w-full'>
+        <ul className='relative p-1 my-2 w-full text-left'>
           <SideBarWithRole role={"entrepreneur"}/>
         </ul>
       </div>

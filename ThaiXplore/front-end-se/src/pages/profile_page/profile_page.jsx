@@ -8,7 +8,7 @@ const ProfilePage = () => {
 const [data , setData] = useState("");
   const [loading , setLoading] = useState(false);
   const [error , setError] = useState("");
-  const token = localStorage.getItem("token");
+  // const token = localStorage.getItem("token");
 
   const fetchData = async () => {
     try {

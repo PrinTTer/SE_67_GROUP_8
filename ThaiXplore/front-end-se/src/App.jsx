@@ -14,7 +14,7 @@ import MainBusiness from './pages/business_page/main_business'
 import Booking from './pages/booking_page/booking'
 import AddBusiness from './pages/business_page/add_business'
 import { NavigateBar } from './layouts/navigatebar'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { setPath } from './features/pathSlice'
 function App() {
@@ -60,25 +60,6 @@ function App() {
         </Routes>
       </div>
       }
-      {/* <div className='flex flex-1 flex-col-reverse lg:flex-row'>
-        <NavigateBar />
-        <Routes>
-          <Route path='/' element={<HomePage />} />
-
-          <Route path='/listpage/:title' element={<ListPage />} />
-          <Route path='/detail/:id' element={<Detail />} />
-
-          <Route path='/profile' element={<ProfilePage />}>
-            <Route index element={<ProfilePage />} />
-            <Route path='mainbusiness' element={<MainBusiness />} />
-            <Route path='mainbusiness/createbusiness' element={<CreateBusiness />} />
-            <Route path='mainbusiness/createbusiness/addbusiness' element={<AddBusiness />} />
-          </Route>
-
-          <Route path='/detail/booking/:id/:index' element={<Booking />} />
-          <Route path='/detail/:title/booking' element={<Booking />} />
-        </Routes>
-      </div> */}
     </>
   )
 }

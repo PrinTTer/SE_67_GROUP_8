@@ -1,12 +1,12 @@
 
 import { RightBar, Section } from './component/home_component';
 
-import { Outlet, useParams } from 'react-router-dom';
-import { NavBarWithText } from '../../layouts/navbar';
+import { useParams } from 'react-router-dom';
+import { useEffect } from 'react';
+import { fetchData } from '../../services/apiService';
 
 function ListPage() {
   let { title } = useParams();
-
 
   return (
     <>

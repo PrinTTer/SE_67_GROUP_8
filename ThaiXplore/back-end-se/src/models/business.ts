@@ -22,6 +22,7 @@ export const getBusiness = () => BusinessModel.find();
 export const getBusinessById = (id: String) => BusinessModel.findById(id);
 export const getBusinessByEmail = (email: String) => BusinessModel.find({email});
 export const getBusinessByuserId = (userId: String) => BusinessModel.find({userId : userId});
+export const getBusinessByCategory = (category: String) => BusinessModel.find({category : category});
 
 export const createBusiness = (values:Record <string , any>) => new BusinessModel(values).save().then((business) => business.toObject());
 export const deletBusinessById = (id:String) => BusinessModel.findOneAndDelete({_id : id});

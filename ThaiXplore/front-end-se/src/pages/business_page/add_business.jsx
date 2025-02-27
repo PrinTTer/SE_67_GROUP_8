@@ -1,4 +1,4 @@
-import { NavBarWithOutText } from "../../component/navbar";
+import { NavBarWithOutText } from "../../layouts/navbar";
 import { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {  faPlus,faTimes,faTimesCircle,faCheckCircle } from '@fortawesome/free-solid-svg-icons';

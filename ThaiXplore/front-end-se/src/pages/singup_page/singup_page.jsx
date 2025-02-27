@@ -188,7 +188,7 @@ const SignupPage = () => {
                         </div>
 
                         <div className="flex justify-between items-center mt-6">
-                            <Link to="/" className="text-gray-600">Sign in</Link>
+                            <Link to="/login" className="text-gray-600">Sign in</Link>
                             <button type="submit" className="text-blue-600">Next</button>
                         </div>
                     </form>

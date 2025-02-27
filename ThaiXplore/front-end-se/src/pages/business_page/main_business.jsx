@@ -1,4 +1,4 @@
-import { NavBarWithOutText } from "../../component/navbar";
+import { NavBarWithOutText } from "../../layouts/navbar";
 import { faCirclePlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"; 
 import { Link } from "react-router-dom";

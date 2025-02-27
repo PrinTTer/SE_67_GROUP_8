@@ -1,4 +1,4 @@
-import { NavBarWithOutText } from "../../component/navbar";
+import { NavBarWithOutText } from "../../layouts/navbar";
 import BusinessForm from "./component/BusinessForm";
 
 const CreateBusiness = () => {

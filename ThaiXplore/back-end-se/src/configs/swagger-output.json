@@ -158,11 +158,8 @@
       "get": {
         "description": "",
         "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
+          "default": {
+            "description": ""
           }
         }
       }
@@ -195,8 +192,56 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/users/{id}/businesses": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "businessName": {
+                  "example": "any"
+                },
+                "description": {
+                  "example": "any"
+                },
+                "address": {
+                  "example": "any"
+                },
+                "phoneNumber": {
+                  "example": "any"
+                },
+                "email": {
+                  "example": "any"
+                },
+                "category": {
+                  "example": "any"
+                },
+                "verify": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
           },
           "400": {
             "description": "Bad Request"
@@ -207,7 +252,7 @@
         }
       }
     },
-    "/businessdetails/{businessId}": {
+    "/businesses/{businessId}/businessdetails": {
       "post": {
         "description": "",
         "parameters": [
@@ -246,7 +291,7 @@
         }
       }
     },
-    "/cars/{businessId}": {
+    "/businesses/{businessId}/cars": {
       "post": {
         "description": "",
         "parameters": [
@@ -294,7 +339,7 @@
         }
       }
     },
-    "/courses/{businessId}": {
+    "/businesses/{businessId}/courses": {
       "post": {
         "description": "",
         "parameters": [
@@ -312,7 +357,7 @@
         }
       }
     },
-    "/events/{businessId}": {
+    "/businesses/{businessId}/events": {
       "post": {
         "description": "",
         "parameters": [
@@ -363,7 +408,7 @@
         }
       }
     },
-    "/packages/{businessId}": {
+    "/businesses/{businessId}/packages": {
       "post": {
         "description": "",
         "parameters": [
@@ -381,7 +426,7 @@
         }
       }
     },
-    "/quotation": {
+    "/quotations": {
       "post": {
         "description": "",
         "parameters": [
@@ -426,7 +471,7 @@
         }
       }
     },
-    "/rooms/{businessId}": {
+    "/businesses/{businessId}/rooms": {
       "post": {
         "description": "",
         "parameters": [

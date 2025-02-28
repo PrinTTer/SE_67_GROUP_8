@@ -1,7 +1,7 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useState } from 'react';
 import { ProfileBtn } from '../components/profileBtn';
-import { faArrowRightFromBracket, faArrowUpFromBracket, faBuilding, faCarSide, faCircle, faFile, faFileLines, faHotel, faHouse, faPersonArrowUpFromLine, faPersonHiking, faUser, faUtensils } from '@fortawesome/free-solid-svg-icons';
+import { faArrowRightFromBracket, faBuilding, faCarSide, faFileLines, faHotel, faHouse, faPersonHiking, faUser, faUtensils } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
@@ -51,7 +51,7 @@ export const ToggleSideBar = (prop) => {
             <ul className='relative p-1 my-2 w-full'>
                 <IconSideBar iconName={"Profile"} iconFont={faUser} path={"/profile"} />
                 <IconSideBar iconName={"Quotation"} iconFont={faFileLines} path={"/profile"} />
-                <IconSideBar iconName={"Business"} iconFont={faBuilding} path={"/profile"} />
+                <IconSideBar iconName={"Business"} iconFont={faBuilding} path={"/mainbusiness"} />
                 <IconSideBar iconName={"Logout"} iconFont={faArrowRightFromBracket} path={"/profile"} />
             </ul>
         </div>

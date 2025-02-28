@@ -1,4 +1,3 @@
-import { NavBarWithOutText } from "../../layouts/navbar";
 import { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {  faPlus,faTimes,faTimesCircle,faCheckCircle } from '@fortawesome/free-solid-svg-icons';
@@ -32,8 +31,7 @@ const AddBusiness = () => {
         
       };
     return(
-        <div className="flex flex-col-reverse lg:flex-row flex-1 ">
-            <NavBarWithOutText/>
+        <>
             <div className="flex flex-5  flex-col">
                 <div className="flex-1 m-9">
                         <div className='flex   rounded  gap-5 ml-2'>
@@ -51,7 +49,7 @@ const AddBusiness = () => {
                 </div>
                
             </div>
-        </div>
+        </>
     );
 }
 

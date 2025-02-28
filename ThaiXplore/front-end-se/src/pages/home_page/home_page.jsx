@@ -1,6 +1,4 @@
 import { Category, Section, RightBar } from './component/home_component';
-import { NavBarWithText } from '../../layouts/navbar';
-import { NavigateBar } from '../../layouts/navigatebar';
 const HomePage = () => {
     return (
         <>

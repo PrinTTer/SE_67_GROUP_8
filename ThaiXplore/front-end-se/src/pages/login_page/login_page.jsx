@@ -39,14 +39,15 @@ const LoginPage = () => {
             
 
             if (resAuth.data && resAuth.data.authentication && resAuth.data.authentication.sessionToken) {
-                localStorage.setItem("token", resAuth.data.authentication.sessionToken);
+                localStorage.setItem("token", resAuth.data._id);
                 navigate("/home");
             } else {
-                setLoginError("Invalid email or password.");
+                setLoginError("1 Invalid email or password.");
             }
 
         } catch (error) {
-            setLoginError("Invalid email or password.");
+            console.error("Login error:", error.response ? error.response.data : error.message);
+            setLoginError(error.response?.data?.message || "Invalid email or password.");
         } finally {
             setIsLoading(false);
         }

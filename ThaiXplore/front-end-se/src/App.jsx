@@ -12,7 +12,7 @@ import ProfilePage from "./pages/profile_page/profile_page";
 import CreateBusiness from "./pages/business_page/create_business";
 import MainBusiness from "./pages/business_page/main_business";
 import Booking from "./pages/booking_page/booking";
-import AddBusiness from "./pages/business_page/add_business";
+import AddDetails from "./pages/business_page/add_detail";
 import { NavigateBar } from "./layouts/navigatebar";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -55,8 +55,8 @@ function App() {
               element={<CreateBusiness />}
             />
             <Route
-              path="profile/mainbusiness/createbusiness/addbusiness"
-              element={<AddBusiness />}
+              path="profile/mainbusiness/createbusiness/adddetails"
+              element={<AddDetails />}
             />
 
             <Route path="/detail/booking/:id/:index" element={<Booking />} />

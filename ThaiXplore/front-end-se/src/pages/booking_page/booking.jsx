@@ -1,4 +1,4 @@
-import { NavBarWithOutText } from "../../component/navbar";
+import { NavBarWithOutText } from "../../layouts/navbar";
 import BookingDetail from "./component/bookingDetail";
 import BookingForm from "./component/bookingForm";
 import { useParams } from "react-router-dom";

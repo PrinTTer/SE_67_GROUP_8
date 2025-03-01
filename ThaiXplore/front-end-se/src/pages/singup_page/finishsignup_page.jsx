@@ -14,22 +14,9 @@ const ThxPage = () => {
             const resAuth = await axios.post(`http://localhost:3000/auth/login`, {
                 email: email,
                 password: password
-                // email: "hatsawat.i@ku.th",
-                // password: "root2"
-                // entrepreneur
-
-                // email: "aum3523@gmail.com",
-                // password: "root1"
-                // tourist
-
             }, { withCredentials: true });
             
-            console.log("Response from API:", resAuth);
-
-
-            const res = await axios.get(`http://localhost:3000/users`,{ withCredentials: true });
-            console.log(data);
-            
+            console.log("Response from API:", resAuth); 
 
             if (resAuth.data && resAuth.data.authentication && resAuth.data.authentication.sessionToken) {
                 localStorage.setItem("token", resAuth.data.authentication.sessionToken);

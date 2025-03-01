@@ -3,7 +3,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from "axios";
-
+import { useDispatch, useSelector } from "react-redux";
+import { loginUser } from "../../features/authSlice";
 
 const LoginPage = () => {
     const [showPassword, setShowPassword] = useState(false);
@@ -12,45 +13,56 @@ const LoginPage = () => {
     const [errors, setErrors] = useState({ email: "", password: "" });
     const [loginError, setLoginError] = useState("");
     const [data, setData] = useState("");
-    const [isLoading, setIsLoading] = useState(false);
+    const [Loading, setLoading] = useState(false);
+
+    const dispatch = useDispatch();
+    const { isLoading, error } = useSelector((state) => state.auth);
 
     const fetchData = async () => {
         try {
-            setIsLoading(true);
+            setLoading(true);
             const resAuth = await axios.post(`http://localhost:3000/auth/login`, {
                 email: email,
                 password: password
-                // email: "hatsawat.i@ku.th",
-                // password: "root2"
-                // entrepreneur
-
-                // email: "aum3523@gmail.com",
-                // password: "root1"
-                // tourist
-
             }, { withCredentials: true });
             
             setData(resAuth.data);
             console.log("Response from API:", resAuth);
             console.log(data);
-
-            // const res = await axios.get(`http://localhost:3000/users`,{ withCredentials: true });
-            // console.log(data);
             
-
             if (resAuth.data && resAuth.data.authentication && resAuth.data.authentication.sessionToken) {
                 localStorage.setItem("token", resAuth.data.authentication.sessionToken);
                 navigate("/");
             } else {
                 setLoginError("Invalid email or password.");
             }
-
         } catch (error) {
             setLoginError("Invalid email or password.");
         } finally {
-            setIsLoading(false);
+            setLoading(false);
         }
     };
+
+
+    // const fetchData = () => {
+    //     dispatch(loginUser({ email, password }));
+    //     try {
+    //         setLoading(true);
+    //         dispatch(loginUser({ email, password }));
+    //         const { user } = useSelector((state) => state.auth);
+
+    //         if (user && user.authentication && user.authentication.sessionToken) {
+    //             localStorage.setItem("token", user.authentication.sessionToken);
+    //             navigate("/");
+    //         } else {
+    //             setLoginError("Invalid email or password.");
+    //         }
+    //     } catch (error) {
+    //         setLoginError("Invalid email or password.");
+    //     } finally {
+    //         setLoading(false);
+    //     }
+    // };
 
     useEffect(() => {
         // ไม่ควรเรียก fetchData ทันทีเมื่อ email/password เปลี่ยน

@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { getBusiness, getData, getDataBusiness } from '../../../data';
 import axios from 'axios';
 import { useState, useEffect } from "react";
-import { SearchBar } from '../../../components/searchBar';
+import { SearchBar } from '../../../components/SearchBar';
 
 
 export const Category = () => {

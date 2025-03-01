@@ -5,9 +5,10 @@ import axios from "axios";
 export const loginUser = createAsyncThunk("auth/loginUser", async (userData, { rejectWithValue }) => {
   try {
     const response = await axios.post("http://localhost:3000/auth/login", userData, { withCredentials: true });
+    localStorage.setItem("token", response.data.authentication.sessionToken);
     return response.data; // สมมติ API ส่ง { user: {id, name, email}, token }
   } catch (error) {
-    return rejectWithValue(error.response.data);
+    return rejectWithValue("Invalid email or password.");
   }
 });
 
@@ -21,11 +22,18 @@ export const logoutUser = createAsyncThunk("auth/logoutUser", async (_, { reject
   }
 });
 
+export const fetchUser = createAsyncThunk("auth/fetchUser", async () => {
+  const res = await axios.get("http://localhost:3000/users", { withCredentials: true }); // ส่ง Cookie ไปด้วย
+  return res.data;
+});
+
+
 // 🔹 Initial state
 const initialState = {
   user: null,
   token: null,
   isLoading: false,
+  loginError: null,
   error: null,
 };
 
@@ -43,20 +51,32 @@ const authSlice = createSlice({
     builder
       .addCase(loginUser.pending, (state) => {
         state.isLoading = true;
-        state.error = null;
+        state.loginError = null;
       })
       .addCase(loginUser.fulfilled, (state, action) => {
+        console.log(action.payload);
         state.isLoading = false;
         state.user = action.payload;
         state.token = action.payload.authentication.sessionToken;
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.isLoading = false;
-        state.error = action.payload;
+        state.loginError = action.payload;
       })
       .addCase(logoutUser.fulfilled, (state) => {
         state.user = null;
         state.token = null;
+      })
+      .addCase(fetchUser.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(fetchUser.fulfilled, (state, action) => {
+        state.user = action.payload;
+        state.isLoading = false;
+      })
+      .addCase(fetchUser.rejected, (state, action) => {
+        state.error = action.error.message;
+        state.isLoading = false;
       });
   },
 });

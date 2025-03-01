@@ -2,74 +2,30 @@ import { useState, useEffect } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { Link, useNavigate } from 'react-router-dom';
-import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "../../features/authSlice";
+import { isAuthenticated } from "../../services/authService";
 
 const LoginPage = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [errors, setErrors] = useState({ email: "", password: "" });
-    const [loginError, setLoginError] = useState("");
-    const [data, setData] = useState("");
-    const [Loading, setLoading] = useState(false);
 
     const dispatch = useDispatch();
-    const { isLoading, error } = useSelector((state) => state.auth);
+    const { isLoading, loginError , user } = useSelector((state) => state.auth);
 
-    const fetchData = async () => {
-        try {
-            setLoading(true);
-            const resAuth = await axios.post(`http://localhost:3000/auth/login`, {
-                email: email,
-                password: password
-            }, { withCredentials: true });
-            
-            setData(resAuth.data);
-            console.log("Response from API:", resAuth);
-            console.log(data);
-            
-            if (resAuth.data && resAuth.data.authentication && resAuth.data.authentication.sessionToken) {
-                localStorage.setItem("token", resAuth.data.authentication.sessionToken);
-                navigate("/");
-            } else {
-                setLoginError("Invalid email or password.");
-            }
-        } catch (error) {
-            setLoginError("Invalid email or password.");
-        } finally {
-            setLoading(false);
-        }
-    };
-
-
-    // const fetchData = () => {
-    //     dispatch(loginUser({ email, password }));
-    //     try {
-    //         setLoading(true);
-    //         dispatch(loginUser({ email, password }));
-    //         const { user } = useSelector((state) => state.auth);
-
-    //         if (user && user.authentication && user.authentication.sessionToken) {
-    //             localStorage.setItem("token", user.authentication.sessionToken);
-    //             navigate("/");
-    //         } else {
-    //             setLoginError("Invalid email or password.");
-    //         }
-    //     } catch (error) {
-    //         setLoginError("Invalid email or password.");
-    //     } finally {
-    //         setLoading(false);
-    //     }
-    // };
+    const login = () => {
+        dispatch(loginUser({ email, password }));
+    }
 
     useEffect(() => {
-        // ไม่ควรเรียก fetchData ทันทีเมื่อ email/password เปลี่ยน
-    }, []);
+        if (isAuthenticated()) {
+            navigate("/");
+        }
+    }, [user]);
 
-    
-    
+    console.log(user);
 
     const navigate = useNavigate();
 
@@ -91,7 +47,6 @@ const LoginPage = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
         let newErrors = { email: "", password: "" };
-        setLoginError("");
 
         if (!email.trim()) newErrors.email = "Please enter email.";
         if (!password.trim()) newErrors.password = "Please enter password.";
@@ -99,7 +54,7 @@ const LoginPage = () => {
         setErrors(newErrors);
 
         if (!newErrors.email && !newErrors.password) {
-            fetchData(); // เรียกฟังก์ชัน fetchData เมื่อกดปุ่ม login
+            login(); // เรียกฟังก์ชัน fetchData เมื่อกดปุ่ม login
         }
     };
 

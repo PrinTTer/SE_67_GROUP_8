@@ -1,33 +1,39 @@
 
-import {  Section} from './component/home_component' ;
-
+import {  Section ,RightBar} from './component/home_component' ;
+import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import {NavBarWithText} from '../../component/navbar';
 
 function ListPage() {
   let { title } = useParams();
-
- 
+  const [selected, setSelected] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState(""); // Default section
+  const types = ['hotel', 'event', 'restaurant','carRental','Package','News','Recommended'];
+  console.log(selectedCategory)
+  
   return (
-    <div className = "flex flex-1 flex-row">
+    <div className="flex flex-1 flex-row overflow-auto scrollbar-hide">
+        <NavBarWithText />
 
-      
-      <NavBarWithText />
+        <div className="flex flex-4 flex-col">
+            {types.includes(title) && selectedCategory=="" ? (
+                <Section title={title} />
+                
+            ) : types.includes(selectedCategory) ? (
+                <Section title={selectedCategory} />
+            ) : (
+                <>
+                    <Section title="Recommended" />
+                    <Section title="News" />
+                    <Section title="Package" />
+                </>
+            )}
+        </div>
 
-     
-      <div className='flex flex-4 flex-col'>
-          
-          <Section title={title}/>
-          
-          
-      </div>
-
-      <div className="flex flex-1 flex-col  items-center border-solid border-l-2 sticky top-0 h-screen">
-        <input type="text" className='bg-amber-50 rounded-4xl border-1 mt-4'/>
-      </div>
-      
+        <RightBar setSelectedCategory={setSelectedCategory} />
     </div>
-  )
+);
+
 }
 
 

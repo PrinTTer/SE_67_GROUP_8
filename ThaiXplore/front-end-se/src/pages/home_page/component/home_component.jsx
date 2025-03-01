@@ -1,8 +1,9 @@
-import { Link } from 'react-router-dom';
-import { getBusiness, getData,getDataBusiness } from '../../../data';
+import { Link, useNavigate } from 'react-router-dom';
+import { getDataBusiness } from '../../../data';
 import axios from 'axios';
 import { useState, useEffect } from "react";
-
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 
 export const Category  =()=>{
     return (
@@ -46,10 +47,7 @@ export const Section = ({ title }) => {
   const fetchData = async () => {
       try {
           setLoading(true);
-          const loginRes = await axios.post("http://localhost:3000/auth/login", {
-              email: "hatsawat.i@ku.th",
-              password: "root2"
-          },{withCredentials : true});
+          
           
           
           const res = await axios.get("http://localhost:3000/businesses",{withCredentials : true});
@@ -70,9 +68,12 @@ export const Section = ({ title }) => {
   if (loading) return <p>Loading...</p>;
   if (error) return <p className="text-red-500">Error: {error}</p>;
     console.log(data)
+  let post
   
-    const post = getDataBusiness({ category: title, json: data }); 
-
+      post = getDataBusiness({ category: title, json: data }); 
+  
+  
+   
   
   
   return (
@@ -91,7 +92,7 @@ export const Section = ({ title }) => {
   
 export const Post =(prop)=>{
   const {name , id, address} = prop
-  const business = getBusiness(name)
+    alert(name)
     const link  = `/Detail/${id}`; 
     return(
       <Link to={link}>
@@ -114,62 +115,91 @@ export const Post =(prop)=>{
     );
   }
 
-  export const RightBar = () =>{
-    
+  export const RightBar = ( prop ) =>{
+    const types = ['hotel', 'event', 'restaurant','carRental'];
+    const { setSelectedCategory } = prop;
+    const [find , setFind] = useState("");
+    const navigate = useNavigate();
+    // setSelectedCategory("All");
+    const handleChange = (event) => {
+      setFind(event.target.value); 
+      
+    };
+
+    const changePage = () => {
+      setSelectedCategory("");
+      if(types.includes(find)){
+        navigate(`/ListPage/${find}`)
+      }
+      else{
+        navigate(`/ListPage/${find}`)
+      }
+      
+    };
+
     return(
       <div className="flex flex-1 flex-col  items-center border-solid border-l-2 sticky top-0 h-screen">
-              <div className='flex-1'>
-                <input type="text" className='bg-amber-300 rounded-4xl border-1 mt-4'/>
+              <div className="flex flex-1 justify-center items-center m-3">
+                  <div className="flex items-center bg-white p-2 rounded-full shadow-md ">
+                      <input 
+                          type="text" 
+                          className="bg-amber-200 rounded-full border border-gray-400 px-4 py-2 "
+                          placeholder="Search..."
+                          onChange={handleChange}
+                          onKeyDown={(e) => e.key === "Enter" && changePage()} 
+                      />
+                      <FontAwesomeIcon 
+                          icon={faMagnifyingGlass}  
+                          className="cursor-pointer hover:bg-gray-300 p-2 hover:rounded-full ml-2"
+                          onClick={changePage}
+                      />
+                  </div>
               </div>
+
 
               <div className='flex-8'>
 
                   <div className='mb-5'>
-                  <div className='border-l-3 border-[#F96868] pl-1 text-[#007CE8] font-bold'>Business</div>
-                    <form method='post'>
-                      <ChkBox title="Accommodation"       group="Business"/>
-                      <ChkBox title="Restaurant/Beverage" group="Business"/>
-                      <ChkBox title="Event/Festival"      group="Business"/>
-                      <ChkBox title="Logistics"           group="Business"/>
-                    </form>
+                    <div className='border-l-3 border-[#F96868] pl-1 text-[#007CE8] font-bold'>Business</div>
+                      
+                      <ChkBox title="All"         group="Business"  setSelectedCategory={setSelectedCategory}/>
+                      <ChkBox title="hotel"       group="Business"  setSelectedCategory={setSelectedCategory}/>
+                      <ChkBox title="restaurant"  group="Business"  setSelectedCategory={setSelectedCategory}/>
+                      <ChkBox title="event"       group="Business"  setSelectedCategory={setSelectedCategory}/>
+                      <ChkBox title="carRental"   group="Business"  setSelectedCategory={setSelectedCategory}/>
+                    
+                    
                   </div>
               
                   <div className='mb-5'>
-                    <div className='border-l-3 border-[#F96868] pl-1 text-[#007CE8] font-bold'>News/Package</div>
-                    <form method='post'>
-                      <ChkBox title="News"      group="Package"/>
-                      <ChkBox title="Package"   group="Package"/>
-                    </form>
+                    <div className='border-l-3 border-[#F96868] pl-1 text-[#007CE8] font-bold'>Package</div>
+                    <ChkBox title="Package"   group="Business" setSelectedCategory={setSelectedCategory}/>
+                    <ChkBox title="News"   group="Business" setSelectedCategory={setSelectedCategory}/>
                   </div>
                   
                   <div className='mb-5'>
                     <div className='border-l-3 border-[#F96868] pl-1 text-[#007CE8] font-bold'>Recommend by ThaiXplore</div>
-                    <form method='post'>
-                      <ChkBox title="Recommended" group="Recommended"/>
-                    </form>
+                    <ChkBox title="Recommended" group="Business" setSelectedCategory={setSelectedCategory}/> 
                   </div>
                   
-                  <div className='mb-5'>
-                    <div className='border-l-3 border-[#F96868] pl-1 text-[#007CE8] font-bold'>Price Range</div>
-                   
-                  </div>
+                 
 
               </div>
-      <div>
                 
-              </div>
              
       </div>
     );
   }
 
    const ChkBox = (prop) =>{ 
-    const {title , group} = prop
+    const {title , group , setSelectedCategory} = prop
+    
     return(
       <label className="flex items-center gap-2">
         <input
             type="radio"
             name={group}
+            onClick={() => setSelectedCategory(title)}
             className="w-3 h-3 appearance-none rounded-[35%] border border-gray-500 checked:bg-blue-500"
         />
           <span>{title}</span>
@@ -177,6 +207,7 @@ export const Post =(prop)=>{
 
     );
    }
+
 
    
    

@@ -247,8 +247,8 @@ const topic =[
         "type" : "hotel",
         "Hotel Information" : ["Hotel Standard ", "Total number of rooms"],
         "Room details" : ["Room Type","Number of guests/room","Size (sq.m.)","Room Facilities","Price","Image"],
-        "Specify food and beverage service information" : "service detail",
-        "Recreation facility" : "facility detail",
+        "Specify food and beverage service information" : "service",
+        "Recreation facility" : "facility",
         "Description" : "description"
 
     },

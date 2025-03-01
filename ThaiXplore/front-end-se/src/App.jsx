@@ -12,12 +12,12 @@ import ProfilePage from './pages/profile_page/profile_page'
 import CreateBusiness from './pages/business_page/create_business'
 import MainBusiness from './pages/business_page/main_business'
 import Booking from './pages/booking_page/booking'
-import AddBusiness from './pages/business_page/add_business'
+import AddDetails from './pages/business_page/add_detail'
 function App() {
   
   return (
     <Routes>
-      <Route path='/HomePage' element={<HomePage />}/>
+      <Route path='/' element={<HomePage />}/>
       <Route path='/ListPage/:title' element={<ListPage />}/>
       <Route path='/Detail/:id' element={<Detail />}/>
       <Route path='/profile' element={<ProfilePage />}/>
@@ -25,8 +25,8 @@ function App() {
       <Route path='/profile/mainBusiness/createBusiness' element={<CreateBusiness/>}/>
       <Route path='/Detail/booking/:id/:index' element={<Booking />}/>
       <Route path='/Detail/:title/booking' element={<Booking />}/>
-      <Route path='/profile/mainBusiness/createBusiness/addBusiness' element={<AddBusiness />}/>
-      <Route path='/' element={<LoginPage />}/>
+      <Route path='/profile/mainBusiness/createBusiness/addDetail' element={<AddDetails />}/>
+      <Route path='/login' element={<LoginPage />}/>
       <Route path='/signup' element={<SignupPage />}/>
       <Route path='/signup/role' element={<RolePage />}/>
       <Route path='/signup/finishsignup' element={<ThxPage />}/>

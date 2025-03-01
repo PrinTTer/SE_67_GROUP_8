@@ -55,7 +55,7 @@ export const Service = (prop) => {
     );
 };
 
-export const getTopic = (category) => {
+const getTopic = (category) => {
     let List = [];
     if(category === 'hotel'){
         List = ['roomType', 'guestAmount', 'roomSize', 'price', 'facilities'];

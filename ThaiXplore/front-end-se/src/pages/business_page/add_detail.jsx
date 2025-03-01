@@ -5,7 +5,7 @@ import {  faPlus,faTimes,faTimesCircle,faCheckCircle } from '@fortawesome/free-s
 import { getTopic } from "../../data";
 
 
-const AddBusiness = () => {
+const AddDetails = () => {
     const type = "hotel"
     let topicBusines
     if (type == "hotel"){
@@ -59,9 +59,30 @@ const Addblock = (prop) =>{
     const { title , type} = prop 
     const [show, setShow] = useState(true)
     const detail = getTopic({title : title , type :type})
+    const [inputs, setInputs] = useState([]);
     const toggle = ()=>{
         setShow(!show)
     }
+
+    // Function to show alert with the input values
+  const handleCheck = () => {
+    // Show alert with the input values
+    alert("Entered values: " + inputs.join(", "));
+  };
+  // Function to clear the input fields
+  const handleClear = () => {
+    setInputs([]);
+    setShow(!show)
+  };
+  const handleInputChange = (index, value) => {
+    const newInputs = [...inputs];
+    newInputs[index] = value;
+    setInputs(newInputs);
+  };
+
+  const addInput = () => {
+    setInputs([...inputs, ""]);
+  };
     return(
 
         <div className="border m-4 p-4 rounded-md">
@@ -79,23 +100,23 @@ const Addblock = (prop) =>{
                   <div className={`grid ${Array.isArray(detail) ? " grid-cols-2" : "grid-cols-1"} gap-4 p-2 bg-[#69A4DA]   border rounded-md mt-2`}>
                     {Array.isArray(detail) ? (
                         detail.map((item, index) => (
-                        
+                          
                         
                           <div key={index} className="text-gray-700 font-bold mr-20">
                             <div>{item}</div>
-                            <input type="text" className="bg-amber-50 p-2 rounded-md" />
+                            <input type="text" className={`${addInput} bg-amber-50 p-2 rounded-md`} onChange={(e) => handleInputChange(index,e.target.value)}  />
                           </div>
                         
                       ))
                     ) : (
                         <div className="flex ">
-                           <BlockInput detail={detail} />
+                           <BlockInput detail={detail} setInputs={setInputs} inputs={inputs} handleInputChange={handleInputChange} addInput={addInput} />
                         </div>
                     )}
                     <div className="flex justify-end  col-span-2">
                       <div>
-                        <FontAwesomeIcon icon={faTimesCircle} className="text-red-500 text-4xl mr-2 border rounded-full bg-white" />
-                        <FontAwesomeIcon icon={faCheckCircle} className="text-green-500 text-4xl rounded-full bg-white" />
+                        <FontAwesomeIcon icon={faTimesCircle} className="text-red-500 text-4xl mr-2 border rounded-full bg-white" onClick={handleClear} />
+                        <FontAwesomeIcon icon={faCheckCircle} className="text-green-500 text-4xl rounded-full bg-white"  onClick={handleCheck}  />
                       </div>
                     </div>
                   </div>
@@ -106,28 +127,26 @@ const Addblock = (prop) =>{
 }
 
 const BlockInput=(prop)=>{
-    const [inputs, setInputs] = useState([]);
-    const {detail} = prop
-    const addInput = () => {
-        setInputs([...inputs, ""]);
-      };
+    
+    const {detail ,setInputs ,inputs ,handleInputChange ,addInput} = prop
+    
     
       // Function to remove an input field
       const removeInput = (index) => {
         setInputs(inputs.filter((_, i) => i !== index));
       };
     
-      // Function to handle input changes
-      const handleInputChange = (index, value) => {
-        const newInputs = [...inputs];
-        newInputs[index] = value;
-        setInputs(newInputs);
-      };
+         // Function to handle input changes
+    
+
+  
+
+  
     return( 
         <div className="flex flex-col flex-1     ">
         <div className="flex justify-between items-center  p-1 text-lg">
           <div className="flex items-center space-x-2">
-            <div className={`cursor-pointer ${detail != "description" ? "block" : "hidden"} `}>
+            <div className={`cursor-pointer  `}>
             <FontAwesomeIcon icon={faPlus} className={`cursor-pointer  `}  onClick={addInput} />
             </div>
             <p className="text-gray-700 font-bold">{detail}</p>
@@ -154,10 +173,10 @@ const BlockInput=(prop)=>{
           
         </div>
         <div className={` p-4   ${detail == "description" ? "block" : "hidden"}`}>
-            <input type="textarea" className="bg-amber-50 p-2   rounded-md "  />
+            <input type="textarea" className="bg-amber-50 p-2   rounded-md  " onChange={(e) => handleInputChange(0,e.target.value)} />
         </div>
        
       </div>
     );
 }
-export default AddBusiness;
+export default AddDetails;

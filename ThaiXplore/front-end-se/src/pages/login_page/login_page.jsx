@@ -34,13 +34,13 @@ const LoginPage = () => {
             console.log("Response from API:", resAuth);
             console.log(data);
 
-            const res = await axios.get(`http://localhost:3000/users`,{ withCredentials: true });
-            console.log(data);
+            // const res = await axios.get(`http://localhost:3000/users`,{ withCredentials: true });
+            // console.log(data);
             
 
             if (resAuth.data && resAuth.data.authentication && resAuth.data.authentication.sessionToken) {
                 localStorage.setItem("token", resAuth.data.authentication.sessionToken);
-                navigate("/home");
+                navigate("/");
             } else {
                 setLoginError("Invalid email or password.");
             }
@@ -151,7 +151,7 @@ const LoginPage = () => {
                             <Link to="/signup" className="text-blue-600">Sign up</Link>
                         </div>
 
-                        <Link to="/home" className="text-blue-600">Visit as Guest</Link>
+                        <Link to="/" className="text-blue-600">Visit as Guest</Link>
                     </div>
                 </div>
             </div>

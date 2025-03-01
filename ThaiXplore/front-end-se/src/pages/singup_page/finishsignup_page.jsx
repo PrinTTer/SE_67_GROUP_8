@@ -33,7 +33,7 @@ const ThxPage = () => {
 
             if (resAuth.data && resAuth.data.authentication && resAuth.data.authentication.sessionToken) {
                 localStorage.setItem("token", resAuth.data.authentication.sessionToken);
-                navigate("/home");
+                navigate("/");
             } else {
                 setLoginError("Invalid email or password.");
             }
@@ -72,7 +72,7 @@ const ThxPage = () => {
                     
                     <div className="flex justify-between items-center mt-auto">
                         <Link to="/signup/role" className="text-gray-700">Back</Link>
-                        <Link to="/home" className="text-blue-600">Start now</Link>
+                        <Link to="/" className="text-blue-600">Start now</Link>
                     </div>
                 </div>
             </div>

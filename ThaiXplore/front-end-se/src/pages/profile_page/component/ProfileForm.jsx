@@ -1,41 +1,72 @@
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
+import { EditingField } from "./editingField";
+import axios from "axios";
 
-const ProfileForm = (prop) => {
-    const {dataUser} = prop
-    const [ isEditing, setIsEditing ] = useState(false);
-    const [data, setData] = useState(dataUser);
+const ProfileForm = () => {
+    const userData = useSelector((state) => state.auth.user);
+    const [data, setData] = useState(userData || {});
+    const [loading , setLoading] = useState(false);
+    const [error , setError] = useState("");
 
-    console.log("ProfileForm dataUser:", dataUser);
 
-    // console.log(dataUser);
+    const fetchData = async () => {
+        try {
+          setLoading(true);
+          const resAuth = await axios.post(`http://localhost:3000/auth/login`,{
+            email : "hatsawat.i@ku.th",
+            password : "root2"
+          },{ withCredentials: true });
+          const res = await axios.get(`http://localhost:3000/users`,{ withCredentials: true });
+    
+          setData(res.data);
+        } catch(error) {
+          setError(error);
+        } finally {
+          setLoading(false);
+        }
+      };
+          
+
+    console.log("ProfileForm userData:", data);
+    // console.log(userData);
 
     useEffect(() => {
-        if (dataUser) {
-            setData(dataUser);
-        }
-    }, [dataUser]);
+        fetchData();
+      },[]);
 
+    // useEffect(() => {
+    //     if (userData) {
+    //         setData(userData);
+    //     }
+    // }, [userData]);
 
-    const handleChange = (field, value) => {
-        setData((prev) => ({
-            ...prev,
-            [field]: value,
-        }));
-    };
-    const updateIsEditing = () => {
-        setIsEditing(!isEditing)
-    }
+    // if (!userData){
+    //     return <p>Loading user data...</p>
+    // }
 
     return(
-        <div className="flex flex-1 w-full h-full flex-col bg-amber-50">
+        <div className="flex flex-1 w-full h-full flex-col bg-gray-50">
             <h1 className="text-2xl font-bold mx-5 my-5">Profile</h1>
-            <div className="flex flex-1 bg-white mx-5 my-20 gap-10 relative border-1 shadow-black shadow-md">
-                <div className="absolute -top-10 left-4 w-18 h-18
-                    lg:-top-18 lg:left-8 lg:w-36 lg:h-36 
-                    bg-gray-200 rounded-full border-1 items-center text-center ">
+            <div className="flex flex-1 mx-5 justify-center items-start">
+                <div className="grid grid-cols-1 gap-4">
+                    <EditingField label="Name" value={data.firstName+" "+data.lastName} hasProfileImage={true} actionLabel="Edit"/>
+                    <EditingField label="Email" value={data.email}/>
+                    <EditingField label="Phone" value={data.phoneNumber}/>
+                    <EditingField label="Password" value={"231456897"} actionLabel="Edit"/>
                 </div>
-                <div>
+            </div>
+        </div>
+
+                        
+        
+    );
+} 
+
+export default ProfileForm;
+
+{/*
+<div>
                     <div onClick={updateIsEditing} className={`${!isEditing ? 'block' : 'hidden'}`}>
                         <button className="absolute -top-6 right-10 w-24 h-12 
                         lg:-top-8 lg:right-18 lg:w-36 lg:h-16 
@@ -69,29 +100,5 @@ const ProfileForm = (prop) => {
                                 </button>
                         </div>
                         
-                </div>
-            </div>
-        </div>
-
-                        
-        
-    );
-} 
-
-export const EditingField = (prop) => {
-    const { label, value, isEditing, onChange } = prop;
-    return(
-        <div>
-            <label className="text-2xl font-medium block">{label}</label>
-            {isEditing ? (
-                <input type="text" value={value} onChange={(e) => onChange(e.target.value)}
-                className="w-full p-2 text-xl border rounded-md" />
-            ) : (
-                <p className="p-2 text-xl border rounded-md bg-gray-200">{value}</p>
-            )}
-
-        </div>
-    );
-}
-
-export default ProfileForm;
+                </div>    
+    */}

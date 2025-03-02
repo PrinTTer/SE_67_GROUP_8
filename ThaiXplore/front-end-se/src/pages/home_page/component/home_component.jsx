@@ -3,6 +3,7 @@ import { getBusiness, getData, getDataBusiness } from '../../../data';
 import axios from 'axios';
 import { useState, useEffect } from "react";
 import { SearchBar } from '../../../components/SearchBar';
+import { fetchData } from '../../../services/apiService';
 
 
 export const Category = () => {
@@ -40,28 +41,46 @@ export const Section = ({ title }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const fetchData = async () => {
-    try {
-      setLoading(true);
+  // const fetchData = async () => {
+  //   try {
+  //     setLoading(true);
       
-      const res = await axios.get("http://localhost:3000/businesses", { withCredentials: true });
-      const data_format = await res.data
-      setData(data_format);
-    } catch (error) {
-      setError(error.message);
-    } finally {
-      setLoading(false);
-    }
-  };
+  //     const res = await axios.get("http://localhost:3000/businesses", { withCredentials: true });
+  //     const data_format = await res.data
+  //     setData(data_format);
+  //   } catch (error) {
+  //     setError(error.message);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
+  // useEffect(() => {
+  //   fetchData();
+  // }, []);
+
+
+  // if (loading) return <p>Loading...</p>;
+  // if (error) return <p className="text-red-500">Error: {error}</p>;
+  // console.log(data)
+
+  
   useEffect(() => {
-    fetchData();
-  }, []);
+    const getData = async () => {
+      setLoading(true);
+      try {
+        const result = await fetchData("businesses"); 
+        setData(result);
+      } catch (error) {
+        setError(error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
 
+    getData();
+  }, []); 
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p className="text-red-500">Error: {error}</p>;
-  console.log(data)
 
   const post = getDataBusiness({ category: title, json: data });
 

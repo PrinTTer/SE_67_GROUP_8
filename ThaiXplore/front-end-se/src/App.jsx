@@ -35,7 +35,7 @@ function App() {
   console.log(user);
   return (
     <>
-      {currentPath === "/login" ? (
+      {currentPath === "/login" || currentPath === "/signup" || currentPath === "/signup/role" || currentPath === "/signup/finishsignup"? (
         <Routes>
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignupPage />} />

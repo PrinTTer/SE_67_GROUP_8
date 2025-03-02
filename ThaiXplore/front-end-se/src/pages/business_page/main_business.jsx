@@ -2,8 +2,8 @@ import { faCirclePlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import axios from "axios";
 import { fetchData } from "../../services/apiService";
+import { BusinessBlock } from "../../components/BusinessBlock";
 
 const MainBusiness = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -30,9 +30,9 @@ const MainBusiness = () => {
 
   return (
     <>
-      <div className="flex flex-5">
-        <div className="flex flex-1  flex-col p-5 m-8">
-          <h1 className="">Your Business</h1>
+      <div className="flex flex-5 bg-gray-200">
+        <div className="flex flex-1 flex-col p-5 m-8">
+          <div className="text-xl mb-4">Your Business</div>
           {
             isLoading ?
               (
@@ -42,18 +42,16 @@ const MainBusiness = () => {
               )
               :
               (
-                <div>
-                  {businesses.map((obj, index) => (
-                    <div key={index} className="flex w-full h-32 items-center justify-center border-1 rounded-lg my-4 hover:bg-gray-300">
-                      Business
-                    </div>
+                <div className="flex flex-col gap-4">
+                  {businesses?.map((obj, index) => (
+                    <BusinessBlock key={index} business={obj}/>
                   ))}
                 </div>
 
               )
           }
           <Link to={"/profile/mainBusiness/createBusiness"}>
-            <div className="flex w-full h-32 items-center justify-center border-1 rounded-lg my-4 hover:bg-gray-300">
+            <div className="flex w-full h-32 items-center justify-center border-1 rounded-lg my-4 hover:bg-gray-300 transition-all hover:text-gray-100">
               <FontAwesomeIcon icon={faCirclePlus} size="lg" className="mx-4" />
               <h1 className="text-xl font-medium">Add Business</h1>
             </div>

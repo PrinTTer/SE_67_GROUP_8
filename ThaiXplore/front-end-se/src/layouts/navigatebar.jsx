@@ -1,7 +1,7 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useState } from 'react';
 import { ProfileBtn } from '../components/ProfileBtn';
-import { faArrowRightFromBracket, faBuilding, faCarSide, faFileLines, faHotel, faHouse, faPersonHiking, faUser, faUtensils } from '@fortawesome/free-solid-svg-icons';
+import { faArrowRightFromBracket, faBuilding, faCarSide, faCube, faFileLines, faHotel, faHouse, faPersonHiking, faUser, faUtensils } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { isAuthenticated } from '../services/authService';
@@ -19,10 +19,11 @@ export const NavigateBar = () => {
                 <p className="text-2xl font-bold ">ThaiXplore</p>
                 <div className="flex flex-col gap-5">
                     <IconSideBar iconName={"Home"} iconFont={faHouse} path={"/"} />
-                    <IconSideBar iconName={"Hotels & Homes"} iconFont={faHotel} path={"/ListPage/hotel"} />
-                    <IconSideBar iconName={"Car rentals"} iconFont={faCarSide} path={"/ListPage/carRental"} />
-                    <IconSideBar iconName={"Restaurants"} iconFont={faUtensils} path={"/ListPage/restaurant"} />
-                    <IconSideBar iconName={"Activities & Events"} iconFont={faPersonHiking} path={"/ListPage/event"} />
+                    <IconSideBar iconName={"Hotels & Homes"} iconFont={faHotel} path={"/listpage/hotel"} />
+                    <IconSideBar iconName={"Car rentals"} iconFont={faCarSide} path={"/listpage/carrental"} />
+                    <IconSideBar iconName={"Restaurants"} iconFont={faUtensils} path={"/listpage/restaurant"} />
+                    <IconSideBar iconName={"Activities & Events"} iconFont={faPersonHiking} path={"/listpage/event"} />
+                    <IconSideBar iconName={"Packages"} iconFont={faCube} path={"#"} />
                 </div>
                 {
                     !isAuthenticated() ? 

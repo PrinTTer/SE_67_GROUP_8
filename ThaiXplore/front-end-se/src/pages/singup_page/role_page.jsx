@@ -35,7 +35,7 @@ const RolePage = () => {
             });
     
             console.log("User registered successfully:", response.data);
-            navigate("/signup/finishsignup");
+            navigate("/signup/finishsignup" , {state : requestData});
         } catch (error) {
             console.error("Error registering user:", error.response?.data || error.message);
         }

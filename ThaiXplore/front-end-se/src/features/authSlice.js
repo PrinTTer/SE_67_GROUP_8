@@ -5,7 +5,6 @@ import axios from "axios";
 export const loginUser = createAsyncThunk("auth/loginUser", async (userData, { rejectWithValue }) => {
   try {
     const response = await axios.post("http://localhost:3000/auth/login", userData, { withCredentials: true });
-    localStorage.setItem("token", response.data.authentication.sessionToken);
     return response.data; // สมมติ API ส่ง { user: {id, name, email}, token }
   } catch (error) {
     return rejectWithValue("Invalid email or password.");
@@ -34,7 +33,7 @@ const initialState = {
   token: null,
   isLoading: false,
   loginError: null,
-  error: null,
+  errors: null,
 };
 
 // 🔹 สร้าง Slice

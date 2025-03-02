@@ -1,16 +1,19 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useState } from 'react';
-import { ProfileBtn } from '../components/profileBtn';
+import { ProfileBtn } from '../components/ProfileBtn';
 import { faArrowRightFromBracket, faBuilding, faCarSide, faFileLines, faHotel, faHouse, faPersonHiking, faUser, faUtensils } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { isAuthenticated } from '../services/authService';
 
 export const NavigateBar = () => {
     const [isOpen, setIsOpen] = useState(false);
     const updateIsOpen = () => {
         setIsOpen(!isOpen)
     }
+    const { user } = useSelector((state) => state.auth);
 
+    console.log(user);
     return (
             <div className="flex flex-1 py-4 flex-col justify-between border-solid border-gray-300 border-r  sticky top-0 h-screen items-center z-50">
                 <p className="text-2xl font-bold ">ThaiXplore</p>
@@ -21,7 +24,17 @@ export const NavigateBar = () => {
                     <IconSideBar iconName={"Restaurants"} iconFont={faUtensils} path={"/ListPage/restaurant"} />
                     <IconSideBar iconName={"Activities & Events"} iconFont={faPersonHiking} path={"/ListPage/event"} />
                 </div>
-                <ProfileBtn updateIsOpen={updateIsOpen} />
+                {
+                    !isAuthenticated() ? 
+                    (
+                        <Link to={"/login"}>
+                            <ProfileBtn updateIsOpen={updateIsOpen} firstName={""}/>
+                        </Link>
+                    ) : 
+                    (
+                        <ProfileBtn updateIsOpen={updateIsOpen} firstName={user?.firstName}/>
+                    )
+                }
                 <ToggleSideBar updateOpen={isOpen} />
             </div>
     );

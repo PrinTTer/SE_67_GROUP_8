@@ -24,7 +24,7 @@ export const Service = (prop) => {
                     <div key={index}>
                         <div className="font-bold ">{field}</div>  
                         {Array.isArray(item[field]) ? (
-                            <ul className="list-disc pl-5">
+                            <ul className="list-disc pl-5 grid grid-cols-2">
                                 {item[field].map((value, i) => (
                                     // ตรวจสอบว่าค่าที่ได้เป็น Object หรือไม่
                                     typeof value === "object" ? (

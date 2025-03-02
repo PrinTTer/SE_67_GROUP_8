@@ -1,10 +1,10 @@
-import BusinessForm from "./component/BusinessForm";
+import { BusinessInformation } from "./component/BusinessDetail";
 
 const CreateBusiness = () => {
     return(
         <>
-            <div className="flex flex-5 items-center justify-center flex-col">
-                <BusinessForm/>
+            <div className="flex flex-5 bg-gray-200">
+                <BusinessInformation />
             </div>
         </>
     );

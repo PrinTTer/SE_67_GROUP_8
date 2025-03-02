@@ -17,19 +17,22 @@ import { NavigateBar } from "./layouts/navigatebar";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setPath } from "./features/pathSlice";
+import { fetchUser } from "./features/authSlice";
+
 function App() {
   const dispatch = useDispatch();
   const location = useLocation(); // ดึง path ปัจจุบันจาก react-router
   const currentPath = useSelector((state) => state.path.currentPath);
+  const { isLoading , user } = useSelector((state) => state.auth);
 
-
-  // ใช้ useEffect เพื่อทำให้ Redux update path เมื่อ path เปลี่ยน
+  // ใช้ useEffect เพื่อทำให้ Redux update path , loading user เมื่อ path เปลี่ยน
   useEffect(() => {
+    dispatch(fetchUser());
     dispatch(setPath(location.pathname));
   }, [location, dispatch]);
 
   console.log(currentPath);
-
+  console.log(user);
   return (
     <>
       {currentPath === "/login" ? (

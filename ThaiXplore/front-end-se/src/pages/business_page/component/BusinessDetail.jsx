@@ -51,7 +51,6 @@ export const BusinessInformation = () => {
 
     const createBusiness = async () => {
         const result = await postData("/businesses/" , dataForm);
-        console.log(result);
     }
 
 
@@ -64,12 +63,10 @@ export const BusinessInformation = () => {
     },[category , address , subDistrict , district , province ,postalCode])
 
     const onSubmit = () => {
-        console.log(dataForm);
         createBusiness();
     }
 
-    // console.log(dataForm);
-    console.log(address);
+    
     return (
         <div>
             <div className="flex flex-col my-4 mx-20">
@@ -167,11 +164,11 @@ export const BusinessInformation = () => {
 
                     <div className="bg-white flex justify-between px-10 py-5 w-5xl drop-shadow-lg rounded-md">
                         <div className="flex w-full justify-end gap-2">
-                            <div onClick={onSubmit} className="flex px-3 py-2 bg-green-400 text-white hover:bg-green-300 w-fit h-fit cursor-pointer rounded-md">
+                            <div onClick={onSubmit} className="flex px-3 py-2 bg-green-400 transition-all text-white hover:bg-green-300 w-fit h-fit cursor-pointer rounded-md">
                                 Submit
                             </div>
                             <Link to="/mainbusiness">
-                                <div className="flex px-3 py-2 bg-red-400 text-white hover:bg-red-300 w-fit h-fit cursor-pointer rounded-md">
+                                <div className="flex px-3 py-2 bg-red-400 text-white transition-all hover:bg-red-300 w-fit h-fit cursor-pointer rounded-md">
                                     Cancel
                                 </div>
                             </Link>

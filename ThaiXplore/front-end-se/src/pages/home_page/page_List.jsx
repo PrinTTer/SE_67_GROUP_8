@@ -2,15 +2,14 @@
 import { RightBar, Section } from './component/home_component';
 
 import { useParams } from 'react-router-dom';
-import { useEffect } from 'react';
-import { fetchData } from '../../services/apiService';
+
 
 function ListPage() {
   let { title } = useParams();
 
   return (
     <>
-      <div className='flex flex-4 flex-col'>
+      <div className='flex flex-4 flex-col bg-gray-200'>
         <Section title={title} />
       </div>
 

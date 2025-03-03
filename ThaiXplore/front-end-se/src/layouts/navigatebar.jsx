@@ -1,38 +1,39 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useState } from 'react';
 import { ProfileBtn } from '../components/ProfileBtn';
-import { faArrowRightFromBracket, faBuilding, faCarSide, faFileLines, faHotel, faHouse, faPersonHiking, faUser, faUtensils } from '@fortawesome/free-solid-svg-icons';
+import { faArrowRightFromBracket, faBuilding, faCarSide, faCube, faFileLines, faHotel, faHouse, faPersonHiking, faUser, faUtensils } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { isAuthenticated } from '../services/authService';
 
-export const NavigateBar = () => {
+export const NavigateBar = (prop) => {
+    const {isNaviOpen} = prop;
     const [isOpen, setIsOpen] = useState(false);
     const updateIsOpen = () => {
         setIsOpen(!isOpen)
     }
     const { user } = useSelector((state) => state.auth);
 
-    console.log(user);
     return (
-            <div className="flex flex-1 py-4 flex-col justify-between border-solid border-gray-300 border-r  sticky top-0 h-screen items-center z-50">
-                <p className="text-2xl font-bold ">ThaiXplore</p>
+            <div className={` ${isNaviOpen ? "flex" : "hidden"} lg:flex flex-1 py-4 flex-col justify-between border-solid border-gray-300 border-r sticky top-0 h-screen items-center z-50`}>
+                <p className="text-2xl font-bold hidden lg:flex">ThaiXplore</p>
                 <div className="flex flex-col gap-5">
                     <IconSideBar iconName={"Home"} iconFont={faHouse} path={"/"} />
-                    <IconSideBar iconName={"Hotels & Homes"} iconFont={faHotel} path={"/ListPage/hotel"} />
-                    <IconSideBar iconName={"Car rentals"} iconFont={faCarSide} path={"/ListPage/carRental"} />
-                    <IconSideBar iconName={"Restaurants"} iconFont={faUtensils} path={"/ListPage/restaurant"} />
-                    <IconSideBar iconName={"Activities & Events"} iconFont={faPersonHiking} path={"/ListPage/event"} />
+                    <IconSideBar iconName={"Hotels & Homes"} iconFont={faHotel} path={"/listpage/hotel"} />
+                    <IconSideBar iconName={"Car rentals"} iconFont={faCarSide} path={"/listpage/carrental"} />
+                    <IconSideBar iconName={"Restaurants"} iconFont={faUtensils} path={"/listpage/restaurant"} />
+                    <IconSideBar iconName={"Activities & Events"} iconFont={faPersonHiking} path={"/listpage/event"} />
+                    <IconSideBar iconName={"Packages"} iconFont={faCube} path={"#"} />
                 </div>
                 {
                     !isAuthenticated() ? 
                     (
                         <Link to={"/login"}>
-                            <ProfileBtn updateIsOpen={updateIsOpen} firstName={""}/>
+                            <ProfileBtn updateIsOpen={updateIsOpen} user={user} firstName={""}/>
                         </Link>
                     ) : 
                     (
-                        <ProfileBtn updateIsOpen={updateIsOpen} firstName={user?.firstName}/>
+                        <ProfileBtn updateIsOpen={updateIsOpen} user={user} firstName={user?.firstName}/>
                     )
                 }
                 <ToggleSideBar updateOpen={isOpen} />

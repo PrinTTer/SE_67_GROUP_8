@@ -271,6 +271,9 @@ const topic =[
         "Description" : "description"
     }
 ]
+
+
+
 const types = ['hotel', 'event', 'restaurant','carRental'];
 // const serviceHotel = ['Room Type', 'Room Facilities','Size (sq.m.)', 'Number of guests/room'];
 // const Hotel = ["Hotel Information", "Specify food and beverage service information", "Recreation facility", "Description"]
@@ -339,16 +342,7 @@ export const getTopic =(prop)=> {
     return detail[title];
 }
 
-export const getService = (title) => {
-    
-    const business = getBusiness(title);
 
-    if (!business || !business.service) {
-        return "No service available";
-    }
-    
-    return Object.keys(business.service[0]);
-};
 
 
 export const getDataBusiness = ({category , json}) =>{
@@ -367,10 +361,16 @@ export const getDataBusiness = ({category , json}) =>{
     return business ;
 }
 
-console.log(getService("Hotel A")) 
-console.log(getService("Food F" ))
-console.log(getService("Event C")) 
 
+
+export const getAllBusinessName = (json) =>{
+    
+        
+    let business;
+    business = Object.values(json)
+    
+    return business.businessName ;
+}
 
 
 

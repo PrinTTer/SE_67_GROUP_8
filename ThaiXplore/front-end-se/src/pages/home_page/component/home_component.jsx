@@ -1,8 +1,9 @@
 import { Link } from 'react-router-dom';
-import { getBusiness, getData, getDataBusiness } from '../../../data';
-import axios from 'axios';
+import {   getDataBusiness } from '../../../data';
 import { useState, useEffect } from "react";
 import { SearchBar } from '../../../components/SearchBar';
+import { fetchData } from '../../../services/apiService';
+import { PriceRange } from './RangeBar'
 
 
 export const Category = () => {
@@ -12,7 +13,7 @@ export const Category = () => {
         <CategoryGrid link='/listpage/hotel' image='https://cdn.pixabay.com/photo/2021/06/01/12/39/beach-6301597_1280.jpg' title='Hotel' />
         <CategoryGrid link='/listpage/event' image='https://cdn.pixabay.com/photo/2016/11/23/15/48/audience-1853662_1280.jpg' title='Event' />
         <CategoryGrid link='/listpage/restaurant' image='https://cdn.pixabay.com/photo/2016/11/18/14/05/brick-wall-1834784_1280.jpg' title='Food' />
-        <CategoryGrid link='/listpage/carrental' image='https://cdn.pixabay.com/photo/2017/10/02/11/59/toys-2808599_1280.jpg' title='Car' />
+        <CategoryGrid link='/listpage/carRental' image='https://cdn.pixabay.com/photo/2017/10/02/11/59/toys-2808599_1280.jpg' title='Car' />
       </div>
     </div>
   );
@@ -35,59 +36,81 @@ export const CategoryGrid = (prop) => {
 
 
 
-export const Section = ({ title }) => {
+export const Section = (prop) => {
+  const { title } = prop
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const fetchData = async () => {
-    try {
-      setLoading(true);
+  // const fetchData = async () => {
+  //   try {
+  //     setLoading(true);
       
-      const res = await axios.get("http://localhost:3000/businesses", { withCredentials: true });
-      const data_format = await res.data
-      setData(data_format);
-    } catch (error) {
-      setError(error.message);
-    } finally {
-      setLoading(false);
-    }
-  };
+  //     const res = await axios.get("http://localhost:3000/businesses", { withCredentials: true });
+  //     const data_format = await res.data
+  //     setData(data_format);
+  //   } catch (error) {
+  //     setError(error.message);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
+  // useEffect(() => {
+  //   fetchData();
+  // }, []);
+
+
+  // if (loading) return <p>Loading...</p>;
+  // if (error) return <p className="text-red-500">Error: {error}</p>;
+  // console.log(data)
+
+  
   useEffect(() => {
-    fetchData();
-  }, []);
+    const getData = async () => {
+      setLoading(true);
+      try {
+        const result = await fetchData("businesses"); 
+        setData(result);
+      } catch (error) {
+        setError(error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
 
+    getData();
+  }, []); 
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p className="text-red-500">Error: {error}</p>;
-  console.log(data)
 
   const post = getDataBusiness({ category: title, json: data });
 
-
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p className="text-red-500">Error: {error}</p>;
 
   return (
     <div className="flex flex-col p-4 rounded-lg mb-4 shadow-md">
       <div className="flex flex-row">
         <h2 className="text-lg font-bold">{title}</h2>
-        <h2 className="ml-auto text-blue-500 font-bold cursor-pointer">View All</h2>
+        {/* <h2 className="ml-auto text-blue-500 font-bold cursor-pointer">View All</h2> */}
       </div>
-      {post.map((element, index) => (
+      <div className='grid lg:mr-72 gap-4'>
+        {post.map((element, index) => (
 
-        <Post key={index} name={element.businessName} id={element._id} address={element.address} />
-      ))}
+          <Post key={index} name={element.businessName} id={element._id} address={element.address} />
+        ))}
+      </div>
     </div>
   );
 };
 
 export const Post = (prop) => {
   const { name, id, address } = prop
-  const business = getBusiness(name)
+  // const business = getBusiness(name)
   const link = `/Detail/${id}`;
   return (
     <Link to={link}>
-      <div className="flex flex-row  shadow-md m p-4">
+      <div className="flex flex-col lg:flex-row shadow-md m p-4 bg-white">
 
         <img
           className="w-80 h-50 rounded-lg mr-5 object-cover"
@@ -109,7 +132,7 @@ export const Post = (prop) => {
 export const RightBar = () => {
 
   return (
-    <div className="flex flex-1 flex-col gap-4 py-4 items-center border-solid border-gray-300 border-l sticky top-0 h-screen">
+    <div className="hidden lg:flex flex-1 flex-col gap-4 py-4 items-center border-solid border-gray-300 border-l lg:sticky lg:top-0 h-screen">
       {/* <div className='flex-1'>
                 <input type="text" className='bg-amber-300 rounded-4xl border-1 mt-4'/>
               </div> */}
@@ -117,7 +140,7 @@ export const RightBar = () => {
 
       <div className='flex-8'>
 
-        <div className='mb-5'>
+        {/* <div className='mb-5'>
           <div className='border-l-3 border-[#F96868] pl-1 text-[#007CE8] font-bold'>Business</div>
           <form method='post'>
             <ChkBox title="Accommodation" group="Business" />
@@ -133,7 +156,7 @@ export const RightBar = () => {
             <ChkBox title="News" group="Package" />
             <ChkBox title="Package" group="Package" />
           </form>
-        </div>
+        </div> */}
 
         <div className='mb-5'>
           <div className='border-l-3 border-[#F96868] pl-1 text-[#007CE8] font-bold'>Recommend by ThaiXplore</div>
@@ -141,10 +164,18 @@ export const RightBar = () => {
             <ChkBox title="Recommended" group="Recommended" />
           </form>
         </div>
+        
+        {/* <div className='mb-5'>
+          <div className='border-l-3 border-[#F96868] pl-1 text-[#007CE8] font-bold'>Province</div>
+          <form method='post'>
+            <ChkBox title="Recommended" group="Recommended" />
+          </form>
+        </div> */}
 
         <div className='mb-5'>
-          <div className='border-l-3 border-[#F96868] pl-1 text-[#007CE8] font-bold'>Price Range</div>
-
+          <div className='border-l-3 border-[#F96868] pl-1 text-[#007CE8] font-bold mb-3'>Price Range</div>
+            {/* <SingleRangeSlider /> */}
+            <PriceRange />
         </div>
 
       </div>

@@ -27,10 +27,10 @@ export const getUser = async (req:express.Request , res:express.Response):Promis
 
 export const updateUser = async (req:express.Request , res:express.Response):Promise<any> => {
     try {
-        const { firstName , lastName , address , phoneNumber , role } = req.body;
+        const { firstName , lastName , address , phoneNumber } = req.body;
         const currentUserId:string = get(req , 'identity._id');
 
-        if(!firstName || !lastName || !phoneNumber || !role ){
+        if(!firstName || !lastName || !phoneNumber ){
             return res.sendStatus(400);
         }
 
@@ -39,7 +39,6 @@ export const updateUser = async (req:express.Request , res:express.Response):Pro
             lastName : lastName,
             address : address,
             phoneNumber : phoneNumber,
-            role : role,
          })
 
          return res.status(200).json(user);

@@ -1,6 +1,7 @@
 import express from "express";
 import {random , authentication} from "../helpers/encryption";
-import { getUserByEmail , createUser } from "../models/users";
+import { getUserByEmail , createUser, getUserById } from "../models/users";
+import { get } from "lodash";
 
 export const login = async (req:express.Request , res:express.Response):Promise<any> => {
     try {
@@ -28,7 +29,22 @@ export const login = async (req:express.Request , res:express.Response):Promise<
 
         return res.status(200).json(user).end();
     }catch(err){
-        console.log();
+        console.log(err);
+        return res.sendStatus(400);
+    }
+}
+
+export const logout = async (req:express.Request , res:express.Response):Promise<any> => {
+    try {
+        const currentUserId:string = get(req , 'identity._id');
+        const user = await getUserById(currentUserId).select('+authentication.salt +authentication.password');
+        user.authentication.sessionToken = null;
+        user.save();
+
+        res.clearCookie("token" , {domain : 'localhost' , path: '/'});
+        return res.sendStatus(200);
+    } catch (err) {
+        console.log(err);
         return res.sendStatus(400);
     }
 }

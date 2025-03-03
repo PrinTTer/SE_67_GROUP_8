@@ -1,4 +1,4 @@
 export const isAuthenticated = () => {
-    // เช็คว่า token หรือข้อมูลผู้ใช้ยังคงอยู่หรือไม่
-    return localStorage.getItem("token") ? true : false;
-  };
+  // ตรวจสอบว่ามีคุกกี้ที่ชื่อ "token" หรือไม่
+  return document.cookie.split("; ").some(cookie => cookie.startsWith("token="));
+};

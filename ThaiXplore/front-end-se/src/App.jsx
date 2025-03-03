@@ -14,16 +14,22 @@ import MainBusiness from "./pages/business_page/main_business";
 import Booking from "./pages/booking_page/booking";
 import AddDetails from "./pages/business_page/add_detail";
 import { NavigateBar } from "./layouts/navigatebar";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setPath } from "./features/pathSlice";
 import { fetchUser } from "./features/authSlice";
+import { TopBarResponsive } from "./components/TopBarResponsive";
 
 function App() {
   const dispatch = useDispatch();
   const location = useLocation(); // ดึง path ปัจจุบันจาก react-router
   const currentPath = useSelector((state) => state.path.currentPath);
-  const { isLoading , user } = useSelector((state) => state.auth);
+  const { user } = useSelector((state) => state.auth);
+  const [isNaviOpen , setIsNaviOpen] = useState(false);
+
+  const openNavi = () => {
+    setIsNaviOpen(!isNaviOpen);
+  }
 
   // ใช้ useEffect เพื่อทำให้ Redux update path , loading user เมื่อ path เปลี่ยน
   useEffect(() => {
@@ -35,7 +41,7 @@ function App() {
   console.log(user);
   return (
     <>
-      {currentPath === "/login" ? (
+      {currentPath === "/login" || currentPath === "/signup" || currentPath === "/signup/role" || currentPath === "/signup/finishsignup"? (
         <Routes>
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignupPage />} />
@@ -43,8 +49,10 @@ function App() {
           <Route path="/signup/finishsignup" element={<ThxPage />} />
         </Routes>
       ) : (
-        <div className="flex flex-1 flex-col-reverse lg:flex-row">
-          <NavigateBar />
+        <>
+        <TopBarResponsive setIsNaviOpen={openNavi} isNaviOpen={isNaviOpen}/>
+        <div className="flex flex-1 lg:flex-row">
+          <NavigateBar isNaviOpen={isNaviOpen}/>
           <Routes>
             <Route path="/" element={<HomePage />} />
 
@@ -66,6 +74,7 @@ function App() {
             <Route path="/detail/:title/booking" element={<Booking />} />
           </Routes>
         </div>
+        </>
       )}
     </>
   );

@@ -5,8 +5,8 @@ export const EditingField = (prop) => {
     const [inputValue, setInputValue] = useState(value);
 
     const handleSave = () => {
-        setIsEditing(false); // ปิดโหมดแก้ไข
-        onSave(value);  // ส่งค่ากลับไปที่ ProfileForm
+        setIsEditing(false);  // ปิดโหมดแก้ไข
+        onSave(inputValue);    // ✅ ส่งค่าที่แก้ไขกลับไป
     };
 
 
@@ -20,7 +20,7 @@ export const EditingField = (prop) => {
                 <div className="flex flex-col flex-1 ml-3">
                     <p className="text-sm font-semibold text-gray-600">{label}</p>
                     {isEditing ? (
-                    <input type="text" value={value} onChange={(e) => setInputValue(e.target.value)}
+                    <input type="text" value={inputValue} onChange={(e) => setInputValue(e.target.value)}
                         className="w-1/2 p-2 text-lg border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
                     />
                     ) : (
@@ -48,6 +48,14 @@ export const EditingField = (prop) => {
                 className="w-full p-2 text-xl border rounded-md" />
             ) : (
                 <p className="p-2 text-xl border rounded-md bg-gray-200">{value}</p>
-            )} */}
+            )} 
+                
+{
+    firstname: value            
+}
+            
+            
+            */}
 
             // <p className="text-lg text-gray-800">{value}</p>
+

@@ -29,11 +29,11 @@ export const NavigateBar = (prop) => {
                     !isAuthenticated() ? 
                     (
                         <Link to={"/login"}>
-                            <ProfileBtn updateIsOpen={updateIsOpen} firstName={""}/>
+                            <ProfileBtn updateIsOpen={updateIsOpen} user={user} firstName={""}/>
                         </Link>
                     ) : 
                     (
-                        <ProfileBtn updateIsOpen={updateIsOpen} firstName={user?.firstName}/>
+                        <ProfileBtn updateIsOpen={updateIsOpen} user={user} firstName={user?.firstName}/>
                     )
                 }
                 <ToggleSideBar updateOpen={isOpen} />

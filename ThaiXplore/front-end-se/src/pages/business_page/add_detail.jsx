@@ -5,7 +5,7 @@ import { getTopic } from "../../data";
 
 
 const AddDetails = () => {
-    const type = "food"
+    const type = "hotel"
     let topicBusines
     if (type == "hotel"){
         topicBusines =["Hotel Information", "Room details", "Specify food and beverage service information", "Recreation facility", "Description"]
@@ -185,21 +185,11 @@ export default AddDetails;
 
 
 const generateJson = (title, inputs, detail) => {
-  let jsonOutput;
+  let json;
 
-  // if (title.toLowerCase().includes("description")) {
-  //     //  กรณี description (เก็บเป็นข้อความเดี่ยว)
-  //     jsonOutput = {
-  //         _id: "some_unique_id",
-  //         businessId: "related_business_id",
-  //         informationName: title,
-  //         details: inputs[0] || "", // เอาค่าข้อความที่กรอกเป็น string
-  //         __v: 0
-  //     };
-  // } else 
   if (Array.isArray(detail) && detail.length > 0) {
-      jsonOutput = {
-          // businessId: "related_business_id",
+      json = {
+          // businessId: "",
           informationName: title,
           details: inputs.map((value, index) => ({
               label: detail[index] ,
@@ -208,16 +198,16 @@ const generateJson = (title, inputs, detail) => {
           __v: 0
       };
   } else {
-      //  กรณีที่ `details` เป็น array ของ string 
-      jsonOutput = {
+      //  เป็น array ของ string 
+      json = {
           
-          // businessId: "related_business_id",
+          // businessId: "",
           informationName: title,
           details: inputs.filter(item => item.trim() !== ""),
           __v: 0
       };
   }
 
-  // console.log("Detail : ", JSON.stringify(jsonOutput));
-  return jsonOutput;
+   console.log("Detail : ", JSON.stringify(json));
+  return json;
 };

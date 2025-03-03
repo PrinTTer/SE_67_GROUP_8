@@ -363,14 +363,28 @@ export const getDataBusiness = ({category , json}) =>{
 
 
 
-export const getAllBusinessName = (json) =>{
+
     
+    export const getBusinessbyName = ({businessName , json}) =>{
+    
+    
+        return Object.values(json).filter(
+            item => item.businessName.toLowerCase().includes(businessName.toLowerCase())
+        );
         
-    let business;
-    business = Object.values(json)
     
-    return business.businessName ;
-}
+    }
+
+    export const getBusinessbyProvince = ({province , json}) =>{
+    
+    
+        return Object.values(json).filter(
+            item => item.address.toLowerCase().includes(province.toLowerCase())
+        );
+        
+    
+    }
+
 
 
 

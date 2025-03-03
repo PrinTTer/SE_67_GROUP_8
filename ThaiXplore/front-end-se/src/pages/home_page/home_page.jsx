@@ -12,7 +12,7 @@ const HomePage = () => {
                 {/* <Section title="News" /> */}
                 <Section title="Package" />
             </div>
-            <RightBar />
+            <RightBar pagetitle="homepage"/>
         </>
     );
 }

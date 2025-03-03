@@ -1,9 +1,12 @@
 import { Link } from 'react-router-dom';
-import {   getDataBusiness } from '../../../data';
+import {   getDataBusiness, getBusinessbyName, getBusinessbyProvince } from '../../../data';
 import { useState, useEffect } from "react";
 import { SearchBar } from '../../../components/SearchBar';
 import { fetchData } from '../../../services/apiService';
 import { PriceRange } from './RangeBar'
+import  ProvinceDropdown  from './dropDownProvince'
+import axios from "axios";
+
 
 
 export const Category = () => {
@@ -37,11 +40,11 @@ export const CategoryGrid = (prop) => {
 
 
 export const Section = (prop) => {
-  const { title } = prop
+  let { title } = prop
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-
+  const types = ['hotel', 'event', 'restaurant','carRental','News','Recommended','Package'];
   // const fetchData = async () => {
   //   try {
   //     setLoading(true);
@@ -82,8 +85,40 @@ export const Section = (prop) => {
     getData();
   }, []); 
 
+  const [dataProvince, setDataProvince] = useState([]);
 
-  const post = getDataBusiness({ category: title, json: data });
+  const fetchProvince = async () => {
+    try {
+      setLoading(true);
+      const res = await axios.get(
+        "https://raw.githubusercontent.com/kongvut/thai-province-data/master/api_province.json"
+      );
+      setDataProvince(res.data);
+    } catch (error) {
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchProvince();
+  }, []);
+
+  
+  let post
+  if(types.includes(title) ){
+    post = getDataBusiness({ category: title, json: data });
+    
+  }
+  else if(dataProvince.some(province => province.name_th === title) || dataProvince.some(province => province.name_en === title)){
+    post = getBusinessbyProvince({ province: title, json: data });
+  }
+  else{
+    post = getBusinessbyName({ businessName: title, json: data });
+    title = `${post.length} Results Found`
+  }
+
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p className="text-red-500">Error: {error}</p>;
@@ -129,7 +164,9 @@ export const Post = (prop) => {
   );
 }
 
-export const RightBar = () => {
+export const RightBar = (prop) => {
+  const { pagetitle } = prop
+
 
   return (
     <div className="hidden lg:flex flex-1 flex-col gap-4 py-4 items-center border-solid border-gray-300 border-l lg:sticky lg:top-0 h-screen">
@@ -138,9 +175,9 @@ export const RightBar = () => {
               </div> */}
       <SearchBar />
 
-      <div className='flex-8'>
-
-        {/* <div className='mb-5'>
+      <div className={`flex-8 ${pagetitle == "homepage" ? "hidden" : "block"}`} >
+{/* 
+         <div className='mb-5'>
           <div className='border-l-3 border-[#F96868] pl-1 text-[#007CE8] font-bold'>Business</div>
           <form method='post'>
             <ChkBox title="Accommodation" group="Business" />
@@ -156,7 +193,7 @@ export const RightBar = () => {
             <ChkBox title="News" group="Package" />
             <ChkBox title="Package" group="Package" />
           </form>
-        </div> */}
+        </div>  */}
 
         <div className='mb-5'>
           <div className='border-l-3 border-[#F96868] pl-1 text-[#007CE8] font-bold'>Recommend by ThaiXplore</div>
@@ -165,16 +202,14 @@ export const RightBar = () => {
           </form>
         </div>
         
-        {/* <div className='mb-5'>
+         <div className='mb-5'>
           <div className='border-l-3 border-[#F96868] pl-1 text-[#007CE8] font-bold'>Province</div>
-          <form method='post'>
-            <ChkBox title="Recommended" group="Recommended" />
-          </form>
-        </div> */}
+           <ProvinceDropdown /> 
+        </div> 
 
         <div className='mb-5'>
           <div className='border-l-3 border-[#F96868] pl-1 text-[#007CE8] font-bold mb-3'>Price Range</div>
-            {/* <SingleRangeSlider /> */}
+            
             <PriceRange />
         </div>
 

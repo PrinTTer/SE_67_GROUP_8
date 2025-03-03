@@ -91,6 +91,9 @@ function Detail() {
             </Link>
 
 
+
+
+
           </div>
         </div>
         <div className='flex-6  bg-[#F1F5F9]'>

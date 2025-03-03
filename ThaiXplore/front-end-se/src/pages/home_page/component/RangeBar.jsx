@@ -6,6 +6,7 @@ export const PriceRange = () => {
 
   const handleChange = (event) => {
     setValue(Number(event.target.value));
+    localStorage.setItem("rangePrice" , value)
   };
 
   // Function to format numbers with commas (e.g., 10,000)

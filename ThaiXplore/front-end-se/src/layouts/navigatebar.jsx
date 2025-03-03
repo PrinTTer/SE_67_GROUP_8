@@ -6,17 +6,17 @@ import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { isAuthenticated } from '../services/authService';
 
-export const NavigateBar = () => {
+export const NavigateBar = (prop) => {
+    const {isNaviOpen} = prop;
     const [isOpen, setIsOpen] = useState(false);
     const updateIsOpen = () => {
         setIsOpen(!isOpen)
     }
     const { user } = useSelector((state) => state.auth);
 
-    console.log(user);
     return (
-            <div className="flex flex-1 py-4 flex-col justify-between border-solid border-gray-300 border-r  sticky top-0 h-screen items-center z-50">
-                <p className="text-2xl font-bold ">ThaiXplore</p>
+            <div className={` ${isNaviOpen ? "flex" : "hidden"} lg:flex flex-1 py-4 flex-col justify-between border-solid border-gray-300 border-r sticky top-0 h-screen items-center z-50`}>
+                <p className="text-2xl font-bold hidden lg:flex">ThaiXplore</p>
                 <div className="flex flex-col gap-5">
                     <IconSideBar iconName={"Home"} iconFont={faHouse} path={"/"} />
                     <IconSideBar iconName={"Hotels & Homes"} iconFont={faHotel} path={"/listpage/hotel"} />

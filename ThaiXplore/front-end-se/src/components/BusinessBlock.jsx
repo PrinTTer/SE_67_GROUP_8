@@ -29,7 +29,7 @@ export const BusinessBlock = (prop) => {
     console.log(business);
 
     return (
-        <div className="bg-white grid grid-cols-[25%_50%_25%] px-10 py-5 w-full drop-shadow-lg rounded-md">
+        <div className="bg-white grid grid-cols-[25%_50%_25%] w-full drop-shadow-lg rounded-xl">
             <div>
                 <img className="object-cover rounded-xl" src="https://i.pinimg.com/736x/a1/06/c7/a106c7e0256afac9d2e4295c42bf0163.jpg" />
             </div>

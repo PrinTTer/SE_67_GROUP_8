@@ -71,12 +71,14 @@ export const Section = ({ title }) => {
     <div className="flex flex-col p-4 rounded-lg mb-4 shadow-md">
       <div className="flex flex-row">
         <h2 className="text-lg font-bold">{title}</h2>
-        <h2 className="ml-auto text-blue-500 font-bold cursor-pointer">View All</h2>
+        {/* <h2 className="ml-auto text-blue-500 font-bold cursor-pointer">View All</h2> */}
       </div>
-      {post.map((element, index) => (
+      <div className='grid lg:mr-72 gap-4'>
+        {post.map((element, index) => (
 
-        <Post key={index} name={element.businessName} id={element._id} address={element.address} />
-      ))}
+          <Post key={index} name={element.businessName} id={element._id} address={element.address} />
+        ))}
+      </div>
     </div>
   );
 };
@@ -87,7 +89,7 @@ export const Post = (prop) => {
   const link = `/Detail/${id}`;
   return (
     <Link to={link}>
-      <div className="flex flex-row  shadow-md m p-4">
+      <div className="flex flex-col lg:flex-row shadow-md m p-4 bg-white">
 
         <img
           className="w-80 h-50 rounded-lg mr-5 object-cover"
@@ -109,7 +111,7 @@ export const Post = (prop) => {
 export const RightBar = () => {
 
   return (
-    <div className="flex flex-1 flex-col gap-4 py-4 items-center border-solid border-gray-300 border-l sticky top-0 h-screen">
+    <div className="hidden lg:flex flex-1 flex-col gap-4 py-4 items-center border-solid border-gray-300 border-l lg:sticky lg:top-0 h-screen">
       {/* <div className='flex-1'>
                 <input type="text" className='bg-amber-300 rounded-4xl border-1 mt-4'/>
               </div> */}

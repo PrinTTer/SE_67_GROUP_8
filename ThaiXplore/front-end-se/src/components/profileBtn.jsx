@@ -7,10 +7,10 @@ export const ProfileBtn = (prop) => {
 
     return (
         <div onClick={updateIsOpen} className="flex hover:bg-gray-100 cursor-pointer justify-between gap-10 w-fit h-fit px-5 py-3 rounded-full">
-            <div className="flex gap-3">
+            <div className="flex lg:gap-3">
                 <ProfileIcon />
                 <div>
-                    <div className="">
+                    <div className="flex">
                         <div>
                             {firstName}
                         </div>

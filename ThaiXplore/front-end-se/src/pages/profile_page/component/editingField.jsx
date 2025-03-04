@@ -1,12 +1,21 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 export const EditingField = (prop) => {
     const { label, field, value, hasProfileImage, actionLabel, onSave } = prop;
     const [isEditing, setIsEditing] = useState(false);
     const [inputValue, setInputValue] = useState(value);
 
-    const [firstName, setFirstName] = useState(value.split(" ")[0] || "");
-    const [lastName, setLastName] = useState(value.split(" ")[1] || "");
+    const [firstName, setFirstName] = useState("");
+    const [lastName, setLastName] = useState(value?.split(" ")[1] || "");
 
+    useEffect(() => {
+        setInputValue(value);
+    }, [value]);
+
+    useEffect(() => {
+        setFirstName(value?.split(" ")[0]);
+        setLastName(value?.split(" ")[1]);
+    }, [value]);
+    
     const handleSave = () => {
         setIsEditing(false);
 
@@ -18,6 +27,8 @@ export const EditingField = (prop) => {
             onSave(field, updatedValue); // ✅ ส่งค่ากลับไปที่ ProfileForm
         }
     };
+
+    console.log("editingField:",value);
 
     return (
         <div className="flex items-center bg-white w-4xl h-[5rem] rounded-xs p-4 shadow-md border border-gray-300">
@@ -34,14 +45,14 @@ export const EditingField = (prop) => {
                             <input 
                                 type="text" 
                                 value={firstName} 
-                                onChange={(e) => setFirstName(e.target.value)}
+                                onChange={(e) => setFirstName(e?.target.value)}
                                 placeholder="First Name"
                                 className="w-1/2 p-2     text-lg border rounded-md focus:ring-2 focus:ring-blue-400"
                             />
                             <input 
                                 type="text" 
                                 value={lastName} 
-                                onChange={(e) => setLastName(e.target.value)}
+                                onChange={(e) => setLastName(e?.target.value)}
                                 placeholder="Last Name"
                                 className="w-1/2 p-2 text-lg border rounded-md focus:ring-2 focus:ring-blue-400"
                             />
@@ -50,7 +61,7 @@ export const EditingField = (prop) => {
                         <input 
                             type="text" 
                             value={inputValue} 
-                            onChange={(e) => setInputValue(e.target.value)}
+                            onChange={(e) => setInputValue(e?.target.value)}
                             className="w-2/3 p-2 text-lg border rounded-md focus:ring-2 focus:ring-blue-400"
                         />
                     )

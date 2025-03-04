@@ -36,7 +36,7 @@ export const EditingField = (prop) => {
                                 value={firstName} 
                                 onChange={(e) => setFirstName(e.target.value)}
                                 placeholder="First Name"
-                                className="w-1/2 p-2 text-lg border rounded-md focus:ring-2 focus:ring-blue-400"
+                                className="w-1/2 p-2     text-lg border rounded-md focus:ring-2 focus:ring-blue-400"
                             />
                             <input 
                                 type="text" 
@@ -51,7 +51,7 @@ export const EditingField = (prop) => {
                             type="text" 
                             value={inputValue} 
                             onChange={(e) => setInputValue(e.target.value)}
-                            className="w-full p-2 text-lg border rounded-md focus:ring-2 focus:ring-blue-400"
+                            className="w-2/3 p-2 text-lg border rounded-md focus:ring-2 focus:ring-blue-400"
                         />
                     )
                 ) : (

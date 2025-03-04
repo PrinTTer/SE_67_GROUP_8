@@ -27,7 +27,7 @@ export const NavigateBar = (prop) => {
                 <div className="flex flex-col gap-5">
                     <IconSideBar iconName={"Home"} iconFont={faHouse} path={"/"} />
                     <IconSideBar iconName={"Hotels & Homes"} iconFont={faHotel} path={"/listpage/hotel"} />
-                    <IconSideBar iconName={"Car rentals"} iconFont={faCarSide} path={"/listpage/carrental"} />
+                    <IconSideBar iconName={"Car rentals"} iconFont={faCarSide} path={"/listpage/carRental"} />
                     <IconSideBar iconName={"Restaurants"} iconFont={faUtensils} path={"/listpage/restaurant"} />
                     <IconSideBar iconName={"Activities & Events"} iconFont={faPersonHiking} path={"/listpage/event"} />
                     <IconSideBar iconName={"Packages"} iconFont={faCube} path={"#"} />

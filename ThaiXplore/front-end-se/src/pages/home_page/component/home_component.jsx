@@ -207,11 +207,11 @@ export const RightBar = (prop) => {
            <ProvinceDropdown /> 
         </div> 
 
-        <div className='mb-5'>
+        {/* <div className='mb-5'>
           <div className='border-l-3 border-[#F96868] pl-1 text-[#007CE8] font-bold mb-3'>Price Range</div>
             
             <PriceRange />
-        </div>
+        </div> */}
 
       </div>
       <div>

@@ -2,12 +2,13 @@ import  { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser, faUserPlus, faUserMinus, faBed, faUsers } from "@fortawesome/free-solid-svg-icons";
 
-const GuestSelector = () => {
+const GuestSelector = (prop) => {
+  const { type } = prop
   const [isOpen, setIsOpen] = useState(false);
   const [adults, setAdults] = useState(1);
   const [children, setChildren] = useState(0);
   const [rooms, setRooms] = useState(1);
-
+  // alert(type)
   const togglePopup = () => setIsOpen(!isOpen);
 
   return (
@@ -17,7 +18,7 @@ const GuestSelector = () => {
         onClick={togglePopup}
         className="w-full border border-gray-300 rounded-md px-2 py-2 flex justify-between items-center text-black text-sm font-medium"
       >
-        {`${adults} Adult, ${children} Child, ${rooms} Rooms`}
+        {`${adults} Adult, ${children} Child${type == "hotel" ? `, ${rooms} Rooms` : ""}`}
         <FontAwesomeIcon icon={faUsers} className="text-gray-500 ml-2 text-xs" />
       </button>
 
@@ -65,7 +66,7 @@ const GuestSelector = () => {
           </div>
 
           {/* Room Selector */}
-          <div className="flex justify-between items-center py-1">
+          <div className={`flex justify-between items-center py-1  ${type == "hotel" ? "block" : "hidden"}`}>
             <span className="font-medium"><FontAwesomeIcon icon={faBed} className="mr-1"/> Room</span>
             <div className="flex items-center space-x-1">
               <button

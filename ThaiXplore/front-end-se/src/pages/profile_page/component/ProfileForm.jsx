@@ -39,7 +39,7 @@ const ProfileForm = () => {
                     <EditingField label="Email" field="email" value={data.email} onSave={handleFieldUpdate} />
                     <EditingField label="Phone" field="phoneNumber" value={data.phoneNumber} actionLabel="Edit" onSave={handleFieldUpdate} />
                     <EditingField label="Address" field="address" value={data.address} actionLabel="Edit" onSave={handleFieldUpdate}/>
-                    <EditingField label="Password" field="password" value={"******"} actionLabel="Edit" />
+                    <EditingField label="Password" field="password" value={"***********"} actionLabel="Edit" />
                 </div>
             </div>
         </div>

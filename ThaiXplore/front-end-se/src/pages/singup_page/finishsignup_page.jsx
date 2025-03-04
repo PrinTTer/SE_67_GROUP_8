@@ -1,19 +1,22 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import axios from "axios";
 
 const ThxPage = () => {
+    const {state} = useLocation();
     const [data, setData] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [errors, setErrors] = useState(null);
     const [loginError, setLoginError] = useState(""); // เพิ่ม state นี้
 
+    console.log(state);
+
     const fetchData = async () => {
         try {
             setIsLoading(true);
             const resAuth = await axios.post(`http://localhost:3000/auth/login`, {
-                email: email,
-                password: password
+                email: state.email,
+                password: state.password
             }, { withCredentials: true });
             
             console.log("Response from API:", resAuth); 

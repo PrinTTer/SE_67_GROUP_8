@@ -1,11 +1,16 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 export const EditingField = (prop) => {
     const { label, field, value, hasProfileImage, actionLabel, onSave } = prop;
     const [isEditing, setIsEditing] = useState(false);
     const [inputValue, setInputValue] = useState(value);
 
-    const [firstName, setFirstName] = useState(value.split(" ")[0] || "");
-    const [lastName, setLastName] = useState(value.split(" ")[1] || "");
+    const [firstName, setFirstName] = useState("");
+    const [lastName, setLastName] = useState("");
+
+    useEffect(()=>{
+        setFirstName(value?.split(" ")[0]);
+        setLastName(value?.split(" ")[1]);
+    },[value])
 
     const handleSave = () => {
         setIsEditing(false);

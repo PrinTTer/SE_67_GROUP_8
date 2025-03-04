@@ -1,11 +1,13 @@
-import { faChevronDown, faLocationDot } from "@fortawesome/free-solid-svg-icons";
+import { faChevronDown, faFileLines, faHotel, faLocationDot, faPenToSquare, faTrash, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
+import { BusinessEditBtn } from "./BusinessEditBtn";
 
 export const BusinessBlock = (prop) => {
     const { business } = prop;
     const [description, setDescription] = useState("");
     const [isShow, setIsShow] = useState(false);
+    const [isMouseEnter, setIsMouseEnter] = useState(false);
 
     const isTextTooLong = (text) => {
         let description = "";
@@ -29,11 +31,11 @@ export const BusinessBlock = (prop) => {
     console.log(business);
 
     return (
-        <div className="bg-white grid grid-cols-[25%_50%_25%] w-full drop-shadow-lg rounded-xl">
+        <div className="bg-white grid lg:grid-cols-[25%_50%_25%] w-full drop-shadow-xl rounded-xl">
             <div>
-                <img className="object-cover rounded-xl" src="https://i.pinimg.com/736x/a1/06/c7/a106c7e0256afac9d2e4295c42bf0163.jpg" />
+                <img className="object-cover rounded-l-xl" src="https://i.pinimg.com/736x/a1/06/c7/a106c7e0256afac9d2e4295c42bf0163.jpg" />
             </div>
-            <div className="mx-5">
+            <div className="mx-5 p-5">
                 <div className="text-2xl font-semibold">
                     {business.businessName}
                 </div>
@@ -52,23 +54,17 @@ export const BusinessBlock = (prop) => {
                     <div onClick={() => checkIsShow()}
                         className="text-blue-500 flex gap-1 cursor-pointer transition-all hover:text-blue-300">
                         <div>Show more</div>
-                        <div>
+                        <div className={`${isShow ? "rotate-180" : ""} transition-all ease-in-out`}>
                             <FontAwesomeIcon icon={faChevronDown} />
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div className="flex gap-5 justify-end">
-                <div className="w-fit h-fit text-white bg-blue-400 rounded-2xl px-2 py-1 cursor-pointer transition-all hover:bg-blue-300">
-                    Details
-                </div>
-                <div className="w-fit h-fit text-white bg-green-400 rounded-2xl px-2 py-1 cursor-pointer transition-all hover:bg-green-300">
-                    Edit
-                </div>
-                <div className="w-fit h-fit text-white bg-red-400 rounded-2xl px-2 py-1 cursor-pointer transition-all hover:bg-red-300">
-                    Delete
-                </div>
+            <div className="flex gap-16 justify-end p-5">
+                <BusinessEditBtn icon={faFileLines} popup={"Information"}/>
+                <BusinessEditBtn icon={faPenToSquare} popup={"Edit"}/>
+                <BusinessEditBtn icon={faTrash} popup={"Delete"}/>
             </div>
         </div>
     );

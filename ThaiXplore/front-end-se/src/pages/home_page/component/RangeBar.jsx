@@ -11,7 +11,7 @@ export const PriceRange = () => {
 
   // Function to format numbers with commas (e.g., 10,000)
   const formatNumber = (num) => {
-    localStorage.setItem("rangePrice" , value)
+    //localStorage.setItem("rangePrice" , value)
     return num.toLocaleString();
   };
 

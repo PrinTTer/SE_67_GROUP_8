@@ -60,13 +60,13 @@ function App() {
             <Route path="/detail/:id" element={<Detail />} />
 
             <Route path="/profile" element={<ProfilePage />} />
-            <Route path="profile/mainBusiness" element={<MainBusiness />} />
+            <Route path="/profile/mainBusiness" element={<MainBusiness />} />
             <Route
-              path="profile/mainBusiness/createBusiness"
+              path="/profile/mainBusiness/createBusiness"
               element={<CreateBusiness />}
             />
             <Route
-              path="profile/mainBusiness/createBusiness/adddetails"
+              path="/profile/mainBusiness/createBusiness/adddetails"
               element={<AddDetails />}
             />
 

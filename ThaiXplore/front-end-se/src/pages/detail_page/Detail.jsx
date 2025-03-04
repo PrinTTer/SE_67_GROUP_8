@@ -122,7 +122,7 @@ function Detail() {
       </div>
 
       {/* Right Bar */}
-      <RightSideBar type={business.type} />
+      <RightSideBar type={data?.business?.category} />
 
     </>
   )

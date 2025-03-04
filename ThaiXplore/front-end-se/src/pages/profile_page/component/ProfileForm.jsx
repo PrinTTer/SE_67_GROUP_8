@@ -13,6 +13,12 @@ const ProfileForm = () => {
         }
     },[user])
 
+    useEffect(() => {
+        if (user) {
+            setData(user);
+        }
+    }, [user]);
+
     const handleFieldUpdate = async (field, value) => {
         let updatedData = { ...data, [field]: value };
 
@@ -23,7 +29,6 @@ const ProfileForm = () => {
             updatedData = { ...data, firstName, lastName };
         }
 
-        
         setData(updatedData);
 
         try {
@@ -33,6 +38,7 @@ const ProfileForm = () => {
             console.error(`Error updating ${field}:`, error);
         }
     };
+    
 
     return(
         <div className="flex flex-1 w-full h-full flex-col bg-gray-50">

@@ -27,7 +27,7 @@ export const NavigateBar = (prop) => {
                 <div className="flex flex-col gap-5">
                     <IconSideBar iconName={"Home"} iconFont={faHouse} path={"/"} />
                     <IconSideBar iconName={"Hotels & Homes"} iconFont={faHotel} path={"/listpage/hotel"} />
-                    <IconSideBar iconName={"Car rentals"} iconFont={faCarSide} path={"/listpage/carrental"} />
+                    <IconSideBar iconName={"Car rentals"} iconFont={faCarSide} path={"/listpage/carRental"} />
                     <IconSideBar iconName={"Restaurants"} iconFont={faUtensils} path={"/listpage/restaurant"} />
                     <IconSideBar iconName={"Activities & Events"} iconFont={faPersonHiking} path={"/listpage/event"} />
                     <IconSideBar iconName={"Packages"} iconFont={faCube} path={"#"} />
@@ -86,7 +86,7 @@ export const ToggleSideBarEntrepreneur = (prop) => {
             <ul className='relative p-1 my-2 w-full'>
                 <IconSideBar iconName={"Profile"} iconFont={faUser} path={"/profile"} />
                 <IconSideBar iconName={"Quotation"} iconFont={faFileLines} path={"/profile"} />
-                <IconSideBar iconName={"Business"} iconFont={faBuilding} path={"/mainbusiness"} />
+                <IconSideBar iconName={"Business"} iconFont={faBuilding} path={"/profile/mainbusiness"} />
                 <IconSideBar logout={logout} iconName={"Logout"} iconFont={faArrowRightFromBracket} path={"/login"} />
             </ul>
         </div>

@@ -93,13 +93,6 @@ function Detail() {
 
 
 
-            <Link>
-              <div className="flex  gap-2 mt-1 shadow-md  rounded-full h-8 w-auto justify-center items-center p-5 bg-blue-400 mr-1">
-                <FontAwesomeIcon icon={faPlus} />
-                <p>Follow</p>
-              </div>
-            </Link>
-
 
           </div>
         </div>

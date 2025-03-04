@@ -17,7 +17,7 @@ const Booking = () => {
   
   const fetchData = async () => {
       try {
-        
+        alert("Here");
           setLoading(true);
           // eslint-disable-next-line no-unused-vars
           const loginRes = await axios.post("http://localhost:3000/auth/login", {
@@ -52,12 +52,9 @@ const Booking = () => {
     return(
         <div className="flex flex-1">
             <NavBarWithOutText/>
-            <div className="flex flex-[1.2]">
-                {/* <BookingDetail business={business} index={index}/> */}
-            </div>
-            <div className="flex flex-[3.8]">
-                {/* <BookingForm/> */}
-            </div>
+            
+            
+            
         </div>
     );
 }

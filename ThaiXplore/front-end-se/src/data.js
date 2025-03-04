@@ -247,8 +247,8 @@ const topic =[
         "type" : "hotel",
         "Hotel Information" : ["Hotel Standard ", "Total number of rooms"],
         "Room details" : ["Room Type","Number of guests/room","Size (sq.m.)","Room Facilities","Price","Image"],
-        "Specify food and beverage service information" : "service detail",
-        "Recreation facility" : "facility detail",
+        "Specify food and beverage service information" : "service",
+        "Recreation facility" : "facility",
         "Description" : "description"
 
     },
@@ -271,6 +271,9 @@ const topic =[
         "Description" : "description"
     }
 ]
+
+
+
 const types = ['hotel', 'event', 'restaurant','carRental'];
 // const serviceHotel = ['Room Type', 'Room Facilities','Size (sq.m.)', 'Number of guests/room'];
 // const Hotel = ["Hotel Information", "Specify food and beverage service information", "Recreation facility", "Description"]
@@ -339,16 +342,7 @@ export const getTopic =(prop)=> {
     return detail[title];
 }
 
-export const getService = (title) => {
-    
-    const business = getBusiness(title);
 
-    if (!business || !business.service) {
-        return "No service available";
-    }
-    
-    return Object.keys(business.service[0]);
-};
 
 
 export const getDataBusiness = ({category , json}) =>{
@@ -367,9 +361,29 @@ export const getDataBusiness = ({category , json}) =>{
     return business ;
 }
 
-console.log(getService("Hotel A")) 
-console.log(getService("Food F" ))
-console.log(getService("Event C")) 
+
+
+
+    
+    export const getBusinessbyName = ({businessName , json}) =>{
+    
+    
+        return Object.values(json).filter(
+            item => item.businessName.toLowerCase().includes(businessName.toLowerCase())
+        );
+        
+    
+    }
+
+    export const getBusinessbyProvince = ({province , json}) =>{
+    
+    
+        return Object.values(json).filter(
+            item => item.address.toLowerCase().includes(province.toLowerCase())
+        );
+        
+    
+    }
 
 
 

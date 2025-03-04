@@ -1,59 +1,67 @@
-import { faCalendarCheck } from "@fortawesome/free-regular-svg-icons"
+import { faCalendarCheck, faCircleCheck } from "@fortawesome/free-regular-svg-icons"
 import { faHotel,faUtensils, faCar } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 
 const BusinessForm = () => {
+    const [formData, setFormData] = useState({
+        businessName: "",
+        mainBusiness: "",
+        juristicId: "",
+        email: "",
+        phone: "",
+        province: "",
+        district: "",
+        subDistrict: "",
+        postalCode: "",
+        certificate: "",
+        businessImage: "",
+    });
+    const handleBusinessChange = (selected) => {
+        setFormData((prev) => ({ ...prev, mainBusiness: selected }));
+    };
+    const handleChange = (e) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
+    const handleSubmit = () => {
+        console.log("Form Data:", formData);
+    };
+    
+
     
     return(
         <div className="flex flex-1 w-full h-full bg-gray-200 items-center justify-center">
             <div className="flex flex-1 flex-col p-10 m-10 bg-white border-1 shadow-black shadow-md">
                 <div>
                     <label className="block text-xl font-bold">Business</label>
-                    <input type="text" className="p-2 mt-2 text-xl border rounded-md" />
+                    <input 
+                    type="text"
+                    className="p-2 mt-2 text-xl border rounded-md"
+                    value={formData.businessName}
+                    onChange={(e) => setFormData({ ...formData, businessName: e.target.value })}
+            />
                 </div>
                 <div className="flex flex-col mt-2">
                     <label className="text-xl font-bold">Main Business</label>
-                        <div className="border grid grid-cols-4 bg-gray-400 p-2 my-2 mx-40 rounded-md gap-4">
-                            <div className="bg-white p-2 mx-4 flex flex-col items-center justify-center rounded-md hover:bg-blue-400">
-                                <FontAwesomeIcon icon={faCalendarCheck} size="7x"/>
-                                <h2 className="font-medium mt-1">Event</h2>
-                            </div>
-                            <div className="bg-white p-2 mx-4 flex flex-col items-center justify-center rounded-md hover:bg-blue-400">
-                                <FontAwesomeIcon icon={faHotel} size="7x"/>
-                                <h2 className="font-medium mt-1">Hotel</h2>
-                            </div>
-                            <div className="bg-white p-2 mx-4 flex flex-col items-center justify-center rounded-md hover:bg-blue-400">
-                                <FontAwesomeIcon icon={faUtensils} size="7x"/>
-                                <h2 className="font-medium mt-1">Restaurant</h2>
-                            </div>
-                            <div className="bg-white p-2 mx-4 flex flex-col items-center justify-center rounded-md hover:bg-blue-400">
-                                <FontAwesomeIcon icon={faCar} size="7x"/>
-                                <h2 className="font-medium mt-1">Logistic</h2>
-                            </div>
-                        </div>
+                    <BusinessSelector selectedBusiness={formData.mainBusiness} onChange={handleBusinessChange} />
                 </div>
                 <label className="text-xl font-bold">Detail</label>
                 <form className="grid grid-cols-4 mt-2 mx-8 gap-4">
                     <div className="col-span-2">
-                        <label className="block font-medium">Juristic ID 13 digits</label>
-                        <input type="text" className="p-2 w-2/3 mt-2 text-xl border rounded-md" />
+                        <TextFieldBusiness title={"Juristic ID 13 digits"} name="juristicId" value={formData.juristicId}  onChange={handleChange}/>
                     </div>
                     <div className="col-span-2">
-                        <label className="block font-medium">Email Contact</label>
-                        <input type="text" className="p-2 w-2/3 mt-2 text-xl border rounded-md" />
+                        <TextFieldBusiness title={"Email Contact"} name="email" value={formData.email}  onChange={handleChange}/>
                     </div>
                     <div className="col-span-2">
-                        <label className="block font-medium">Phone</label>
-                        <input type="text" className="p-2 w-2/3 mt-2 text-xl border rounded-md" />
+                        <TextFieldBusiness title={"Phone"} name="phone" value={formData.phone}  onChange={handleChange}/>
                     </div>
                     <div>
-                        <label className="block font-medium">Province</label>
-                        <input type="text" className="p-2 mt-2 text-xl border rounded-md" />
+                        <TextFieldBusiness title={"Province"} name="province" value={formData.province}  onChange={handleChange}/>
                     </div>
                     <div>
-                        <label className="block font-medium">District</label>
-                        <input type="text" className="p-2 mt-2 text-xl border rounded-md" />
+                        <TextFieldBusiness title={"District"} name="district" value={formData.district}  onChange={handleChange}/>
                     </div>
                     <div className="col-span-2">
                         <label className="block font-medium">Upload certificatet document</label>
@@ -63,12 +71,10 @@ const BusinessForm = () => {
                         </button>
                     </div>
                     <div>
-                        <label className="block font-medium">Sub-district</label>
-                        <input type="text" className="p-2 mt-2 text-xl border rounded-md" />
+                        <TextFieldBusiness title={"Sub-district"} name="subDistrict" value={formData.subDistrict}  onChange={handleChange}/>
                     </div>
                     <div>
-                        <label className="block font-medium">Postal Code</label>
-                        <input type="text" className="p-2 mt-2 text-xl border rounded-md" />
+                        <TextFieldBusiness title={"Postal Code"} name="postalCode" value={formData.postalCode}  onChange={handleChange}/>
                     </div>
 
                     <div className="flex flex-col mt-2">
@@ -89,7 +95,7 @@ const BusinessForm = () => {
                         </div>
                         <div>
                             <Link>
-                                <div className="flex p-4 mx-4 bg-green-500 rounded-2xl hover:bg-green-700">
+                                <div onClick={handleSubmit} className="flex p-4 mx-4 bg-green-500 rounded-2xl hover:bg-green-700">
                                     <h2 className="text-white text-center font-medium">Confirm</h2>
                                 </div>
                             </Link>
@@ -106,3 +112,53 @@ const BusinessForm = () => {
 } 
 
 export default BusinessForm;
+
+const BusinessSelector = (prop) => {
+    const {selectedBusiness, onChange} = prop;
+
+    const businesses = [
+        { name: "Event", icon: faCalendarCheck },
+        { name: "Hotel", icon: faHotel },
+        { name: "Restaurant", icon: faUtensils },
+        { name: "Logistic", icon: faCar },
+    ];
+
+    return(
+        <div className="grid grid-cols-4 bg-gray-400 p-2 my-2 mx-40 rounded-md gap-4">
+                {businesses.map((business) => (
+                <div
+                    key={business.name}
+                    className={`relative flex flex-col items-center justify-center bg-white p-4 mx-4 rounded-md hover:bg-blue-400 cursor-pointer transition-all ${
+                        selectedBusiness === business.name ? "bg-blue-500 text-black" : ""
+                    }`}
+                    onClick={() => onChange(business.name)}
+                >
+                    <FontAwesomeIcon icon={business.icon} size="4x" />
+                    <h2 className="font-medium mt-2">{business.name}</h2>
+
+                    {selectedBusiness === business.name && (
+                        <FontAwesomeIcon icon={faCircleCheck} className="absolute top-2 right-2 text-green-600" size="lg" />
+                    )}
+                </div>
+            ))}
+        </div>
+    );
+}
+
+const TextFieldBusiness = (prop) => {
+    const {title, name, value, onChange} = prop;
+    return(
+        <div>
+            <label className="block font-medium">{title}</label>
+            <input
+                type="text"
+                name={name} //กำหนด name ให้ input
+                value={value}
+                onChange={onChange} //ใช้ onChange ที่ส่งเข้ามา
+                className="p-2 w-2/3 mt-2 text-xl border rounded-md"
+            />
+        </div> 
+    );
+}
+
+

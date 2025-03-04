@@ -36,7 +36,7 @@ export const SearchBar = () => {
             if (!searchTerm.trim()){
                 return navigate(`/`);
             }
-            alert(searchTerm)
+           // alert(searchTerm)
             return  navigate(`/listpage/${searchTerm}`);
             
         }

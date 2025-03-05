@@ -5,11 +5,11 @@ import { isAuthenticated } from "../services/authService";
 import { useState } from "react";
 
 export const ProfileBtn = (prop) => {
-    const { updateIsOpen, firstName, user } = prop;
+    const { setIsOpen, firstName, user } = prop;
     const [isMouseEnter , setIsMouesEnter] = useState(false);
 
     return (
-        <div onClick={updateIsOpen} className="flex cursor-pointer justify-between gap-10 w-fit h-fit px-5 py-3 rounded-full hover:bg-gray-50 bg-gray-100 drop-shadow-2xl">
+        <div onClick={() => setIsOpen(true)} className="flex cursor-pointer justify-between gap-10 w-fit h-fit px-5 py-3 rounded-full hover:bg-gray-50 bg-gray-100 drop-shadow-2xl">
             <div className="flex lg:gap-3 ">
                 {
                     !isAuthenticated() ?

@@ -61,10 +61,10 @@ const getTopic = (category) => {
         List = ['roomType', 'guestAmount', 'roomSize', 'price', 'facilities'];
     }
     else if (category === 'event'){
-        List = ['ticketType', 'price', 'eventDate', 'startTransition', 'end'];
+        List = ['ticketType', 'price', 'eventDate', 'start', 'end'];
     }
     else if (category === 'carRental'){
-        List = ['carBrand', 'licensePlate', 'amountSeat', 'price'];
+        List = ['carBrand',  'amountSeat', 'price'];
     }
     else if (category === 'restaurant'){
         List = ['courseName', 'menuList', 'price'];

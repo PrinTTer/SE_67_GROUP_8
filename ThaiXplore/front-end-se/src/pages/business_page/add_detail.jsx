@@ -1,12 +1,33 @@
-import { useState } from 'react';
+import { useState , useEffect} from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {  faPlus,faTimes,faTimesCircle,faCheckCircle } from '@fortawesome/free-solid-svg-icons';
 import { getTopic } from "../../data";
 import { ServiceBlock } from "./component/ServiceBlock"
-
+import { fetchData } from "../../services/apiService"
+import { useParams } from 'react-router-dom';
 
 const AddDetails = () => {
-    const type = "event"
+  let { id } = useParams();
+  const [isLoading, setIsLoading] = useState(false);
+  const [business, setBusiness] = useState([]);
+   
+   const fetchBusiness = async () => {
+     try {
+       setIsLoading(true);
+       const data = await fetchData(`/businesses/${id}`);
+       setBusiness(data);
+     } catch (error) {
+       console.log(error);
+     } finally {
+       setIsLoading(false);
+     }
+   };
+    useEffect(() => {
+      fetchBusiness();
+     }, []);
+     console.log(business?.business?.category)
+    let type = business?.business?.category || "event"
+   // alert(type)
     let topicBusines
     if (type == "hotel"){
         topicBusines =["Hotel Information", "Room details", "Specify food and beverage service information", "Recreation facility", "Description"]
@@ -31,6 +52,7 @@ const AddDetails = () => {
         setHead(title)
         
       };
+    
     return(
         <>
             <div className="flex flex-5  flex-col shadow-md">

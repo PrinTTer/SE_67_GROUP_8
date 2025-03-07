@@ -2,63 +2,30 @@ import { useState, useEffect } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { Link, useNavigate } from 'react-router-dom';
-import axios from "axios";
-
+import { useDispatch, useSelector } from "react-redux";
+import { loginUser } from "../../features/authSlice";
+import { isAuthenticated } from "../../services/authService";
 
 const LoginPage = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [errors, setErrors] = useState({ email: "", password: "" });
-    const [loginError, setLoginError] = useState("");
-    const [data, setData] = useState("");
-    const [isLoading, setIsLoading] = useState(false);
 
-    const fetchData = async () => {
-        try {
-            setIsLoading(true);
-            const resAuth = await axios.post(`http://localhost:3000/auth/login`, {
-                email: email,
-                password: password
-                // email: "hatsawat.i@ku.th",
-                // password: "root2"
-                // entrepreneur
+    const dispatch = useDispatch();
+    const { isLoading, loginError , user } = useSelector((state) => state.auth);
 
-                // email: "aum3523@gmail.com",
-                // password: "root1"
-                // tourist
-
-            }, { withCredentials: true });
-            
-            setData(resAuth.data);
-            console.log("Response from API:", resAuth);
-            console.log(data);
-
-            const res = await axios.get(`http://localhost:3000/users`,{ withCredentials: true });
-            console.log(data);
-            
-
-            if (resAuth.data && resAuth.data.authentication && resAuth.data.authentication.sessionToken) {
-                localStorage.setItem("token", resAuth.data._id);
-                navigate("/home");
-            } else {
-                setLoginError("1 Invalid email or password.");
-            }
-
-        } catch (error) {
-            console.error("Login error:", error.response ? error.response.data : error.message);
-            setLoginError(error.response?.data?.message || "Invalid email or password.");
-        } finally {
-            setIsLoading(false);
-        }
-    };
+    const login = () => {
+        dispatch(loginUser({ email, password }));
+    }
 
     useEffect(() => {
-        // ไม่ควรเรียก fetchData ทันทีเมื่อ email/password เปลี่ยน
-    }, []);
+        if (isAuthenticated()) {
+            navigate("/");
+        }
+    }, [user]);
 
-    
-    
+    console.log(user);
 
     const navigate = useNavigate();
 
@@ -80,7 +47,6 @@ const LoginPage = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
         let newErrors = { email: "", password: "" };
-        setLoginError("");
 
         if (!email.trim()) newErrors.email = "Please enter email.";
         if (!password.trim()) newErrors.password = "Please enter password.";
@@ -88,7 +54,7 @@ const LoginPage = () => {
         setErrors(newErrors);
 
         if (!newErrors.email && !newErrors.password) {
-            fetchData(); // เรียกฟังก์ชัน fetchData เมื่อกดปุ่ม login
+            login(); // เรียกฟังก์ชัน fetchData เมื่อกดปุ่ม login
         }
     };
 
@@ -152,7 +118,7 @@ const LoginPage = () => {
                             <Link to="/signup" className="text-blue-600">Sign up</Link>
                         </div>
 
-                        <Link to="/home" className="text-blue-600">Visit as Guest</Link>
+                        <Link to="/" className="text-blue-600">Visit as Guest</Link>
                     </div>
                 </div>
             </div>

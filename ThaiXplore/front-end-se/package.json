@@ -15,10 +15,13 @@
     "@fortawesome/free-regular-svg-icons": "^6.7.2",
     "@fortawesome/free-solid-svg-icons": "^6.7.2",
     "@fortawesome/react-fontawesome": "^0.2.2",
+    "@reduxjs/toolkit": "^2.6.0",
     "@tailwindcss/vite": "^4.0.5",
     "axios": "^1.7.9",
     "react": "^19.0.0",
+    "react-datepicker": "^8.1.0",
     "react-dom": "^19.0.0",
+    "react-redux": "^9.2.0",
     "react-router-dom": "^7.1.5",
     "tailwindcss": "^4.0.5"
   },

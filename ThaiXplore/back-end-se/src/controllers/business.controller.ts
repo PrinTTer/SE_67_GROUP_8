@@ -19,6 +19,8 @@ export const registerBusiness = async (req: express.Request , res: express.Respo
             return res.sendStatus(400);
         }
 
+        const dateCreate = Date.now();
+
         const business = await createBusiness({
             userId : user._id,
             currentUserId,
@@ -29,6 +31,7 @@ export const registerBusiness = async (req: express.Request , res: express.Respo
             email,
             category,
             verify,
+            dateCreate : dateCreate
         });
 
         return res.status(201).json(business);

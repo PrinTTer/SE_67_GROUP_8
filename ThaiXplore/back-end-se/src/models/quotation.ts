@@ -18,7 +18,7 @@ const QuotaionSchema = new mongoose.Schema({
     total : {type : Number , require : false},
     quotationTransaction : {
         transactionDate : {type : Date , require : true},
-        status : {type : String , require : true}
+        paymentMethod : {type : String , require : true}
     }
 });
 

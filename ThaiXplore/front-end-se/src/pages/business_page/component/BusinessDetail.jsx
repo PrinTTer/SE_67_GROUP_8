@@ -3,7 +3,7 @@ import { CreateInformation } from "../../../components/informationBlock";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBed, faCarSide, faPersonHiking, faUtensils } from "@fortawesome/free-solid-svg-icons";
 import { UploadDocumentBlock } from "./UploadDocumentBlock";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { postData } from "../../../services/apiService";
 
 export const BusinessInformation = () => {
@@ -25,6 +25,7 @@ export const BusinessInformation = () => {
             document: []
         }
     });
+    const navigate = useNavigate();
 
     const handleChange = (e) => {
         const { id, value } = e.target;
@@ -49,9 +50,6 @@ export const BusinessInformation = () => {
         }
     }
 
-    const createBusiness = async () => {
-        const result = await postData("/businesses/" , dataForm);
-    }
 
 
     useEffect(() => {
@@ -62,8 +60,14 @@ export const BusinessInformation = () => {
         }));
     },[category , address , subDistrict , district , province ,postalCode])
 
-    const onSubmit = () => {
-        createBusiness();
+    const onSubmit = async () => {
+        try {
+            await postData("/businesses/" , dataForm);
+            navigate("/profile/mainbusiness");
+        } catch (error) {
+            console.log(error);
+        }
+        
     }
 
     
@@ -167,7 +171,7 @@ export const BusinessInformation = () => {
                             <div onClick={onSubmit} className="flex px-3 py-2 bg-green-400 transition-all text-white hover:bg-green-300 w-fit h-fit cursor-pointer rounded-md">
                                 Submit
                             </div>
-                            <Link to="/mainbusiness">
+                            <Link to="/profile/mainbusiness">
                                 <div className="flex px-3 py-2 bg-red-400 text-white transition-all hover:bg-red-300 w-fit h-fit cursor-pointer rounded-md">
                                     Cancel
                                 </div>

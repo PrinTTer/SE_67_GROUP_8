@@ -2,6 +2,8 @@ import { faChevronDown, faFileLines, faHotel, faLocationDot, faPenToSquare, faTr
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
 import { BusinessEditBtn } from "./BusinessEditBtn";
+import { Link } from 'react-router-dom';
+
 
 export const BusinessBlock = (prop) => {
     const { business } = prop;
@@ -62,7 +64,10 @@ export const BusinessBlock = (prop) => {
             </div>
 
             <div className="flex gap-16 justify-end p-5">
-                <BusinessEditBtn icon={faFileLines} popup={"Information"}/>
+            <Link to={`/profile/mainBusiness/createBusiness/adddetails/${business._id}`}>
+                 <BusinessEditBtn icon={faFileLines} popup={"Information"}/>
+            </Link>
+               
                 <BusinessEditBtn icon={faPenToSquare} popup={"Edit"}/>
                 <BusinessEditBtn icon={faTrash} popup={"Delete"}/>
             </div>

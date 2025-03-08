@@ -1,11 +1,33 @@
-import { useState } from 'react';
+import { useState , useEffect} from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {  faPlus,faTimes,faTimesCircle,faCheckCircle } from '@fortawesome/free-solid-svg-icons';
 import { getTopic } from "../../data";
-
+import { ServiceBlock } from "./component/ServiceBlock"
+import { fetchData } from "../../services/apiService"
+import { useParams } from 'react-router-dom';
 
 const AddDetails = () => {
-    const type = "hotel"
+  let { id } = useParams();
+  const [isLoading, setIsLoading] = useState(false);
+  const [business, setBusiness] = useState([]);
+   
+   const fetchBusiness = async () => {
+     try {
+       setIsLoading(true);
+       const data = await fetchData(`/businesses/${id}`);
+       setBusiness(data);
+     } catch (error) {
+       console.log(error);
+     } finally {
+       setIsLoading(false);
+     }
+   };
+    useEffect(() => {
+      fetchBusiness();
+     }, []);
+     console.log(business?.business?.category)
+    let type = business?.business?.category || "event"
+   // alert(type)
     let topicBusines
     if (type == "hotel"){
         topicBusines =["Hotel Information", "Room details", "Specify food and beverage service information", "Recreation facility", "Description"]
@@ -13,10 +35,10 @@ const AddDetails = () => {
     else if(type == "event") {
         topicBusines =["Event Information", "Ticket details", "Description"]
     }
-    else if(type == "food"){
+    else if(type == "restaurant"){
         topicBusines =["Working Date Information", "Course details", "Description"]
     }
-    else if(type == "car"){
+    else if(type == "carRental"){
       topicBusines =["Working Date Information", "Car details", "Description"]
   }
 
@@ -30,6 +52,7 @@ const AddDetails = () => {
         setHead(title)
         
       };
+    
     return(
         <>
             <div className="flex flex-5  flex-col shadow-md">
@@ -38,11 +61,16 @@ const AddDetails = () => {
                           <div  className=' px-5 py-2 rounded-t-lg   bg-[#D9D9D9] cursor-pointer ' onClick={() => toggle({ title: type })} >{type}</div>
                           <div  className=' px-5 py-2 rounded-t-lg   bg-[#D9D9D9] cursor-pointer ' onClick={() => toggle({ title: "Package" })}>News&Package</div>
                         </div>
-                        <div className="bg-[#D9D9D9] p-4 rounded-lg">
+                        <div className={`bg-[#D9D9D9] p-4 rounded-lg ${show ? "block" : "hidden"}`}>
                         {
                         topicBusines.map((element,index)=>{
-  
-                          return <Addblock key={index} title={element} type={type}/>
+                          if(element.includes("details"))
+                          {
+                            return <ServiceBlock key={index} title={element} type={type}/>
+                          }else{
+                            return <Addblock key={index} title={element} type={type}/>
+                          }
+                         
                         })
                        }
                         </div>
@@ -64,7 +92,7 @@ const Addblock = (prop) =>{
 
     // Function to show alert with the input values
     const handleCheck = () => {
-      const jsonOutput = generateJson(title, inputs, detail);
+      const jsonOutput = dataJson(title, inputs, detail);
       console.log("Final JSON Output:", jsonOutput);
       // alert(JSON.stringify(jsonOutput))
   };
@@ -98,7 +126,7 @@ const Addblock = (prop) =>{
             </div>
             <div className={`${!show ? "block" : "hidden"} `}>
                   <form>
-                    <div className={`grid ${Array.isArray(detail) ? " grid-cols-2" : "grid-cols-1"} gap-4 p-2 bg-[#69A4DA]   border rounded-md mt-2`}>
+                    <div className={`grid ${Array.isArray(detail) ? " grid-cols-2" : "grid-cols-1"} gap-4 p-2 bg-[#A0DEFF]   shadow-md rounded-md mt-2`}>
                       {Array.isArray(detail) ? (
                           detail.map((item, index) => (
                             
@@ -107,7 +135,7 @@ const Addblock = (prop) =>{
                               <div>{item}</div>
                               <input type={`${item.toLowerCase().includes("date") || item.toLowerCase().includes("period") || item.toLowerCase().includes("round") ? "datetime-local" : (item.toLowerCase().includes("image") ? "file" : "text")}`}  
                                      
-                                     className={`${addInput} bg-amber-50 p-2 rounded-md`} onChange={(e) => handleInputChange(index,e.target.value)}  />
+                                     className={`${addInput} bg-[#F8FAFC] p-2 rounded-md shadow-md`} onChange={(e) => handleInputChange(index,e.target.value)}  />
                             </div>
                           
                         ))
@@ -159,7 +187,7 @@ const BlockInput=(prop)=>{
             <div key={index} className="flex items-center space-x-2">
               <input
                 type="text"
-                className="bg-amber-50 p-2 rounded-md border"
+                className="bg-[#F8FAFC] p-2 rounded-md  shadow-md"
                 value={value}
                 onChange={(e) => handleInputChange(index, e.target.value)}
               />
@@ -173,7 +201,7 @@ const BlockInput=(prop)=>{
           
         </div>
         <div className={` p-4   ${detail == "description" ? "block" : "hidden"}`}>
-            <textarea  className="bg-amber-50 p-2   rounded-md w-full h-25 " onChange={(e) => handleInputChange(0,e.target.value)} ></textarea>
+            <textarea  className="bg-[#F8FAFC] p-2 shadow-md   rounded-md w-full h-25 " onChange={(e) => handleInputChange(0,e.target.value)} ></textarea>
         </div>
        
       </div>
@@ -184,7 +212,7 @@ const BlockInput=(prop)=>{
 export default AddDetails;
 
 
-const generateJson = (title, inputs, detail) => {
+const dataJson = (title, inputs, detail) => {
   let json;
 
   if (Array.isArray(detail) && detail.length > 0) {

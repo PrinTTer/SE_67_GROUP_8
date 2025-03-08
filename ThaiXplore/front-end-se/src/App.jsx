@@ -67,7 +67,7 @@ function App() {
               element={<CreateBusiness />}
             />
             <Route
-              path="/profile/mainBusiness/createBusiness/adddetails"
+              path="/profile/mainBusiness/createBusiness/adddetails/:id"
               element={<AddDetails />}
             />
 

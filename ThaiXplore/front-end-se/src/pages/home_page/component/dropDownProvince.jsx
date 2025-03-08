@@ -43,7 +43,7 @@ const ProvinceDropdown = () => {
         value={selectedProvince} 
         onChange={handleSelectChange} 
       >
-        <option value="">--Select Province--</option>
+        <option value="hotel">--Select Province--</option>
         {data.map((province) => (
           <option key={province.id} value={province.name_en}>
             {province.name_th} ({province.name_en})

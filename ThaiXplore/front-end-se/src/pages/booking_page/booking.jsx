@@ -50,12 +50,12 @@ const Booking = () => {
    
     console.log(data);
     return(
-        <div className="flex flex-1">
-            <NavBarWithOutText/>
+        <>            
+            <div>
+                
+            </div>
             
-            
-            
-        </div>
+        </>
     );
 }
 

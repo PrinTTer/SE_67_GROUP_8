@@ -115,3 +115,16 @@ export const deleteUser = async (req:express.Request , res:express.Response):Pro
         return res.sendStatus(400);
     }
 }
+
+export const uploadUserProfile = async (req: express.Request , res: express.Response):Promise<any> => {
+    try {
+        // if(!req.file) {
+        //     return res.sendStatus(400);
+        // }
+
+        return res.status(200).json({massage : "successfully"});
+    } catch (error) {
+        console.log(error);
+        return res.sendStatus(400);
+    }
+}

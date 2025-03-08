@@ -11,3 +11,5 @@ export const BusinessDetailModel = mongoose.model("BusinessDetail" , BusinessDet
 export const createBusinessDetail = (values: Record<string , any>) => 
     new BusinessDetailModel(values).save().then((businessDetail)=>businessDetail.toObject());
 
+export const updateBusinessDetailById = (id:string , values: Record<string , any>) => BusinessDetailModel.findByIdAndUpdate(id , values);
+

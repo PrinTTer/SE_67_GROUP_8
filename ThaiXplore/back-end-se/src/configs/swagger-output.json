@@ -274,7 +274,7 @@
         }
       }
     },
-    "/businesses/category/{category}": {
+    "/businesses/categories/{category}": {
       "get": {
         "description": "",
         "parameters": [

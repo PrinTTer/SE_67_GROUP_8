@@ -10,7 +10,7 @@ export default (router: express.Router) => {
     router.get('/my-businesses' , isAuthenticated , getMyAllBusinesses);
     router.get('/businesses/:businessId' , getBusinesses);
     router.get('/businesses' , getAllBusinesses);
-    router.get('/businesses/category/:category' , getBusinessesByCategory);
+    router.get('/businesses/categories/:category' , getBusinessesByCategory);
     router.delete('/businesses/:businessId',isAuthenticated , deleteBusiness);
     router.delete('/businesses/:businessId/images/:index',isAuthenticated , deleteBusinessImages);
 }

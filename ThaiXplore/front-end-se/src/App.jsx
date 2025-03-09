@@ -19,6 +19,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setPath } from "./features/pathSlice";
 import { fetchUser } from "./features/authSlice";
 import { TopBarResponsive } from "./components/TopBarResponsive";
+import Payment from "./pages/payment_page/payment";
 
 function App() {
   const dispatch = useDispatch();
@@ -70,8 +71,11 @@ function App() {
               element={<AddDetails />}
             />
 
-            <Route path="/detail/booking/:id/:index" element={<Booking />} />
-            <Route path="/detail/:title/booking" element={<Booking />} />
+            {/* <Route path="/detail/booking/:id/:index" element={<Booking />} /> */}
+            <Route path="/booking" element={<Booking />} />
+
+            <Route path="/payment" element={<Payment />} />
+
           </Routes>
         </div>
         </>

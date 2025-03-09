@@ -3,11 +3,14 @@ import multer from "multer";
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null , './public/uploads');
+        const {title} = req.body;
+        const [model , category] = title.split("_");
+        cb(null , `./public/uploads/${model}/${category}`);
     },
     filename: (req , file , cb) => {
         const currentUserId:string = get(req , 'identity._id');
-        cb(null , currentUserId + '-' + file.originalname);
+        const { title } = req.body;
+        cb(null , title + '-' + currentUserId + '-' + Date.now() + '-' + file.originalname);
     }
 });
 

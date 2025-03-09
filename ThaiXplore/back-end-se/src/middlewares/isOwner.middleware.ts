@@ -1,5 +1,4 @@
 import { get } from 'lodash';
-import { getUserBySessionToken } from '../models/users';
 import express from "express";
 
 export const isOwner = (req:express.Request , res:express.Response , next:express.NextFunction):any => {

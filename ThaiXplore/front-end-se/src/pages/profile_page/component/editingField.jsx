@@ -15,11 +15,6 @@ export const EditingField = (prop) => {
     useEffect(() => {
         setInputValue(value);
     }, [value]);
-
-    useEffect(() => {
-        setFirstName(value?.split(" ")[0]);
-        setLastName(value?.split(" ")[1]);
-    }, [value]);
     
     const handleSave = () => {
         setIsEditing(false);

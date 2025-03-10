@@ -1,7 +1,10 @@
 import BookingDetail from "../booking_page/component/bookingDetail";
 import { PaymentUserDetail } from "./component/paymentUserDetail";
+import { useSelector } from "react-redux";
 
 const Payment = () => {
+    const { user } = useSelector((state) => state.auth);
+
     return(
         <>
             <div className="flex flex-[1.2]">
@@ -31,7 +34,7 @@ const Payment = () => {
                         </div>
                         <div className="flex flex-1 ">
                             <div className="flex flex-3">                              
-                                <PaymentUserDetail/>
+                                <PaymentUserDetail user={user}/>
                             </div>
                             <div className="flex flex-1 items-center justify-center">
                                 <div className="border w-50 h-60 mb-4 rounded-md"></div>
@@ -56,7 +59,7 @@ export const PaymentForm = (prop) => {
 
     return(
         <div className="flex flex-col">
-            <hi className="font-bold">{label}</hi>
+            <h1 className="font-bold">{label}</h1>
             <input type="text" className="w-2/3 p-2 mt-1 text-xl border rounded-lg" placeholder={word}/>
         </div>
     );

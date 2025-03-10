@@ -13,12 +13,6 @@ const ProfileForm = () => {
         }
     },[user])
 
-    useEffect(() => {
-        if (user) {
-            setData(user);
-        }
-    }, [user]);
-
     const handleFieldUpdate = async (field, value) => {
         let updatedData = { ...data, [field]: value };
 

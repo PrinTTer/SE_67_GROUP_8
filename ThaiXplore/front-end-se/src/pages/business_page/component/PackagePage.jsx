@@ -15,7 +15,7 @@ export const PackageBlock = () => {
 
     return (
         <div className="shadow-md m-4 p-4 rounded-md bg-[#F1F5F9]">
-            <div className='text-lg border-b-2'>Package Detail</div>
+            <div className='text-lg border-b-2'>Package List</div>
             
             {/* Add Package Button */}
             <div className='items-center flex mt-2 cursor-pointer' onClick={addPackage}>

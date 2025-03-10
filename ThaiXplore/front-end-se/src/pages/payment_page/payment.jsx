@@ -42,8 +42,18 @@ const Payment = () => {
                         </div>
                         
                     </div>
-                    <div className="flex flex-1 border-1 border-blue-400 rounded-xs shadow-gray-400 mx-4 shadow-md">
-    
+                    <div className="flex flex-1 flex-col border-1 border-blue-400 rounded-xs shadow-gray-400 mx-4 shadow-md">
+                        <div className="flex flex-1 justify-center">
+                            <div className="flex w-lg justify-between items-center">
+                                <h1 className="font-bold text-2xl mx-10">Total Price</h1>
+                                <h1 className="font-bold text-2xl mx-10">THB {"5000"} ฿</h1>
+                            </div>
+                        </div>
+                        <div className="flex flex-1 justify-center items-center">
+                            <div className="flex justify-center items-center w-1/2 h-2/3 bg-[#FF5E1F] rounded-2xl hover:bg-amber-700 hover:cursor-pointer">
+                                <p className="text-center text-2xl font-bold text-white">Pay Here</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
 

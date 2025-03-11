@@ -18,6 +18,10 @@ const PackageSchema = new mongoose.Schema({
             businessId : {type : String , require : true}
         }
     ],
+    packageTransaction : {
+        transactionDate : {type : Date , require : true},
+        paymentMethod : {type : String , require : true}
+    }
 });
 
 export const PackageModel = mongoose.model("Packages" , PackageSchema);

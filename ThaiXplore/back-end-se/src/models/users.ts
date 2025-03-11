@@ -12,7 +12,14 @@ const UserSchema = new mongoose.Schema({
     address : {type : String , require : false},
     phoneNumber : {type : String , require : false},
     role : {type : String , require : true},
-    dateCreate : {type : Date , require : true}
+    dateCreate : {type : Date , require : true},
+    packages : [
+        {
+            packageId : {type : String , require : true},
+            amount : {type : Number , require : true}
+        }
+    ],
+    media : {type : String , require : true}
 });
 
 export const UserModel = mongoose.model("User" , UserSchema);

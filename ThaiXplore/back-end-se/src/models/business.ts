@@ -14,6 +14,7 @@ const BusinessSchema = new mongoose.Schema({
         status : {type : String , require : false}
     },
     followBusiness : {type : [String] , require : false},
+    dateCreate : {type : Date , require : true}
 });
 
 export const BusinessModel = mongoose.model("Business" , BusinessSchema);

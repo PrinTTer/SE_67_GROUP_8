@@ -20,6 +20,7 @@ import { setPath } from "./features/pathSlice";
 import { fetchUser } from "./features/authSlice";
 import { TopBarResponsive } from "./components/TopBarResponsive";
 import Payment from "./pages/payment_page/payment";
+import PaymentSelector from "./pages/payment_page/paymentSelected";
 
 function App() {
   const dispatch = useDispatch();
@@ -75,6 +76,7 @@ function App() {
             <Route path="/booking" element={<Booking />} />
 
             <Route path="/payment" element={<Payment />} />
+            <Route path="/paymentSelector" element={<PaymentSelector />} />
 
           </Routes>
         </div>

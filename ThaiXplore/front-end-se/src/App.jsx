@@ -21,7 +21,7 @@ import { fetchUser } from "./features/authSlice";
 import { TopBarResponsive } from "./components/TopBarResponsive";
 import Payment from "./pages/payment_page/payment";
 import PaymentSelector from "./pages/payment_page/paymentSelected";
-
+import QuotationPage from "./pages/quotation_page/quotationpage"
 function App() {
   const dispatch = useDispatch();
   const location = useLocation(); // ดึง path ปัจจุบันจาก react-router
@@ -77,7 +77,7 @@ function App() {
 
             <Route path="/payment" element={<Payment />} />
             <Route path="/paymentSelector" element={<PaymentSelector />} />
-
+            <Route path="/quotation" element={<QuotationPage />} />
           </Routes>
         </div>
         </>

@@ -1,9 +1,10 @@
+
 import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCalendarAlt, faTimes } from "@fortawesome/free-solid-svg-icons";
 
 export const QuotationPopUp = (prop) => {
-  const { onClose } = prop
+  const { onClose, serviceBusiness } = prop
   const [formData, setFormData] = useState({
     companyName: "",
     province: "",
@@ -49,11 +50,11 @@ export const QuotationPopUp = (prop) => {
   };
 
   return (
-    <div className="mt-4 fixed inset-0 flex items-center justify-center bg-gray bg-opacity-80">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-[600px] border">
+    <div className="fixed inset-0 flex items-center justify-center bg-opacity-70 z-50">
+      <div className="bg-white p-6 rounded-lg shadow-lg w-[600px] border relative">
         <div className="flex justify-between items-center">
           <h2 className="text-lg font-semibold">Quotation Form</h2>
-          <button onClick={onClose} className="text-red-500 text-lg font-bold">
+          <button onClick={onClose} className="text-red-500 text-lg font-bold cursor-pointer">
             &times;
           </button>
         </div>
@@ -140,8 +141,8 @@ export const QuotationPopUp = (prop) => {
         <div className="mt-4 border p-2 bg-blue-200 max-h-60 overflow-y-auto">
           <table className="w-full text-sm border-collapse">
             {/* Fixed Header */}
-            <thead className="bg-blue-300 sticky top-0 shadow-md ">
-              <tr className="border-b   ">
+            <thead className="bg-blue-300 sticky top-0 shadow-md">
+              <tr className="border-b">
                 <th className="text-center p-2">Detail</th>
                 <th className="text-center p-2">Quantity</th>
                 <th className="text-center p-2">Price</th>
@@ -149,19 +150,19 @@ export const QuotationPopUp = (prop) => {
                 <th className="text-center p-2">Delete</th>
               </tr>
             </thead>
-            </table>
 
             {/* Scrollable Table Body */}
-            <table className="w-full text-sm border-collapse">
             <tbody>
               {formData.items.map((item, index) => (
                 <tr key={index} className="border-b">
                   <td className="px-2">
-                    <input
-                      type="text"
-                      value={item.detail}
-                      onChange={(e) => handleChange(e, index, "detail")}
-                      className="w-full p-1 border rounded bg-white"
+                    <ServiceDropdown 
+                      data={serviceBusiness} 
+                      onSelect={(value) => {
+                        const updatedItems = [...formData.items];
+                        updatedItems[index].detail = value;
+                        setFormData({ ...formData, items: updatedItems });
+                      }}
                     />
                   </td>
                   <td className="px-2">
@@ -209,16 +210,53 @@ export const QuotationPopUp = (prop) => {
         {/* Total & Buttons */}
         <div className="flex justify-between items-center mt-4">
           <div className="text-lg font-bold">Total: {calculateTotal()}</div>
-          <div className="space-x-2">
-            <button onClick={onClose} className="px-4 py-2 bg-gray-500 text-white rounded">
-              Back
-            </button>
-            <button onClick={handleSubmit} className="px-4 py-2 bg-green-500 text-white rounded">
-              Submit
-            </button>
-          </div>
+          <button onClick={handleSubmit} className="px-4 py-2 bg-green-500 text-white rounded">
+            Submit
+          </button>
         </div>
       </div>
     </div>
   );
 };
+const ServiceDropdown = (prop) => {
+  const { data, onSelect } = prop
+  const [selectedService, setSelectedService] = useState("");
+  let detailKey = "";
+
+  
+  
+    if (Object.keys(data[0]).includes("roomType")) {
+      detailKey = "roomType";
+    } else if (Object.keys(data[0]).includes("carBrand")) {
+      detailKey = "carBrand";
+    } else if (Object.keys(data[0]).includes("courseName")) {
+      detailKey = "courseName";
+    } else if (Object.keys(data[0]).includes("ticketType")) {
+      detailKey = "ticketType";
+    }
+  
+
+  const handleSelectChange = (event) => {
+    const selectedValue = event.target.value;
+    setSelectedService(selectedValue);
+    onSelect(selectedValue); 
+  };
+
+  return (
+    <div className="w-full p-1 text-center">
+      <select
+        className="p-1 border bg-white rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+        value={selectedService}
+        onChange={handleSelectChange}
+      >
+        <option value="">Select Service</option>
+        {data.map((service) => (
+          <option key={service._id} value={service[detailKey]}>
+            {service[detailKey]}
+          </option>
+        ))}
+      </select>
+    </div>
+  );
+};
+

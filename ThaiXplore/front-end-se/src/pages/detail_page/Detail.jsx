@@ -1,8 +1,8 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Link, useParams } from 'react-router-dom';
-import { NavBarWithOutText } from '../../layouts/navbar';
-import { faPlus, faFileInvoice } from '@fortawesome/free-solid-svg-icons';
-import { getBusiness, getInfo } from '../../data';
+
+import {  faFileInvoice } from '@fortawesome/free-solid-svg-icons';
+import { getBusiness } from '../../data';
 import { faBed, faStar } from '@fortawesome/free-solid-svg-icons';
 import { RightSideBar } from './component/RightBar';
 import { Service } from './component/Service';
@@ -15,7 +15,7 @@ import axios from 'axios';
 function Detail() {
   const { id } = useParams()
   const business = getBusiness("Hotel A")
-  const ArrTitle = getInfo(business)
+ 
   const [show, setShow] = useState(true)
   const [showPopup, setShowPopup] = useState(false);
 
@@ -92,7 +92,7 @@ function Detail() {
                 <p>Request Quotation</p>
               </div>
             </Link>
-            {showPopup && <QuotationPopUp onClose={() => setShowPopup(false)} />}
+            {showPopup && <QuotationPopUp onClose={() => setShowPopup(false)} serviceBusiness={data?.services}/>}
 
 
 
@@ -136,7 +136,7 @@ function Detail() {
 const Info = (prop) => {
   const { infoTitle } = prop
   const { title } = useParams();
-
+  console.log(title)
 
   return (
     <div className="p-4 rounded-lg gap-5 mb-5 bg-yellow-50 shadow-md border border-gray-300">

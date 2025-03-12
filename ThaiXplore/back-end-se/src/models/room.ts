@@ -20,3 +20,7 @@ const RoomSchema = new mongoose.Schema({
 export const RoomModel = mongoose.model("Room" , RoomSchema);
 
 export const createRoom = (values : Record<string , any>) => new RoomModel(values).save().then((room)=>room.toObject());
+
+export const deleteRoom = (id:string) => RoomModel.findByIdAndDelete(id);
+
+export const updateRoom = (id:string , values:Record<string , any>) => RoomModel.findByIdAndUpdate(id , values);

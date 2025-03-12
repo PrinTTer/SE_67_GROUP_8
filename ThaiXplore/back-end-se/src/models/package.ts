@@ -31,3 +31,5 @@ export const getPackagesByBusinessId = (businessId: String) => PackageModel.find
 export const getPackageById = (id: String) => PackageModel.findById(id);
 
 export const createPackage = (values: Record<string , any>) => new PackageModel(values).save().then((pack) => pack.toObject());
+
+export const deletePackage = (id: string) => PackageModel.findByIdAndDelete(id);

@@ -24,5 +24,8 @@ const QuotaionSchema = new mongoose.Schema({
 
 export const QuotationModel = mongoose.model("Quotation" , QuotaionSchema);
 
+export const findQuotation = (id:string) => QuotationModel.findById(id);
+
 export const createQuotation = (values: Record<string , any>) => new QuotationModel(values).save().then((quotation)=>quotation.toObject());
 
+export const deleteQuotation = (id:string) => QuotationModel.findByIdAndDelete(id);

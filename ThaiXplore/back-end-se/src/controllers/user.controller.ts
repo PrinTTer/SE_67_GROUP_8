@@ -153,3 +153,27 @@ export const getUserProfileImage = async (req:express.Request , res: express.Res
         return res.sendStatus(400);
     }
 }
+
+export const buyPackages = async (req:express.Request , res:express.Response):Promise<any> => {
+    try {
+        const {packageId , amount} = req.body;
+        const currentUserId:string = get(req , 'identity._id');
+        const user = await getUserById(currentUserId);
+
+        if(!packageId || !amount){
+            return res.sendStatus(400);
+        }
+
+        user.packages.push({
+            packageId,
+            amount
+        });
+
+        user.save();
+
+        return res.status(200).json({message : "Successful purchase."});
+    } catch (error) {
+        console.log(error);
+        return res.sendStatus(400);
+    }
+}

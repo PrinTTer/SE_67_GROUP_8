@@ -718,6 +718,16 @@
           }
         }
       }
+    },
+    "/users/packages": {
+      "post": {
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
     }
   }
 }

@@ -84,7 +84,7 @@ export const QuotationPopUp = (prop) => {
               onChange={handleChange}
               className="outline-none"
             />
-            <FontAwesomeIcon icon={faCalendarAlt} className="ml-2 text-gray-500" />
+            
           </div>
         </div>
 

@@ -2,6 +2,12 @@
 import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCalendarAlt, faTimes } from "@fortawesome/free-solid-svg-icons";
+import { ServiceDropdown } from "./dropDownService"
+import { useNavigate } from "react-router-dom";
+
+
+
+
 
 export const QuotationPopUp = (prop) => {
   const { onClose, serviceBusiness } = prop
@@ -44,11 +50,20 @@ export const QuotationPopUp = (prop) => {
   const calculateTotal = () => {
     return formData.items.reduce((sum, item) => sum + (parseFloat(item.amount) || 0), 0);
   };
-
+  const navigate = useNavigate();
   const handleSubmit = () => {
+
+    if (!formData.companyName || !formData.name || !formData.phone || !formData.email || formData.items.length === 0) {
+      alert("Please fill in all required fields!");
+      return;
+    }
     console.log("Form Data Submitted:", formData);
+
+    navigate("/quotation");
   };
 
+
+  
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-opacity-70 z-50">
       <div className="bg-white p-6 rounded-lg shadow-lg w-[600px] border relative">
@@ -177,6 +192,7 @@ export const QuotationPopUp = (prop) => {
                     <input
                       type="number"
                       value={item.price}
+                      readOnly
                       onChange={(e) => handleChange(e, index, "price")}
                       className="w-full p-1 border rounded text-center bg-white"
                     />
@@ -210,53 +226,16 @@ export const QuotationPopUp = (prop) => {
         {/* Total & Buttons */}
         <div className="flex justify-between items-center mt-4">
           <div className="text-lg font-bold">Total: {calculateTotal()}</div>
-          <button onClick={handleSubmit} className="px-4 py-2 bg-green-500 text-white rounded">
-            Submit
-          </button>
+         
+            <button onClick={handleSubmit} className="px-4 py-2 bg-green-500 text-white rounded">
+              Submit
+            </button>
+          
+          
         </div>
       </div>
     </div>
   );
 };
-const ServiceDropdown = (prop) => {
-  const { data, onSelect } = prop
-  const [selectedService, setSelectedService] = useState("");
-  let detailKey = "";
 
-  
-  
-    if (Object.keys(data[0]).includes("roomType")) {
-      detailKey = "roomType";
-    } else if (Object.keys(data[0]).includes("carBrand")) {
-      detailKey = "carBrand";
-    } else if (Object.keys(data[0]).includes("courseName")) {
-      detailKey = "courseName";
-    } else if (Object.keys(data[0]).includes("ticketType")) {
-      detailKey = "ticketType";
-    }
-  
-
-  const handleSelectChange = (event) => {
-    const selectedValue = event.target.value;
-    setSelectedService(selectedValue);
-    onSelect(selectedValue); 
-  };
-
-  return (
-    <div className="w-full p-1 text-center">
-      <select
-        className="p-1 border bg-white rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
-        value={selectedService}
-        onChange={handleSelectChange}
-      >
-        <option value="">Select Service</option>
-        {data.map((service) => (
-          <option key={service._id} value={service[detailKey]}>
-            {service[detailKey]}
-          </option>
-        ))}
-      </select>
-    </div>
-  );
-};
 

@@ -56,7 +56,7 @@ const QuotationList = (prop) => {
                     business={item.business} 
                     date={item.date} 
                     status={item.status} 
-                    isEven={index % 2 === 0} // เช็คว่าเป็นแถวเลขคู่หรือไม่
+                    isEven={index % 2 === 0} 
                 />
             ))}
         </>

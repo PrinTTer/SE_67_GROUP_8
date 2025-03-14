@@ -38,7 +38,7 @@ export const SideBarWithRole = (prop) =>{
                     <FontAwesomeIcon icon={faCircleUserRegular} size="lg" className="ml-1"/>
                     <span className="text-lg ml-2">Profile</span>
                 </Link>
-                <Link to={"/profile"} className="block p-1.5  hover:bg-gray-300 rounded-full ">
+                <Link to={"/usermanage"} className="block p-1.5  hover:bg-gray-300 rounded-full ">
                     <FontAwesomeIcon icon={faUserGroup} size="lg" className="ml-1"/>
                     <span className="text-lg ml-2">User Management</span>
                 </Link>

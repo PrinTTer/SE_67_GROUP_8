@@ -13,6 +13,9 @@ import CreateBusiness from "./pages/business_page/create_business";
 import MainBusiness from "./pages/business_page/main_business";
 import Booking from "./pages/booking_page/booking";
 import AddDetails from "./pages/business_page/add_detail";
+// import Usermanage from "./pages/usermanage_page/usermanage_page";
+import VerifyBusiness from "./pages/businessmanage_page/businessmanage_page";
+import Test from "./pages/usermanage_page/test";
 import { NavigateBar } from "./layouts/navigatebar";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -72,6 +75,9 @@ function App() {
 
             <Route path="/detail/booking/:id/:index" element={<Booking />} />
             <Route path="/detail/:title/booking" element={<Booking />} />
+            {/* <Route path="/usermanage" element={<Usermanage />} /> */}
+            <Route path="/verifyBusiness" element={<VerifyBusiness />} />
+            <Route path="/test" element={<Test />} />
           </Routes>
         </div>
         </>

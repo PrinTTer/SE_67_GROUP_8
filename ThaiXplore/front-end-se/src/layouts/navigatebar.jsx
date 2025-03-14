@@ -66,6 +66,7 @@ export const NavigateBar = (prop) => {
                     user?.role === "tourist" ? 
                     <ToggleSideBarTourist popupRef={popupRef} logout={logout} updateOpen={isOpen} /> 
                     :
+                    
                     <ToggleSideBarAdmin popupRef={popupRef} logout={logout} updateOpen={isOpen} /> 
                 }
             </div>
@@ -131,8 +132,8 @@ export const ToggleSideBarAdmin = (prop) => {
           cursor-pointer transition-transform`}>
             <ul className='relative p-1 my-2 w-full'>
                 <IconSideBar iconName={"Profile"} iconFont={faUser} path={"/profile"} />
-                <IconSideBar iconName={"Users Management"} iconFont={faUsers} path={"/users-management"} />
-                <IconSideBar iconName={"Businesses Management"} iconFont={faBuilding} path={"/businesses-management"} />
+                <IconSideBar iconName={"Users Management"} iconFont={faUsers} path={"/test"} />
+                <IconSideBar iconName={"Businesses Management"} iconFont={faBuilding} path={"/verifyBusiness"} />
                 <IconSideBar logout={logout} iconName={"Logout"} iconFont={faArrowRightFromBracket} path={"/login"} />
             </ul>
         </div>

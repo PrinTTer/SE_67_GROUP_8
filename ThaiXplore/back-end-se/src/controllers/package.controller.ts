@@ -5,7 +5,7 @@ import { createPackage, deletePackage } from "../models/package";
 
 export const registerPackage = async (req: express.Request , res: express.Response):Promise<any> => {
     try {
-        const { title , description , media , startDate , endDate , totalPackage , price , services} = req.body;
+        const { title , description , media , startDate , endDate , totalPackage , price , services , totalExpirationDate} = req.body;
         const { businessId } = req.params;
         const dateCreate = Date.now();
 
@@ -27,7 +27,8 @@ export const registerPackage = async (req: express.Request , res: express.Respon
             media , 
             dateCreate ,
             startDate , 
-            endDate , 
+            endDate ,
+            totalExpirationDate , 
             price , 
             totalPackage ,
             services

@@ -3,6 +3,7 @@ import { getUsers , deleteUserById, getUserById, updateUserById, getUserByEmail 
 import express from "express";
 import { authentication } from "../helpers/encryption";
 import path from "path";
+import { getPackageById } from "../models/package";
 
 export const getAllUsers = async (req:express.Request , res:express.Response):Promise<any> => {
     try {
@@ -30,10 +31,6 @@ export const updateUser = async (req:express.Request , res:express.Response):Pro
     try {
         const { firstName , lastName , address , phoneNumber } = req.body;
         const currentUserId:string = get(req , 'identity._id');
-
-        if(!firstName || !lastName || !phoneNumber ){
-            return res.sendStatus(400);
-        }
 
          const user = await updateUserById(currentUserId , {
             firstName : firstName,
@@ -156,7 +153,7 @@ export const getUserProfileImage = async (req:express.Request , res: express.Res
 
 export const buyPackages = async (req:express.Request , res:express.Response):Promise<any> => {
     try {
-        const {packageId , amount} = req.body;
+        const {packageId , amount , paymentMethod} = req.body;
         const currentUserId:string = get(req , 'identity._id');
         const user = await getUserById(currentUserId);
 
@@ -164,16 +161,41 @@ export const buyPackages = async (req:express.Request , res:express.Response):Pr
             return res.sendStatus(400);
         }
 
-        user.packages.push({
-            packageId,
-            amount
-        });
+        const dateNow = new Date();
+        const packages = await getPackageById(packageId);
 
-        user.save();
+        if(!packages){
+            return res.sendStatus(400);
+        }
 
-        return res.status(200).json({message : "Successful purchase."});
+        const expirationDate = new Date();
+        expirationDate.setDate(dateNow.getDate() + packages.totalExpirationDate);
+
+        for (let index = 1; index <= amount; index++) {
+            user.packages.push({
+                packageId,
+                expirationDate : expirationDate,
+                status : "unused",
+            });
+        }
+
+        packages.packageTransactionHistory.push({
+            userId : user._id,
+            transactionDate : dateNow,
+            paymentMethod : paymentMethod,
+            amount : amount,
+            totalPrice : amount * packages.price
+        })
+
+        await packages.save();
+        await user.save();
+
+        return res.status(200).json(user);
     } catch (error) {
         console.log(error);
         return res.sendStatus(400);
     }
 }
+
+
+

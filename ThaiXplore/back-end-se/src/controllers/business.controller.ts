@@ -79,12 +79,14 @@ export const getBusinesses = async (req:express.Request , res:express.Response):
 
         const businessDetail = await categoryStrategy.getBusinessDetails();
         const provideService = await categoryStrategy.getProvideService();
+        const packages = await categoryStrategy.getPackageList();
 
 
         return res.status(200).json({
             business,
             details : businessDetail,
-            services : provideService
+            services : provideService,
+            packages : packages
         });
     } catch(err) {
         console.log(err);
@@ -116,7 +118,7 @@ export const getBusinessesByCategory = async (req: express.Request , res:express
 
 export const updateBusiness = async (req: express.Request , res:express.Response): Promise<any> => {
     try {
-        const { businessName , description , address , phoneNumber , email , media , followBusiness} = req.body;
+        const { businessName , description , address , phoneNumber , email , media , followBusiness , verify} = req.body;
         const { businessId } = req.params;
         const currentUserId:string = get(req , 'identity._id');
         const user = await getUserById(currentUserId);
@@ -126,18 +128,15 @@ export const updateBusiness = async (req: express.Request , res:express.Response
             return res.sendStatus(401);
         }
 
-        if(!businessName || !description || !address || !phoneNumber || !email || !media){
-            return res.sendStatus(400);
-        }
-
         const business = await updateBusinessById(businessId,{
-            businessName , 
-            description , 
-            address , 
-            phoneNumber , 
-            email,
+            businessName : businessName , 
+            description : description , 
+            address : address , 
+            phoneNumber : phoneNumber , 
+            email : email,
             media : media,
-            followBusiness : followBusiness
+            verify : verify,
+            followBusiness : followBusiness,
         });
 
         return res.status(200).json(business);

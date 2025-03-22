@@ -6,7 +6,7 @@ import { fetchData } from '../../../services/apiService';
 import { PriceRange } from './RangeBar'
 import  ProvinceDropdown  from './dropDownProvince'
 import axios from "axios";
-
+import LoadingSpinner from '../../../components/LoadingSpinner';
 
 
 export const Category = () => {
@@ -120,7 +120,14 @@ export const Section = (prop) => {
   }
 
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) {
+    return (
+      <div className="min-h-[300px] p-4 bg-white rounded-lg shadow-md">
+        <LoadingSpinner />
+      </div>
+    );
+  }
+  
   if (error) return <p className="text-red-500">Error: {error}</p>;
 
   return (

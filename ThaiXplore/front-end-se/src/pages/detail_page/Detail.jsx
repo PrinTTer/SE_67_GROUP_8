@@ -8,7 +8,7 @@ import { RightSideBar } from './component/RightBar';
 import { Service } from './component/Service';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-
+import LoadingSpinner from '../../components/LoadingSpinner';
 
 
 function Detail() {
@@ -56,7 +56,15 @@ function Detail() {
 
 
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) {
+    return (
+      <div className="flex flex-col flex-4 p-4 min-h-[300px] bg-white rounded-lg shadow-md">
+        <LoadingSpinner />
+      </div>
+    );
+  }
+  
+  
   if (error) return <p className="text-red-500">Error: {error}</p>;
 
 

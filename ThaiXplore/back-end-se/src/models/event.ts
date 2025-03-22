@@ -13,10 +13,13 @@ const EventSchema = new mongoose.Schema({
             date : {type : Date , require : true},
             booked : {type : Number , require : true}
         }
-    ]
+    ],
+    media : {type : [String] , require : true}
 });
 
 export const EventModel = mongoose.model("Activities" , EventSchema);
+
+export const getEventById = (id:string) => EventModel.findById(id);
 
 export const createEvent = (values: Record<string , any>) => new EventModel(values).save().then((activity)=>activity.toObject());
 

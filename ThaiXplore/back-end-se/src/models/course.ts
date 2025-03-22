@@ -22,3 +22,5 @@ const CourseSchema = new mongoose.Schema({
 export const CourseModel = mongoose.model("Course",CourseSchema);
 
 export const createCourse = (values: Record<string , any>) => new CourseModel(values).save().then((course)=>course.toObject());
+export const deleteCoure = (id:string) => CourseModel.findByIdAndDelete(id);
+export const updateCourse = (id:string , values:Record<string , any>) => CourseModel.findByIdAndUpdate(id , values);

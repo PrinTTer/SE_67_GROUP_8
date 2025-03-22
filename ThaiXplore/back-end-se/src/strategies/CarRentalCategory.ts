@@ -1,6 +1,7 @@
 import { BusinessCategoryStrategy } from "../interfaces/businessCategoryStrategy";
 import { CarModel } from "../models/car";
 import { BusinessDetailModel } from "../models/businessDetail";
+import { PackageModel } from "../models/package";
 
 export class CarRentalCategory implements BusinessCategoryStrategy {
   private businessId: String;
@@ -13,7 +14,7 @@ export class CarRentalCategory implements BusinessCategoryStrategy {
   }
 
   getPackageList(): object {
-    return null;
+    return PackageModel.find({ businessId : this.businessId });
   }
 
   getProvideService(): object {

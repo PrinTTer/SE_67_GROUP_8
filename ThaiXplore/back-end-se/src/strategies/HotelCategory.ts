@@ -1,6 +1,7 @@
 import { BusinessCategoryStrategy } from "../interfaces/businessCategoryStrategy";
 import { RoomModel } from "../models/room";
 import { BusinessDetailModel } from "../models/businessDetail";
+import { PackageModel } from "../models/package";
 
 
 export class HotelCategory implements BusinessCategoryStrategy {
@@ -15,7 +16,7 @@ export class HotelCategory implements BusinessCategoryStrategy {
     }
 
     getPackageList(): object {
-        return null;
+        return PackageModel.find({ businessId : this.businessId });
     }
 
     getProvideService(): object {

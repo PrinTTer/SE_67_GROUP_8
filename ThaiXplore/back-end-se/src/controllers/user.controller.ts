@@ -2,6 +2,7 @@ import { get } from "lodash";
 import { getUsers , deleteUserById, getUserById, updateUserById, getUserByEmail } from "../models/users";
 import express from "express";
 import { authentication } from "../helpers/encryption";
+import path from "path";
 
 export const getAllUsers = async (req:express.Request , res:express.Response):Promise<any> => {
     try {
@@ -112,6 +113,43 @@ export const deleteUser = async (req:express.Request , res:express.Response):Pro
         return res.json(deletedUser);
     } catch (err) {
         console.log(err);
+        return res.sendStatus(400);
+    }
+}
+
+export const uploadUserProfileImage = async (req: express.Request , res: express.Response):Promise<any> => {
+    try {
+        if(!req.file) {
+            return res.sendStatus(400);
+        }
+
+        const currentUserId:string = get(req , 'identity._id');
+        const user = await getUserById(currentUserId);
+
+        user.media = req.file.filename;
+        user.save();
+
+        return res.status(200).json(user);
+    } catch (error) {
+        console.log(error);
+        return res.sendStatus(400);
+    }
+}
+
+export const getUserProfileImage = async (req:express.Request , res: express.Response):Promise<any> => {
+    try {
+        const currentUserId:string = get(req , 'identity._id');
+        const user = await getUserById(currentUserId);
+
+        if (!user.media) {
+            return res.sendStatus(400);
+        }
+
+        const imagePath = path.resolve(__dirname,"../../public/uploads/users/images",user.media);
+
+        res.sendFile(imagePath);
+    } catch (error) {
+        console.log(error);
         return res.sendStatus(400);
     }
 }

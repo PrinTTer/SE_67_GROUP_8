@@ -1,73 +1,70 @@
 import { Link } from 'react-router-dom';
-import {   getDataBusiness, getBusinessbyName, getBusinessbyProvince } from '../../../data';
+import { getDataBusiness, getBusinessbyName, getBusinessbyProvince } from '../../../data';
 import { useState, useEffect } from "react";
 import { SearchBar } from '../../../components/SearchBar';
 import { fetchData } from '../../../services/apiService';
-import { PriceRange } from './RangeBar'
-import  ProvinceDropdown  from './dropDownProvince'
+import ProvinceDropdown from './dropDownProvince';
 import axios from "axios";
 import LoadingSpinner from '../../../components/LoadingSpinner';
 
-
 export const Category = () => {
   return (
-    <div className=" p-10 rounded-lg self-center">
-      <div className='grid grid-cols-4 gap-5'>
-        <CategoryGrid link='/listpage/hotel' image='https://cdn.pixabay.com/photo/2021/06/01/12/39/beach-6301597_1280.jpg' title='Hotel' />
-        <CategoryGrid link='/listpage/event' image='https://cdn.pixabay.com/photo/2016/11/23/15/48/audience-1853662_1280.jpg' title='Event' />
-        <CategoryGrid link='/listpage/restaurant' image='https://cdn.pixabay.com/photo/2016/11/18/14/05/brick-wall-1834784_1280.jpg' title='Food' />
-        <CategoryGrid link='/listpage/carRental' image='https://cdn.pixabay.com/photo/2017/10/02/11/59/toys-2808599_1280.jpg' title='Car' />
+    <div className="py-12 px-6 md:px-10 bg-gradient-to-b from-gray-50 to-white">
+      <h2 className="text-3xl font-bold text-gray-800 mb-8 text-center">
+        <span className="inline-block border-b-2 border-amber-500 pb-2">Explore Thailand</span>
+      </h2>
+      <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto'>
+        <CategoryGrid 
+          link='/listpage/hotel' 
+          image='https://cdn.pixabay.com/photo/2021/06/01/12/39/beach-6301597_1280.jpg' 
+          title='Hotels & Resorts' 
+        />
+        <CategoryGrid 
+          link='/listpage/event' 
+          image='https://cdn.pixabay.com/photo/2016/11/23/15/48/audience-1853662_1280.jpg' 
+          title='Events & Festivals' 
+        />
+        <CategoryGrid 
+          link='/listpage/restaurant' 
+          image='https://cdn.pixabay.com/photo/2016/11/18/14/05/brick-wall-1834784_1280.jpg' 
+          title='Fine Dining' 
+        />
+        <CategoryGrid 
+          link='/listpage/carRental' 
+          image='https://cdn.pixabay.com/photo/2017/10/02/11/59/toys-2808599_1280.jpg' 
+          title='Premium Transport' 
+        />
       </div>
     </div>
   );
 };
 
-
 export const CategoryGrid = (prop) => {
-  const { link, image, title } = prop
+  const { link, image, title } = prop;
   return (
-    <div>
-      <Link to={link}>
-        <figure className='flex justify-center items-center'>
-          <img className='rounded-2xl' src={image} />
-          <figcaption className='absolute text-3xl font-bold text-white drop-shadow-[2px_2px_2px_black] '>{title}</figcaption>
-        </figure>
-      </Link>
-    </div>
+    <Link to={link} className="group overflow-hidden">
+      <div className="relative rounded-xl overflow-hidden shadow-lg transition-all duration-500 transform group-hover:scale-105">
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent z-10"></div>
+        <img 
+          className="w-full h-64 object-cover transition-transform duration-700 group-hover:scale-110" 
+          src={image} 
+          alt={title}
+        />
+        <div className="absolute bottom-0 left-0 right-0 p-5 z-20">
+          <h3 className="text-2xl font-semibold text-white group-hover:text-amber-300 transition-colors duration-300">{title}</h3>
+          <div className="w-10 h-0.5 bg-amber-500 mt-2 transition-all duration-300 group-hover:w-16"></div>
+        </div>
+      </div>
+    </Link>
   );
 }
 
-
-
 export const Section = (prop) => {
-  let { title } = prop
+  let { title } = prop;
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const types = ['hotel', 'event', 'restaurant','carRental','News','Recommended','Package'];
-  // const fetchData = async () => {
-  //   try {
-  //     setLoading(true);
-      
-  //     const res = await axios.get("http://localhost:3000/businesses", { withCredentials: true });
-  //     const data_format = await res.data
-  //     setData(data_format);
-  //   } catch (error) {
-  //     setError(error.message);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   fetchData();
-  // }, []);
-
-
-  // if (loading) return <p>Loading...</p>;
-  // if (error) return <p className="text-red-500">Error: {error}</p>;
-  // console.log(data)
-
+  const types = ['hotel', 'event', 'restaurant', 'carRental', 'News', 'Recommended', 'Package'];
   
   useEffect(() => {
     const getData = async () => {
@@ -105,147 +102,133 @@ export const Section = (prop) => {
     fetchProvince();
   }, []);
 
-  
-  let post
-  if(types.includes(title) ){
+  let post;
+  if(types.includes(title)) {
     post = getDataBusiness({ category: title, json: data });
-    
-  }
-  else if(dataProvince.some(province => province.name_th === title) || dataProvince.some(province => province.name_en === title)){
+  } else if(dataProvince.some(province => province.name_th === title) || dataProvince.some(province => province.name_en === title)) {
     post = getBusinessbyProvince({ province: title, json: data });
-  }
-  else{
+  } else {
     post = getBusinessbyName({ businessName: title, json: data });
-    title = `${post.length} Results Found`
+    title = `${post.length} Results Found for "${title}"`;
   }
-
 
   if (loading) {
     return (
-      <div className="min-h-[300px] p-4 bg-white rounded-lg shadow-md">
+      <div className="min-h-[300px] p-6 bg-white rounded-xl shadow-md flex items-center justify-center">
         <LoadingSpinner />
       </div>
     );
   }
   
-  if (error) return <p className="text-red-500">Error: {error}</p>;
+  if (error) return (
+    <div className="p-6 bg-white rounded-xl shadow-md">
+      <p className="text-red-500 font-medium">Error: {error}</p>
+    </div>
+  );
 
   return (
-    <div className="flex flex-col p-4 rounded-lg mb-4 shadow-md">
-      <div className="flex flex-row">
-        <h2 className="text-lg font-bold">{title}</h2>
-        {/* <h2 className="ml-auto text-blue-500 font-bold cursor-pointer">View All</h2> */}
+    <div className="bg-white rounded-xl shadow-md overflow-hidden mb-8">
+      <div className="px-6 py-4 border-b border-gray-100">
+        <h2 className="text-2xl font-bold text-gray-800 flex items-center">
+          <span className="inline-block w-1 h-6 bg-amber-500 mr-3"></span>
+          {title}
+        </h2>
       </div>
-      <div className='grid lg:mr-72 gap-4'>
-        {post.map((element, index) => (
-
-          <Post key={index} name={element.businessName} id={element._id} address={element.address} />
-        ))}
+      <div className="p-6">
+        <div className="grid gap-6">
+          {post.length > 0 ? (
+            post.map((element, index) => (
+              <Post key={index} name={element.businessName} id={element._id} address={element.address} />
+            ))
+          ) : (
+            <p className="text-gray-500 text-center py-4">No results found</p>
+          )}
+        </div>
       </div>
     </div>
   );
 };
 
 export const Post = (prop) => {
-  const { name, id, address } = prop
-  // const business = getBusiness(name)
+  const { name, id, address } = prop;
   const link = `/Detail/${id}`;
+  
   return (
-    <Link to={link}>
-      <div className="flex flex-col lg:flex-row shadow-md m p-4 bg-white">
-
-        <img
-          className="w-80 h-50 rounded-lg mr-5 object-cover"
-          src="https://i.pinimg.com/736x/a1/06/c7/a106c7e0256afac9d2e4295c42bf0163.jpg"
-          alt="Business"
-        />
-
-        <div className="w-1/2  ">
-          <h1 className="text-xl font-bold"> {name}</h1>
-          <h2 > {address}</h2>
-
+    <Link to={link} className="block transition-all duration-300 hover:shadow-lg">
+      <div className="flex flex-col lg:flex-row rounded-lg overflow-hidden bg-white border border-gray-100">
+        <div className="lg:w-1/3 overflow-hidden">
+          <img
+            className="w-full h-60 lg:h-full object-cover transition-transform duration-700 hover:scale-110"
+            src="https://i.pinimg.com/736x/a1/06/c7/a106c7e0256afac9d2e4295c42bf0163.jpg"
+            alt={name}
+          />
         </div>
-
+        <div className="p-6 lg:w-2/3">
+          <div className="flex items-start justify-between mb-2">
+            <h3 className="text-xl font-bold text-gray-800 hover:text-amber-600 transition-colors">{name}</h3>
+            <span className="bg-amber-50 text-amber-700 text-xs px-2 py-1 rounded-full uppercase tracking-wider">Premium</span>
+          </div>
+          <p className="text-gray-600 mb-4">{address}</p>
+          <div className="flex items-center text-amber-500">
+            <span className="flex">
+              {[1, 2, 3, 4, 5].map((star) => (
+                <svg key={star} className="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                  <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"></path>
+                </svg>
+              ))}
+            </span>
+            <span className="text-xs text-gray-500 ml-2">(120 reviews)</span>
+          </div>
+        </div>
       </div>
     </Link>
   );
 }
 
 export const RightBar = (prop) => {
-  const { pagetitle } = prop
-
+  const { pagetitle } = prop;
 
   return (
-    <div className="hidden lg:flex flex-1 flex-col gap-4 py-4 items-center border-solid border-gray-300 border-l lg:sticky lg:top-0 h-screen">
-      {/* <div className='flex-1'>
-                <input type="text" className='bg-amber-300 rounded-4xl border-1 mt-4'/>
-              </div> */}
-      <SearchBar />
+    <div className="hidden lg:flex flex-col gap-6 py-6 px-4 bg-gray-50 border-l border-gray-200 lg:sticky lg:top-0 h-screen w-80">
+      <div className="px-2">
+        <h3 className="text-xl font-bold text-gray-800 mb-4">Search</h3>
+        <SearchBar />
+      </div>
 
-      <div className={`flex-8 ${pagetitle == "homepage" ? "hidden" : "block"}`} >
-{/* 
-         <div className='mb-5'>
-          <div className='border-l-3 border-[#F96868] pl-1 text-[#007CE8] font-bold'>Business</div>
-          <form method='post'>
-            <ChkBox title="Accommodation" group="Business" />
-            <ChkBox title="Restaurant/Beverage" group="Business" />
-            <ChkBox title="Event/Festival" group="Business" />
-            <ChkBox title="Logistics" group="Business" />
-          </form>
-        </div>
-
-        <div className='mb-5'>
-          <div className='border-l-3 border-[#F96868] pl-1 text-[#007CE8] font-bold'>News/Package</div>
-          <form method='post'>
-            <ChkBox title="News" group="Package" />
-            <ChkBox title="Package" group="Package" />
-          </form>
-        </div>  */}
-
-        <div className='mb-5'>
-          <div className='border-l-3 border-[#F96868] pl-1 text-[#007CE8] font-bold'>Recommend by ThaiXplore</div>
-          <form method='post'>
+      <div className={`${pagetitle === "homepage" ? "hidden" : "block"}`}>
+        <div className="mb-6 px-2">
+          <div className="border-l-4 border-amber-500 pl-3 mb-4">
+            <h4 className="text-gray-800 font-bold">Recommend by ThaiXplore</h4>
+          </div>
+          <form method="post" className="space-y-2">
             <ChkBox title="Recommended" group="Recommended" />
           </form>
         </div>
         
-         <div className='mb-5'>
-          <div className='border-l-3 border-[#F96868] pl-1 text-[#007CE8] font-bold'>Province</div>
-           <ProvinceDropdown /> 
-        </div> 
-
-        {/* <div className='mb-5'>
-          <div className='border-l-3 border-[#F96868] pl-1 text-[#007CE8] font-bold mb-3'>Price Range</div>
-            
-            <PriceRange />
-        </div> */}
-
+        <div className="mb-6 px-2">
+          <div className="border-l-4 border-amber-500 pl-3 mb-4">
+            <h4 className="text-gray-800 font-bold">Province</h4>
+          </div>
+          <ProvinceDropdown />
+        </div>
       </div>
-      <div>
-
-      </div>
-
     </div>
   );
 }
 
 const ChkBox = (prop) => {
-  const { title, group } = prop
+  const { title, group } = prop;
   return (
-    <label className="flex items-center gap-2">
-      <input
-        type="radio"
-        name={group}
-        className="w-3 h-3 appearance-none rounded-[35%] border border-gray-500 checked:bg-blue-500"
-      />
-      <span>{title}</span>
+    <label className="flex items-center gap-3 py-1 px-2 rounded hover:bg-gray-100 cursor-pointer transition-colors">
+      <div className="relative">
+        <input
+          type="radio"
+          name={group}
+          className="w-4 h-4 appearance-none rounded-full border-2 border-gray-300 checked:border-amber-500 transition-colors"
+        />
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-amber-500 scale-0 transition-transform peer-checked:scale-100"></div>
+      </div>
+      <span className="text-gray-700">{title}</span>
     </label>
-
   );
 }
-
-
-
-
-
-

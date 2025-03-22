@@ -11,6 +11,7 @@ import swaggerUi from 'swagger-ui-express';
 import swaggerConfig from './configs/swagger-output.json';
 
 const app = express();
+app.use('public',express.static('public/uploads'));
 
 app.use(cors({
     origin: 'http://localhost:5173',

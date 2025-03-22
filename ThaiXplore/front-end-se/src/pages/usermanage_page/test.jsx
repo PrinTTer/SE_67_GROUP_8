@@ -100,8 +100,8 @@ const Test = () => {
   };
 
   return (
-    <div className="flex flex-col items-center p-6 w-full">
-      <h2 className="text-2xl w-full text-left font-bold mb-4">User Management</h2>
+    <div className="flex flex-5 items-center flex-col p-6">
+      <h2 className="text-2xl w-full text-left font-bold mb-6">User Management</h2>
 
       {/* ช่องค้นหา (Search Bar) ชิดขวา */}
       <div className="w-full flex justify-end mb-4">

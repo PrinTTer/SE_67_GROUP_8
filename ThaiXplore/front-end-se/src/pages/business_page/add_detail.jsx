@@ -5,28 +5,39 @@ import { getTopic } from "../../data";
 import { ServiceBlock } from "./component/ServiceBlock"
 import { fetchData } from "../../services/apiService"
 import { useParams } from 'react-router-dom';
+ import  {PackageBlock}  from './component/PackagePage'
 
 const AddDetails = () => {
   let { id } = useParams();
   const [isLoading, setIsLoading] = useState(false);
-  const [business, setBusiness] = useState([]);
-   
-   const fetchBusiness = async () => {
-     try {
-       setIsLoading(true);
-       const data = await fetchData(`/businesses/${id}`);
-       setBusiness(data);
-     } catch (error) {
-       console.log(error);
-     } finally {
-       setIsLoading(false);
-     }
-   };
-    useEffect(() => {
+  const [business, setBusiness] = useState(null);
+
+  const fetchBusiness = async () => {
+    try {
+      setIsLoading(true);
+      const data = await fetchData(`/businesses/${id}`);
+      setBusiness(data);
+    } catch (error) {
+      console.error("Error fetching business:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (id) {
       fetchBusiness();
-     }, []);
-     console.log(business?.business?.category)
-    let type = business?.business?.category || "event"
+    }
+  }, [id]);
+
+  
+  
+ 
+
+  const [show, setShow] = useState(true)
+  const [head, setHead] = useState(business?.business?.category )
+
+  let type = business?.business?.category || "event";
    // alert(type)
     let topicBusines
     if (type == "hotel"){
@@ -42,24 +53,25 @@ const AddDetails = () => {
       topicBusines =["Working Date Information", "Car details", "Description"]
   }
 
-      const [show, setShow] = useState(true)
-      const [head, setHead] = useState(type)
+      
       const toggle = (prop) => {
         const {title} = prop
+        //alert(title+":"+head)
         if(head != title){
           setShow(!show)
         }
         setHead(title)
         
       };
-    
+      if (isLoading) return <p>Loading...</p>;
+     
     return(
         <>
             <div className="flex flex-5  flex-col shadow-md">
                 <div className="flex-1 m-9">
                         <div className='flex   rounded  gap-5 ml-2'>
                           <div  className=' px-5 py-2 rounded-t-lg   bg-[#D9D9D9] cursor-pointer ' onClick={() => toggle({ title: type })} >{type}</div>
-                          <div  className=' px-5 py-2 rounded-t-lg   bg-[#D9D9D9] cursor-pointer ' onClick={() => toggle({ title: "Package" })}>News&Package</div>
+                          <div  className=' px-5 py-2 rounded-t-lg   bg-[#D9D9D9] cursor-pointer ' onClick={() => toggle({ title: "Package" })}>Package</div>
                         </div>
                         <div className={`bg-[#D9D9D9] p-4 rounded-lg ${show ? "block" : "hidden"}`}>
                         {
@@ -73,6 +85,10 @@ const AddDetails = () => {
                          
                         })
                        }
+                        </div>
+                        <div className={`bg-[#D9D9D9] p-4 rounded-lg ${!show ? "block" : "hidden"}`}>
+                            
+                          <PackageBlock /> 
                         </div>
                 </div>
                

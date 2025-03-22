@@ -18,7 +18,8 @@ const UserSchema = new mongoose.Schema({
             packageId : {type : String , require : true},
             amount : {type : Number , require : true}
         }
-    ]
+    ],
+    media : {type : String , require : true}
 });
 
 export const UserModel = mongoose.model("User" , UserSchema);

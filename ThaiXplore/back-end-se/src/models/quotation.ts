@@ -26,6 +26,8 @@ const QuotaionSchema = new mongoose.Schema({
 
 export const QuotationModel = mongoose.model("Quotation" , QuotaionSchema);
 
+export const findQuotationByUserId = (id:string) => QuotationModel.find({userId : id});
+
 export const findQuotation = (id:string) => QuotationModel.findById(id);
 
 export const findServicesDetailsById = (id:string , serviceId:string) => QuotationModel.findOne(

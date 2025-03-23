@@ -8,7 +8,7 @@ export const ProfileIcon = (prop) => {
                 !isAuthenticated() ? 
                 <div className="w-12 h-12 rounded-full bg-yellow-500"></div> 
                 : 
-                <img className="w-12 h-12 rounded-full" src="/src/assets/profile_img_mock_up.jpg"/>
+                <img className="w-12 h-12 rounded-full" src={`http://localhost:3000/public/uploads/users/images/${user?.media}`}/>
             }
         </div>
     );

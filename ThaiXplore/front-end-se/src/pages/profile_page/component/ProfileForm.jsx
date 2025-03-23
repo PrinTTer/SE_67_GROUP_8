@@ -58,7 +58,7 @@ const ProfileForm = () => {
             <h1 className="text-2xl font-bold mx-5 my-5">Profile</h1>
             <div className="flex flex-1 mx-5 justify-center items-start">
                 <div className="grid grid-cols-1 gap-4">
-                    <EditingField label="Name" field="name" value={data?.firstName + " " + data?.lastName} hasProfileImage={true} actionLabel="Edit" onSave={handleFieldUpdate} />
+                    <EditingField label="Name" field="name" value={data?.firstName + " " + data?.lastName} hasProfileImage={true} profileImage={data?.media} actionLabel="Edit" onSave={handleFieldUpdate} />
                     <EditingField label="Email" field="email" value={data?.email} actionLabel="Edit" onSave={handleFieldUpdate} />
                     <EditingField label="Phone" field="phoneNumber" value={data?.phoneNumber} actionLabel="Edit" onSave={handleFieldUpdate} />
                     <EditingField label="Address" field="address" value={data?.address} actionLabel="Edit" onSave={handleFieldUpdate} />

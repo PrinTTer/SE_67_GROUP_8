@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-
+import { putDataWithFiles } from "../../../services/apiService";
 export const EditingField = (prop) => {
-    const { label, field, value, hasProfileImage, actionLabel, onSave } = prop;
+    const { label, field, value, hasProfileImage, profileImage, actionLabel, onSave } = prop;
     const [isEditing, setIsEditing] = useState(false);
     const [inputValue, setInputValue] = useState(value);
     const [firstName, setFirstName] = useState("");
@@ -26,6 +26,25 @@ export const EditingField = (prop) => {
         setInputValue(value);
     }, [value]);
     
+
+    const handleImageChange = async (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            try {
+                const response = await putDataWithFiles(
+                    "users/upload-profile", [file], "users_images",
+                );
+
+                // ส่ง URL หรือไฟล์ที่ได้จากการตอบกลับไปยัง onSave
+                onSave("profileImage", response.fileUrl || file);
+            } catch (error) {
+                console.error("เกิดข้อผิดพลาดในการอัพโหลดรูป:", error);
+                setError("เกิดข้อผิดพลาดในการอัพโหลดรูปโปรไฟล์");
+            }
+        }
+        window.location.reload();
+    };
+
     const handleSave = () => {
         setIsEditing(false);
         setShowPopup(false);
@@ -58,10 +77,24 @@ export const EditingField = (prop) => {
     return (
         <div className="flex items-center bg-white w-4xl h-[5rem] rounded-xs p-4 shadow-md border border-gray-300">
             {hasProfileImage && (
-                <div className="w-12 h-12 bg-gray-400 rounded-full flex items-center justify-center text-white text-lg">
-                    👤
+                <div onClick={() => document.getElementById("profile-image-input").click()}>
+                    {/* รูปโปรไฟล์ที่แสดง */}
+                    <img
+                        src={`http://localhost:3000/public/uploads/users/images/${profileImage}`} // ใช้รูป default ถ้าไม่มี
+                        alt="Profile"
+                        className="w-12 h-12 bg-gray-400 rounded-full cursor-pointer"
+                    />
                 </div>
             )}
+            {/* ซ่อน input file */}
+            <input 
+                id="profile-image-input" 
+                type="file" 
+                className="hidden" 
+                accept="image/*" 
+                onChange={handleImageChange} 
+            />
+
             <div className="flex flex-col flex-1 ml-3">
                 <p className="text-sm font-semibold text-gray-600">{label}</p>
                 {isEditing && field !== "password" && field !== "email" ? (

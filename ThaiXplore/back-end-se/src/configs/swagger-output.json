@@ -557,10 +557,8 @@
             "description": "Unauthorized"
           }
         }
-      }
-    },
-    "/cars/{carId}/images": {
-      "post": {
+      },
+      "put": {
         "description": "",
         "parameters": [
           {
@@ -568,41 +566,41 @@
             "in": "path",
             "required": true,
             "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "carBrand": {
+                  "example": "any"
+                },
+                "licensePlate": {
+                  "example": "any"
+                },
+                "amountSeat": {
+                  "example": "any"
+                },
+                "price": {
+                  "example": "any"
+                },
+                "totalCars": {
+                  "example": "any"
+                }
+              }
+            }
           }
         ],
         "responses": {
-          "201": {
-            "description": "Created"
+          "200": {
+            "description": "OK"
           },
           "400": {
             "description": "Bad Request"
           },
           "401": {
             "description": "Unauthorized"
-          }
-        }
-      }
-    },
-    "/cars/{carId}/images/{index}": {
-      "delete": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "carId",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "index",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "default": {
-            "description": ""
           }
         }
       }
@@ -647,10 +645,8 @@
             "description": "Unauthorized"
           }
         }
-      }
-    },
-    "/courses/{courseId}/images": {
-      "post": {
+      },
+      "put": {
         "description": "",
         "parameters": [
           {
@@ -658,41 +654,35 @@
             "in": "path",
             "required": true,
             "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "courseName": {
+                  "example": "any"
+                },
+                "menuList": {
+                  "example": "any"
+                },
+                "price": {
+                  "example": "any"
+                }
+              }
+            }
           }
         ],
         "responses": {
-          "201": {
-            "description": "Created"
+          "200": {
+            "description": "OK"
           },
           "400": {
             "description": "Bad Request"
           },
           "401": {
             "description": "Unauthorized"
-          }
-        }
-      }
-    },
-    "/courses/{courseId}/images/{index}": {
-      "delete": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "courseId",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "index",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "default": {
-            "description": ""
           }
         }
       }
@@ -770,10 +760,8 @@
             "description": "Unauthorized"
           }
         }
-      }
-    },
-    "/events/{eventId}/images": {
-      "post": {
+      },
+      "put": {
         "description": "",
         "parameters": [
           {
@@ -781,11 +769,38 @@
             "in": "path",
             "required": true,
             "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "ticketType": {
+                  "example": "any"
+                },
+                "price": {
+                  "example": "any"
+                },
+                "quantity": {
+                  "example": "any"
+                },
+                "eventDate": {
+                  "example": "any"
+                },
+                "start": {
+                  "example": "any"
+                },
+                "end": {
+                  "example": "any"
+                }
+              }
+            }
           }
         ],
         "responses": {
-          "201": {
-            "description": "Created"
+          "200": {
+            "description": "OK"
           },
           "400": {
             "description": "Bad Request"
@@ -796,49 +811,36 @@
         }
       }
     },
-    "/events/{eventId}/images/{index}": {
-      "delete": {
+    "/packages": {
+      "get": {
         "description": "",
-        "parameters": [
-          {
-            "name": "eventId",
-            "in": "path",
-            "required": true,
-            "type": "string"
+        "responses": {
+          "200": {
+            "description": "OK"
           },
-          {
-            "name": "index",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "default": {
-            "description": ""
-          }
-        }
-      }
-    },
-    "/businesses/{businessId}/packages": {
-      "post": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "businessId",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "default": {
-            "description": ""
+          "400": {
+            "description": "Bad Request"
           }
         }
       }
     },
     "/packages/{packageId}": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "packageId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      },
       "delete": {
         "description": "",
         "parameters": [
@@ -858,6 +860,24 @@
           },
           "401": {
             "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/businesses/{businessId}/packages": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "businessId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
           }
         }
       }

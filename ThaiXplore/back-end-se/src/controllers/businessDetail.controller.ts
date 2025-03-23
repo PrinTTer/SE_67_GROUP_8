@@ -1,9 +1,9 @@
-import experss from "express";
+import express from "express";
 import { getUserById } from "../models/users";
 import { createBusinessDetail, updateBusinessDetailById } from "../models/businessDetail";
 import { get } from "lodash";
 
-export const registerBusinessDetail = async (req: experss.Request, res: experss.Response): Promise<any> => {
+export const registerBusinessDetail = async (req: express.Request, res: express.Response): Promise<any> => {
     try {
         const { informationName, details } = req.body;
         const { businessId } = req.params;
@@ -32,7 +32,7 @@ export const registerBusinessDetail = async (req: experss.Request, res: experss.
     }
 }
 
-export const updateBusinessDetail = async (req: experss.Request , res: experss.Response): Promise<any> => {
+export const updateBusinessDetail = async (req: express.Request , res: express.Response): Promise<any> => {
     try {   
         const { informationName , details } = req.body;
         const { businessDetailId } = req.params;

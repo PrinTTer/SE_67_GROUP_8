@@ -76,7 +76,7 @@ export const updateRooms = async (req:express.Request , res:express.Response):Pr
             return res.sendStatus(401);
         }
 
-        if(!roomId || !roomType || !guestAmount || !roomSize || !price || !facilities || !totalRooms) {
+        if(!roomId) {
             return res.sendStatus(400);
         }
 

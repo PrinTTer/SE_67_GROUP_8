@@ -66,7 +66,7 @@ export const updateCourses = async (req: express.Request, res: express.Response)
       return res.sendStatus(401);
     }
 
-    if (!courseId || !courseName || !menuList || !price) {
+    if (!courseId) {
       return res.sendStatus(400);
     }
 

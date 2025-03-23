@@ -19,7 +19,7 @@ const DateRangePicker = () => {
           dateFormat="dd MMM yyyy"
           className="text-sm w-24 h-8 px-2 border border-gray-300 rounded-md"
         />
-        <span className="mx-2 text-sm">-</span>
+        <span className="mx-2 text-sm">-</span> 
         <DatePicker
           selected={endDate}
           onChange={(date) => setEndDate(date)}

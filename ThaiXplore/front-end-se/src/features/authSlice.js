@@ -8,7 +8,7 @@ export const loginUser = createAsyncThunk("auth/loginUser", async (userData, { r
     return response.data; // สมมติ API ส่ง { user: {id, name, email}, token }
   } catch (error) {
     return rejectWithValue("Invalid email or password.");
-  }
+  } 
 });
 
 // 🔹 Async function สำหรับ logout

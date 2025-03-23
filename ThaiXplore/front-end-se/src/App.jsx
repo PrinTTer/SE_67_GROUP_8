@@ -13,6 +13,11 @@ import CreateBusiness from "./pages/business_page/create_business";
 import MainBusiness from "./pages/business_page/main_business";
 import Booking from "./pages/booking_page/booking";
 import AddDetails from "./pages/business_page/add_detail";
+// import Usermanage from "./pages/usermanage_page/usermanage_page";
+import VerifyBusiness from "./pages/businessmanage_page/businessmanage_page";
+import Test from "./pages/usermanage_page/test";
+import PackagePage from "./pages/package/package_page";
+import DetailPackage from "./pages/detail_page/detailPackage";
 import { NavigateBar } from "./layouts/navigatebar";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -22,6 +27,8 @@ import { TopBarResponsive } from "./components/TopBarResponsive";
 import Payment from "./pages/payment_page/payment";
 import PaymentSelector from "./pages/payment_page/paymentSelected";
 import QuotationPage from "./pages/quotation_page/quotationpage"
+
+
 function App() {
   const dispatch = useDispatch();
   const location = useLocation(); // ดึง path ปัจจุบันจาก react-router
@@ -60,7 +67,9 @@ function App() {
 
             <Route path="/listpage/:title" element={<ListPage />} />
             <Route path="/detail/:id" element={<Detail />} />
-
+            <Route path="/package" element={<PackagePage />} />
+            {/* <Route path="/detailpackage/:id" element={<DetailPackage />} /> */}
+            <Route path="/detailpackage" element={<DetailPackage />} />
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="/profile/mainBusiness" element={<MainBusiness />} />
             <Route
@@ -72,12 +81,14 @@ function App() {
               element={<AddDetails />}
             />
 
-            {/* <Route path="/detail/booking/:id/:index" element={<Booking />} /> */}
+            {/* <Route path="/detail/booking/:id/:index" element={<Booking />} />
+            <Route path="/detail/:title/booking" element={<Booking />} /> */}
             <Route path="/booking" element={<Booking />} />
-
             <Route path="/payment" element={<Payment />} />
             <Route path="/paymentSelector" element={<PaymentSelector />} />
             <Route path="/quotation" element={<QuotationPage />} />
+            <Route path="/verifyBusiness" element={<VerifyBusiness />} />
+            <Route path="/test" element={<Test />} />
           </Routes>
         </div>
         </>

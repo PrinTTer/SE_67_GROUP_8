@@ -225,6 +225,9 @@ export const deleteUserByAdmin = async (req: express.Request, res: express.Respo
 
 export const updateUserByAdmin = async (req: express.Request, res: express.Response): Promise<any> => {
     try {
+
+        
+
         const { firstName, lastName, address, phoneNumber, email , role } = req.body;
         const { id } = req.params;
         const currentUserId: string = get(req, 'identity._id');
@@ -235,7 +238,10 @@ export const updateUserByAdmin = async (req: express.Request, res: express.Respo
         }
 
         const updatedUser = await updateUserById(id, {
+
+
             email : email,
+
             firstName: firstName,
             lastName: lastName,
             address: address,

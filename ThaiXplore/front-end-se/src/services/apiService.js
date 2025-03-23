@@ -40,3 +40,15 @@ export const putData = async (endpoint, data) => {
     throw error;
   }
 };
+
+// ฟังก์ชันสำหรับการส่งข้อมูล
+export const deleteData = async (endpoint) => {
+  try {
+    const response = await apiClient.delete(endpoint); // ✅ ไม่ต้องใส่ data ถ้า API ไม่ต้องการ
+    return response.data;
+  } catch (error) {
+    console.error("Error deleting data", error);
+    throw error;
+  }
+};
+

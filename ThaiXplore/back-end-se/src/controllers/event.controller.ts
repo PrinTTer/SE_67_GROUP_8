@@ -71,7 +71,7 @@ export const updateEvents = async (req: express.Request, res: express.Response):
         return res.sendStatus(401);
       }
   
-      if (!eventId || !ticketType || !price || !quantity || !eventDate || !start || !end) {
+      if (!eventId) {
         return res.sendStatus(400);
       }
   

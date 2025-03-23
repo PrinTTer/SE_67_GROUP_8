@@ -74,7 +74,7 @@ export const updateCars = async (req: express.Request, res: express.Response): P
       return res.sendStatus(401);
     }
 
-    if (!carId || !carBrand || !licensePlate || !amountSeat || !price || !totalCars) {
+    if (!carId) {
       return res.sendStatus(400);
     }
 

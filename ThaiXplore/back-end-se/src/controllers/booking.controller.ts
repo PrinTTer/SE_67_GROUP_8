@@ -1,7 +1,7 @@
 import express from "express";
 import { get } from "lodash";
 import { getPackageInUser, getUserById, updateUserPackage } from "../models/users";
-import { bookingModel } from "../models/booking";
+import { bookingModel, getBookingByUserId } from "../models/booking";
 import { BusinessCategoryFactory } from "../factory/BusinessCategoryFactory";
 import { getBusinessById } from "../models/business";
 import { formatDateToDate } from "../helpers/dateFormat";
@@ -180,6 +180,20 @@ export const packageBooking = async (req: express.Request, res: express.Response
 
         return res.status(201).json(booking);
     } catch (error) {
+        console.log(error);
+        return res.sendStatus(400);
+    }
+}
+
+export const getUserBooking = async (req:express.Request , res:express.Response):Promise<any> => {
+    try {
+        const currentUserId:string = get(req , 'identity._id');
+        const user = await getUserById(currentUserId);
+        
+        const bookings = await getBookingByUserId(user._id.toString());
+
+        return res.status(200).json(bookings);
+    } catch(error) {
         console.log(error);
         return res.sendStatus(400);
     }

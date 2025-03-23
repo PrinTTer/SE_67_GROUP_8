@@ -1,7 +1,7 @@
 import express from "express";
 import { get } from "lodash";
 import { getUserById } from "../models/users";
-import { createPackage, deletePackage, getPackageById } from "../models/package";
+import { createPackage, deletePackage, getPackageById, getPackages } from "../models/package";
 import path from "path";
 import fs from "fs";
 
@@ -119,6 +119,29 @@ export const deletePackageImage = async (req:express.Request , res:express.Respo
 
         packages.media = packages.media.filter((image , idx) => idx != parseInt(index) - 1);
         await packages.save();
+
+        return res.status(200).json(packages);
+    } catch (error) {
+        console.log(error);
+        return res.sendStatus(400);
+    }
+}
+
+export const getAllPackages = async (req:express.Request , res:express.Response):Promise<any> => {
+    try {
+        const packages = await getPackages();
+
+        return res.status(200).json(packages);
+    } catch (error) {
+        console.log(error);
+        return res.sendStatus(400);
+    }
+}
+
+export const getPackage = async (req:express.Request , res:express.Response):Promise<any> => {
+    try {
+        const {packageId} = req.params;
+        const packages = await getPackageById(packageId);
 
         return res.status(200).json(packages);
     } catch (error) {

@@ -128,21 +128,22 @@ export const updateBusiness = async (req: express.Request , res:express.Response
         const { businessId } = req.params;
         const currentUserId:string = get(req , 'identity._id');
         const user = await getUserById(currentUserId);
+        const role:String = user.role;
 
-
-        if(user.role !== 'entrepreneur'){
+        if(role !== "entrepreneur" || role !== "admin"){
             return res.sendStatus(401);
         }
+
 
         const business = await updateBusinessById(businessId,{
             businessName : businessName , 
             description : description , 
             address : address , 
             phoneNumber : phoneNumber , 
-            email : email,
-            media : media,
-            verify : verify,
-            followBusiness : followBusiness,
+            email : email ,
+            media : media ,
+            verify : role === "admin" ? verify : "" ,
+            followBusiness : followBusiness ,
         });
 
         return res.status(200).json(business);
@@ -157,8 +158,9 @@ export const deleteBusiness = async (req: express.Request , res: express.Respons
         const { businessId } = req.params;
         const currentUserId:string = get(req , 'identity._id');
         const user = await getUserById(currentUserId);
+        const role:String = user.role;
 
-        if(user.role !== 'entrepreneur'){
+        if(role !== "entrepreneur" || role !== "admin"){
             return res.sendStatus(401);
         }
 

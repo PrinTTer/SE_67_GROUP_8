@@ -44,10 +44,6 @@ export const updateBusinessDetail = async (req: experss.Request , res: experss.R
             return res.sendStatus(401);
         }
 
-        if(!informationName || !details){
-            return res.sendStatus(400);
-        }
-
         const businessDetail = await updateBusinessDetailById(businessDetailId , {
             informationName,
             details

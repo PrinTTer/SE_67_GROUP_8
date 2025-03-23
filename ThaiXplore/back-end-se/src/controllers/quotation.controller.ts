@@ -1,7 +1,7 @@
 import express from "express";
 import { get, values } from "lodash";
 import { getUserById } from "../models/users";
-import { createQuotation, deleteQuotation, findQuotation, QuotationModel, updateQuotationById } from "../models/quotation";
+import { createQuotation, deleteQuotation, findQuotation, findQuotationByUserId, QuotationModel, updateQuotationById } from "../models/quotation";
 import { getBusinessById } from "../models/business";
 
 export const registerQuotation = async (req: express.Request, res: express.Response): Promise<any> => {
@@ -130,3 +130,20 @@ export const updateQuotation = async (req: express.Request , res:express.Respons
     }
 }
 
+export const getQuotations = async (req: express.Request, res: express.Response): Promise<any> => {
+    try {
+        const currentUserId: string = get(req, 'identity._id');
+
+        const user = await getUserById(currentUserId);
+
+        if (user.role !== 'entrepreneur') {
+            return res.sendStatus(401);
+        }
+
+        const quotation = await findQuotationByUserId(user._id.toString());
+        return res.status(200).json(quotation);
+    } catch (error) {
+        console.log(error);
+        return res.sendStatus(400);
+    }
+}

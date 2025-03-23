@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBed, faCarSide, faPersonHiking, faUtensils } from "@fortawesome/free-solid-svg-icons";
 import { UploadDocumentBlock } from "./UploadDocumentBlock";
 import { Link, useNavigate } from "react-router-dom";
-import { postData } from "../../../services/apiService";
+import { postData, postDataWithFiles } from "../../../services/apiService";
 
 export const BusinessInformation = () => {
     const [category, setCategory] = useState("hotel");
@@ -13,6 +13,7 @@ export const BusinessInformation = () => {
     const [district, setDistrict] = useState("");
     const [subDistrict, setSubDistrict] = useState("");
     const [postalCode, setPostalCode] = useState("");
+    const [uploadDocument, setUpLoadDocument] = useState([]);
     const [dataForm, setDataForm] = useState({
         businessName: "",
         description: "",
@@ -62,7 +63,7 @@ export const BusinessInformation = () => {
 
     const onSubmit = async () => {
         try {
-            await postData("/businesses/" , dataForm);
+            await postDataWithFiles("/businesses/" ,uploadDocument, dataForm, "businesses_verifies");
             navigate("/profile/mainbusiness");
         } catch (error) {
             console.log(error);
@@ -164,7 +165,7 @@ export const BusinessInformation = () => {
                         </div>
                     </div>
 
-                    <UploadDocumentBlock handleChange={handleChange} id={"document"} />
+                    <UploadDocumentBlock handleChange={handleChange} setUpLoadDocument={setUpLoadDocument} uploadDocument={uploadDocument} id={"document"} />
 
                     <div className="bg-white flex justify-between px-10 py-5 w-5xl drop-shadow-lg rounded-md">
                         <div className="flex w-full justify-end gap-2">

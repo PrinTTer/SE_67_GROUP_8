@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleUser as faCircleUserRegular } from '@fortawesome/free-regular-svg-icons';
-import { faFileInvoiceDollar, faBuilding } from '@fortawesome/free-solid-svg-icons';
+import { faFileInvoiceDollar, faBuilding, faUserGroup  } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
 
 export const SideBarWithRole = (prop) =>{
@@ -17,8 +17,8 @@ export const SideBarWithRole = (prop) =>{
             return(
                 <>
                     <Link to={"/profile"} className="block p-1.5  hover:bg-gray-300 rounded-full ">
-                    <FontAwesomeIcon icon={faCircleUserRegular} size="lg" className="ml-1"/>
-                    <span className="text-lg ml-2">Profile</span>
+                        <FontAwesomeIcon icon={faCircleUserRegular} size="lg" className="ml-1"/>
+                        <span className="text-lg ml-2">Profile</span>
                     </Link>
                     <Link to={null} className="block p-1.5  hover:bg-gray-300 rounded-full ">
                         <FontAwesomeIcon icon={faFileInvoiceDollar} size="lg" className="ml-1"/>
@@ -30,6 +30,23 @@ export const SideBarWithRole = (prop) =>{
                     </Link>
                 </>
                 
+            );
+        case "admin":
+            return(
+                <>
+                <Link to={"/profile"} className="block p-1.5  hover:bg-gray-300 rounded-full ">
+                    <FontAwesomeIcon icon={faCircleUserRegular} size="lg" className="ml-1"/>
+                    <span className="text-lg ml-2">Profile</span>
+                </Link>
+                <Link to={"/usermanage"} className="block p-1.5  hover:bg-gray-300 rounded-full ">
+                    <FontAwesomeIcon icon={faUserGroup} size="lg" className="ml-1"/>
+                    <span className="text-lg ml-2">User Management</span>
+                </Link>
+                <Link to={"/profile"} className="block p-1.5  hover:bg-gray-300 rounded-full ">
+                    <FontAwesomeIcon icon={faBuilding} size="lg" className="ml-1"/>
+                    <span className="text-lg ml-2">Business Management</span>
+                </Link>
+                </>
             );
 
     }

@@ -9,6 +9,7 @@ const PackageSchema = new mongoose.Schema({
     dateCreate : {type : Date , require : true},
     startDate : {type : Date , require : true},
     endDate : {type : Date , require : true},
+    totalExpirationDate : {type : Number , require : true},
     price : {type : Number  , require : true},
     totalPackage : {type : Number , require : true},
     services : [
@@ -18,10 +19,15 @@ const PackageSchema = new mongoose.Schema({
             businessId : {type : String , require : true}
         }
     ],
-    packageTransaction : {
-        transactionDate : {type : Date , require : true},
-        paymentMethod : {type : String , require : true}
-    }
+    packageTransactionHistory : [
+        {
+            userId : {type : String , require : true},
+            transactionDate : {type : Date , require : true},
+            paymentMethod : {type : String , require : true},
+            amount : {type : String , require : true},
+            totalPrice : {type : Number , require : true}
+        }
+    ]
 });
 
 export const PackageModel = mongoose.model("Packages" , PackageSchema);
@@ -31,3 +37,5 @@ export const getPackagesByBusinessId = (businessId: String) => PackageModel.find
 export const getPackageById = (id: String) => PackageModel.findById(id);
 
 export const createPackage = (values: Record<string , any>) => new PackageModel(values).save().then((pack) => pack.toObject());
+
+export const deletePackage = (id: string) => PackageModel.findByIdAndDelete(id);

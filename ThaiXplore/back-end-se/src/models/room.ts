@@ -14,9 +14,16 @@ const RoomSchema = new mongoose.Schema({
             date : {type : Date , require : false},
             booked : {type : Number , require : false},
         }
-    ]
+    ],
+    media : {type : [String] , require : true}
 });
 
 export const RoomModel = mongoose.model("Room" , RoomSchema);
 
+export const getRoomById = (id:string) => RoomModel.findById(id);
+
 export const createRoom = (values : Record<string , any>) => new RoomModel(values).save().then((room)=>room.toObject());
+
+export const deleteRoom = (id:string) => RoomModel.findByIdAndDelete(id);
+
+export const updateRoom = (id:string , values:Record<string , any>) => RoomModel.findByIdAndUpdate(id , values);

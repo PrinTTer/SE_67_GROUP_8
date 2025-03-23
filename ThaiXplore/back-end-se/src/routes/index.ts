@@ -8,6 +8,8 @@ import events from "./event.routes";
 import bookings from "./booking.routes";
 import packages from "./package.routes";
 import quotations from "./quotation.routes";
+import cars from "./car.routes";
+import courses from "./course.routes";
 
 const router = express.Router();
 
@@ -21,6 +23,8 @@ export default () => {
     bookings(router);
     packages(router);
     quotations(router);
+    cars(router);
+    courses(router);
 
     return router;
 }

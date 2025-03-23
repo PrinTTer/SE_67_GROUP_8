@@ -9,7 +9,7 @@ import { Service } from './component/Service';
  import  {QuotationPopUp}  from './component/QuotationPopUp';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-
+import LoadingSpinner from '../../components/LoadingSpinner';
 
 
 function Detail() {
@@ -59,7 +59,15 @@ function Detail() {
 
   };
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) {
+    return (
+      <div className="flex flex-col flex-4 p-4 min-h-[300px] bg-white rounded-lg shadow-md">
+        <LoadingSpinner />
+      </div>
+    );
+  }
+  
+  
   if (error) return <p className="text-red-500">Error: {error}</p>;
   
 
@@ -87,7 +95,7 @@ function Detail() {
 
 
             <Link >
-              <div className="flex  gap-2 mt-1 shadow-md  rounded-full h-8 w-auto justify-center items-center p-5 mr-2 bg-blue-400" onClick={() => setShowPopup(true)}>
+              <div className="flex  gap-2 mt-1 shadow-md  rounded-full h-8 w-auto justify-center items-center p-5 mr-2 bg-blue-400 text-white font-bold" onClick={() => setShowPopup(true)}>
                 <FontAwesomeIcon icon={faFileInvoice} />
                 <p>Request Quotation</p>
               </div>
@@ -106,7 +114,7 @@ function Detail() {
               <div className=' px-5 py-2 rounded-t-lg    bg-yellow-50 cursor-pointer ' onClick={() => toggle({ title: data?.business?.category })} >{data?.business?.category}</div>
               <div className=' px-5 py-2 rounded-t-lg    bg-yellow-50 cursor-pointer ' onClick={() => toggle({ title: "Package" })}>Package</div>
             </div>
-            {/* Info */}
+            {/* Info & Service */}
             <div className={show ? 'block' : 'hidden'}>
               {
                 data?.details?.map((element, index) => {

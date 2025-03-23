@@ -1,6 +1,7 @@
 import { BusinessCategoryStrategy } from "../interfaces/businessCategoryStrategy";
 import { CourseModel } from "../models/course";
 import { BusinessDetailModel } from "../models/businessDetail";
+import { PackageModel } from "../models/package";
 
 
 export class RestaurantCategory implements BusinessCategoryStrategy {
@@ -15,7 +16,7 @@ export class RestaurantCategory implements BusinessCategoryStrategy {
     }
 
     getPackageList(): object {
-        return null;
+        return PackageModel.find({ businessId : this.businessId });
     }
 
     getProvideService(): object {

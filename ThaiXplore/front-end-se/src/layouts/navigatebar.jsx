@@ -72,7 +72,7 @@ export const NavigateBar = (prop) => {
                     <IconSideBar iconName="Car Rental" iconFont={faCarSide} path="/listpage/carRental" />
                     <IconSideBar iconName="Restaurant" iconFont={faUtensils} path="/listpage/restaurant" />
                     <IconSideBar iconName="Activities & Events" iconFont={faPersonHiking} path="/listpage/event" />
-                    <IconSideBar iconName="Packages" iconFont={faCube} path="#" />
+                    <IconSideBar iconName="Packages" iconFont={faCube} path="/package" />
                 </div>
             </div>
             

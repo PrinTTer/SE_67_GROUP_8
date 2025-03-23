@@ -27,12 +27,12 @@ export const Category = () => {
         <CategoryGrid 
           link='/listpage/restaurant' 
           image='https://cdn.pixabay.com/photo/2016/11/18/14/05/brick-wall-1834784_1280.jpg' 
-          title='Fine Dining' 
+          title='Restaurant' 
         />
         <CategoryGrid 
           link='/listpage/carRental' 
           image='https://cdn.pixabay.com/photo/2017/10/02/11/59/toys-2808599_1280.jpg' 
-          title='Premium Transport' 
+          title='Car Rental' 
         />
       </div>
     </div>

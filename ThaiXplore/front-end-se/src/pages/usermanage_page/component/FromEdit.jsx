@@ -53,8 +53,8 @@ const FromEdit = ({ user, onClose }) => {
       <input type="text" name="phoneNumber" value={formData.phoneNumber} onChange={handleChange} className="border p-2 w-full mb-2" />
       <select name="role" value={formData.role} onChange={handleChange} className="border p-2 w-full mb-2">
         <option value="admin">Admin</option>
-        <option value="user">User</option>
-        <option value="guest">Guest</option>
+        <option value="entrepreneur">Entrepreneur</option>
+        <option value="tourist">Tourist</option>
       </select>
       <button onClick={handleSubmit} className="bg-blue-500 text-white px-4 py-2 rounded">Save</button>
       <button onClick={onClose} className="ml-2 bg-gray-400 text-white px-4 py-2 rounded">Cancel</button>

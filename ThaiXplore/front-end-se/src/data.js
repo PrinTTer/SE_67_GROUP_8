@@ -254,18 +254,18 @@ const topic =[
     },
     {
         "type" : "event",
-        "Event Information" : ["Start Date", "End Date", "Sale Period","Image"],
-        "Ticket details" : ["Ticket Type","Price","Quantity","Round"],
+        "Event Information" : ["Start Date", "End Date", "Sale Period"],
+        "Ticket details" : ["Ticket Type","Price","Quantity","Round","Image"],
         "Description" : "description"
     },
     { 
-        "type" : "car",
+        "type" : "carRental",
         "Working Date Information" : ["Date", "Time"],
-        "Car details" :["Band","License plate","Price","Amount Seat","Image"],
+        "Car details" :["Brand","Price","Amount Seat","Image"],
         "Description" : "description"
     },
     {
-        "type" : "food",
+        "type" : "restaurant",
         "Working Date Information" : ["Date", "Time"],
         "Course details" :["Course Name", "Price", "Menu List","Amount","Image"],
         "Description" : "description"

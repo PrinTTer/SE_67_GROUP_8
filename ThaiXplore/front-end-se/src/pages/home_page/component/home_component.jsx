@@ -3,7 +3,7 @@ import {   getDataBusiness, getBusinessbyName, getBusinessbyProvince } from '../
 import { useState, useEffect } from "react";
 import { SearchBar } from '../../../components/SearchBar';
 import { fetchData } from '../../../services/apiService';
-import { PriceRange } from './RangeBar'
+// import { PriceRange } from './RangeBar'
 import  ProvinceDropdown  from './dropDownProvince'
 import axios from "axios";
 

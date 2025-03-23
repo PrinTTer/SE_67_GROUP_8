@@ -4,7 +4,8 @@ import { faBook } from '@fortawesome/free-solid-svg-icons';
 import DateRangePicker from './DatePicker';
 import GuestSelector from './GuestSelector';
 
-export const RightSideBar = ({ type }) => {
+export const RightSideBar = (prop) => {
+    const { type } = prop
     const [time, setTime] = useState("");
 
     useEffect(() => {

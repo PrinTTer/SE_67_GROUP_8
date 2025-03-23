@@ -6,27 +6,27 @@ const BookingDetail = (prop) => {
         <div className="flex flex-1 flex-col w-full h-full bg-[#BCD1FB] border-r-2">
             <div className="grid grid-cols-1 gap-4 m-4">
                 <div>
-                    <img className="rounded-md" src={business.image.main}/>
+                    <h1>Image</h1>
                 </div>
                 <div>
                     <h1 className="font-bold">Room Type</h1>
-                    <label>{business.service[index].roomType}</label>
+                    <h1 className="">Superior Double</h1>
                 </div>
                 <div>
                     <h1 className="font-bold">Size (sq.m)</h1>
-                    <label>{business.service[index].size} sq.m</label>
+                    <h1 className="">20</h1>
                 </div>
                 <div>
                     <h1 className="font-bold">Number of guests/room</h1>
-                    <label>{business.service[index]["Number of guests/room"]}</label>
+                    <h1 className="">2 Unit</h1>
                 </div>
                 <div>
                     <h1 className="flex flex-col font-bold">Room Facilities</h1>
-                    <label>{business.service[index]["Room Facilities"]}</label>
+                    <h1 className="">Air Conditioner</h1>
                 </div>
                 <div>
                     <h1 className="font-bold">Price</h1>
-                    <label>{business.service[index].price}</label>
+                    <h1 className="">1300 THB</h1>
                 </div>
                 
                 

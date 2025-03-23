@@ -13,12 +13,6 @@ const ProfileForm = () => {
         }
     },[user])
 
-    useEffect(() => {
-        if (user) {
-            setData(user);
-        }
-    }, [user]);
-
     const handleFieldUpdate = async (field, value) => {
         let updatedData = { ...data, [field]: value };
 
@@ -30,13 +24,24 @@ const ProfileForm = () => {
         }
 
         setData(updatedData);
-
-        try {
-            await putData("/users", updatedData); // ✅ ส่งข้อมูลทั้งหมดไปยัง API
-            console.log(`Updated ${field} successfully!`);
-        } catch (error) {
-            console.error(`Error updating ${field}:`, error);
+        if(field === "password"){
+            updatedData = value
+            try {
+                await putData("/users/change-password", updatedData); // ✅ ส่งข้อมูลทั้งหมดไปยัง API
+                console.log(`Updated ${field} successfully!`);
+            } catch (error) {
+                console.error(`Error updating ${field}:`, error);
+            }
         }
+        else{
+            try {
+                await putData("/users", updatedData); // ✅ ส่งข้อมูลทั้งหมดไปยัง API
+                console.log(`Updated ${field} successfully!`);
+            } catch (error) {
+                console.error(`Error updating ${field}:`, error);
+            }
+        }
+        
     };
     
 
@@ -49,7 +54,7 @@ const ProfileForm = () => {
                     <EditingField label="Email" field="email" value={data?.email} onSave={handleFieldUpdate} />
                     <EditingField label="Phone" field="phoneNumber" value={data?.phoneNumber} actionLabel="Edit" onSave={handleFieldUpdate} />
                     <EditingField label="Address" field="address" value={data?.address} actionLabel="Edit" onSave={handleFieldUpdate}/>
-                    <EditingField label="Password" field="password" value={"***********"} actionLabel="Edit" />
+                    <EditingField label="Password" field="password" actionLabel="Edit" onSave={handleFieldUpdate}/>
                 </div>
             </div>
         </div>

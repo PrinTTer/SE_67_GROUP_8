@@ -83,14 +83,15 @@ export const IconSideBar = (prop) => {
     }
 
     return (
-        <div onClick={() => checkLogout()} className={`${currentPath === path ? "bg-black" : ""} transition-all drop-shadow-2xl flex items-center p-3 m-2 rounded-full hover:bg-gray-100 cursor-pointer w-fit h-fit`}>
             <Link className='flex gap-3' to={path}>
-                <div>
-                    <FontAwesomeIcon icon={iconFont} className={`${currentPath === path ? "text-white" : ""}`} />
+                <div onClick={() => checkLogout()} className={`${currentPath === path ? "bg-black" : ""} transition-all drop-shadow-2xl flex items-center p-3 gap-2 m-2 rounded-full hover:bg-gray-100 cursor-pointer w-fit h-fit`}>
+                    <div>
+                        <FontAwesomeIcon icon={iconFont} className={`${currentPath === path ? "text-white" : ""}`} />
+                    </div>
+                    <span className={`${currentPath === path ? "text-white" : ""}`}>{iconName}</span>
                 </div>
-                <span className={`${currentPath === path ? "text-white" : ""}`}>{iconName}</span>
             </Link>
-        </div>
+        
     );
 };
 
@@ -101,7 +102,7 @@ export const ToggleSideBarEntrepreneur = (prop) => {
           cursor-pointer transition-transform`}>
             <ul className='relative p-1 my-2 w-full'>
                 <IconSideBar iconName={"Profile"} iconFont={faUser} path={"/profile"} />
-                <IconSideBar iconName={"Quotation"} iconFont={faFileLines} path={"#"} />
+                <IconSideBar iconName={"Quotation"} iconFont={faFileLines} path={"/quotation"} />
                 <IconSideBar iconName={"Business"} iconFont={faBuilding} path={"/profile/mainbusiness"} />
                 <IconSideBar logout={logout} iconName={"Logout"} iconFont={faArrowRightFromBracket} path={"/login"} />
             </ul>

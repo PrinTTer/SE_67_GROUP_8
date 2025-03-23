@@ -10,7 +10,19 @@ const GuestSelector = (prop) => {
   const [rooms, setRooms] = useState(1);
   // alert(type)
   const togglePopup = () => setIsOpen(!isOpen);
-
+  let amount
+  if(type=="hotel"){
+    amount = "Room"
+  }
+  else if(type=="event"){
+    amount = "Ticket"
+  }
+  else if(type=="carRental"){
+    amount = "Car"
+  }
+  else if(type=="restaurant"){
+    amount = "Set"
+  }
   return (
     <div className="relative w-52"> {/* Smaller width */}
       {/* Button to open popup */}
@@ -18,7 +30,7 @@ const GuestSelector = (prop) => {
         onClick={togglePopup}
         className="w-full border border-gray-300 rounded-md px-2 py-2 flex justify-between items-center text-black text-sm font-medium"
       >
-        {`${adults} Adult, ${children} Child${type == "hotel" ? `, ${rooms} Rooms` : ""}`}
+        {`${adults} Adult, ${children} Child, ${rooms} ${amount} `}
         <FontAwesomeIcon icon={faUsers} className="text-gray-500 ml-2 text-xs" />
       </button>
 
@@ -66,8 +78,8 @@ const GuestSelector = (prop) => {
           </div>
 
           {/* Room Selector */}
-          <div className={`flex justify-between items-center py-1  ${type == "hotel" ? "block" : "hidden"}`}>
-            <span className="font-medium"><FontAwesomeIcon icon={faBed} className="mr-1"/> Room</span>
+          <div className={`flex justify-between items-center py-1  `}>
+            <span className="font-medium"><FontAwesomeIcon icon={faBed} className="mr-1"/> {amount}</span>
             <div className="flex items-center space-x-1">
               <button
                 onClick={() => setRooms(Math.max(1, rooms - 1))}

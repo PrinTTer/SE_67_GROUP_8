@@ -1,11 +1,12 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Link, useParams } from 'react-router-dom';
-import { NavBarWithOutText } from '../../layouts/navbar';
-import { faPlus, faFileInvoice } from '@fortawesome/free-solid-svg-icons';
-import { getBusiness, getInfo } from '../../data';
+
+import {  faFileInvoice } from '@fortawesome/free-solid-svg-icons';
+import { getBusiness } from '../../data';
 import { faBed, faStar } from '@fortawesome/free-solid-svg-icons';
 import { RightSideBar } from './component/RightBar';
 import { Service } from './component/Service';
+ import  {QuotationPopUp}  from './component/QuotationPopUp';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 
@@ -14,19 +15,12 @@ import axios from 'axios';
 function Detail() {
   const { id } = useParams()
   const business = getBusiness("Hotel A")
-  const ArrTitle = getInfo(business)
+ 
   const [show, setShow] = useState(true)
-  const [head, setHead] = useState(business.type)
+  const [showPopup, setShowPopup] = useState(false);
 
 
-  const toggle = (prop) => {
-    const { title } = prop
-    if (head != title) {
-      setShow(!show)
-    }
-    setHead(title)
-
-  };
+ 
 
   //fetch from axios
 
@@ -52,13 +46,22 @@ function Detail() {
 
   useEffect(() => {
     fetchData();
+    
   }, []);
 
+  const [head, setHead] = useState(data?.business?.category)
+   const toggle = (prop) => {
+    const { title } = prop
+    if (head != title) {
+      setShow(!show)
+    }
+    setHead(title)
 
+  };
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p className="text-red-500">Error: {error}</p>;
-
+  
 
   return (
     <>
@@ -84,12 +87,12 @@ function Detail() {
 
 
             <Link >
-              <div className="flex  gap-2 mt-1 shadow-md  rounded-full h-8 w-auto justify-center items-center p-5 mr-2 bg-blue-400">
+              <div className="flex  gap-2 mt-1 shadow-md  rounded-full h-8 w-auto justify-center items-center p-5 mr-2 bg-blue-400 text-white font-bold" onClick={() => setShowPopup(true)}>
                 <FontAwesomeIcon icon={faFileInvoice} />
                 <p>Request Quotation</p>
               </div>
             </Link>
-
+            {showPopup && <QuotationPopUp onClose={() => setShowPopup(false)} serviceBusiness={data?.services}/>}
 
 
 
@@ -101,9 +104,9 @@ function Detail() {
             {/* Tab */}
             <div className='flex   rounded  gap-5 ml-2'>
               <div className=' px-5 py-2 rounded-t-lg    bg-yellow-50 cursor-pointer ' onClick={() => toggle({ title: data?.business?.category })} >{data?.business?.category}</div>
-              <div className=' px-5 py-2 rounded-t-lg    bg-yellow-50 cursor-pointer ' onClick={() => toggle({ title: "News&Package" })}>News&Package</div>
+              <div className=' px-5 py-2 rounded-t-lg    bg-yellow-50 cursor-pointer ' onClick={() => toggle({ title: "Package" })}>Package</div>
             </div>
-            {/* Info */}
+            {/* Info & Service */}
             <div className={show ? 'block' : 'hidden'}>
               {
                 data?.details?.map((element, index) => {
@@ -133,7 +136,7 @@ function Detail() {
 const Info = (prop) => {
   const { infoTitle } = prop
   const { title } = useParams();
-
+  console.log(title)
 
   return (
     <div className="p-4 rounded-lg gap-5 mb-5 bg-yellow-50 shadow-md border border-gray-300">

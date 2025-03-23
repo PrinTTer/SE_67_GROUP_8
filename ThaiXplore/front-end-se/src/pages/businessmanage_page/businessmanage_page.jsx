@@ -105,6 +105,8 @@ const VerifyBusiness = () => {
                     </div>
                 )}
             </div>
+
+            
         </div>
     );
 };

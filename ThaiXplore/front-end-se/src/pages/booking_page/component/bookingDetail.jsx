@@ -1,3 +1,5 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faHotel, faCalendar, faCar, faUtensils } from '@fortawesome/free-solid-svg-icons';
 const BookingDetail = (prop) => {
     const {item, category} = prop;
     console.log(item);
@@ -7,10 +9,10 @@ const BookingDetail = (prop) => {
     // Get icon based on category similar to the navbar
     const getCategoryIcon = (category) => {
         switch(category) {
-            case 'hotel': return '🏨';
-            case 'event': return '🎭';
-            case 'carRental': return '🚗';
-            case 'restaurant': return '🍽️';
+            case 'hotel': return <FontAwesomeIcon icon={faHotel} />;
+            case 'event': return <FontAwesomeIcon icon={faCalendar} />;
+            case 'carRental': return <FontAwesomeIcon icon={faCar} />;
+            case 'restaurant': return <FontAwesomeIcon icon={faUtensils} />;
             default: return '📋';
         }
     };

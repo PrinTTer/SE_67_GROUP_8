@@ -1,10 +1,9 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFileLines, faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faFileLines, faCheck, faTimes, faImage } from '@fortawesome/free-solid-svg-icons';
 
 const BoxBusiness = ({ data }) => {
   const {
-    // userId = '-',
     businessName = '-',
     category = '-',
     address = '-',
@@ -15,41 +14,62 @@ const BoxBusiness = ({ data }) => {
 
   const image = media.length > 0 ? media[0] : null;
 
+  // ตัดคำหากยาวเกิน
+  const truncateDescription = (text, maxLength = 150) => {
+    if (text.length <= maxLength) return text;
+    return text.substring(0, maxLength) + '...';
+  };
+
   return (
-    <div className="relative bg-white border border-gray-300 rounded-md shadow-md p-4 flex gap-4 min-h-[160px] w-full max-w-[1200px] mx-auto">
-      {/* วงกลมไอคอนมุมขวาบน */}
-      <div className="absolute top-2 right-2 flex gap-2">
-        {[faFileLines, faCheck, faTimes].map((icon, idx) => (
-          <div
-            key={idx}
-            className="w-8 h-8 bg-white border border-gray-300 rounded-full shadow flex items-center justify-center hover:bg-gray-100 cursor-pointer"
-          >
-            <FontAwesomeIcon icon={icon} className="text-black text-sm" />
+    <div className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden transition-all hover:shadow-md w-full  mx-auto">
+      <div className="flex flex-col md:flex-row">
+        
+        {/* Image container */}
+        <div className="w-full md:w-48 lg:w-56 h-40 md:h-auto bg-gray-100 flex items-center justify-center relative">
+          {image ? (
+            <img
+              src={image}
+              alt={businessName}
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            <div className="flex flex-col items-center justify-center text-gray-400">
+              <FontAwesomeIcon icon={faImage} className="text-4xl mb-2" />
+              <span className="text-sm">No picture</span>
+            </div>
+          )}
+        </div>
+
+        {/* Content container */}
+        <div className="flex-1 p-4 md:p-5 relative">
+          {/* Action buttons */}
+          <div className="absolute top-4 right-4 flex space-x-2">
+            <button className="w-8 h-8 flex items-center justify-center rounded-full bg-white border border-gray-300 text-gray-600 hover:bg-gray-100 transition">
+              <FontAwesomeIcon icon={faFileLines} />
+            </button>
+            <button className="w-8 h-8 flex items-center justify-center rounded-full bg-white border border-gray-300 text-green-600 hover:bg-green-100 transition">
+              <FontAwesomeIcon icon={faCheck} />
+            </button>
+            <button className="w-8 h-8 flex items-center justify-center rounded-full bg-white border border-gray-300 text-red-500 hover:bg-red-100 transition">
+              <FontAwesomeIcon icon={faTimes} />
+            </button>
           </div>
-        ))}
-      </div>
 
-      {/* รูปอยู่ด้านซ้าย */}
-      <div className="min-w-[150px] w-[150px] h-[120px] bg-gray-200 flex items-center justify-center text-gray-500 text-sm rounded">
-        {image ? (
-          <img
-            src={image}
-            alt="Business"
-            className="object-cover w-full h-full rounded"
-          />
-        ) : (
-          <span>No picture</span>
-        )}
-      </div>
-
-      {/* รายละเอียด */}
-      <div className="flex flex-col justify-center">
-        {/* <p><strong>Request By UserID:</strong> {userId}</p> */}
-        <p><strong>Business Name:</strong> {businessName}</p>
-        <p><strong>Category:</strong> {category}</p>
-        <p><strong>Address:</strong> {address}</p>
-        <p><strong>Phone:</strong> {phoneNumber}</p>
-        <p><strong>Description:</strong> {description}</p>
+          {/* Business details */}
+          <div className="pr-20 md:pr-28">
+            <h3 className="text-lg font-semibold text-gray-900 mb-1">{businessName}</h3>
+            <div className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 mb-3">
+              {category}
+            </div>
+            <div className="space-y-2 text-gray-600 text-sm">
+              <p><span className="font-medium">Address:</span> {address}</p>
+              <p><span className="font-medium">Phone:</span> {phoneNumber}</p>
+              <p className="line-clamp-2 md:line-clamp-3">
+                <span className="font-medium">Description:</span> {truncateDescription(description)}
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

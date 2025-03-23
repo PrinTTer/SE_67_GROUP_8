@@ -51,11 +51,11 @@ const VerifyBusiness = () => {
     };
 
     return (
-        <div className='flex flex-5 w-full items-center flex-col p-6'>
-            <h2 className='text-2xl text-left font-bold mb-6'>Business Management</h2>
+        <div className="flex flex-5 items-center flex-col p-6">
+            <h2 className='text-2xl font-bold mb-6 text-center'>Business Management</h2>
 
             {/* Tabs */}
-            <div className='flex w-full text-left gap-5  ml-2'>
+            <div className='flex gap-5 mb-5'>
                 {['New Request', 'All business'].map(tab => (
                     <div
                         key={tab}
@@ -67,8 +67,8 @@ const VerifyBusiness = () => {
                 ))}
             </div>
 
-            {/* Table / Cards */}
-            <div className='flex flex-col gap-4 bg-white p-6 rounded-md shadow border border-gray-300'>
+            {/* Container Box */}
+            <div className='flex gap-5 flex-col w-full  bg-white p-6 rounded-md shadow border border-gray-300 px-20'>
                 {loading && <p>Loading...</p>}
                 {error && <p className='text-red-500'>Error: {error}</p>}
 
@@ -76,13 +76,15 @@ const VerifyBusiness = () => {
                     <p className='text-center text-gray-400'>No businesses found.</p>
                 )}
 
-                {currentItems.map((business, index) => (
-                    <BoxBusiness key={business._id || index} data={business} />
-                ))}
+                <div className="flex flex-col gap-4">
+                    {currentItems.map((business, index) => (
+                        <BoxBusiness key={business._id || index} data={business} />
+                    ))}
+                </div>
 
                 {/* Pagination */}
                 {filteredBusinesses.length > itemsPerPage && (
-                    <div className="flex justify-center mt-4 space-x-8 items-center">
+                    <div className="flex justify-center mt-6 items-center gap-10">
                         <button
                             onClick={prevPage}
                             disabled={currentPage === 1}
@@ -90,7 +92,7 @@ const VerifyBusiness = () => {
                         >
                             Previous
                         </button>
-                        <span className="px-4 py-2 text-gray-700">
+                        <span className="text-gray-700">
                             Page {currentPage} of {Math.ceil(filteredBusinesses.length / itemsPerPage)}
                         </span>
                         <button

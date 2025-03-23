@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { putData } from "../../../services/apiService";
 
+
+
 const FromEdit = ({ user, onClose }) => {
   const [formData, setFormData] = useState({
     firstName: "",
@@ -9,6 +11,8 @@ const FromEdit = ({ user, onClose }) => {
     phoneNumber: "",
     role: "",
   });
+
+  console.log("User:", user);
 
   useEffect(() => {
     if (user) {
@@ -28,7 +32,10 @@ const FromEdit = ({ user, onClose }) => {
 
   const handleSubmit = async () => {
     try {
-      await putData(`/users`, formData); // ✅ แก้ไขข้อมูลเฉพาะผู้ใช้ที่เลือก
+      const selectedUserId = user._id; // ✅ เพิ่มตัวแปรนี้
+      console.log("Selected User ID:", selectedUserId);
+      console.log("Form Data:", formData);
+      await putData(`/users/${selectedUserId}`, formData); // ✅ แก้ไขข้อมูลเฉพาะผู้ใช้ที่เลือก
       alert("✅ User updated successfully!");
       onClose();
     } catch (error) {

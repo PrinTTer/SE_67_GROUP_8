@@ -5,7 +5,7 @@ import {  faFileInvoice } from '@fortawesome/free-solid-svg-icons';
 import { getBusiness } from '../../data';
 import { faBed, faStar } from '@fortawesome/free-solid-svg-icons';
 import { RightSideBar } from './component/RightBar';
-import { Service } from './component/Service';
+import { Service } from './component/service';
  import  {QuotationPopUp}  from './component/QuotationPopUp';
 import { useState, useEffect } from 'react';
 import axios from 'axios';

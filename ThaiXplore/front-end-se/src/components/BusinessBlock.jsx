@@ -1,4 +1,4 @@
-import { faChevronDown, faFileLines, faHotel, faLocationDot, faPenToSquare, faTrash, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faChevronDown, faFileLines, faLocationDot, faPenToSquare, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
 import { BusinessEditBtn } from "./BusinessEditBtn";
@@ -9,7 +9,7 @@ export const BusinessBlock = (prop) => {
     const { business } = prop;
     const [description, setDescription] = useState("");
     const [isShow, setIsShow] = useState(false);
-    const [isMouseEnter, setIsMouseEnter] = useState(false);
+    //const [isMouseEnter, setIsMouseEnter] = useState(false);
 
     const isTextTooLong = (text) => {
         let description = "";

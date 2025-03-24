@@ -26,7 +26,7 @@ export const Service = (prop) => {
                         {Array.isArray(item[field]) ? (
                             <ul className="list-disc pl-5 grid grid-cols-2">
                                 {item[field].map((value, i) => (
-                                    // ตรวจสอบว่าค่าที่ได้เป็น Object หรือไม่
+
                                     typeof value === "object" ? (
                                         <li key={i}>{value.name}</li>
                                     ) : (
@@ -55,7 +55,7 @@ export const Service = (prop) => {
     );
 };
 
-const getTopic = (category) => {
+ const getTopic = (category) => {
     let List = [];
     if(category === 'hotel'){
         List = ['roomType', 'guestAmount', 'roomSize', 'price', 'facilities'];

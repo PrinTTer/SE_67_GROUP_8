@@ -78,9 +78,9 @@ const AddDetails = () => {
                         topicBusines.map((element,index)=>{
                           if(element.includes("details"))
                           {
-                            return <ServiceBlock key={index} title={element} type={type}/>
+                            return <ServiceBlock key={index} title={element} type={type} businessId={id}/>
                           }else{
-                            return <Addblock key={index} title={element} type={type}/>
+                            return <Addblock key={index} title={element} type={type} id={id}/>
                           }
                          
                         })
@@ -98,7 +98,7 @@ const AddDetails = () => {
 }
 
 const Addblock = (prop) =>{
-    const { title , type} = prop 
+    const { title , type , id} = prop 
     const [show, setShow] = useState(true)
     const detail = getTopic({title : title , type :type})
     const [inputs, setInputs] = useState([]);
@@ -108,9 +108,9 @@ const Addblock = (prop) =>{
 
     // Function to show alert with the input values
     const handleCheck = () => {
-      const jsonOutput = dataJson(title, inputs, detail);
+      const jsonOutput = dataJson(title, inputs, detail ,id);
       console.log("Final JSON Output:", jsonOutput);
-      // alert(JSON.stringify(jsonOutput))
+      
   };
   
   // Function to clear the input fields
@@ -228,27 +228,25 @@ const BlockInput=(prop)=>{
 export default AddDetails;
 
 
-const dataJson = (title, inputs, detail) => {
+const dataJson = (title, inputs, detail , id) => {
   let json;
 
   if (Array.isArray(detail) && detail.length > 0) {
-      json = {
-          // businessId: "",
-          informationName: title,
-          details: inputs.map((value, index) => ({
-              label: detail[index] ,
-              value: value 
-          })),
-          __v: 0
-      };
+    json = {
+       businessId: id, 
+      informationName: title,  
+      details: inputs.map((value, index) => (
+          `${detail[index]} ${value}`  
+      )),
+  };
   } else {
       //  เป็น array ของ string 
       json = {
           
-          // businessId: "",
+          businessId: id,
           informationName: title,
-          details: inputs.filter(item => item.trim() !== ""),
-          __v: 0
+          details: inputs.filter(item => item.trim() !== "")
+          
       };
   }
 

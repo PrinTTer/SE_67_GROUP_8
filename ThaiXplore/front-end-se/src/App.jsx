@@ -68,8 +68,8 @@ function App() {
             <Route path="/listpage/:title" element={<ListPage />} />
             <Route path="/detail/:id" element={<Detail />} />
             <Route path="/package" element={<PackagePage />} />
-            {/* <Route path="/detailpackage/:id" element={<DetailPackage />} /> */}
-            <Route path="/detailpackage" element={<DetailPackage />} />
+            <Route path="/detailpackage/:id" element={<DetailPackage />} />
+            
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="/profile/mainBusiness" element={<MainBusiness />} />
             <Route

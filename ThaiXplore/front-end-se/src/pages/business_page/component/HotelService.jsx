@@ -1,18 +1,22 @@
-import {  useState } from 'react';
+import { useState } from 'react';
 import {  faTimesCircle, faCheckCircle, faCirclePlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { postData } from '../../../services/apiService';
 import { FileUpload } from './ServiceBlock';
 import { ShowService } from './ShowService';
 
-
+import axios from 'axios';
 
 export const HotelService = (prop) => {
     const { id, title,type } = prop;
     const [forms, setForms] = useState([
       { businessId : id ,roomType: "", guestAmount: "", roomSize: "", price: "", facilities: [""],totalRooms: "" } // facilities array starts with one empty field
     ]);
-  
+    
+
+
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
     // เพิ่มฟอร์มใหม่
     const addForm = () => {
       setForms([
@@ -59,6 +63,9 @@ export const HotelService = (prop) => {
       ));
     };
   
+    
+    
+    
     // ฟังก์ชัน insertData ที่ใช้ส่งข้อมูลฟอร์ม
     const insertData = async (index) => {
         const formData = forms[index]; // หาข้อมูลของฟอร์มนั้นๆ
@@ -71,8 +78,30 @@ export const HotelService = (prop) => {
         formData.price = parseFloat(formData.price)
         formData.totalRooms = parseFloat(formData.totalRooms)
         console.log(formData)
-        await postData(`/businesses/${id}/rooms`, formData)
-    };
+        
+        
+        // const data = await fetchData(`/businesses/${id}`)
+         await postData(`/businesses/${id}/rooms`, formData)
+        // console.log("Fetch Data")
+        // console.log(data)
+        console.log("Form Here :")
+        console.log(forms)
+        
+        removeForm(index);
+          //await postRoom();
+
+        
+      };
+    
+  // useEffect(() => {
+    
+  //   const fetch = async()=>{
+  //     setData(fetchData(`/businesses/${id}`))
+  //   }
+  //    console.log("Fetch Data")
+  //       console.log(data)
+  //   fetch();
+  // }, [data, id , post ]);
   
     return (
       <div>

@@ -3,7 +3,12 @@ import axios from 'axios';
 import { getTopic } from './ServiceBlock';
 import { BusinessEditBtn } from '../../../components/BusinessEditBtn';
 import { faPenToSquare, faTrash } from '@fortawesome/free-solid-svg-icons';
-import { deleteData } from '../../../services/apiService';  // import ฟังก์ชันสำหรับการอัพเดตข้อมูล
+import { deleteData   } from '../../../services/apiService';
+
+import { CarEdit } from './EditService/Car';
+import { RestaurantEdit } from './EditService/Course';
+import {  HotelEdit } from './EditService/Hotel';
+import { EventEdit } from './EditService/Event';
 
 export const ShowService = (prop) => {
   const { id, type } = prop;
@@ -19,8 +24,6 @@ export const ShowService = (prop) => {
       setLoading(true);
       const res = await axios.get(`http://localhost:3000/businesses/${id}`, { withCredentials: true });
       const data_format = await res.data;
-      console.log("Here");
-      console.log(data_format);
       setData(data_format);
     } catch (error) {
       setError(error.message);
@@ -31,7 +34,7 @@ export const ShowService = (prop) => {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, );
 
   const title = data?.services;
   const Topic = getTopic(type);
@@ -46,29 +49,6 @@ export const ShowService = (prop) => {
 
   const deleteService = async (id) => {
     let endpoint;
-    if (type == "hotel") {
-      endpoint = '/room/';
-    } else if (type == "carRental") {
-      endpoint = '/car/';
-    } else if (type == "event") {
-      endpoint = '/event/';
-    } else if (type == "restaurant") {
-      endpoint = '/course/';
-    }
-
-    console.log(endpoint + id);
-    await deleteData(endpoint + id);
-  };
-
-  // ฟังก์ชันสำหรับแสดง PopUp และเลือกข้อมูลที่จะแก้ไข
-  const handleEditClick = (item) => {
-    setEditItem(item); // ตั้งค่าข้อมูลที่จะแก้ไข
-    setShowEditPopUp(true); // เปิด PopUp
-  };
-
-  // ฟังก์ชันสำหรับการอัพเดตข้อมูล
-  const handleUpdate = async (updatedData) => {
-    let endpoint;
     if (type === "hotel") {
       endpoint = '/room/';
     } else if (type === "carRental") {
@@ -79,43 +59,63 @@ export const ShowService = (prop) => {
       endpoint = '/course/';
     }
 
-    // await updateData(endpoint + updatedData._id, updatedData); // อัพเดตข้อมูล
-    // setShowEditPopUp(false); // ปิด PopUp
-    // fetchData(); // รีเฟรชข้อมูล
+    await deleteData(endpoint + id);
+    fetchData();
   };
 
+  const handleEditClick = (item) => {
+    setEditItem(item);
+    setShowEditPopUp(true);
+  };
+
+  
+
   return (
-    <div className="p-4 rounded-lg gap-5 mb-5 bg-yellow-50 shadow-md border border-gray-300">
-      <div className="col-span-2 border-b-2 p-2 flex items-center font-bold">
+    <div className="p-6 rounded-lg gap-5 mb-5 bg-yellow-50 shadow-md border border-gray-300">
+      <div className="col-span-2 border-b-2 p-2 flex items-center font-bold text-xl">
         <span>Service Detail</span>
       </div>
 
       {title.map((item, index) => (
         <div key={index} className="grid grid-cols-3 gap-4 p-4 bg-white shadow-md rounded-lg mt-3">
-          {Topic.map((field, index) => (
-            <div key={index}>
-              <div className="font-bold ">{field}</div>
-              {Array.isArray(item[field]) ? (
-                <ul className="list-disc pl-5 grid grid-cols-2">
-                  {item[field].map((value, i) => (
-                    typeof value === "object" ? (
-                      <li key={i}>{value.name}</li>
-                    ) : (
-                      <li key={i}>{value}</li>
-                    )
-                  ))}
-                </ul>
-              ) : (
-                <div>{item[field]}</div>
-              )}
-            </div>
-          ))}
+        {Topic.map((field, index) => (
+          <div key={index} className="flex flex-col">
+            <div className="font-bold">{field}</div>
+            {Array.isArray(item[field]) ? (
+              <ul className="list-disc pl-5 grid grid-cols-2">
+                {item[field].map((value, i) => (
+                  typeof value === "object" ? (
+                    <li key={i}>{value.name}</li>
+                  ) : (
+                    <li key={i}>{value}</li>
+                  )
+                ))}
+              </ul>
+            ) : (
+              <div>
+                {/* เช็คว่า field เป็น Date หรือไม่ */}
+                {field.toLowerCase().includes("date") || field.toLowerCase().includes("start") || field.toLowerCase().includes("end")  ? (
+                  // แปลงเป็นรูปแบบ yyyy-MM-dd hh:mm
+                  new Date(item[field]).toLocaleString("en-GB", {
+                    year: "numeric",
+                    month: "2-digit",
+                    day: "2-digit",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  }).replace(",", "") 
+                ) : (
+                  item[field]
+                )}
+              </div>
+            )}
+          </div>
+        ))}
 
           <div className="flex justify-end items-center font-bold col-span-3 gap-10">
             <div onClick={() => handleEditClick(item)}>
-            
+              <BusinessEditBtn icon={faPenToSquare} popup={"Edit"} />
             </div>
-            <BusinessEditBtn icon={faPenToSquare} popup={"Edit"}  />
+            
             <div onClick={() => deleteService(item._id)}>
               <BusinessEditBtn icon={faTrash} popup={"Delete"} />
             </div>
@@ -123,41 +123,26 @@ export const ShowService = (prop) => {
         </div>
       ))}
 
-      {/* แสดง PopUp เมื่อ showEditPopUp เป็น true */}
+      {/* PopUp สำหรับ Edit เมื่อ showEditPopUp เป็น true */}
       {showEditPopUp && editItem && (
         <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center z-50">
-          <div className="bg-white p-8 rounded-lg shadow-lg">
-            <h2 className="text-xl font-bold">Edit Service</h2>
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                handleUpdate(editItem);
-              }}
-            >
-              {Topic.map((field, index) => (
-                <div key={index} className="mb-4">
-                  <label className="block font-semibold">{field}</label>
-                  <input
-                    type="text"
-                    className="w-full p-2 border border-gray-300 rounded"
-                    value={editItem[field] || ""}
-                    onChange={(e) => setEditItem({ ...editItem, [field]: e.target.value })}
-                  />
+          <div className="bg-white p-12 rounded-lg shadow-lg w-[80%] max-w-4xl overflow-y-auto max-h-[600px]">
+            <h2 className="text-xl font-bold mb-5">Edit Service</h2>
+            <form >
+                <div className={`${type == 'hotel' ? "block" : "hidden"}`}>
+                    <HotelEdit item={editItem} setShowEditPopUp={setShowEditPopUp} />
                 </div>
-              ))}
+                <div className={`${type == 'restaurant' ? "block" : "hidden"}`}>
+                    <RestaurantEdit item={editItem} setShowEditPopUp={setShowEditPopUp} />
+                </div>
+                <div className={`${type == 'carRental' ? "block" : "hidden"}`}>
+                    <CarEdit item={editItem} setShowEditPopUp={setShowEditPopUp} />
+                </div>
+                <div className={`${type == 'event' ? "block" : "hidden"}`}>
+                    <EventEdit item={editItem} setShowEditPopUp={setShowEditPopUp} />
+                </div>
 
-              <div className="flex justify-end gap-4">
-                <button
-                  type="button"
-                  className="bg-gray-500 text-white p-2 rounded"
-                  onClick={() => setShowEditPopUp(false)} // ปิด PopUp
-                >
-                  Cancel
-                </button>
-                <button type="submit" className="bg-blue-500 text-white p-2 rounded">
-                  Save
-                </button>
-              </div>
+              
             </form>
           </div>
         </div>
@@ -165,3 +150,6 @@ export const ShowService = (prop) => {
     </div>
   );
 };
+
+
+

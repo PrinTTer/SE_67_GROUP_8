@@ -130,7 +130,7 @@ export const updateBusiness = async (req: express.Request , res:express.Response
         const user = await getUserById(currentUserId);
         const role:String = user.role;
 
-        if(role !== "entrepreneur" || role !== "admin"){
+        if(role === "tourist"){
             return res.sendStatus(401);
         }
 

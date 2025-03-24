@@ -10,6 +10,7 @@ import { Service } from './component/service';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import LoadingSpinner from '../../components/LoadingSpinner';
+import { fetchData } from '../../services/apiService';
 
 
 function Detail() {
@@ -20,7 +21,6 @@ function Detail() {
   const [showPopup, setShowPopup] = useState(false);
 
 
- 
 
   //fetch from axios
 
@@ -28,14 +28,10 @@ function Detail() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const fetchData = async () => {
+  const fetch = async () => {
     try {
       setLoading(true);
-
-      const res = await axios.get(`http://localhost:3000/businesses/${id}`, { withCredentials: true });
-      const data_format = await res.data;
-      console.log("Here");
-      console.log(data_format);
+      const data_format = await fetchData(`/businesses/${id}`);
       setData(data_format);
     } catch (error) {
       setError(error.message);
@@ -45,8 +41,7 @@ function Detail() {
   };
 
   useEffect(() => {
-    fetchData();
-    
+    fetch();
   }, []);
 
   const [head, setHead] = useState(data?.business?.category)
@@ -58,6 +53,8 @@ function Detail() {
     setHead(title)
 
   };
+
+  console.log("this->",data);
 
   if (loading) {
     return (

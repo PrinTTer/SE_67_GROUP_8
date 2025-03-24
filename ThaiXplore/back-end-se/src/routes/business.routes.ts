@@ -6,8 +6,8 @@ import { upload } from "../middlewares/uploadFile.middleware";
 export default (router: express.Router) => {
     router.post('/businesses' , isAuthenticated , upload.array("files" , 10) , registerBusiness);
     router.put('/businesses/:businessId' , isAuthenticated , updateBusiness);
-    router.put('/businesses/:businessId/images' , isAuthenticated , upload.array("images" , 6) , uploadBusinessImages);
-    router.put('/businesses/:businessId/documents' , isAuthenticated ,upload.array("documents" , 6) , uploadBusinessDocuments);
+    router.post('/businesses/:businessId/images' , isAuthenticated , upload.array("files" , 6) , uploadBusinessImages);
+    router.post('/businesses/:businessId/documents' , isAuthenticated ,upload.array("files" , 6) , uploadBusinessDocuments);
     router.get('/my-businesses' , isAuthenticated , getMyAllBusinesses);
     router.get('/businesses/:businessId' , getBusinesses);
     router.get('/businesses' , getAllBusinesses);

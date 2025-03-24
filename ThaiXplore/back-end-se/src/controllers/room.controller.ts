@@ -156,3 +156,18 @@ export const deleteRoomImage = async (req:express.Request , res:express.Response
         return res.sendStatus(400);
     }
 }
+
+ export const getRoom = async (req:express.Request , res:express.Response):Promise<any> => {
+    try {
+      const { roomId } = req.params;
+      const currentUserId:string = get(req, "identity._id");
+      const user = await getUserById(currentUserId);
+  
+      const rooms = await getRoomById(roomId);
+  
+      return res.status(200).json(rooms);
+    } catch (error) {
+      console.log(error);
+      return res.sendStatus(400);
+    }
+  }

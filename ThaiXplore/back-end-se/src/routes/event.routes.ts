@@ -1,9 +1,13 @@
-import { deleteEvents, registerEvent, updateEvents } from "../controllers/event.controller";
+import { deleteEventImage, deleteEvents, getEvent, registerEvent, updateEvents, uploadEventImages } from "../controllers/event.controller";
 import express from "express";
 import { isAuthenticated } from "../middlewares/isAuthentication.middleware";
+import { upload } from "../middlewares/uploadFile.middleware";
 
 export default (router:express.Router) => {
+    router.get("/events/:eventId" , isAuthenticated , getEvent);
     router.post("/businesses/:businessId/events" , isAuthenticated , registerEvent);
     router.delete("/events/:eventId" , isAuthenticated , deleteEvents);
     router.put("/events/:eventId" , isAuthenticated , updateEvents);
+    router.post("/courses/:courseId/images",isAuthenticated, upload.array("files" , 6) , uploadEventImages);
+    router.delete("/courses/:courseId/images/:index",isAuthenticated , deleteEventImage);
 }

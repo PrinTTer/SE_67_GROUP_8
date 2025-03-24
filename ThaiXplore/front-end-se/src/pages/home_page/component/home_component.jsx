@@ -14,25 +14,25 @@ export const Category = () => {
         <span className="inline-block border-b-2 border-amber-500 pb-2">Explore Thailand</span>
       </h2>
       <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto'>
-        <CategoryGrid 
-          link='/listpage/hotel' 
-          image='https://cdn.pixabay.com/photo/2021/06/01/12/39/beach-6301597_1280.jpg' 
-          title='Hotels & Resorts' 
+        <CategoryGrid
+          link='/listpage/hotel'
+          image='https://cdn.pixabay.com/photo/2021/06/01/12/39/beach-6301597_1280.jpg'
+          title='Hotels & Resorts'
         />
-        <CategoryGrid 
-          link='/listpage/event' 
-          image='https://cdn.pixabay.com/photo/2016/11/23/15/48/audience-1853662_1280.jpg' 
-          title='Events & Festivals' 
+        <CategoryGrid
+          link='/listpage/event'
+          image='https://cdn.pixabay.com/photo/2016/11/23/15/48/audience-1853662_1280.jpg'
+          title='Events & Festivals'
         />
-        <CategoryGrid 
-          link='/listpage/restaurant' 
-          image='https://cdn.pixabay.com/photo/2016/11/18/14/05/brick-wall-1834784_1280.jpg' 
-          title='Restaurant' 
+        <CategoryGrid
+          link='/listpage/restaurant'
+          image='https://cdn.pixabay.com/photo/2016/11/18/14/05/brick-wall-1834784_1280.jpg'
+          title='Restaurant'
         />
-        <CategoryGrid 
-          link='/listpage/carRental' 
-          image='https://cdn.pixabay.com/photo/2017/10/02/11/59/toys-2808599_1280.jpg' 
-          title='Car Rental' 
+        <CategoryGrid
+          link='/listpage/carRental'
+          image='https://cdn.pixabay.com/photo/2017/10/02/11/59/toys-2808599_1280.jpg'
+          title='Car Rental'
         />
       </div>
     </div>
@@ -45,9 +45,9 @@ export const CategoryGrid = (prop) => {
     <Link to={link} className="group overflow-hidden">
       <div className="relative rounded-xl overflow-hidden shadow-lg transition-all duration-500 transform group-hover:scale-105">
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent z-10"></div>
-        <img 
-          className="w-full h-64 object-cover transition-transform duration-700 group-hover:scale-110" 
-          src={image} 
+        <img
+          className="w-full h-64 object-cover transition-transform duration-700 group-hover:scale-110"
+          src={image}
           alt={title}
         />
         <div className="absolute bottom-0 left-0 right-0 p-5 z-20">
@@ -65,12 +65,12 @@ export const Section = (prop) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const types = ['hotel', 'event', 'restaurant', 'carRental', 'News', 'Recommended', 'Package'];
-  
+
   useEffect(() => {
     const getData = async () => {
       setLoading(true);
       try {
-        const result = await fetchData("businesses"); 
+        const result = await fetchData("businesses");
         setData(result);
       } catch (error) {
         setError(error.message);
@@ -80,7 +80,7 @@ export const Section = (prop) => {
     };
 
     getData();
-  }, []); 
+  }, []);
 
   const [dataProvince, setDataProvince] = useState([]);
 
@@ -103,9 +103,9 @@ export const Section = (prop) => {
   }, []);
 
   let post;
-  if(types.includes(title)) {
+  if (types.includes(title)) {
     post = getDataBusiness({ category: title, json: data });
-  } else if(dataProvince.some(province => province.name_th === title) || dataProvince.some(province => province.name_en === title)) {
+  } else if (dataProvince.some(province => province.name_th === title) || dataProvince.some(province => province.name_en === title)) {
     post = getBusinessbyProvince({ province: title, json: data });
   } else {
     post = getBusinessbyName({ businessName: title, json: data });
@@ -119,7 +119,7 @@ export const Section = (prop) => {
       </div>
     );
   }
-  
+
   if (error) return (
     <div className="p-6 bg-white rounded-xl shadow-md">
       <p className="text-red-500 font-medium">Error: {error}</p>
@@ -129,16 +129,16 @@ export const Section = (prop) => {
   return (
     <div className="bg-white rounded-xl shadow-md overflow-hidden mb-8">
       <div className="px-6 py-4 border-b border-gray-100">
-        <h2 className="text-2xl font-bold text-gray-800 flex items-center">
-          <span className="inline-block w-1 h-6 bg-amber-500 mr-3"></span>
-          {title}
+        <h2 className="text-2xl font-bold text-gray-800 flex items-center capitalize">
+          <span className="inline-block w-1 h-6 bg-amber-500 mr-3 "></span>
+          {title === "carRental" ? "car rental" : title === "hotel" ? "hotels & resorts" : title === "event" ? "activities & events" : title}
         </h2>
       </div>
       <div className="p-6">
         <div className="grid gap-6">
           {post.length > 0 ? (
             post.map((element, index) => (
-              <Post key={index} name={element.businessName} id={element._id} address={element.address} />
+              <Post key={index} name={element.businessName} id={element._id} category={element.category} address={element.address} />
             ))
           ) : (
             <p className="text-gray-500 text-center py-4">No results found</p>
@@ -150,9 +150,9 @@ export const Section = (prop) => {
 };
 
 export const Post = (prop) => {
-  const { name, id, address } = prop;
+  const { name, id, address, category} = prop;
   const link = `/Detail/${id}`;
-  
+
   return (
     <Link to={link} className="block transition-all duration-300 hover:shadow-lg">
       <div className="flex flex-col lg:flex-row rounded-lg overflow-hidden bg-white border border-gray-100">
@@ -166,7 +166,7 @@ export const Post = (prop) => {
         <div className="p-6 lg:w-2/3">
           <div className="flex items-start justify-between mb-2">
             <h3 className="text-xl font-bold text-gray-800 hover:text-amber-600 transition-colors">{name}</h3>
-            <span className="bg-amber-50 text-amber-700 text-xs px-2 py-1 rounded-full uppercase tracking-wider">Premium</span>
+            <span className="bg-amber-50 text-amber-700 text-xs px-2 py-1 rounded-full uppercase tracking-wider">{category}</span>
           </div>
           <p className="text-gray-600 mb-4">{address}</p>
           <div className="flex items-center text-amber-500">
@@ -204,7 +204,7 @@ export const RightBar = (prop) => {
             <ChkBox title="Recommended" group="Recommended" />
           </form>
         </div>
-        
+
         <div className="mb-6 px-2">
           <div className="border-l-4 border-amber-500 pl-3 mb-4">
             <h4 className="text-gray-800 font-bold">Province</h4>

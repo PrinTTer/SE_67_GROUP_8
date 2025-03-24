@@ -6,8 +6,6 @@ const HomePage = () => {
 
     return (
         <>
-
-            
             <div className='flex flex-4 flex-col gap-5'>
                 <Category />
                 <Section title="Recommended" />

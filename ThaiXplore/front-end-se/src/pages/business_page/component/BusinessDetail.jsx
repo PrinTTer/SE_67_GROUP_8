@@ -59,19 +59,45 @@ export const BusinessInformation = () => {
             address: `${address.value} ${subDistrict.value} ${district.value} ${province.value} ${postalCode.value}`,
             category: category,
         }));
-    },[category , address , subDistrict , district , province ,postalCode])
+    }, [category, address, subDistrict, district, province, postalCode])
 
     const onSubmit = async () => {
         try {
-            await postDataWithFiles("/businesses/" ,uploadDocument, dataForm, "businesses_verifies");
+            let type = category || "event";
+            
+            let topicBusines
+            if (type == "hotel") {
+                topicBusines = ["Hotel Information", "Specify food and beverage service information", "Recreation facility"]
+            }
+            else if (type == "event") {
+                topicBusines = ["Event Information"]
+            }
+            else if (type == "restaurant") {
+                topicBusines = ["Working Date Information"]
+            }
+            else if (type == "carRental") {
+                topicBusines = ["Working Date Information"]
+            }
+
+            const res = await postDataWithFiles("/businesses/", uploadDocument, dataForm, "businesses_verifies");
+
+            await Promise.all(
+                topicBusines.map(async (item , idx) => {
+                    const obj = {
+                        informationName : item,
+                        details : [String]
+                    }
+                    await postData(`/businesses/${res._id}/businessdetails` , obj);
+                })
+            )
             navigate("/profile/mainbusiness");
         } catch (error) {
             console.log(error);
         }
-        
+
     }
 
-    
+
     return (
         <div>
             <div className="flex flex-col my-4 mx-20">

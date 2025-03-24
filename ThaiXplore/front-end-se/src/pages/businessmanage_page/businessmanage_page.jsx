@@ -26,6 +26,8 @@ const VerifyBusiness = () => {
         getBusinesses();
     }, []);
 
+    // console.log("Businesses:", businesses);
+
     const filteredBusinesses = businesses.filter(business => {
         if (activeTab === "New Request") {
             return business.verify?.status === "pending";

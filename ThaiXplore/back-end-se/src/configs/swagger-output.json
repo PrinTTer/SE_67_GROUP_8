@@ -84,6 +84,14 @@
             "description": "Bad Request"
           }
         }
+      },
+      "get": {
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
       }
     },
     "/bookings-package/{userPackageId}": {
@@ -274,7 +282,7 @@
       }
     },
     "/businesses/{businessId}/images": {
-      "put": {
+      "post": {
         "description": "",
         "parameters": [
           {
@@ -292,7 +300,7 @@
       }
     },
     "/businesses/{businessId}/documents": {
-      "put": {
+      "post": {
         "description": "",
         "parameters": [
           {
@@ -487,55 +495,26 @@
         }
       }
     },
-    "/businesses/{businessId}/cars": {
-      "post": {
+    "/cars/{carId}": {
+      "get": {
         "description": "",
         "parameters": [
           {
-            "name": "businessId",
+            "name": "carId",
             "in": "path",
             "required": true,
             "type": "string"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "carBrand": {
-                  "example": "any"
-                },
-                "licensePlate": {
-                  "example": "any"
-                },
-                "amountSeat": {
-                  "example": "any"
-                },
-                "price": {
-                  "example": "any"
-                },
-                "totalCars": {
-                  "example": "any"
-                }
-              }
-            }
           }
         ],
         "responses": {
-          "201": {
-            "description": "Created"
+          "200": {
+            "description": "OK"
           },
           "400": {
             "description": "Bad Request"
-          },
-          "401": {
-            "description": "Unauthorized"
           }
         }
-      }
-    },
-    "/cars/{carId}": {
+      },
       "delete": {
         "description": "",
         "parameters": [
@@ -605,7 +584,7 @@
         }
       }
     },
-    "/businesses/{businessId}/courses": {
+    "/businesses/{businessId}/cars": {
       "post": {
         "description": "",
         "parameters": [
@@ -614,16 +593,65 @@
             "in": "path",
             "required": true,
             "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "carBrand": {
+                  "example": "any"
+                },
+                "licensePlate": {
+                  "example": "any"
+                },
+                "amountSeat": {
+                  "example": "any"
+                },
+                "price": {
+                  "example": "any"
+                },
+                "totalCars": {
+                  "example": "any"
+                }
+              }
+            }
           }
         ],
         "responses": {
-          "default": {
-            "description": ""
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
           }
         }
       }
     },
     "/courses/{courseId}": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "courseId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      },
       "delete": {
         "description": "",
         "parameters": [
@@ -687,7 +715,7 @@
         }
       }
     },
-    "/businesses/{businessId}/events": {
+    "/businesses/{businessId}/courses": {
       "post": {
         "description": "",
         "parameters": [
@@ -696,49 +724,35 @@
             "in": "path",
             "required": true,
             "type": "string"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "ticketType": {
-                  "example": "any"
-                },
-                "price": {
-                  "example": "any"
-                },
-                "quantity": {
-                  "example": "any"
-                },
-                "eventDate": {
-                  "example": "any"
-                },
-                "start": {
-                  "example": "any"
-                },
-                "end": {
-                  "example": "any"
-                }
-              }
-            }
           }
         ],
         "responses": {
-          "201": {
-            "description": "Created"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "401": {
-            "description": "Unauthorized"
+          "default": {
+            "description": ""
           }
         }
       }
     },
     "/events/{eventId}": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "eventId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      },
       "delete": {
         "description": "",
         "parameters": [
@@ -801,6 +815,57 @@
         "responses": {
           "200": {
             "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/businesses/{businessId}/events": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "businessId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "ticketType": {
+                  "example": "any"
+                },
+                "price": {
+                  "example": "any"
+                },
+                "quantity": {
+                  "example": "any"
+                },
+                "eventDate": {
+                  "example": "any"
+                },
+                "start": {
+                  "example": "any"
+                },
+                "end": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
           },
           "400": {
             "description": "Bad Request"

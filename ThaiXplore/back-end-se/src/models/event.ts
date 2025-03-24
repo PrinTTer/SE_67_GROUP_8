@@ -18,6 +18,7 @@ const EventSchema = new mongoose.Schema({
 
 export const EventModel = mongoose.model("Activities" , EventSchema);
 
+export const getEventById = (id:string) => EventModel.findById(id);
 export const createEvent = (values: Record<string , any>) => new EventModel(values).save().then((activity)=>activity.toObject());
 export const deleteEvent =(id:string) => EventModel.findByIdAndDelete(id);
 export const updateEvent = (id:string , values:Record<string , any>) => EventModel.findByIdAndUpdate(id , values);

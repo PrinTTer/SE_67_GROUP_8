@@ -1,7 +1,7 @@
 import express from "express";
 import { get } from "lodash";
 import { getUserById } from "../models/users";
-import { createCar, deleteCar ,updateCar} from "../models/car";
+import { createCar, deleteCar ,getCarById,updateCar} from "../models/car";
 
 export const registerCar = async (
   req: express.Request,
@@ -93,3 +93,18 @@ export const updateCars = async (req: express.Request, res: express.Response): P
     return res.sendStatus(400);
   }
 };
+
+export const getCar = async (req:express.Request , res:express.Response):Promise<any> => {
+  try {
+    const { carId } = req.params;
+    const currentUserId:string = get(req, "identity._id");
+    const user = await getUserById(currentUserId);
+
+    const cars = await getCarById(carId);
+
+    return res.status(200).json(cars);
+  } catch (error) {
+    console.log(error);
+    return res.sendStatus(400);
+  }
+}

@@ -113,9 +113,9 @@ export const ShowService = (prop) => {
 
           <div className="flex justify-end items-center font-bold col-span-3 gap-10">
             <div onClick={() => handleEditClick(item)}>
-                <BusinessEditBtn icon={faPenToSquare} popup={"Edit"}  />
-            </div>
             
+            </div>
+            <BusinessEditBtn icon={faPenToSquare} popup={"Edit"}  />
             <div onClick={() => deleteService(item._id)}>
               <BusinessEditBtn icon={faTrash} popup={"Delete"} />
             </div>

@@ -128,7 +128,7 @@ export const updateBusiness = async (req: express.Request , res:express.Response
         const { businessId } = req.params;
         const currentUserId:string = get(req , 'identity._id');
         const user = await getUserById(currentUserId);
-        const role:String = user.role;
+        const role:String = user?.role;
 
         if(role === "tourist"){
             return res.sendStatus(401);

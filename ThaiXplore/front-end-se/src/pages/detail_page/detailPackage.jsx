@@ -1,82 +1,101 @@
-import huahinPoster from '../../assets/huahin_desktop.jpg';
 import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+import huahinPoster from '../../assets/huahin_desktop.jpg';
+import { fetchData } from '../../services/apiService';
 
 const DetailPackage = () => {
-  const { id } = useParams(); // หากจะรับ id จาก route
+  const { id } = useParams();
   const [packageData, setPackageData] = useState(null);
+  const [selectedServices, setSelectedServices] = useState([]);
 
   useEffect(() => {
-    // mock data
-    const mockData = {
-      title: "Hua Hin Creation : ผ่อนคลาย สร้างสรรค์",
-      date: "24 กุมภาพันธ์ 2568",
-      description: `
-        Hua Hin Creation : ผ่อนคลาย สร้างสรรค์
-        จ.ประจวบคีรีขันธ์ (3 วัน 2 คืน)
-        Theme
-        - การสร้างทีมวิริค (Treasured Team Building)
-        - กิจกรรมบรรยากาศชายหาด (Beach Bliss)
-        
-        วันที่ 1
-        เริ่มต้นการเดินทางด้วย Welcome Drink จากเครื่องดื่มสมุนไพรสด รีเฟรชร่างกาย...
-        
-        วันที่ 2
-        สนุกกับ Aqua Zumba, กิจกรรมเก็บขยะริมหาด, ปิดท้ายด้วย Campfire Sharing...
-
-        วันที่ 3
-        ปั้นปราสาททราย, team building, ปิดทริปด้วยอาหารทะเลแสนอร่อย
-      `,
-      services: [
-        {
-          name: "แอร์ สเปซ หัวหิน",
-          description: "ร้านอาหารวิวทะเลชื่อดัง บรรยากาศดีเหมาะสำหรับกิจกรรมเปิดงาน"
-        },
-        {
-          name: "อ่าวตะเกียบซีฟู้ด",
-          description: "ร้านอาหารทะเลริมชายหาด บรรยากาศ Sea-to-Table"
-        },
-        {
-          name: "Social Club Hua Hin",
-          description: "สถานที่สำหรับ Team Building พร้อมพื้นที่กิจกรรม"
-        }
-      ]
+    const fetchPackage = async () => {
+      try {
+        const detail = await fetchData(`packages/${id}`);
+        setPackageData(detail);
+        setSelectedServices(detail.services.map((s) => s.serviceId));
+      } catch (error) {
+        console.error("Error loading package:", error);
+      }
     };
+  
+    fetchPackage();
+  }, [id]);
+  
 
-    setPackageData(mockData);
-  }, []);
+  const toggleService = (serviceId) => {
+    setSelectedServices((prev) =>
+      prev.includes(serviceId)
+        ? prev.filter((id) => id !== serviceId)
+        : [...prev, serviceId]
+    );
+  };
 
-  if (!packageData) return <div>Loading...</div>;
+  if (!packageData) return <div className="p-10">Loading...</div>;
+
+  const formattedDate = new Date(packageData.dateCreate).toLocaleDateString("th-TH", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
 
   return (
-    <div className="flex flex-5 w-full flex-col bg-gray-50 min-h-screen"> 
-      {/* Image Poster */}
-      <div className='p-6'>
-        <img src={huahinPoster} alt="Package Poster" className="w-full h-auto object-cover" />
-      </div>
-      
+    <div className="flex flex-5 bg-gray-50 min-h-screen">
+      {/* Left Content */}
+      <div className="w-3/4 p-6">
+        <img src={huahinPoster} alt="poster" className="w-full h-auto rounded-xl mb-6 shadow" />
 
-      {/* Content */}
-      <div className="max-w-5xl mx-auto p-6">
-        {/* Title */}
         <h1 className="text-3xl font-bold text-gray-800 mb-2">{packageData.title}</h1>
-        <p className="text-sm text-gray-500 mb-6">{packageData.date}</p>
+        <p className="text-sm text-gray-500 mb-6">{formattedDate}</p>
 
-        {/* Description */}
-        <div className="whitespace-pre-line text-gray-700 leading-7 mb-10">
-          {packageData.description}
+        <div className="whitespace-pre-line text-gray-700 leading-7">
+          {packageData.description || "ไม่มีรายละเอียด"}
         </div>
 
-        {/* Services */}
-        <h2 className="text-2xl font-bold text-gray-800 mb-4">บริการที่รวมในแพคเกจ</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {packageData.services.map((item, index) => (
-            <div key={index} className="bg-white shadow-md rounded-xl p-4">
-              <h3 className="text-lg font-semibold text-amber-700">{item.name}</h3>
-              <p className="text-gray-600 mt-1">{item.description}</p>
+        <div>
+          <p className="text-sm text-gray-500 mb-6">ราคา: {packageData.price} ต่อคน</p>
+        </div>
+      </div>
+
+      {/* Right Sidebar */}
+      <div className="w-1/4 p-6 border-l border-gray-200 bg-white shadow-sm">
+        <h2 className="text-xl font-semibold text-gray-800 mb-4">บริการภายในแพคเกจ</h2>
+
+        <div className="space-y-4">
+          {packageData.services?.map((service) => (
+            <div key={service.serviceId} className="flex items-start">
+              <div className="flex flex-col lg:flex-row flex-1 rounded-lg overflow-hidden bg-white border border-gray-100 shadow-sm">
+                <div className="lg:w-1/3 w-full overflow-hidden">
+                  <div className="w-full h-32 lg:h-full flex items-center justify-center bg-gray-100 text-gray-500 text-sm">
+                    No Image
+                  </div>
+                </div>
+
+                <div className="p-4 lg:w-2/3">
+                  <h3 className="text-lg font-bold text-gray-800 mb-1">
+                    {service.name || `บริการ ${service.serviceId}`}
+                  </h3>
+                  <p className="text-sm text-gray-600">
+                    {service.description || "ไม่มีคำอธิบาย"}
+                  </p>
+                </div>
+              </div>
+
+              <div className="ml-3 mt-2">
+                <input
+                  type="checkbox"
+                  checked={selectedServices.includes(service.serviceId)}
+                  onChange={() => toggleService(service.serviceId)}
+                  className="w-5 h-5 accent-amber-500"
+                />
+              </div>
             </div>
           ))}
         </div>
+
+        <button className="mt-6 w-full bg-amber-500 hover:bg-amber-600 text-white font-bold py-2 px-4 rounded-xl">
+          ซื้อแพคเกจ
+        </button>
       </div>
     </div>
   );

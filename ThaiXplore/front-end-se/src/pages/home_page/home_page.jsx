@@ -9,8 +9,13 @@ const HomePage = () => {
                         <ImageSlider />
                 </div>
                 <Category />
-                <Section title="Recommended" />
-                <Section title="Package" />
+                <Section title="Recommended" viewType="card" />
+<Section title="hotel" viewType="card" />
+<Section title="event" viewType="card" />
+<Section title="restaurant" viewType="card" />
+<Section title="carRental" viewType="card" />
+
+                <Section title="Package" viewType="card" />
             </div>
             <RightBar pagetitle="homepage"/>
         </>

@@ -27,6 +27,7 @@ import { TopBarResponsive } from "./components/TopBarResponsive";
 import Payment from "./pages/payment_page/payment";
 import PaymentSelector from "./pages/payment_page/paymentSelected";
 import QuotationPage from "./pages/quotation_page/quotationpage"
+import BookingHistory from "./pages/booking_page/bookingHistory";
 
 
 function App() {
@@ -85,6 +86,7 @@ function App() {
             <Route path="/detail/:title/booking" element={<Booking />} /> */}
             <Route path="/booking" element={<Booking />} />
             <Route path="/payment" element={<Payment />} />
+            <Route path="/history" element={<BookingHistory />} />
             <Route path="/paymentSelector" element={<PaymentSelector />} />
             <Route path="/quotation" element={<QuotationPage />} />
             <Route path="/verifyBusiness" element={<VerifyBusiness />} />

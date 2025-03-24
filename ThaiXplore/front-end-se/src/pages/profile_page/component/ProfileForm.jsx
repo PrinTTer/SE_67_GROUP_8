@@ -13,12 +13,6 @@ const ProfileForm = () => {
             setData(user);
         }
 
-        // ดึงข้อความ error จาก sessionStorage เมื่อหน้าโหลดใหม่
-        const storedError = sessionStorage.getItem('profileFormError');
-        if (storedError) {
-            setError(storedError);
-            sessionStorage.removeItem('profileFormError');  // ลบ error จาก sessionStorage หลังการใช้งาน
-        }
     }, [user]);
 
     const handleFieldUpdate = async (field, value) => {
@@ -33,23 +27,32 @@ const ProfileForm = () => {
 
         setData(updatedData);
 
-        try {
-            // เรียก API ตาม field ที่ต้องการอัปเดต
-            if (field === "password") {
-                await putData("/users/change-password", updatedData);
-            } else if (field === "email") {
-                await putData("/users/change-email", updatedData);
-            } else {
-                await putData("/users", updatedData);
+        if(field === "password"){
+            updatedData = value
+            try {
+                await putData("/users/change-password", updatedData); // ✅ ส่งข้อมูลทั้งหมดไปยัง API
+                console.log(`Updated ${field} successfully!`);
+            } catch (error) {
+                console.error(`Error updating ${field}:`, error);
             }
-            console.log(`Updated ${field} successfully!`);
-            setError("");  // เคลียร์ error หลังจากทำการบันทึกสำเร็จ
-        } catch (error) {
-            console.error(`Error updating ${field}:`, error);
-            setError("Something went wrong while updating the information.");  // แสดงข้อความ error จาก API
-
-            // เก็บ error ใน sessionStorage ก่อนทำการรีเฟรช
-            sessionStorage.setItem('profileFormError', "Something went wrong while updating the information.");
+        }
+        else if(field === "email"){
+            updatedData = value
+            console.log(updatedData);
+            try {
+                await putData("/users/change-email", updatedData); // ✅ ส่งข้อมูลทั้งหมดไปยัง API
+                console.log(`Updated ${field} successfully!`);
+            } catch (error) {
+                console.error(`Error updating ${field}:`, error);
+            }
+        }
+        else{
+            try {
+                await putData("/users", updatedData); // ✅ ส่งข้อมูลทั้งหมดไปยัง API
+                console.log(`Updated ${field} successfully!`);
+            } catch (error) {
+                console.error(`Error updating ${field}:`, error);
+            }
         }
     };
 

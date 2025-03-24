@@ -1,19 +1,30 @@
-
 export const PaymentUserDetail = (prop) => {
-    const {user} = prop
+    const {user} = prop;
     console.log(user);
 
     if(!user){
-        return <p>loading user data ...</p>;
+        return (
+            <div className="w-full flex items-center justify-center p-8">
+                <div className="animate-pulse flex space-x-4">
+                    <div className="flex-1 space-y-4 py-1">
+                        <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+                        <div className="space-y-2">
+                            <div className="h-4 bg-gray-200 rounded"></div>
+                            <div className="h-4 bg-gray-200 rounded w-5/6"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
     }
 
     return(
-        <div className="grid grid-cols-2 my-2 mx-4 gap-4 w-full">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full p-2">
             <UserDetail label={"First Name"} value={user?.firstName}/>
             <UserDetail label={"Last Name"} value={user?.lastName}/>
             <UserDetail label={"Email"} value={user?.email}/>
             <UserDetail label={"Phone"} value={user?.phoneNumber}/>
-            <UserDetail label={"Amount"} value={"Number"}/>        
+            <UserDetail label={"Guests"} value={user?.amount || "1"}/>        
         </div>
     );
 }
@@ -22,11 +33,10 @@ export const UserDetail = (prop) => {
     const {label, value} = prop;
     return(
         <div className="flex flex-col">
-            <h1 className="font-bold">{label}</h1>
-            <div className="w-2/4 p-2 ml-2">
-                <p className="text-2xl font-medium">{value}</p>
+            <h3 className="text-sm font-medium text-gray-500">{label}</h3>
+            <div className="mt-1">
+                <p className="text-base font-medium text-gray-800">{value || "-"}</p>
             </div>
         </div>
-        
     );
 }

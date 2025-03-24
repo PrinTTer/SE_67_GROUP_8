@@ -1,12 +1,10 @@
 import BookingDetail from "./component/bookingDetail";
 import BookingForm from "./component/bookingForm";
-import { useParams, useLocation } from "react-router-dom";
-import { useState, useEffect } from 'react';
-import axios from 'axios';
+import { useLocation } from "react-router-dom";
+
 const Booking = () => {
     const location = useLocation();
     const {item, category} = location.state || {}; // ป้องกัน null
-    console.log("Hee Hee "+category);
     return(
         <>
             <div className="flex flex-5 items-center justify-center">
@@ -14,7 +12,7 @@ const Booking = () => {
                     <BookingDetail item={item} category={category}/>
                 </div>
                 <div className="flex flex-[3.8] h-full">
-                    <BookingForm/>
+                    <BookingForm item={item} category={category}/>
                 </div>
             </div>
         </>

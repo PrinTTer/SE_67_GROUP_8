@@ -58,17 +58,15 @@ export const EditingField = (prop) => {
         } else if (field === "name") {
             onSave(field, `${firstName} ${lastName}`);
         } else if (field === "email") {
-            if (!newEmail) {
-                setError("New email is required!");
+            console.log("Updating email with:", newEmail, password); // Debugging
+            if (!newEmail || !password) {
+                setError("New email and password are required!");
                 return;
             }
             onSave(field, { newEmail, password });
         } else {
             onSave(field, inputValue);
         }
-
-        // เก็บ error ใน sessionStorage ก่อนทำการรีเฟรช
-        sessionStorage.setItem('profileFormError', error);
 
         // รีเฟรชหน้า
         window.location.reload();
@@ -78,12 +76,18 @@ export const EditingField = (prop) => {
         <div className="flex items-center bg-white w-4xl h-[5rem] rounded-xs p-4 shadow-md border border-gray-300">
             {hasProfileImage && (
                 <div onClick={() => document.getElementById("profile-image-input").click()}>
-                    {/* รูปโปรไฟล์ที่แสดง */}
-                    <img
-                        src={`http://localhost:3000/public/uploads/users/images/${profileImage}`} // ใช้รูป default ถ้าไม่มี
-                        alt="Profile"
-                        className="w-12 h-12 bg-gray-400 rounded-full cursor-pointer"
-                    />
+                    {profileImage === undefined ? (
+                        <div className="flex justify-center items-center w-12 h-12 bg-gray-400 rounded-full cursor-pointer">
+                            <h1>➕</h1>
+                        </div>
+                    ) : (
+                        // ถ้ามี profileImage ให้แสดงรูปจาก URL ที่มี
+                        <img
+                            src={`http://localhost:3000/public/uploads/users/images/${profileImage}`}  // รูปโปรไฟล์ที่อัพโหลด
+                            alt="Profile"
+                            className="w-12 h-12 bg-gray-400 rounded-full cursor-pointer"
+                        />
+                    )}
                 </div>
             )}
             {/* ซ่อน input file */}

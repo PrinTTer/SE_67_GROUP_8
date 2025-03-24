@@ -11,7 +11,7 @@ export const Service = (prop) => {
     const navigate = useNavigate();
 
     const serviceDetails = (item) => {
-        alert(JSON.stringify(item)); // จะได้เห็น object จริง
+        console.log(JSON.stringify(item)); // จะได้เห็น object จริง
         navigate('/booking', {
             state: {item, category}
         });

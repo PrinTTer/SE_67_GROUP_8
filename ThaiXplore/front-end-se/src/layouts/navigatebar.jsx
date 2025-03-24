@@ -178,7 +178,7 @@ export const ToggleSideBarTourist = (prop) => {
                     Tourist Account
                 </div>
                 <IconSideBar iconName="My Profile" iconFont={faUser} path="/profile" />
-                <IconSideBar iconName="My Bookings" iconFont={faClipboardCheck} path="#" />
+                <IconSideBar iconName="My Bookings" iconFont={faClipboardCheck} path="/history" />
                 <IconSideBar iconName="Travel Packages" iconFont={faCube} path="#" />
                 <div className="mx-4 my-2 border-t border-gray-100"></div>
                 <IconSideBar logout={logout} iconName="Logout" iconFont={faArrowRightFromBracket} path="/login" />

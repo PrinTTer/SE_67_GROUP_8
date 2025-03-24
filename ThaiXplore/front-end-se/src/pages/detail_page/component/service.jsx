@@ -1,11 +1,21 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBed } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
 
 
 export const Service = (prop) => {
     const { title ,category ,id } = prop
     console.log(title , category)
+
+    const navigate = useNavigate();
+
+    const serviceDetails = (item) => {
+        alert(JSON.stringify(item)); // จะได้เห็น object จริง
+        navigate('/booking', {
+            state: {item, category}
+        });
+    };
     
     const linkTo = "/Detail/booking/"+id;
     let Topic = [] ;
@@ -41,12 +51,10 @@ export const Service = (prop) => {
                 ))}
 
                 <div className="flex justify-end items-center font-bold col-span-3  ">
-                        <Link to={linkTo+"/"+index}>
-                        <button 
+                        <button onClick={() => serviceDetails(item)}
                             className="border py-2 px-6 rounded-2xl bg-[#007CE8] text-white cursor-pointer hover:bg-[#8bc7fc]">
                             Choose
                         </button>   
-                        </Link>
                     </div> 
                 </div>
 

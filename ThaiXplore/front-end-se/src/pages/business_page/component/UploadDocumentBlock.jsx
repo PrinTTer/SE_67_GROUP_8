@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useState } from "react";
 import { FileUploaded } from "./FileUploaded";
 
+
 export const UploadDocumentBlock = (prop) => {
     const {setUpLoadDocument , uploadDocument} = prop;
 

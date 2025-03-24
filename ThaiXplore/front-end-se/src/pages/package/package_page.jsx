@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { RightBar } from "../home_page/component/home_component";
 import PackageCard from "./component/package_card";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -11,13 +11,15 @@ import {
 import { Link } from "react-router-dom";
 import { fetchData } from "../../services/apiService";
 import { mockPackages } from "./mock";
-import { useMemo } from "react";
+
+const getPackageImageUrl = (filename) => {
+  return `http://localhost:3000/public/uploads/services/packages/${filename}`;
+};
 
 const PackagePage = () => {
   const [packages, setPackages] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [sortOption, setSortOption] = useState("latest");
-
   const [isLoading, setIsLoading] = useState(true);
   const itemsPerPage = 6;
 
@@ -26,19 +28,15 @@ const PackagePage = () => {
       setIsLoading(true);
       try {
         const response = await fetchData("/packages");
-        // const response = mockPackages;
 
-        // Mapping เพื่อให้ข้อมูลเข้ากับ PackageCard
         const formatted = response.map((pkg) => ({
           id: pkg._id,
           title: pkg.title,
-          subtitle: `เริ่ม ${new Date(pkg.startDate).toLocaleDateString(
-            "th-TH"
-          )} - ${new Date(pkg.endDate).toLocaleDateString("th-TH")}`,
+          subtitle: `เริ่ม ${new Date(pkg.startDate).toLocaleDateString("th-TH")} - ${new Date(pkg.endDate).toLocaleDateString("th-TH")}`,
           description: pkg.description,
-          image: pkg.media[0] || "https://placehold.co/600x400?text=No+Image",
-          price: pkg.price || 0, 
-          dateCreate: pkg.dateCreate || new Date().toISOString(), 
+          image: pkg.media.length > 0 ? getPackageImageUrl(pkg.media[0]) : "https://placehold.co/600x400?text=No+Image",
+          price: pkg.price || 0,
+          dateCreate: pkg.dateCreate || new Date().toISOString(),
         }));
 
         setPackages(formatted);
@@ -52,7 +50,6 @@ const PackagePage = () => {
     loadPackages();
   }, []);
 
-  // Filter Logic naja
   const sortedPackages = useMemo(() => {
     const sorted = [...packages];
     switch (sortOption) {
@@ -61,18 +58,14 @@ const PackagePage = () => {
       case "priceHigh":
         return sorted.sort((a, b) => b.price - a.price);
       case "latest":
-        return sorted.sort(
-          (a, b) => new Date(b.dateCreate) - new Date(a.dateCreate)
-        );
+        return sorted.sort((a, b) => new Date(b.dateCreate) - new Date(a.dateCreate));
       case "popular":
-        // ถ้ามีข้อมูลยอดนิยม เช่น จำนวน transaction หรือ rating ให้ใช้ตรงนี้
-        return sorted; // ตอนนี้ยัง dummy อยู่
+        return sorted;
       default:
         return sorted;
     }
   }, [packages, sortOption]);
 
-  // Pagination logic
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = sortedPackages.slice(indexOfFirstItem, indexOfLastItem);
@@ -90,10 +83,8 @@ const PackagePage = () => {
 
   return (
     <div className="flex flex-5 w-full bg-gray-50 min-h-screen">
-      {/* Content Area */}
       <div className="flex-1 p-6 lg:p-10">
         <div className="max-w-7xl mx-auto">
-          {/* Loading State */}
           {isLoading ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
               {Array.from({ length: 6 }).map((_, index) => (
@@ -112,7 +103,6 @@ const PackagePage = () => {
             </div>
           ) : (
             <>
-              {/* Results Count */}
               <div className="flex justify-between items-center mb-6">
                 <p className="text-gray-600">แสดง {packages.length} แพคเกจ</p>
                 <select
@@ -127,7 +117,6 @@ const PackagePage = () => {
                 </select>
               </div>
 
-              {/* Package Cards Grid */}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
                 {currentItems.length > 0 ? (
                   currentItems.map((pkg) => (
@@ -146,7 +135,6 @@ const PackagePage = () => {
                 )}
               </div>
 
-              {/* Pagination Buttons - Redesigned */}
               {totalPages > 1 && (
                 <div className="flex justify-center items-center mt-12 mb-6">
                   <div className="inline-flex shadow-sm rounded-lg overflow-hidden">
@@ -186,8 +174,6 @@ const PackagePage = () => {
           )}
         </div>
       </div>
-
-      {/* Right Bar */}
       <RightBar pagetitle="package" />
     </div>
   );

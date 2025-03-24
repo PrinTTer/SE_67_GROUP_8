@@ -1,4 +1,4 @@
-import {  useState } from 'react';
+import {  useState , useEffect} from 'react';
 import { faPlus, faCirclePlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
@@ -7,6 +7,8 @@ import {HotelService } from './HotelService';
 import {EventService } from './EventService';
 import {CarService } from './CarService';
 import { RestaurantService } from './RestaurantService';
+
+import axios from 'axios';
 
 export const ServiceBlock = (prop) => {
     const { title, type, businessId } = prop;
@@ -20,6 +22,31 @@ export const ServiceBlock = (prop) => {
         setShow(!show);
     };
 
+
+    const [data, setData] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
+    
+  
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const res = await axios.get(`http://localhost:3000/businesses/${businessId}`, { withCredentials: true });
+        const data_format = await res.data;
+        setData(data_format);
+      } catch (error) {
+        setError(error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+  
+    useEffect(() => {
+      fetchData();
+    },[] );
+
+    
+
     return (
         <div className="shadow-md m-4 p-4 rounded-md bg-[#F1F5F9]">
             <div className="grid grid-cols-2 border-b-2 p-1 text-lg mb-2">
@@ -32,19 +59,19 @@ export const ServiceBlock = (prop) => {
             </div>
             <div className={`${!show ? "block" : "hidden"}`}>
                 <div className={`${type=="hotel" ? "block" : "hidden"}  `}>
-                    <HotelService  id={businessId} title={title} type={type} />
+                    <HotelService  id={businessId} title={title} type={type} fetchData={fetchData} data={data}/>
                 </div>
                 <div className={`${type=="event" ? "block" : "hidden"}  `}>
-                    <EventService  id={businessId} title={title} type={type}/>
+                    <EventService  id={businessId} title={title} type={type} fetchData={fetchData} data={data}/>
                     
                 </div>
                 <div className={`${type=="carRental" ? "block" : "hidden"}  `}>
-                    <CarService  id={businessId} title={title}  type={type}/>
+                    <CarService  id={businessId} title={title}  type={type} fetchData={fetchData} data={data}/>
                     
                 </div>
 
                 <div className={`${type=="restaurant" ? "block" : "hidden"}  `}>
-                    <RestaurantService  id={businessId} title={title} type={type}/>
+                    <RestaurantService  id={businessId} title={title} type={type} fetchData={fetchData} data={data}/>
                     
                 </div>
             </div>

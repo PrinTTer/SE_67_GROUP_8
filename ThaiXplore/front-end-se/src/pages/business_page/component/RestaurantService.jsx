@@ -6,7 +6,7 @@ import { FileUpload } from './ServiceBlock';
 import { ShowService } from './ShowService';
 
 export const RestaurantService = (prop) => {
-  const { id, title, type } = prop;
+  const { id, title, type, fetchData, data } = prop;
   const [forms, setForms] = useState([
     { businessId: id, courseName: "", menuList: [{ name: "" }], price: "" }
   ]);
@@ -126,6 +126,7 @@ export const RestaurantService = (prop) => {
         
         console.log(formData);
         await postData(`/businesses/${id}/courses`, formData);
+        fetchData();
         alert("Course added successfully!");
         removeForm(index);
       } catch (error) {
@@ -136,29 +137,29 @@ export const RestaurantService = (prop) => {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-6">
-      <ShowService id={id} type={type}/>
-      <div className="items-center flex mb-5 border-b border-gray-200 pb-3">
-        <h2 className="text-xl font-semibold text-gray-800">
+    <div className="bg-white rounded-lg shadow-lg p-8 border border-amber-100">
+      <ShowService id={id} type={type} fetchData={fetchData} data={data}/>
+      <div className="items-center flex mb-6 border-b border-amber-200 pb-4">
+        <h2 className="text-2xl font-semibold text-amber-800">
           Add {title?.split(" ")[0] || "Restaurant"}
         </h2>
         <FontAwesomeIcon
           icon={faCirclePlus}
-          className="ml-3 cursor-pointer text-orange-500 hover:text-orange-600 text-2xl transition-colors duration-200"
+          className="ml-3 cursor-pointer text-amber-500 hover:text-amber-600 text-2xl transition-colors duration-300"
           onClick={addForm}
         />
       </div>
      
       {forms.map((form, index) => (
-        <div key={index} className="bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg p-6 mb-5 shadow-sm border border-blue-200">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div key={index} className="bg-gradient-to-r from-amber-50 to-amber-100 rounded-lg p-6 mb-6 shadow-md border border-amber-200">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-gray-700 font-medium mb-2">Course Name <span className="text-red-500">*</span></label>
+              <label className="block text-amber-800 font-medium mb-2">Course Name <span className="text-red-500">*</span></label>
               <input
                 type="text"
                 value={form.courseName}
                 onChange={(e) => handleInputChange(index, "courseName", e.target.value)}
-                className={`bg-white p-3 rounded-md w-full shadow-sm border ${errors[index]?.courseName ? 'border-red-500' : 'border-gray-300'} focus:ring-2 focus:ring-orange-400 focus:border-transparent transition duration-200`}
+                className={`bg-white p-3 rounded-md w-full shadow-sm border ${errors[index]?.courseName ? 'border-red-500' : 'border-amber-300'} focus:ring-2 focus:ring-amber-400 focus:border-transparent transition duration-200`}
                 placeholder="e.g. Breakfast Set, Lunch Set"
               />
               {errors[index]?.courseName && (
@@ -169,12 +170,12 @@ export const RestaurantService = (prop) => {
               )}
             </div>
             <div>
-              <label className="block text-gray-700 font-medium mb-2">Price (THB) <span className="text-red-500">*</span></label>
+              <label className="block text-amber-800 font-medium mb-2">Price (THB) <span className="text-red-500">*</span></label>
               <input
                 type="text"
                 value={form.price}
                 onChange={(e) => handleInputChange(index, "price", e.target.value)}
-                className={`bg-white p-3 rounded-md w-full shadow-sm border ${errors[index]?.price ? 'border-red-500' : 'border-gray-300'} focus:ring-2 focus:ring-orange-400 focus:border-transparent transition duration-200`}
+                className={`bg-white p-3 rounded-md w-full shadow-sm border ${errors[index]?.price ? 'border-red-500' : 'border-amber-300'} focus:ring-2 focus:ring-amber-400 focus:border-transparent transition duration-200`}
                 placeholder="e.g. 299"
               />
               {errors[index]?.price && (
@@ -187,11 +188,11 @@ export const RestaurantService = (prop) => {
             
             <div className="md:col-span-2">
               <div className="flex items-center justify-between mb-2">
-                <label className="block text-gray-700 font-medium">Menu Items <span className="text-red-500">*</span></label>
+                <label className="block text-amber-800 font-medium">Menu Items <span className="text-red-500">*</span></label>
                 <button
                   type="button"
                   onClick={() => addMenu(index)}
-                  className="text-orange-500 hover:text-orange-600 font-medium text-sm flex items-center transition-colors duration-200"
+                  className="text-amber-500 hover:text-amber-600 font-medium text-sm flex items-center transition-colors duration-200"
                 >
                   <FontAwesomeIcon icon={faCirclePlus} className="mr-1" />
                   Add Menu Item
@@ -204,7 +205,7 @@ export const RestaurantService = (prop) => {
                     type="text"
                     value={menu.name}
                     onChange={(e) => handleMenuChange(index, menuIndex, e.target.value)}
-                    className="bg-white p-3 rounded-md w-full shadow-sm border border-gray-300 focus:ring-2 focus:ring-orange-400 focus:border-transparent transition duration-200"
+                    className="bg-white p-3 rounded-md w-full shadow-sm border border-amber-300 focus:ring-2 focus:ring-amber-400 focus:border-transparent transition duration-200"
                     placeholder="Enter menu item name"
                   />
                   <button
@@ -230,13 +231,13 @@ export const RestaurantService = (prop) => {
             </div>
             
             <div className="md:col-span-2">
-              <label className="block text-gray-700 font-medium mb-2">Course Image</label>
+              <label className="block text-amber-800 font-medium mb-2">Course Image</label>
               <FileUpload />
             </div>
 
-            <div className="flex justify-end items-center md:col-span-2 mt-4 pt-4 border-t border-blue-200">
+            <div className="flex justify-end items-center md:col-span-2 mt-6 pt-4 border-t border-amber-200">
               <button
-                className="flex items-center justify-center bg-white hover:bg-red-50 text-red-500 px-4 py-2 rounded-full mr-3 border border-red-300 transition-colors duration-200"
+                className="flex items-center justify-center bg-white hover:bg-red-50 text-red-500 px-5 py-2.5 rounded-full mr-4 border border-red-300 transition-colors duration-200 shadow-sm"
                 onClick={() => removeForm(index)}
               >
                 <FontAwesomeIcon
@@ -246,7 +247,7 @@ export const RestaurantService = (prop) => {
                 Cancel
               </button>
               <button
-                className="flex items-center justify-center bg-orange-500 hover:bg-orange-600 text-white px-5 py-2 rounded-full transition-colors duration-200"
+                className="flex items-center justify-center bg-amber-500 hover:bg-amber-600 text-white px-6 py-2.5 rounded-full transition-colors duration-200 shadow-sm"
                 onClick={() => insertData(index)}
               >
                 <FontAwesomeIcon
@@ -261,8 +262,8 @@ export const RestaurantService = (prop) => {
       ))}
       
       {forms.length === 0 && (
-        <div className="text-center py-10">
-          <p className="text-gray-500">No courses added yet. Click the plus icon above to add a new course.</p>
+        <div className="text-center py-12 bg-amber-50 rounded-lg border border-amber-200">
+          <p className="text-amber-700">No courses added yet. Click the plus icon above to add a new course.</p>
         </div>
       )}
     </div>

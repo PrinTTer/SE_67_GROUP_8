@@ -1,184 +1,264 @@
 import { useState } from 'react';
-import {  faTimesCircle, faCheckCircle, faCirclePlus } from '@fortawesome/free-solid-svg-icons';
+import { faTimesCircle, faCheckCircle, faCirclePlus, faExclamationCircle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { postData } from '../../../services/apiService';
 import { FileUpload } from './ServiceBlock';
 import { ShowService } from './ShowService';
 
-import axios from 'axios';
-
 export const HotelService = (prop) => {
-    const { id, title,type } = prop;
-    const [forms, setForms] = useState([
-      { businessId : id ,roomType: "", guestAmount: "", roomSize: "", price: "", facilities: [""],totalRooms: "" } // facilities array starts with one empty field
+  const { id, title, type, fetchData, data } = prop;
+  const [forms, setForms] = useState([
+    { businessId: id, roomType: "", guestAmount: "", roomSize: "", price: "", facilities: [""], totalRooms: "" }
+  ]);
+  const [errors, setErrors] = useState([{}]);
+
+  // Add new form
+  const addForm = () => {
+    setForms([
+      ...forms,
+      { businessId: id, roomType: "", guestAmount: "", roomSize: "", price: "", facilities: [""], totalRooms: "" }
     ]);
-    
+    setErrors([...errors, {}]);
+  };
 
+  // Remove form
+  const removeForm = (index) => {
+    setForms(forms.filter((_, i) => i !== index));
+    setErrors(errors.filter((_, i) => i !== index));
+  };
 
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState('');
-    // เพิ่มฟอร์มใหม่
-    const addForm = () => {
-      setForms([
-        ...forms,
-        { businessId : id ,roomType: "", guestAmount: "", roomSize: "", price: "", facilities: [""] ,totalRooms: "" } // facilities starts with one empty field
-      ]);
-    };
-  
-    // ลบฟอร์ม
-    const removeForm = (index) => {
-      setForms(forms.filter((_, i) => i !== index));
-    };
-  
-    // เพิ่ม facility
-    const addFacility = (index) => {
-      setForms(forms.map((form, i) =>
-        i === index ? { ...form, facilities: [...form.facilities, ""] } : form
-      ));
-    };
-  
-    // ลบ facility
-    const removeFacility = (index, facilityIndex) => {
-      setForms(forms.map((form, i) =>
-        i === index ? { ...form, facilities: form.facilities.filter((_, j) => j !== facilityIndex) } : form
-      ));
-    };
-  
-    // เมื่อมีการเปลี่ยนแปลงใน input field
-    const handleInputChange = (index, field, value) => {
-      setForms(forms.map((form, i) =>
-        i === index ? { ...form, [field]: value } : form
-      ));
-    };
-  
-    // เมื่อมีการเปลี่ยนแปลงใน facility
-    const handleFacilityChange = (index, facilityIndex, value) => {
-      setForms(forms.map((form, i) =>
-        i === index ? {
-          ...form,
-          facilities: form.facilities.map((facility, j) =>
-            j === facilityIndex ? value : facility
-          )
-        } : form
-      ));
-    };
-  
-    
-    
-    
-    // ฟังก์ชัน insertData ที่ใช้ส่งข้อมูลฟอร์ม
-    const insertData = async (index) => {
-        const formData = forms[index]; // หาข้อมูลของฟอร์มนั้นๆ
-        console.log("ID is " + id);
-        // เพิ่มหน่วย m² ให้กับ roomSize
+  // Add facility
+  const addFacility = (index) => {
+    setForms(forms.map((form, i) =>
+      i === index ? { ...form, facilities: [...form.facilities, ""] } : form
+    ));
+  };
+
+  // Remove facility
+  const removeFacility = (index, facilityIndex) => {
+    setForms(forms.map((form, i) =>
+      i === index ? { ...form, facilities: form.facilities.filter((_, j) => j !== facilityIndex) } : form
+    ));
+  };
+
+  // Handle input change
+  const handleInputChange = (index, field, value) => {
+    setForms(forms.map((form, i) =>
+      i === index ? { ...form, [field]: value } : form
+    ));
+
+    // Clear the error for this field when user changes the input
+    if (errors[index] && errors[index][field]) {
+      const newErrors = [...errors];
+      newErrors[index] = { ...newErrors[index], [field]: "" };
+      setErrors(newErrors);
+    }
+  };
+
+  // Handle facility change
+  const handleFacilityChange = (index, facilityIndex, value) => {
+    setForms(forms.map((form, i) =>
+      i === index ? {
+        ...form,
+        facilities: form.facilities.map((facility, j) =>
+          j === facilityIndex ? value : facility
+        )
+      } : form
+    ));
+  };
+
+  // Validate form
+  const validateForm = (index) => {
+    const form = forms[index];
+    const formErrors = {};
+    let isValid = true;
+
+    // Validate roomType
+    if (!form.roomType || form.roomType.trim() === "") {
+      formErrors.roomType = "Room type is required";
+      isValid = false;
+    }
+
+    // Validate guestAmount
+    if (!form.guestAmount || form.guestAmount <= 0) {
+      formErrors.guestAmount = "Guest amount must be a positive number";
+      isValid = false;
+    }
+
+    // Validate roomSize
+    if (!form.roomSize || form.roomSize.trim() === "") {
+      formErrors.roomSize = "Room size is required";
+      isValid = false;
+    }
+
+    // Validate price
+    if (!form.price || form.price <= 0) {
+      formErrors.price = "Price must be a positive number";
+      isValid = false;
+    }
+
+    // Validate totalRooms
+    if (!form.totalRooms || form.totalRooms <= 0) {
+      formErrors.totalRooms = "Total rooms must be a positive number";
+      isValid = false;
+    }
+
+    // Validate facilities
+    if (form.facilities.some(facility => facility.trim() === "")) {
+      formErrors.facilities = "Facilities cannot be empty";
+      isValid = false;
+    }
+
+    const newErrors = [...errors];
+    newErrors[index] = formErrors;
+    setErrors(newErrors);
+
+    return isValid;
+  };
+
+  // Insert data
+  const insertData = async (index) => {
+    if (validateForm(index)) {
+      try {
+        const formData = forms[index];
+
+        // Add m² unit to roomSize
         const roomSizeWithUnit = `${formData.roomSize} m²`;
-        formData.roomSize = roomSizeWithUnit
-        console.log("Room Size: " + roomSizeWithUnit);
-        formData.guestAmount = parseFloat(formData.guestAmount)
-        formData.price = parseFloat(formData.price)
-        formData.totalRooms = parseFloat(formData.totalRooms)
-        console.log(formData)
-        
-        
-        // const data = await fetchData(`/businesses/${id}`)
-         await postData(`/businesses/${id}/rooms`, formData)
-        // console.log("Fetch Data")
-        // console.log(data)
-        console.log("Form Here :")
-        console.log(forms)
-        
-        removeForm(index);
-          //await postRoom();
+        formData.roomSize = roomSizeWithUnit;
+        formData.guestAmount = parseFloat(formData.guestAmount);
+        formData.price = parseFloat(formData.price);
+        formData.totalRooms = parseFloat(formData.totalRooms);
 
-        
-      };
-    
-  // useEffect(() => {
-    
-  //   const fetch = async()=>{
-  //     setData(fetchData(`/businesses/${id}`))
-  //   }
-  //    console.log("Fetch Data")
-  //       console.log(data)
-  //   fetch();
-  // }, [data, id , post ]);
-  
-    return (
-      <div>
-        <ShowService id={id} type={type}/>
-        <div className="items-center flex">
-          Add {title.split(" ")[0]}
-          <FontAwesomeIcon
-            icon={faCirclePlus}
-            className="ml-2 cursor-pointer text-blue-500 text-2xl"
-            onClick={addForm}
-          />
-        </div>
-        
-        {forms.map((form, index) => (
-          <div key={index} className="grid grid-cols-2 bg-blue-300 rounded-md p-5 mt-2">
+        console.log(formData);
+
+        await postData(`/businesses/${id}/rooms`, formData);
+        fetchData();
+        alert("Room added successfully!");
+        removeForm(index);
+      } catch (error) {
+        console.error("Error adding room:", error);
+        alert("Failed to add the room. Please try again.");
+      }
+    }
+  };
+
+  return (
+    <div className="bg-white rounded-lg shadow-lg p-8 border border-amber-100">
+      <ShowService id={id} type={type} fetchData={fetchData} data={data} />
+      <div className="items-center flex mb-6 border-b border-amber-200 pb-4">
+        <h2 className="text-2xl font-semibold text-amber-800">
+          Add {title?.split(" ")[0] || "Room"}
+        </h2>
+        <FontAwesomeIcon
+          icon={faCirclePlus}
+          className="ml-3 cursor-pointer text-amber-500 hover:text-amber-600 text-2xl transition-colors duration-300"
+          onClick={addForm}
+        />
+      </div>
+
+      {forms.map((form, index) => (
+        <div key={index} className="bg-gradient-to-r from-amber-50 to-amber-100 rounded-lg p-6 mb-6 shadow-md border border-amber-200">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <div>Room Type</div>
+              <label className="block text-amber-800 font-medium mb-2">Room Type <span className="text-red-500">*</span></label>
               <input
                 type="text"
                 value={form.roomType}
                 onChange={(e) => handleInputChange(index, "roomType", e.target.value)}
-                className="bg-[#F8FAFC] p-2 rounded-md w-60 shadow-md"
+                className={`bg-white p-3 rounded-md w-full shadow-sm border ${errors[index]?.roomType ? 'border-red-500' : 'border-amber-300'} focus:ring-2 focus:ring-amber-400 focus:border-transparent transition duration-200`}
+                placeholder="e.g. Deluxe, Standard"
               />
+              {errors[index]?.roomType && (
+                <p className="text-red-500 text-sm mt-1 flex items-center">
+                  <FontAwesomeIcon icon={faExclamationCircle} className="mr-1" />
+                  {errors[index].roomType}
+                </p>
+              )}
             </div>
+
             <div>
-              <div>Guest per Room</div>
+              <label className="block text-amber-800 font-medium mb-2">Guest per Room <span className="text-red-500">*</span></label>
               <input
-                type="text"
+                type="number"
                 value={form.guestAmount}
                 onChange={(e) => handleInputChange(index, "guestAmount", e.target.value)}
-                className="bg-[#F8FAFC] p-2 rounded-md w-60 shadow-md"
+                className={`bg-white p-3 rounded-md w-full shadow-sm border ${errors[index]?.guestAmount ? 'border-red-500' : 'border-amber-300'} focus:ring-2 focus:ring-amber-400 focus:border-transparent transition duration-200`}
+                placeholder="e.g. 2"
               />
+              {errors[index]?.guestAmount && (
+                <p className="text-red-500 text-sm mt-1 flex items-center">
+                  <FontAwesomeIcon icon={faExclamationCircle} className="mr-1" />
+                  {errors[index].guestAmount}
+                </p>
+              )}
             </div>
+
             <div>
-              <div>Room Size</div>
+              <label className="block text-amber-800 font-medium mb-2">Room Size <span className="text-red-500">*</span></label>
               <input
                 type="text"
                 value={form.roomSize}
                 onChange={(e) => handleInputChange(index, "roomSize", e.target.value)}
-                className="bg-[#F8FAFC] p-2 rounded-md w-60 shadow-md"
+                className={`bg-white p-3 rounded-md w-full shadow-sm border ${errors[index]?.roomSize ? 'border-red-500' : 'border-amber-300'} focus:ring-2 focus:ring-amber-400 focus:border-transparent transition duration-200`}
+                placeholder="e.g. 30"
               />
-            </div>
-            <div>
-              <div>Price</div>
-              <input
-                type="text"
-                value={form.price}
-                onChange={(e) => handleInputChange(index, "price", e.target.value)}
-                className="bg-[#F8FAFC] p-2 rounded-md w-60 shadow-md"
-              />
+              {errors[index]?.roomSize && (
+                <p className="text-red-500 text-sm mt-1 flex items-center">
+                  <FontAwesomeIcon icon={faExclamationCircle} className="mr-1" />
+                  {errors[index].roomSize}
+                </p>
+              )}
             </div>
 
             <div>
-              <div>Total Room</div>
+              <label className="block text-amber-800 font-medium mb-2">Price (THB) <span className="text-red-500">*</span></label>
               <input
-                type="text"
+                type="number"
+                value={form.price}
+                onChange={(e) => handleInputChange(index, "price", e.target.value)}
+                className={`bg-white p-3 rounded-md w-full shadow-sm border ${errors[index]?.price ? 'border-red-500' : 'border-amber-300'} focus:ring-2 focus:ring-amber-400 focus:border-transparent transition duration-200`}
+                placeholder="e.g. 1500"
+              />
+              {errors[index]?.price && (
+                <p className="text-red-500 text-sm mt-1 flex items-center">
+                  <FontAwesomeIcon icon={faExclamationCircle} className="mr-1" />
+                  {errors[index].price}
+                </p>
+              )}
+            </div>
+
+            <div>
+              <label className="block text-amber-800 font-medium mb-2">Total Rooms <span className="text-red-500">*</span></label>
+              <input
+                type="number"
                 value={form.totalRooms}
                 onChange={(e) => handleInputChange(index, "totalRooms", e.target.value)}
-                className="bg-[#F8FAFC] p-2 rounded-md w-60 shadow-md"
+                className={`bg-white p-3 rounded-md w-full shadow-sm border ${errors[index]?.totalRooms ? 'border-red-500' : 'border-amber-300'} focus:ring-2 focus:ring-amber-400 focus:border-transparent transition duration-200`}
+                placeholder="e.g. 10"
               />
+              {errors[index]?.totalRooms && (
+                <p className="text-red-500 text-sm mt-1 flex items-center">
+                  <FontAwesomeIcon icon={faExclamationCircle} className="mr-1" />
+                  {errors[index].totalRooms}
+                </p>
+              )}
             </div>
-            
+
             <div>
-              <div>Image</div>
+              <label className="block text-amber-800 font-medium mb-2">Room Image</label>
               <FileUpload />
             </div>
 
-            <div>
-              <div>
-                Facilities
+            <div className="relative">
+              <div className="flex items-center mb-3">
+                <label className="block text-amber-800 font-medium">Facilities</label>
                 <FontAwesomeIcon
                   icon={faCirclePlus}
-                  className="text-blue-500 cursor-pointer ml-5"
-                  onClick={() => addFacility(index)} // เพิ่ม facility
+                  className="ml-3 cursor-pointer text-amber-500 hover:text-amber-600 transition-colors duration-200"
+                  onClick={() => addFacility(index)}
                 />
               </div>
-  
+              
               {form.facilities.map((facility, facilityIndex) => (
                 <div key={facilityIndex} className="flex items-center mb-2">
                   <input
@@ -186,33 +266,48 @@ export const HotelService = (prop) => {
                     value={facility}
                     onChange={(e) => handleFacilityChange(index, facilityIndex, e.target.value)}
                     placeholder="Enter facility"
-                    className="bg-[#F8FAFC] p-2 rounded-md w-60 shadow-md"
+                    className={`bg-white p-3 rounded-md w-full shadow-sm border ${errors[index]?.facilities ? 'border-red-500' : 'border-amber-300'} focus:ring-2 focus:ring-amber-400 focus:border-transparent transition duration-200`}
                   />
                   <FontAwesomeIcon
                     icon={faTimesCircle}
-                    className="text-red-500 text-2xl ml-2 cursor-pointer"
-                    onClick={() => removeFacility(index, facilityIndex)} // ลบ facility
+                    className="text-red-500 text-lg ml-2 cursor-pointer"
+                    onClick={() => removeFacility(index, facilityIndex)}
                   />
                 </div>
               ))}
+              {errors[index]?.facilities && (
+                <p className="text-red-500 text-sm mt-1 flex items-center">
+                  <FontAwesomeIcon icon={faExclamationCircle} className="mr-1" />
+                  {errors[index].facilities}
+                </p>
+              )}
             </div>
-  
-           
-  
-            <div className="flex justify-end col-span-2 mt-3">
-              <FontAwesomeIcon
-                icon={faTimesCircle}
-                className="text-red-500 text-4xl mr-2 border rounded-full bg-white cursor-pointer"
+
+            <div className="flex justify-end items-center md:col-span-2 mt-6 pt-4 border-t border-amber-200">
+              <button
+                className="flex items-center justify-center bg-white hover:bg-red-50 text-red-500 px-5 py-2.5 rounded-full mr-4 border border-red-300 transition-colors duration-200 shadow-sm"
                 onClick={() => removeForm(index)}
-              />
-              <FontAwesomeIcon
-                icon={faCheckCircle}
-                className="text-green-500 text-4xl rounded-full bg-white"
+              >
+                <FontAwesomeIcon icon={faTimesCircle} className="mr-2" />
+                Cancel
+              </button>
+              <button
+                className="flex items-center justify-center bg-amber-500 hover:bg-amber-600 text-white px-6 py-2.5 rounded-full transition-colors duration-200 shadow-sm"
                 onClick={() => insertData(index)}
-              />
+              >
+                <FontAwesomeIcon icon={faCheckCircle} className="mr-2" />
+                Save
+              </button>
             </div>
           </div>
-        ))}
-      </div>
-    );
-  };
+        </div>
+      ))}
+
+      {forms.length === 0 && (
+        <div className="text-center py-12 bg-amber-50 rounded-lg border border-amber-200">
+          <p className="text-amber-700">No rooms added yet. Click the plus icon above to add a new room.</p>
+        </div>
+      )}
+    </div>
+  );
+};

@@ -3,7 +3,7 @@ import { putData } from '../../../../services/apiService';
 
 
 export const HotelEdit = (prop) => {
-    const { item , setShowEditPopUp } = prop;
+    const { item , setShowEditPopUp ,fetchData } = prop;
   
     // State สำหรับการเก็บข้อมูลของ item
     const [room, setRoom] = useState({
@@ -44,8 +44,12 @@ export const HotelEdit = (prop) => {
         // alert(item._id)
         room.price = parseFloat(room.price)
         console.log(room)
-        if(putData(`rooms/${item._id}`, room))
+        if(putData(`rooms/${item._id}`, room)){
+          fetchData();
           setShowEditPopUp(false);
+          
+        }
+          
     }
   
     return (

@@ -6,7 +6,7 @@ import { FileUpload } from './ServiceBlock';
 import { ShowService } from './ShowService';
 
 export const EventService = (prop) => {
-  const { id, title, type } = prop;
+  const { id, title, type, fetchData, data } = prop;
   const [forms, setForms] = useState([
     { businessId: id, ticketType: "", price: "", quantity: "", eventDate: "", start: "", end: "" }
   ]);
@@ -104,14 +104,13 @@ export const EventService = (prop) => {
     if (validateForm(index)) {
       try {
         const formData = forms[index]; // หาข้อมูลของฟอร์มนั้นๆ
-        console.log("ID is " + id);
         
         formData.price = parseFloat(formData.price);
         formData.quantity = parseInt(formData.quantity);
         
-        console.log(formData);
         await postData(`/businesses/${id}/events`, formData);
         alert("Event added successfully!");
+        fetchData();
         removeForm(index);
       } catch (error) {
         console.error("Error adding event:", error);
@@ -121,29 +120,32 @@ export const EventService = (prop) => {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-6">
-      <ShowService id={id} type={type}/>
-      <div className="items-center flex mb-5 border-b border-gray-200 pb-3">
-        <h2 className="text-xl font-semibold text-gray-800">
+    <div className="bg-white rounded-lg shadow-md p-6 border border-amber-100">
+      <ShowService id={id} type={type} fetchData={fetchData} data={data}/>
+      
+      <div className="flex items-center justify-between mb-5 border-b border-amber-200 pb-4 mt-6">
+        <h2 className="text-xl font-semibold text-amber-800">
           Add {title?.split(" ")[0] || "Event"}
         </h2>
-        <FontAwesomeIcon
-          icon={faCirclePlus}
-          className="ml-3 cursor-pointer text-orange-500 hover:text-orange-600 text-2xl transition-colors duration-200"
+        <button 
+          className="bg-amber-500 hover:bg-amber-600 text-white rounded-full p-2 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:ring-opacity-50"
           onClick={addForm}
-        />
+          title="Add new event"
+        >
+          <FontAwesomeIcon icon={faCirclePlus} className="text-xl" />
+        </button>
       </div>
      
       {forms.map((form, index) => (
-        <div key={index} className="bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg p-6 mb-5 shadow-sm border border-blue-200">
+        <div key={index} className="bg-gradient-to-r from-amber-50 to-amber-100 rounded-lg p-6 mb-5 shadow-sm border border-amber-200">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             <div>
-              <label className="block text-gray-700 font-medium mb-2">Ticket Type <span className="text-red-500">*</span></label>
+              <label className="block text-amber-800 font-medium mb-2">Ticket Type <span className="text-red-500">*</span></label>
               <input
                 type="text"
                 value={form.ticketType}
                 onChange={(e) => handleInputChange(index, "ticketType", e.target.value)}
-                className={`bg-white p-3 rounded-md w-full shadow-sm border ${errors[index]?.ticketType ? 'border-red-500' : 'border-gray-300'} focus:ring-2 focus:ring-orange-400 focus:border-transparent transition duration-200`}
+                className={`bg-white p-3 rounded-md w-full shadow-sm border ${errors[index]?.ticketType ? 'border-red-500' : 'border-amber-300'} focus:ring-2 focus:ring-amber-400 focus:border-transparent transition duration-200`}
                 placeholder="e.g. VIP, Regular, Early Bird"
               />
               {errors[index]?.ticketType && (
@@ -154,12 +156,12 @@ export const EventService = (prop) => {
               )}
             </div>
             <div>
-              <label className="block text-gray-700 font-medium mb-2">Price (THB) <span className="text-red-500">*</span></label>
+              <label className="block text-amber-800 font-medium mb-2">Price (THB) <span className="text-red-500">*</span></label>
               <input
                 type="text"
                 value={form.price}
                 onChange={(e) => handleInputChange(index, "price", e.target.value)}
-                className={`bg-white p-3 rounded-md w-full shadow-sm border ${errors[index]?.price ? 'border-red-500' : 'border-gray-300'} focus:ring-2 focus:ring-orange-400 focus:border-transparent transition duration-200`}
+                className={`bg-white p-3 rounded-md w-full shadow-sm border ${errors[index]?.price ? 'border-red-500' : 'border-amber-300'} focus:ring-2 focus:ring-amber-400 focus:border-transparent transition duration-200`}
                 placeholder="e.g. 999"
               />
               {errors[index]?.price && (
@@ -170,12 +172,12 @@ export const EventService = (prop) => {
               )}
             </div>
             <div>
-              <label className="block text-gray-700 font-medium mb-2">Quantity <span className="text-red-500">*</span></label>
+              <label className="block text-amber-800 font-medium mb-2">Quantity <span className="text-red-500">*</span></label>
               <input
                 type="text"
                 value={form.quantity}
                 onChange={(e) => handleInputChange(index, "quantity", e.target.value)}
-                className={`bg-white p-3 rounded-md w-full shadow-sm border ${errors[index]?.quantity ? 'border-red-500' : 'border-gray-300'} focus:ring-2 focus:ring-orange-400 focus:border-transparent transition duration-200`}
+                className={`bg-white p-3 rounded-md w-full shadow-sm border ${errors[index]?.quantity ? 'border-red-500' : 'border-amber-300'} focus:ring-2 focus:ring-amber-400 focus:border-transparent transition duration-200`}
                 placeholder="e.g. 100"
               />
               {errors[index]?.quantity && (
@@ -186,12 +188,12 @@ export const EventService = (prop) => {
               )}
             </div>
             <div>
-              <label className="block text-gray-700 font-medium mb-2">Event Date <span className="text-red-500">*</span></label>
+              <label className="block text-amber-800 font-medium mb-2">Event Date <span className="text-red-500">*</span></label>
               <input
                 type="date"
                 value={form.eventDate}
                 onChange={(e) => handleInputChange(index, "eventDate", e.target.value)}
-                className={`bg-white p-3 rounded-md w-full shadow-sm border ${errors[index]?.eventDate ? 'border-red-500' : 'border-gray-300'} focus:ring-2 focus:ring-orange-400 focus:border-transparent transition duration-200`}
+                className={`bg-white p-3 rounded-md w-full shadow-sm border ${errors[index]?.eventDate ? 'border-red-500' : 'border-amber-300'} focus:ring-2 focus:ring-amber-400 focus:border-transparent transition duration-200`}
               />
               {errors[index]?.eventDate && (
                 <p className="text-red-500 text-sm mt-1 flex items-center">
@@ -202,13 +204,13 @@ export const EventService = (prop) => {
             </div>
 
             <div>
-              <label className="block text-gray-700 font-medium mb-2">Start Time <span className="text-red-500">*</span></label>
+              <label className="block text-amber-800 font-medium mb-2">Start Time <span className="text-red-500">*</span></label>
               <input
                 type="datetime-local"
                 max={form.end}
                 value={form.start}
                 onChange={(e) => handleInputChange(index, "start", e.target.value)}
-                className={`bg-white p-3 rounded-md w-full shadow-sm border ${errors[index]?.start ? 'border-red-500' : 'border-gray-300'} focus:ring-2 focus:ring-orange-400 focus:border-transparent transition duration-200`}
+                className={`bg-white p-3 rounded-md w-full shadow-sm border ${errors[index]?.start ? 'border-red-500' : 'border-amber-300'} focus:ring-2 focus:ring-amber-400 focus:border-transparent transition duration-200`}
               />
               {errors[index]?.start && (
                 <p className="text-red-500 text-sm mt-1 flex items-center">
@@ -219,13 +221,13 @@ export const EventService = (prop) => {
             </div>
 
             <div>
-              <label className="block text-gray-700 font-medium mb-2">End Time <span className="text-red-500">*</span></label>
+              <label className="block text-amber-800 font-medium mb-2">End Time <span className="text-red-500">*</span></label>
               <input
                 type="datetime-local"
                 min={form.start}
                 value={form.end}
                 onChange={(e) => handleInputChange(index, "end", e.target.value)}
-                className={`bg-white p-3 rounded-md w-full shadow-sm border ${errors[index]?.end ? 'border-red-500' : 'border-gray-300'} focus:ring-2 focus:ring-orange-400 focus:border-transparent transition duration-200`}
+                className={`bg-white p-3 rounded-md w-full shadow-sm border ${errors[index]?.end ? 'border-red-500' : 'border-amber-300'} focus:ring-2 focus:ring-amber-400 focus:border-transparent transition duration-200`}
               />
               {errors[index]?.end && (
                 <p className="text-red-500 text-sm mt-1 flex items-center">
@@ -236,13 +238,13 @@ export const EventService = (prop) => {
             </div>
             
             <div className="md:col-span-2">
-              <label className="block text-gray-700 font-medium mb-2">Event Image</label>
+              <label className="block text-amber-800 font-medium mb-2">Event Image</label>
               <FileUpload />
             </div>
 
-            <div className="flex justify-end items-center md:col-span-2 mt-4 pt-4 border-t border-blue-200">
+            <div className="flex justify-end items-center md:col-span-2 mt-4 pt-4 border-t border-amber-200">
               <button
-                className="flex items-center justify-center bg-white hover:bg-red-50 text-red-500 px-4 py-2 rounded-full mr-3 border border-red-300 transition-colors duration-200"
+                className="flex items-center justify-center bg-white hover:bg-red-50 text-red-500 px-4 py-2 rounded-full mr-3 border border-red-300 transition-colors duration-200 shadow-sm"
                 onClick={() => removeForm(index)}
               >
                 <FontAwesomeIcon
@@ -252,7 +254,7 @@ export const EventService = (prop) => {
                 Cancel
               </button>
               <button
-                className="flex items-center justify-center bg-orange-500 hover:bg-orange-600 text-white px-5 py-2 rounded-full transition-colors duration-200"
+                className="flex items-center justify-center bg-amber-500 hover:bg-amber-600 text-white px-5 py-2 rounded-full transition-colors duration-200 shadow-sm"
                 onClick={() => insertData(index)}
               >
                 <FontAwesomeIcon
@@ -267,8 +269,8 @@ export const EventService = (prop) => {
       ))}
       
       {forms.length === 0 && (
-        <div className="text-center py-10">
-          <p className="text-gray-500">No events added yet. Click the plus icon above to add a new event.</p>
+        <div className="text-center py-10 bg-amber-50 rounded-lg border border-amber-200 my-4">
+          <p className="text-amber-700">No events added yet. Click the plus button above to add a new event.</p>
         </div>
       )}
     </div>

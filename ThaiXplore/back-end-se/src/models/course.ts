@@ -16,7 +16,8 @@ const CourseSchema = new mongoose.Schema({
       booked: { type: Number, require: false },
     },
   ],
-
+  media : {type : [String] , require : true}
+  
 });
 
 export const CourseModel = mongoose.model("Course",CourseSchema);

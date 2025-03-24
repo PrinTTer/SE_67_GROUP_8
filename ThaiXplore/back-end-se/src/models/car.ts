@@ -12,7 +12,9 @@ const CarSchema = new mongoose.Schema({
             date : {type : Date ,require : false},
             booked : {type : Number ,require : false},
         }
-    ]
+    ],
+    media : {type : [String] , require : true}
+
 });
 
 export const CarModel = mongoose.model("Car",CarSchema);

@@ -13,7 +13,9 @@ const EventSchema = new mongoose.Schema({
             date : {type : Date , require : true},
             booked : {type : Number , require : true}
         }
-    ]
+    ],
+    media : {type : [String] , require : true}
+    
 });
 
 export const EventModel = mongoose.model("Activities" , EventSchema);

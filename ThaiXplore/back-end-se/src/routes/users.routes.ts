@@ -13,7 +13,7 @@ export default (router:express.Router) => {
     router.put('/users' , isAuthenticated , updateUser);
     router.put('/users/change-password', isAuthenticated , updateUserPassword);
     router.put('/users/change-email', isAuthenticated , updateUserEmail);
-    router.put('/users/upload-profile' , isAuthenticated , upload.single('files') , uploadUserProfileImage);
+    router.post('/users/upload-profile' , isAuthenticated , upload.single('files') , uploadUserProfileImage);
     router.post('/users/packages' , isAuthenticated , buyPackages);
     router.put('/users/:id' , isAuthenticated , updateUserByAdmin);
 };

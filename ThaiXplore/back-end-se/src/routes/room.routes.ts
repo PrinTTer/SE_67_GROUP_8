@@ -9,5 +9,5 @@ export default (router: express.Router) => {
     router.put("/rooms/:roomId" , isAuthenticated , updateRooms);
     router.post("/rooms/:roomId/images",isAuthenticated, upload.array("files" , 6) , uploadRoomImages);
     router.delete("/rooms/:roomId/images/:index",isAuthenticated , deleteRoomImage);
-    router.put("/rooms/:roomId" , isAuthenticated , getRoom);
+    router.get("/rooms/:roomId" , isAuthenticated , getRoom);
 }

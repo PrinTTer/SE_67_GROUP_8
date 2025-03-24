@@ -5,7 +5,7 @@ const HomePage = () => {
     return (
         <>
             <div className='flex flex-4 flex-col gap-5'>
-                <div className="grid h-96 p-5">
+                <div className="grid h-[45vh] p-3">
                         <ImageSlider />
                 </div>
                 <Category />

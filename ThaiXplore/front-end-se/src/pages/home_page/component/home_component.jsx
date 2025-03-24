@@ -138,7 +138,7 @@ export const Section = (prop) => {
         <div className="grid gap-6">
           {post.length > 0 ? (
             post.map((element, index) => (
-              <Post key={index} name={element.businessName} id={element._id} address={element.address} />
+              <Post key={index} name={element.businessName} id={element._id} category={element.category} address={element.address} />
             ))
           ) : (
             <p className="text-gray-500 text-center py-4">No results found</p>
@@ -150,7 +150,7 @@ export const Section = (prop) => {
 };
 
 export const Post = (prop) => {
-  const { name, id, address } = prop;
+  const { name, id, address, category} = prop;
   const link = `/Detail/${id}`;
 
   return (
@@ -166,7 +166,7 @@ export const Post = (prop) => {
         <div className="p-6 lg:w-2/3">
           <div className="flex items-start justify-between mb-2">
             <h3 className="text-xl font-bold text-gray-800 hover:text-amber-600 transition-colors">{name}</h3>
-            <span className="bg-amber-50 text-amber-700 text-xs px-2 py-1 rounded-full uppercase tracking-wider">Premium</span>
+            <span className="bg-amber-50 text-amber-700 text-xs px-2 py-1 rounded-full uppercase tracking-wider">{category}</span>
           </div>
           <p className="text-gray-600 mb-4">{address}</p>
           <div className="flex items-center text-amber-500">

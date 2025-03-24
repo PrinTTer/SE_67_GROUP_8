@@ -6,21 +6,47 @@ import { fetchData } from "../../services/apiService";
 const DetailPackage = () => {
   const { id } = useParams();
   const [packageData, setPackageData] = useState(null);
+  const [mergedServices, setMergedServices] = useState([]);
   const [selectedServices, setSelectedServices] = useState([]);
 
   useEffect(() => {
-    const loadPackageDetail = async () => {
+    const loadPackageAndBusinesses = async () => {
       try {
-        const response = await fetchData(`/packages/${id}`);
-        console.log("Response from API:", response);
-        setPackageData(response);
-        setSelectedServices(response.services.map((s) => s.serviceId)); // default: all selected
+        const pkg = await fetchData(`/packages/${id}`);
+        setPackageData(pkg);
+        setSelectedServices(pkg.services.map((s) => s.serviceId));
+
+        // ดึง businessId ทั้งหมดแบบ unique
+        const businessIds = [...new Set(pkg.services.map(s => s.businessId))];
+
+        // โหลด business แต่ละอัน
+        const businessList = await Promise.all(
+          businessIds.map(id => fetchData(`/businesses/${id}`))
+        );
+
+        // รวม service ทั้งหมดจากทุก business
+        const allBusinessServices = businessList.flatMap(b =>
+          b.services.map(s => ({
+            ...s,
+            businessId: b.business._id,
+            businessName: b.business.businessName,
+            businessCategory: b.business.category, // ดึงจาก b.business.category
+          }))
+        );
+
+        // merge service จากแพคเกจกับรายละเอียดเต็ม
+        const fullServices = pkg.services.map((s) => {
+          const matched = allBusinessServices.find((b) => b._id === s.serviceId);
+          return { ...s, ...matched };
+        });
+        console.log("fullServices", fullServices)
+        setMergedServices(fullServices);
       } catch (error) {
-        console.error("Error loading package detail:", error);
+        console.error("Error loading data:", error);
       }
     };
-  
-    loadPackageDetail();
+
+    loadPackageAndBusinesses();
   }, [id]);
 
   const toggleService = (serviceId) => {
@@ -45,28 +71,86 @@ const DetailPackage = () => {
     month: "long",
     year: "numeric"
   });
-  
-  const formattedPrice = new Intl.NumberFormat('th-TH', { 
-    style: 'currency', 
+
+  const formattedPrice = new Intl.NumberFormat('th-TH', {
+    style: 'currency',
     currency: 'THB',
     minimumFractionDigits: 0,
     maximumFractionDigits: 0
   }).format(packageData.price);
 
+  // ฟังก์ชันแสดง service ตามประเภท
+  const renderServiceByCategory = (service) => {
+    switch (service.businessCategory) {
+      case "hotel":
+        return (
+          <>
+            <h3 className="text-lg font-semibold text-gray-800">{service.roomType}</h3>
+            <p className="text-sm text-gray-600">ขนาดห้อง: {service.roomSize}</p>
+            <p className="text-sm text-gray-600">รองรับ: {service.guestAmount} คน</p>
+            {service.facilities?.length > 0 && (
+              <ul className="text-sm text-gray-500 mt-1 list-disc list-inside">
+                {service.facilities.map((f, i) => <li key={i}>{f}</li>)}
+              </ul>
+            )}
+          </>
+        );
+
+      case "carRental":
+        return (
+          <>
+            <h3 className="text-lg font-semibold text-gray-800">{service.carBrand}</h3>
+            <p className="text-sm text-gray-600">ทะเบียน: {service.licensePlate}</p>
+            <p className="text-sm text-gray-600">ที่นั่ง: {service.amountSeat} คน</p>
+          </>
+        );
+
+      case "event":
+        return (
+          <>
+            <h3 className="text-lg font-semibold text-gray-800">{service.ticketType || "บัตรเข้างาน"}</h3>
+            <p className="text-sm text-gray-600">วันที่จัด: {new Date(service.eventDate).toLocaleDateString("th-TH")}</p>
+            <p className="text-sm text-gray-600">
+              เวลา: {new Date(service.start).toLocaleTimeString("th-TH")} - {new Date(service.end).toLocaleTimeString("th-TH")}
+            </p>
+          </>
+        );
+
+      case "restaurant":
+      case "course":
+        return (
+          <>
+            <h3 className="text-lg font-semibold text-gray-800">{service.courseName || "คอร์สทำอาหาร"}</h3>
+            {service.menuList?.length > 0 && (
+              <>
+                <p className="text-sm text-gray-600 mb-1">เมนูที่เรียน:</p>
+                <ul className="text-sm text-gray-500 list-disc list-inside">
+                  {service.menuList.map((menu, i) => (
+                    <li key={i}>{menu.name}</li>
+                  ))}
+                </ul>
+              </>
+            )}
+          </>
+        );
+
+      default:
+        return (
+          <>
+            <h3 className="text-lg font-semibold text-gray-800">ไม่ทราบประเภทบริการ</h3>
+            <pre className="text-xs text-gray-400 mt-2">{JSON.stringify(service, null, 2)}</pre>
+          </>
+        );
+    }
+  };
+
   return (
     <div className="flex flex-col lg:flex-row bg-gray-50 min-h-screen">
       {/* Left Content */}
       <div className="w-full lg:w-3/4 p-6 lg:p-10">
-        {/* Poster with gradient overlay */}
         <div className="relative rounded-2xl overflow-hidden shadow-lg mb-8">
-          <img 
-            src={huahinPoster} 
-            alt="poster" 
-            className="w-full h-auto object-cover"
-          />
+          <img src={huahinPoster} alt="poster" className="w-full h-auto object-cover" />
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
-          
-          {/* Title overlay on image */}
           <div className="absolute bottom-0 left-0 p-8 w-full">
             <h1 className="text-4xl font-bold text-white mb-2 drop-shadow-lg">{packageData.title}</h1>
             <div className="flex items-center space-x-4">
@@ -79,13 +163,11 @@ const DetailPackage = () => {
           </div>
         </div>
 
-        {/* Content Section */}
         <div className="bg-white rounded-2xl shadow-sm p-8 mb-8">
           <h2 className="text-2xl font-semibold text-gray-800 mb-6 flex items-center">
             <span className="w-1.5 h-8 bg-amber-500 mr-3 rounded-full"></span>
             รายละเอียดแพคเกจ
           </h2>
-          
           <div className="whitespace-pre-line text-gray-700 leading-7 font-light">
             {packageData.description}
           </div>
@@ -101,10 +183,9 @@ const DetailPackage = () => {
           </h2>
 
           <div className="space-y-5">
-            {packageData.services.map((service) => (
+            {mergedServices.map((service) => (
               <div key={service.serviceId} className="group">
                 <div className="flex items-start space-x-3">
-                  {/* Checkbox - Elegant Style */}
                   <div className="pt-1">
                     <div className="relative">
                       <input
@@ -116,55 +197,31 @@ const DetailPackage = () => {
                       />
                       <svg 
                         className="absolute top-0 left-0 h-5 w-5 text-white pointer-events-none opacity-0 peer-checked:opacity-100 transition-opacity duration-200" 
-                        fill="none" 
-                        stroke="currentColor" 
-                        viewBox="0 0 24 24" 
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
+                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
                       </svg>
                     </div>
                   </div>
 
-                  {/* Service Card */}
-                  <div className="flex-1 bg-gray-50 group-hover:bg-gray-100 rounded-xl overflow-hidden transition-all duration-300 border border-gray-100">
-                    {service.image ? (
-                      <img
-                        src={service.image}
-                        alt={service.name}
-                        className="w-full h-40 object-cover transition-transform duration-700 group-hover:scale-105"
-                      />
-                    ) : (
-                      <div className="w-full h-40 flex items-center justify-center bg-gray-100 text-gray-400">
-                        <svg className="w-12 h-12 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                        </svg>
-                      </div>
-                    )}
-                    <div className="p-4">
-                      <h3 className="text-lg font-medium text-gray-800 mb-1">{service.name}</h3>
-                      <p className="text-sm text-gray-600 font-light">{service.description}</p>
-                    </div>
+                  <div className="flex-1 bg-gray-50 group-hover:bg-gray-100 rounded-xl overflow-hidden transition-all duration-300 border border-gray-100 p-4">
+                    {renderServiceByCategory(service)}
                   </div>
                 </div>
               </div>
             ))}
           </div>
 
-          {/* Buy Button */}
           <div className="mt-8 space-y-4">
             <div className="flex justify-between items-center text-lg border-t border-b border-gray-100 py-4">
               <span className="font-medium text-gray-800">ราคารวม</span>
               <span className="font-bold text-gray-900">{formattedPrice}</span>
             </div>
-            
             <button className="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-medium py-3 px-4 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 flex items-center justify-center">
               <span>ซื้อแพคเกจเลย</span>
-              <svg className="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+              <svg className="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
               </svg>
             </button>
-            
             <p className="text-center text-xs text-gray-500 mt-2">การันตีราคาถูกที่สุด ไม่มีค่าใช้จ่ายแอบแฝง</p>
           </div>
         </div>

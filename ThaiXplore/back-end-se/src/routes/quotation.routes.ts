@@ -3,7 +3,7 @@ import { deleteQuotations, getPendedQuotation, getQuotation, getQuotations, getR
 import { isAuthenticated } from "../middlewares/isAuthentication.middleware";
 
 export default (router: express.Router) => {
-    router.post("/businesses/:fromBusinessId/quotations" , isAuthenticated , registerQuotation);
+    router.post("/quotations" , isAuthenticated , registerQuotation);
     router.delete("/quotations/:quotationId" , isAuthenticated , deleteQuotations);
     router.get("/quotations/:quotationId" , isAuthenticated , getQuotation);
     router.get("/quotations" , isAuthenticated , getQuotations);

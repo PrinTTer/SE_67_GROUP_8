@@ -4,7 +4,6 @@ import { Document } from 'mongoose';
 
 const QuotaionSchema = new mongoose.Schema({
     userId : {type : String , require : true},
-    fromBusinessId : {type : String , require : true},
     toBusinessId : {type : String , require : true},
     companyName : {type : String , require : true},
     email : {type : String , require : true},
@@ -12,9 +11,13 @@ const QuotaionSchema = new mongoose.Schema({
     date : {type : Date , require : true},
     description : {type : String , require : true},
     status : {type : String , require : true},
+    name : {type: String , require : true},
+    address : {type: String , require : true},
     servicesDetails : [
         {
             serviceId : {type : String , require : true},
+            quantity : {type : Number , require : true},
+            price : {type : Number , require : true},
             amount : {type : Number , require : true},
             remainingAmount : {type : Number , require : true}, 
         }

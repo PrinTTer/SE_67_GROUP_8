@@ -1,7 +1,7 @@
 import express from "express";
 import { get } from "lodash";
 import { getUserById } from "../models/users";
-import { createCourse, deleteCoure , updateCourse} from "../models/course";
+import { createCourse, deleteCoure , getCourseById, updateCourse} from "../models/course";
 
 export const registerCourse = async (req:express.Request , res:express.Response):Promise<any> => {
     try {
@@ -82,3 +82,18 @@ export const updateCourses = async (req: express.Request, res: express.Response)
     return res.sendStatus(400);
   }
 };
+
+export const getCourse = async (req:express.Request , res:express.Response):Promise<any> => {
+  try {
+    const { courseId } = req.params;
+    const currentUserId:string = get(req, "identity._id");
+    const user = await getUserById(currentUserId);
+
+    const courses = await getCourseById(courseId);
+
+    return res.status(200).json(courses);
+  } catch (error) {
+    console.log(error);
+    return res.sendStatus(400);
+  }
+}

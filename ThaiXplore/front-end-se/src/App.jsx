@@ -19,7 +19,7 @@ import Test from "./pages/usermanage_page/test";
 import PackagePage from "./pages/package/package_page";
 import DetailPackage from "./pages/detail_page/detailPackage";
 import { NavigateBar } from "./layouts/navigatebar";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setPath } from "./features/pathSlice";
 import { fetchUser } from "./features/authSlice";
@@ -27,7 +27,7 @@ import { TopBarResponsive } from "./components/TopBarResponsive";
 import Payment from "./pages/payment_page/payment";
 import PaymentSelector from "./pages/payment_page/paymentSelected";
 import QuotationPage from "./pages/quotation_page/quotationpage"
-
+import useSocket from "./hooks/useSocket";
 
 function App() {
   const dispatch = useDispatch();
@@ -40,14 +40,18 @@ function App() {
     setIsNaviOpen(!isNaviOpen);
   }
 
-  // ใช้ useEffect เพื่อทำให้ Redux update path , loading user เมื่อ path เปลี่ยน
   useEffect(() => {
     dispatch(fetchUser());
     dispatch(setPath(location.pathname));
   }, [location, dispatch]);
 
-  console.log(currentPath);
-  console.log(user);
+
+  
+
+  // console.log(currentPath);
+  // console.log(user);
+
+
   return (
     <>
       {currentPath === "/login" || currentPath === "/signup" || currentPath === "/signup/role" || currentPath === "/signup/finishsignup" ? (

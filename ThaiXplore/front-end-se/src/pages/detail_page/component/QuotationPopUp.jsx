@@ -1,11 +1,14 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes, faCalendarAlt, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { ServiceDropdown } from "./dropDownService";
 import { useNavigate } from "react-router-dom";
+import { postData, putData } from "../../../services/apiService";
+import { useSelector } from "react-redux";
+import useSocket from "../../../hooks/useSocket";
 
 export const QuotationPopUp = (prop) => {
-  const { onClose, serviceBusiness } = prop;
+  const { onClose, serviceBusiness, quotation, business } = prop;
   const [formData, setFormData] = useState({
     companyName: "",
     province: "",
@@ -15,8 +18,47 @@ export const QuotationPopUp = (prop) => {
     phone: "",
     email: "",
     date: "",
-    items: [{ detail: "", quantity: "", price: "", amount: "" }],
+    description: "",
+    items: [{ serviceId: "", quantity: "", price: "", amount: "" }],
   });
+  const { user } = useSelector((state) => state.auth);
+  const socketRef = useSocket(user);
+  
+  console.log(user);
+
+
+  const sendQuotationSocket = (quotationData) => {
+    const socket = socketRef.current;
+    const receiverId = business.business.userId;
+    if (socket) {
+      socket.emit("sendQuotation",{receiverId, quotationData}); // ส่งข้อมูลไปยัง server ผ่าน WebSocket
+    }
+  };
+
+
+  const setDefaultValues = () => {
+    if (quotation) {
+      console.log(quotation);
+      const data = {
+        companyName: quotation.companyName,
+        province: "",
+        subDistrict: "",
+        district: "",
+        name: quotation.name,
+        phone: quotation.phoneNumber ,
+        email: quotation.email ,
+        date: quotation.date ,
+        description: quotation.description ,
+        items: quotation.servicesDetails ,
+      }
+      setFormData(data);
+    }
+  }
+  
+  useEffect(()=>{
+    setDefaultValues();
+  },[])
+
 
   const handleChange = (e, index = null, field = null) => {
     if (index !== null && field) {
@@ -33,7 +75,7 @@ export const QuotationPopUp = (prop) => {
   const addRow = () => {
     setFormData({
       ...formData,
-      items: [...formData.items, { detail: "", quantity: "", price: "", amount: "" }],
+      items: [...formData.items, { serviceId: "", quantity: "", price: "", amount: "" }],
     });
   };
 
@@ -47,13 +89,35 @@ export const QuotationPopUp = (prop) => {
   };
   
   const navigate = useNavigate();
-  const handleSubmit = () => {
-    if (!formData.companyName || !formData.name || !formData.phone || !formData.email || formData.items.length === 0) {
-      alert("กรุณากรอกข้อมูลสำคัญให้ครบถ้วน!");
-      return;
+  const handleSubmit = async () => {
+    try {
+      if (!formData.companyName || !formData.name || !formData.phone || !formData.email || formData.items.length === 0) {
+        alert("กรุณากรอกข้อมูลสำคัญให้ครบถ้วน!");
+        // return;
+      }
+      const sendData = {
+          toBusinessId : serviceBusiness[0].businessId,
+          name : formData.name,
+          address : formData.address,
+          companyName : formData.companyName,
+          email : formData.email,
+          phoneNumber : formData.phone,
+          description : formData.description,
+          servicesDetails : formData.items
+      }
+      
+      if(!quotation){
+        sendQuotationSocket(sendData);
+        await postData(`/quotations` , sendData);
+        navigate("/quotation");
+      }else {
+        sendQuotationSocket(sendData);
+        await putData(`/quotations/${quotation._id}` , sendData);
+        onClose();
+      }
+    } catch (error) {
+      console.log(error);
     }
-    console.log("Form Data Submitted:", formData);
-    navigate("/quotation");
   };
 
   const formatCurrency = (amount) => {
@@ -62,7 +126,7 @@ export const QuotationPopUp = (prop) => {
 
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50">
-      <div className="bg-white p-8 rounded-xl shadow-2xl w-4/5 max-w-4xl border border-gray-100 relative">
+      <div className="bg-white px-8 py-5 rounded-xl shadow-2xl w-4/5 max-w-4xl border border-gray-100 relative">
         {/* Header with gradient background */}
         <div className="absolute top-0 left-0 right-0 h-16 bg-gradient-to-r from-orange-500 to-amber-500 rounded-t-xl flex items-center px-8">
           <h2 className="text-2xl font-bold text-white">ใบเสนอราคา (Quotation)</h2>
@@ -76,19 +140,6 @@ export const QuotationPopUp = (prop) => {
 
         {/* Form Content - pushed down to account for header */}
         <div className="mt-16 pt-2">
-          {/* Date Input */}
-          <div className="flex justify-end mb-6">
-            <div className="flex items-center border border-gray-300 p-2 rounded-lg shadow-sm bg-gray-50 hover:bg-white transition-colors">
-              <FontAwesomeIcon icon={faCalendarAlt} className="text-orange-500 mr-2" />
-              <input
-                type="date"
-                name="date"
-                value={formData.date}
-                onChange={handleChange}
-                className="outline-none bg-transparent"
-              />
-            </div>
-          </div>
 
           {/* Company & Address Info */}
           <div className="mb-6">
@@ -100,7 +151,7 @@ export const QuotationPopUp = (prop) => {
                   name="companyName"
                   placeholder="ชื่อบริษัท *"
                   className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-300 focus:border-orange-500 outline-none transition-all"
-                  value={formData.companyName}
+                  value={formData.companyName || ""}
                   onChange={handleChange}
                 />
               </div>
@@ -109,7 +160,7 @@ export const QuotationPopUp = (prop) => {
                 name="province"
                 placeholder="จังหวัด"
                 className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-300 focus:border-orange-500 outline-none transition-all"
-                value={formData.province}
+                value={formData.province || ""}
                 onChange={handleChange}
               />
               <input
@@ -117,7 +168,7 @@ export const QuotationPopUp = (prop) => {
                 name="district"
                 placeholder="อำเภอ/เขต"
                 className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-300 focus:border-orange-500 outline-none transition-all"
-                value={formData.district}
+                value={formData.district || ""}
                 onChange={handleChange}
               />
               <input
@@ -125,7 +176,7 @@ export const QuotationPopUp = (prop) => {
                 name="subDistrict"
                 placeholder="ตำบล/แขวง"
                 className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-300 focus:border-orange-500 outline-none transition-all"
-                value={formData.subDistrict}
+                value={formData.subDistrict || ""}
                 onChange={handleChange}
               />
             </div>
@@ -140,7 +191,7 @@ export const QuotationPopUp = (prop) => {
                 name="name"
                 placeholder="ชื่อผู้ติดต่อ *"
                 className="p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-300 focus:border-orange-500 outline-none transition-all"
-                value={formData.name}
+                value={formData.name || ""}
                 onChange={handleChange}
               />
               <input
@@ -148,7 +199,7 @@ export const QuotationPopUp = (prop) => {
                 name="phone"
                 placeholder="เบอร์โทรศัพท์ *"
                 className="p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-300 focus:border-orange-500 outline-none transition-all"
-                value={formData.phone}
+                value={formData.phone || ""}
                 onChange={handleChange}
               />
               <input
@@ -156,7 +207,22 @@ export const QuotationPopUp = (prop) => {
                 name="email"
                 placeholder="อีเมล *"
                 className="col-span-2 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-300 focus:border-orange-500 outline-none transition-all"
-                value={formData.email}
+                value={formData.email || ""}
+                onChange={handleChange}
+              />
+            </div>
+          </div>
+
+          {/* Customer Description */}
+          <div className="mb-6">
+            <h3 className="font-semibold text-gray-700 mb-2 border-b border-orange-300 pb-1">ข้อมูลผู้ติดต่อ</h3>
+            <div className="grid grid-cols-1 gap-4">
+              <textarea
+                type="text"
+                name="description"
+                placeholder="ข้อมูลเพิ่มเติม *"
+                className="p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-300 focus:border-orange-500 outline-none transition-all"
+                value={formData.description || ""}
                 onChange={handleChange}
               />
             </div>
@@ -166,7 +232,7 @@ export const QuotationPopUp = (prop) => {
           <div className="mb-6">
             <h3 className="font-semibold text-gray-700 mb-2 border-b border-orange-300 pb-1">รายการสินค้า/บริการ</h3>
             <div className="border border-gray-200 rounded-lg overflow-hidden shadow-sm">
-              <div className="max-h-64 overflow-y-auto">
+              <div className="max-h-36 overflow-y-auto">
                 <table className="w-full text-sm border-collapse">
                   {/* Fixed Header */}
                   <thead className="bg-gradient-to-r from-orange-500 to-amber-500 text-white sticky top-0 shadow-md">
@@ -188,7 +254,7 @@ export const QuotationPopUp = (prop) => {
                             data={serviceBusiness}
                             onSelect={(value) => {
                               const updatedItems = [...formData.items];
-                              updatedItems[index].detail = value;
+                              updatedItems[index].serviceId = value;
                               setFormData({ ...formData, items: updatedItems });
                             }}
                           />
@@ -196,7 +262,7 @@ export const QuotationPopUp = (prop) => {
                         <td className="p-3">
                           <input
                             type="number"
-                            value={item.quantity}
+                            value={item.quantity || ""}
                             onChange={(e) => handleChange(e, index, "quantity")}
                             className="w-full p-2 border border-gray-300 rounded text-center bg-white focus:ring-2 focus:ring-orange-300 focus:border-orange-500 outline-none transition-all"
                           />
@@ -204,7 +270,7 @@ export const QuotationPopUp = (prop) => {
                         <td className="p-3">
                           <input
                             type="number"
-                            value={item.price}
+                            value={item.price || ""}
                             readOnly
                             onChange={(e) => handleChange(e, index, "price")}
                             className="w-full p-2 border border-gray-300 rounded text-center bg-white focus:ring-2 focus:ring-orange-300 focus:border-orange-500 outline-none transition-all"

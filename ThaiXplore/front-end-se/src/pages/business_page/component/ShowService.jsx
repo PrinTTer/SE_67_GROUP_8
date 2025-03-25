@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { getTopic } from './ServiceBlock';
 import { faPenToSquare, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { deleteData } from '../../../services/apiService';
@@ -12,9 +12,28 @@ export const ShowService = (prop) => {
   const { id, type, data, fetchData } = prop;
   const [showEditPopUp, setShowEditPopUp] = useState(false);
   const [editItem, setEditItem] = useState(null);
-  console.log(id)
+  console.log(id);
   const title = data?.services;
   const Topic = getTopic(type);
+  const [imageType, setImageType] = useState();
+
+  useEffect (()=>{
+    switch(type) {
+      case "hotel":
+        setImageType("rooms");
+        break;
+      case "carRental":
+        setImageType("cars");
+        break;
+      case "event":
+        setImageType("events");
+        break;
+      case "restaurant":
+        setImageType("courses");
+        break;
+    }
+    console.log("IMAGE " + imageType)
+  },[])
 
   if (!Array.isArray(Topic) || Topic.length === 0) {
     return (
@@ -44,8 +63,12 @@ export const ShowService = (prop) => {
       endpoint = '/courses/';
     }
 
-    await deleteData(endpoint + id);
-    fetchData();
+    try {
+      await deleteData(endpoint + id);
+      fetchData();
+    } catch (error) {
+      console.error("Error deleting service:", error);
+    }
   };
 
   const handleEditClick = (item) => {
@@ -55,7 +78,7 @@ export const ShowService = (prop) => {
 
   // Get service type label for display
   const getServiceTypeLabel = () => {
-    switch(type) {
+    switch (type) {
       case "hotel": return "Hotel Room";
       case "carRental": return "Car Rental";
       case "event": return "Event";
@@ -63,6 +86,16 @@ export const ShowService = (prop) => {
       default: return "Service";
     }
   };
+
+  // Map edit components to reduce repetitive conditional checks
+  const editComponents = {
+    hotel: HotelEdit,
+    restaurant: RestaurantEdit,
+    carRental: CarEdit,
+    event: EventEdit
+  };
+
+  const EditComponent = editComponents[type];
 
   return (
     <div className="p-6 rounded-lg gap-5 mb-5 bg-amber-50 shadow-md border border-amber-200">
@@ -72,6 +105,19 @@ export const ShowService = (prop) => {
 
       {title.map((item, index) => (
         <div key={index} className="grid grid-cols-1 md:grid-cols-3 gap-5 p-5 bg-white shadow-sm rounded-lg mt-4 hover:shadow-md transition-all duration-300 border border-amber-100">
+          <div className='row-span-5'>
+            {item.media && item.media[0] ? (
+              <img
+                src={`http://localhost:3000/public/uploads/services/${imageType}/${item.media[0]}`}
+                alt={item.media[0]}
+                className="w-full h-auto object-cover rounded-md shadow-lg"
+
+              />
+            ) : (
+              <img src="path/to/placeholder-image.jpg" alt="Placeholder" className="w-50 h-100" />
+            )}
+          </div>
+
           {Topic.map((field, fieldIndex) => (
             <div key={fieldIndex} className="flex flex-col p-2">
               <div className="font-semibold text-amber-700 mb-2">{field}</div>
@@ -104,16 +150,18 @@ export const ShowService = (prop) => {
           ))}
 
           <div className="flex justify-end items-center col-span-1 md:col-span-3 gap-4 mt-2 pt-3 border-t border-amber-100">
-            <button 
+            <button
               onClick={() => handleEditClick(item)}
               className="px-4 py-2 bg-amber-500 text-white rounded-md hover:bg-amber-600 transition flex items-center gap-2"
+              aria-label={`Edit ${getServiceTypeLabel()}`}
             >
               <FontAwesomeIcon icon={faPenToSquare} className="text-sm" /> Edit
             </button>
-            
-            <button 
+
+            <button
               onClick={() => deleteService(item._id)}
               className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition flex items-center gap-2"
+              aria-label={`Delete ${getServiceTypeLabel()}`}
             >
               <FontAwesomeIcon icon={faTrash} className="text-sm" /> Delete
             </button>
@@ -127,35 +175,12 @@ export const ShowService = (prop) => {
             <h2 className="text-2xl font-bold mb-6 text-amber-800 border-b pb-3 border-amber-200">
               Edit {getServiceTypeLabel()}
             </h2>
-            
+
             <div className="overflow-y-auto pr-2">
-              <div className={`${type === 'hotel' ? "block" : "hidden"}`}>
-                <HotelEdit item={editItem} setShowEditPopUp={setShowEditPopUp} fetchData={fetchData} />
-              </div>
-              <div className={`${type === 'restaurant' ? "block" : "hidden"}`}>
-                <RestaurantEdit item={editItem} setShowEditPopUp={setShowEditPopUp} fetchData={fetchData}/>
-              </div>
-              <div className={`${type === 'carRental' ? "block" : "hidden"}`}>
-                <CarEdit item={editItem} setShowEditPopUp={setShowEditPopUp} fetchData={fetchData}/>
-              </div>
-              <div className={`${type === 'event' ? "block" : "hidden"}`}>
-                <EventEdit item={editItem} setShowEditPopUp={setShowEditPopUp} fetchData={fetchData}/>
-              </div>
+              {EditComponent && <EditComponent item={editItem} setShowEditPopUp={setShowEditPopUp} fetchData={fetchData} />}
             </div>
+
             
-            <div className="flex justify-end mt-6 pt-4 border-t border-amber-200">
-              <button 
-                onClick={() => setShowEditPopUp(false)}
-                className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 transition mr-3"
-              >
-                Cancel
-              </button>
-              <button 
-                className="px-4 py-2 bg-amber-500 text-white rounded-md hover:bg-amber-600 transition"
-              >
-                Save Changes
-              </button>
-            </div>
           </div>
         </div>
       )}

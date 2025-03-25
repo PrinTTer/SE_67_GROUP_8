@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import { faTimesCircle, faCheckCircle, faCirclePlus, faExclamationCircle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { postData } from '../../../services/apiService';
+import { postData , postDataWithFiles } from '../../../services/apiService';
 import { FileUpload } from './ServiceBlock';
 import { ShowService } from './ShowService';
 
 export const CarService = (prop) => {
   const { id, title, type, fetchData, data } = prop;
+  const [ image , setImage] = useState();
   const [forms, setForms] = useState([
     { businessId: id, carBrand: "", licensePlate: "", amountSeat: "", price: "", totalCars: "" }
   ]);
@@ -87,8 +88,13 @@ export const CarService = (prop) => {
         formData.licensePlate = "Don't Have";
 
         console.log(formData);
-        await postData(`/businesses/${id}/cars`, formData);
+        const postResponse =await postData(`/businesses/${id}/cars`, formData);
         fetchData();
+
+        const endpoint = `/cars/${postResponse._id}/images`;
+        postDataWithFiles(endpoint, [image], forms, "services_cars");
+
+
         alert("Car added successfully!");
         removeForm(index);
       } catch (error) {
@@ -185,7 +191,7 @@ export const CarService = (prop) => {
 
             <div className="md:col-span-2">
               <label className="block text-amber-800 font-medium mb-2">Car Image</label>
-              <FileUpload />
+              <FileUpload setImage={setImage}/>
             </div>
 
             <div className="flex justify-end items-center md:col-span-2 mt-6 pt-4 border-t border-amber-200">

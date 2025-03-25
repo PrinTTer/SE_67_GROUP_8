@@ -56,7 +56,10 @@ export const postDataWithFiles = async (endpoint, files, data, title) => {
   try {
     const formData = new FormData();
     formData.append("title", title);
-    formData.append("data", JSON.stringify(data));
+
+    if (data) {
+      formData.append("data", JSON.stringify(data));
+    }
 
     files.forEach((file) => {
       formData.append("files", file);

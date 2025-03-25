@@ -80,13 +80,15 @@ export const ServiceBlock = (prop) => {
 };
 
 
-export const FileUpload = () => {
+export const FileUpload = (prop) => {
+    const { setImage } = prop
     const [fileName, setFileName] = useState("");
 
     const handleChange = (event) => {
         const file = event.target.files[0]; // Get the first file
         if (file) {
             setFileName(file.name); // Set file name to state
+            setImage(file);
         }
     };
 
@@ -96,6 +98,7 @@ export const FileUpload = () => {
             <input
                 type="file"
                 id="img"
+                accept="image/*" 
                 className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                 onChange={handleChange}
             />
@@ -111,11 +114,11 @@ export const FileUpload = () => {
 export const getTopic = (category) => {
     let List = [];
     if (category === "hotel") {
-        List = ["roomType", "guestAmount", "roomSize", "price", "facilities", "image"];
+        List = ["roomType", "guestAmount", "roomSize", "price", "facilities"];
     } else if (category === "event") {
         List = ["ticketType", "price", "quantity", "eventDate", "start", "end"];
     } else if (category === "carRental") {
-        List = ["carBrand", "amountSeat", "price", "image"];
+        List = ["carBrand", "amountSeat", "price"];
     } else if (category === "restaurant") {
         List = ["courseName", "menuList", "price"];
     }

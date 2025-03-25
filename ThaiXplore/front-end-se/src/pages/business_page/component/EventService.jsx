@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { faTimesCircle, faCheckCircle, faCirclePlus, faExclamationCircle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { postData } from '../../../services/apiService';
+import { postData , postDataWithFiles } from '../../../services/apiService';
 import { FileUpload } from './ServiceBlock';
 import { ShowService } from './ShowService';
 
@@ -10,6 +10,8 @@ export const EventService = (prop) => {
   const [forms, setForms] = useState([
     { businessId: id, ticketType: "", price: "", quantity: "", eventDate: "", start: "", end: "" }
   ]);
+
+  const [image , setImage] = useState();
   const [errors, setErrors] = useState([{}]);
 
   forms.start = new Date();
@@ -108,9 +110,11 @@ export const EventService = (prop) => {
         formData.price = parseFloat(formData.price);
         formData.quantity = parseInt(formData.quantity);
         
-        await postData(`/businesses/${id}/events`, formData);
+        const postResponse = await postData(`/businesses/${id}/events`, formData);
         alert("Event added successfully!");
         fetchData();
+          const endpoint = `/events/${postResponse._id}/images`;
+          postDataWithFiles(endpoint, [image], forms, "services_events");
         removeForm(index);
       } catch (error) {
         console.error("Error adding event:", error);
@@ -239,7 +243,7 @@ export const EventService = (prop) => {
             
             <div className="md:col-span-2">
               <label className="block text-amber-800 font-medium mb-2">Event Image</label>
-              <FileUpload />
+              <FileUpload setImage={setImage}/>
             </div>
 
             <div className="flex justify-end items-center md:col-span-2 mt-4 pt-4 border-t border-amber-200">

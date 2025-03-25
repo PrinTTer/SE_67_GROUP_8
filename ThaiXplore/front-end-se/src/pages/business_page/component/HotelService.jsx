@@ -1,12 +1,14 @@
-import { useState } from 'react';
+import { useState  } from 'react';
 import { faTimesCircle, faCheckCircle, faCirclePlus, faExclamationCircle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { postData } from '../../../services/apiService';
+import { postData  , postDataWithFiles  } from '../../../services/apiService';
 import { FileUpload } from './ServiceBlock';
 import { ShowService } from './ShowService';
 
+
 export const HotelService = (prop) => {
   const { id, title, type, fetchData, data } = prop;
+  const [ image , setImage] = useState([]);
   const [forms, setForms] = useState([
     { businessId: id, roomType: "", guestAmount: "", roomSize: "", price: "", facilities: [""], totalRooms: "" }
   ]);
@@ -116,31 +118,40 @@ export const HotelService = (prop) => {
     return isValid;
   };
 
-  // Insert data
+  
+
+  
+  // ฟังก์ชัน insertData
+  let postResponse;
   const insertData = async (index) => {
     if (validateForm(index)) {
-      try {
-        const formData = forms[index];
-
-        // Add m² unit to roomSize
-        const roomSizeWithUnit = `${formData.roomSize} m²`;
-        formData.roomSize = roomSizeWithUnit;
-        formData.guestAmount = parseFloat(formData.guestAmount);
-        formData.price = parseFloat(formData.price);
-        formData.totalRooms = parseFloat(formData.totalRooms);
-
-        console.log(formData);
-
-        await postData(`/businesses/${id}/rooms`, formData);
+      const formData = forms[index];
+      
+  
+      // Add m² unit to roomSize
+      const roomSizeWithUnit = `${formData.roomSize} m²`;
+      formData.roomSize = roomSizeWithUnit;
+      formData.guestAmount = parseFloat(formData.guestAmount);
+      formData.price = parseFloat(formData.price);
+      formData.totalRooms = parseFloat(formData.totalRooms);
+  
+      console.log(formData);
+  
+      // รอให้ postData เสร็จสิ้นก่อน
+       postResponse = await postData(`/businesses/${id}/rooms`, formData);
+       console.log("Res");
+      console.log(postResponse)
+      
+      
+        const endpoint = `/rooms/${postResponse._id}/images`;
+        postDataWithFiles(endpoint, [image], forms, "services_rooms");
+  
+      
         fetchData();
-        alert("Room added successfully!");
         removeForm(index);
-      } catch (error) {
-        console.error("Error adding room:", error);
-        alert("Failed to add the room. Please try again.");
-      }
     }
   };
+  
 
   return (
     <div className="bg-white rounded-lg shadow-lg p-8 border border-amber-100">
@@ -246,7 +257,7 @@ export const HotelService = (prop) => {
 
             <div>
               <label className="block text-amber-800 font-medium mb-2">Room Image</label>
-              <FileUpload />
+              <FileUpload setImage={setImage}/>
             </div>
 
             <div className="relative">

@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import { faTimesCircle, faCheckCircle, faCirclePlus, faExclamationCircle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { postData } from '../../../services/apiService';
+import { postData , postDataWithFiles} from '../../../services/apiService';
 import { FileUpload } from './ServiceBlock';
 import { ShowService } from './ShowService';
 
 export const RestaurantService = (prop) => {
   const { id, title, type, fetchData, data } = prop;
+  const [image , setImage] = useState();
   const [forms, setForms] = useState([
     { businessId: id, courseName: "", menuList: [{ name: "" }], price: "" }
   ]);
@@ -125,8 +126,11 @@ export const RestaurantService = (prop) => {
         formData.price = parseFloat(formData.price); // แปลง price ให้เป็นตัวเลข
         
         console.log(formData);
-        await postData(`/businesses/${id}/courses`, formData);
+        const postResponse =await postData(`/businesses/${id}/courses`, formData);
         fetchData();
+
+        const endpoint = `/courses/${postResponse._id}/images`;
+        postDataWithFiles(endpoint, [image], forms, "services_courses");
         alert("Course added successfully!");
         removeForm(index);
       } catch (error) {
@@ -232,7 +236,7 @@ export const RestaurantService = (prop) => {
             
             <div className="md:col-span-2">
               <label className="block text-amber-800 font-medium mb-2">Course Image</label>
-              <FileUpload />
+              <FileUpload setImage={setImage}/>
             </div>
 
             <div className="flex justify-end items-center md:col-span-2 mt-6 pt-4 border-t border-amber-200">

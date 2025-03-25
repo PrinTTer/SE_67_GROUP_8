@@ -1,6 +1,18 @@
 import { useEffect, useState } from "react";
-import { postData, fetchData } from "../../../services/apiService";
-import { faPlusCircle, faTimesCircle, faBox, faCalendarAlt, faTags, faFileAlt, faCheckCircle } from "@fortawesome/free-solid-svg-icons";
+import {
+  postData,
+  fetchData,
+  postDataWithFiles,
+} from "../../../services/apiService";
+import {
+  faPlusCircle,
+  faTimesCircle,
+  faBox,
+  faCalendarAlt,
+  faTags,
+  faFileAlt,
+  faCheckCircle,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export const PackageBlock = ({ businessId, userId }) => {
@@ -60,27 +72,48 @@ export const PackageBlock = ({ businessId, userId }) => {
   const handleSubmit = async () => {
     setIsLoading(true);
     try {
-      const payload = packages.map((pkg) => ({
-        title: pkg.data.title,
-        description: pkg.data.description,
+      const pkg = packages[0].data;
+
+      const payload = {
+        title: pkg.title,
+        description: pkg.description,
         media: [],
         dateCreate: new Date().toISOString(),
-        startDate: pkg.data.startDate,
-        endDate: pkg.data.endDate,
-        totalExpirationDate: pkg.data.totalExpirationDate,
-        price: pkg.data.price,
-        totalPackage: pkg.data.totalPackage,
-        services: pkg.data.services.map((s) => ({
+        startDate: pkg.startDate,
+        endDate: pkg.endDate,
+        totalExpirationDate: pkg.totalExpirationDate,
+        price: pkg.price,
+        totalPackage: pkg.totalPackage,
+        services: pkg.services.map((s) => ({
           quotationId: s.quotationId,
           serviceId: s.serviceId,
           businessId: s.businessId,
         })),
-      }));
-      await postData(`/businesses/${businessId}/packages`, payload[0]);
-      alert("✅ ส่ง Package สำเร็จแล้ว!");
+      };
+
+      //POST สร้าง Package ก่อน
+      const newPackage = await postData(
+        `/businesses/${businessId}/packages`,
+        payload
+      );
+      const packageId = newPackage._id;
+      console.log("Package created:", packageId);
+
+      //POST รูปภาพถ้ามี
+      if (pkg.media && pkg.media.length > 0) {
+        await postDataWithFiles(
+          `/packages/${packageId}/images`,
+          pkg.media,
+          {}, // ไม่มีข้อมูลเสริมอื่น
+          "services_packages" // title
+        );
+        console.log("รูปภาพถูกอัปโหลดแล้ว");
+      }
+
+      alert("ส่ง Package สำเร็จพร้อมรูปภาพ!");
     } catch (err) {
       console.error(err);
-      alert("❌ ส่ง Package ไม่สำเร็จ");
+      alert("ส่ง Package ไม่สำเร็จ");
     } finally {
       setIsLoading(false);
     }
@@ -89,11 +122,14 @@ export const PackageBlock = ({ businessId, userId }) => {
   return (
     <div className="p-6 bg-white rounded-lg shadow-lg border border-yellow-100">
       <div className="flex items-center mb-6 border-b border-yellow-200 pb-4">
-        <FontAwesomeIcon icon={faBox} className="text-yellow-500 text-2xl mr-3" />
+        <FontAwesomeIcon
+          icon={faBox}
+          className="text-yellow-500 text-2xl mr-3"
+        />
         <h2 className="text-2xl font-bold text-gray-800">จัดการแพ็คเกจ</h2>
       </div>
 
-      <div 
+      <div
         className="flex items-center text-yellow-600 cursor-pointer mb-6 hover:text-yellow-700 transition-colors duration-200 bg-yellow-50 p-3 rounded-lg"
         onClick={addPackage}
       >
@@ -140,9 +176,16 @@ const getEmptyPackage = () => ({
   price: 0,
   totalPackage: 1,
   services: [],
+  media: [],
 });
 
-const PackageForm = ({ data, onChange, onRemove, quotationOptions, serviceDetails }) => {
+const PackageForm = ({
+  data,
+  onChange,
+  onRemove,
+  quotationOptions,
+  serviceDetails,
+}) => {
   const [localData, setLocalData] = useState(data);
   const [isExpanded, setIsExpanded] = useState(true);
 
@@ -172,7 +215,9 @@ const PackageForm = ({ data, onChange, onRemove, quotationOptions, serviceDetail
 
   const allServices = quotationOptions.flatMap((q) =>
     q.servicesDetails.map((s) => {
-      const matched = serviceDetails.find((detail) => detail._id === s.serviceId);
+      const matched = serviceDetails.find(
+        (detail) => detail._id === s.serviceId
+      );
       return {
         ...s,
         quotationId: q._id,
@@ -208,7 +253,9 @@ const PackageForm = ({ data, onChange, onRemove, quotationOptions, serviceDetail
           {/* Input Fields */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
             <div>
-              <label className="block text-gray-700 font-medium mb-1">ชื่อแพ็คเกจ</label>
+              <label className="block text-gray-700 font-medium mb-1">
+                ชื่อแพ็คเกจ
+              </label>
               <input
                 className="w-full p-2 border border-yellow-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
                 placeholder="ชื่อแพ็คเกจ"
@@ -216,9 +263,11 @@ const PackageForm = ({ data, onChange, onRemove, quotationOptions, serviceDetail
                 onChange={(e) => updateField("title", e.target.value)}
               />
             </div>
-            
+
             <div>
-              <label className="block text-gray-700 font-medium mb-1">ราคา</label>
+              <label className="block text-gray-700 font-medium mb-1">
+                ราคา
+              </label>
               <input
                 className="w-full p-2 border border-yellow-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
                 type="number"
@@ -227,9 +276,11 @@ const PackageForm = ({ data, onChange, onRemove, quotationOptions, serviceDetail
                 onChange={(e) => updateField("price", e.target.value)}
               />
             </div>
-            
+
             <div>
-              <label className="block text-gray-700 font-medium mb-1">จำนวน</label>
+              <label className="block text-gray-700 font-medium mb-1">
+                จำนวน
+              </label>
               <input
                 className="w-full p-2 border border-yellow-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
                 type="number"
@@ -238,20 +289,26 @@ const PackageForm = ({ data, onChange, onRemove, quotationOptions, serviceDetail
                 onChange={(e) => updateField("totalPackage", e.target.value)}
               />
             </div>
-            
+
             <div>
-              <label className="block text-gray-700 font-medium mb-1">อายุการใช้งาน (วัน)</label>
+              <label className="block text-gray-700 font-medium mb-1">
+                อายุการใช้งาน (วัน)
+              </label>
               <input
                 className="w-full p-2 border border-yellow-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
                 type="number"
                 placeholder="อายุการใช้งาน (วัน)"
                 value={localData.totalExpirationDate}
-                onChange={(e) => updateField("totalExpirationDate", e.target.value)}
+                onChange={(e) =>
+                  updateField("totalExpirationDate", e.target.value)
+                }
               />
             </div>
-            
+
             <div>
-              <label className="block text-gray-700 font-medium mb-1">วันที่เริ่มต้น</label>
+              <label className="block text-gray-700 font-medium mb-1">
+                วันที่เริ่มต้น
+              </label>
               <input
                 className="w-full p-2 border border-yellow-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
                 type="date"
@@ -260,9 +317,11 @@ const PackageForm = ({ data, onChange, onRemove, quotationOptions, serviceDetail
                 onChange={(e) => updateField("startDate", e.target.value)}
               />
             </div>
-            
+
             <div>
-              <label className="block text-gray-700 font-medium mb-1">วันที่สิ้นสุด</label>
+              <label className="block text-gray-700 font-medium mb-1">
+                วันที่สิ้นสุด
+              </label>
               <input
                 className="w-full p-2 border border-yellow-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
                 type="date"
@@ -271,9 +330,11 @@ const PackageForm = ({ data, onChange, onRemove, quotationOptions, serviceDetail
                 onChange={(e) => updateField("endDate", e.target.value)}
               />
             </div>
-            
+
             <div className="md:col-span-2">
-              <label className="block text-gray-700 font-medium mb-1">รายละเอียดแพ็คเกจ</label>
+              <label className="block text-gray-700 font-medium mb-1">
+                รายละเอียดแพ็คเกจ
+              </label>
               <textarea
                 className="w-full p-2 border border-yellow-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent min-h-20"
                 placeholder="รายละเอียดแพ็คเกจ"
@@ -281,18 +342,37 @@ const PackageForm = ({ data, onChange, onRemove, quotationOptions, serviceDetail
                 onChange={(e) => updateField("description", e.target.value)}
               />
             </div>
+            <div>
+              <label className="block text-gray-700 font-medium mb-1">
+                อัพโหลดรูปภาพเเพ็คเกจ
+              </label>
+              <input
+                type="file"
+                accept="image/*"
+                multiple
+                onChange={(e) =>
+                  updateField("media", Array.from(e.target.files))
+                }
+                className="w-full p-2 border border-yellow-200 rounded-lg"
+              />
+            </div>
           </div>
 
           {/* Dropdown Services */}
           <div className="mt-6 p-4 bg-white rounded-lg shadow-sm border border-yellow-100">
             <label className="font-bold flex items-center text-gray-700 mb-2">
-              <FontAwesomeIcon icon={faPlusCircle} className="text-yellow-500 mr-2" />
+              <FontAwesomeIcon
+                icon={faPlusCircle}
+                className="text-yellow-500 mr-2"
+              />
               เพิ่มบริการจากใบเสนอราคา
             </label>
             <select
               className="w-full p-3 border border-yellow-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent bg-white"
               onChange={(e) => {
-                const selected = allServices.find((s) => s.serviceId === e.target.value);
+                const selected = allServices.find(
+                  (s) => s.serviceId === e.target.value
+                );
                 if (selected) addServiceFromDropdown(selected);
               }}
             >
@@ -308,18 +388,26 @@ const PackageForm = ({ data, onChange, onRemove, quotationOptions, serviceDetail
           {/* Selected Services */}
           <div className="mt-6 p-4 bg-white rounded-lg shadow-sm border border-yellow-100">
             <h4 className="font-bold text-gray-700 mb-3 flex items-center">
-              <FontAwesomeIcon icon={faCheckCircle} className="text-yellow-500 mr-2" />
+              <FontAwesomeIcon
+                icon={faCheckCircle}
+                className="text-yellow-500 mr-2"
+              />
               บริการที่เลือกแล้ว
             </h4>
-            
+
             {localData.services.length === 0 ? (
               <p className="text-gray-500 italic">ยังไม่มีบริการที่เลือก</p>
             ) : (
               <div className="space-y-2">
                 {localData.services.map((s, idx) => (
-                  <div key={idx} className="p-3 bg-yellow-50 rounded-md border border-yellow-100">
+                  <div
+                    key={idx}
+                    className="p-3 bg-yellow-50 rounded-md border border-yellow-100"
+                  >
                     <div className="flex items-center justify-between mb-2">
-                      <p className="font-medium">{findServiceName(s.serviceId, allServices)}</p>
+                      <p className="font-medium">
+                        {findServiceName(s.serviceId, allServices)}
+                      </p>
                       <FontAwesomeIcon
                         icon={faTimesCircle}
                         className="text-red-500 cursor-pointer hover:text-red-700"
@@ -329,15 +417,21 @@ const PackageForm = ({ data, onChange, onRemove, quotationOptions, serviceDetail
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-2 text-sm">
                       <div className="p-2 bg-white rounded border border-yellow-100">
                         <span className="font-semibold">Service ID:</span>
-                        <div className="text-gray-700 break-all mt-1">{s.serviceId}</div>
+                        <div className="text-gray-700 break-all mt-1">
+                          {s.serviceId}
+                        </div>
                       </div>
                       <div className="p-2 bg-white rounded border border-yellow-100">
                         <span className="font-semibold">Business ID:</span>
-                        <div className="text-gray-700 break-all mt-1">{s.businessId}</div>
+                        <div className="text-gray-700 break-all mt-1">
+                          {s.businessId}
+                        </div>
                       </div>
                       <div className="p-2 bg-white rounded border border-yellow-100">
                         <span className="font-semibold">Quotation ID:</span>
-                        <div className="text-gray-700 break-all mt-1">{s.quotationId}</div>
+                        <div className="text-gray-700 break-all mt-1">
+                          {s.quotationId}
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -353,7 +447,7 @@ const PackageForm = ({ data, onChange, onRemove, quotationOptions, serviceDetail
 
 // Helper function to find service name from ID
 const findServiceName = (serviceId, allServices) => {
-  const service = allServices.find(s => s.serviceId === serviceId);
+  const service = allServices.find((s) => s.serviceId === serviceId);
   if (!service) return "ไม่พบชื่อบริการ";
   return `บริการ: ${renderServiceByCategory(service)}`;
 };
@@ -368,7 +462,9 @@ const renderServiceByCategory = (service) => {
     case "carRental":
       return `รถ ${service.carBrand} (${service.amountSeat} ที่นั่ง)`;
     case "event":
-      return `บัตร ${service.ticketType} - วันที่ ${new Date(service.eventDate).toLocaleDateString("th-TH")}`;
+      return `บัตร ${service.ticketType} - วันที่ ${new Date(
+        service.eventDate
+      ).toLocaleDateString("th-TH")}`;
     case "restaurant":
     case "course":
       return `คอร์ส ${service.courseName || "ไม่ระบุชื่อ"}`;

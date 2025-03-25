@@ -2,24 +2,28 @@ import BookingDetail from "../booking_page/component/bookingDetail";
 import { useLocation, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCreditCard, faWallet } from '@fortawesome/free-solid-svg-icons';
+import { useState } from "react";
 
 const PaymentSelector = () => {
-    const location = useLocation();
-    const {bookingData, item, category} = location.state || {};
-    const navigate = useNavigate();
-    
-    console.log(bookingData);
-    console.log(item);
-    console.log(category);
+    const [method, setMethod] = useState("");
 
-    const handleSelect = () => {
-        navigate('/payment', {state : {bookingData, item, category} });
+    const location = useLocation();
+    const { bookingData, item, category } = location.state || {};
+    const navigate = useNavigate();
+
+    console.log("Booking Data: ", bookingData);
+    console.log("Service Detail: ", item);
+    console.log("Category of Service: ", category);
+
+    const handleSelect = (selectedMethod) => {
+        setMethod(selectedMethod);  // Set the method (either "credit card" or "paypal")
+        navigate('/payment', { state: { bookingData, item, category, method: selectedMethod } });  // Navigate with the method
     }
 
-    return(
+    return (
         <>
             <div className="flex flex-[1.2]">
-                <BookingDetail item={item} category={category}/>
+                <BookingDetail item={item} category={category} />
             </div>
             <div className="flex flex-[3.8] bg-gray-50">
                 <div className="flex flex-1 flex-col w-full bg-white border border-gray-100 rounded-lg shadow-lg p-8 m-8">
@@ -30,7 +34,7 @@ const PaymentSelector = () => {
                     
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
                         <div 
-                            onClick={handleSelect} 
+                            onClick={() => handleSelect("credit card")}  // Pass method as "credit card"
                             className="p-6 border border-gray-200 rounded-lg bg-white shadow-sm hover:shadow-md hover:border-amber-500 transition-all duration-300 cursor-pointer group"
                         >
                             <div className="flex items-center mb-4">
@@ -44,14 +48,14 @@ const PaymentSelector = () => {
                             </div>
                             <div className="flex justify-between items-center mt-2">
                                 <div className="flex space-x-2">
-                                    <img className="h-6" src="/src/assets/visa-logo.jpg" alt="Visa"/>
+                                    <img className="h-6" src="/src/assets/visa-logo.jpg" alt="Visa" />
                                 </div>
                                 <span className="text-amber-600 text-sm font-medium group-hover:translate-x-1 transition-transform duration-300">Select →</span>
                             </div>
                         </div>
 
                         <div 
-                            onClick={handleSelect} 
+                            onClick={() => handleSelect("paypal")}  // Pass method as "paypal"
                             className="p-6 border border-gray-200 rounded-lg bg-white shadow-sm hover:shadow-md hover:border-amber-500 transition-all duration-300 cursor-pointer group"
                         >
                             <div className="flex items-center mb-4">
@@ -65,7 +69,7 @@ const PaymentSelector = () => {
                             </div>
                             <div className="flex justify-between items-center mt-2">
                                 <div className="flex space-x-2">
-                                    <img className="h-6" src="/src/assets/paypal.jpg" alt="PayPal"/>
+                                    <img className="h-6" src="/src/assets/paypal.jpg" alt="PayPal" />
                                 </div>
                                 <span className="text-amber-600 text-sm font-medium group-hover:translate-x-1 transition-transform duration-300">Select →</span>
                             </div>

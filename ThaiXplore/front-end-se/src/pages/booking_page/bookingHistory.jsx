@@ -18,12 +18,12 @@ const BookingHistory = () => {
                     const businessData = await fetchData(`/businesses/${booking.businessId}`);
                     const detailedBooking = booking.bookingDetail.map(detail => {
                         const service = businessData.services.find(service => service._id === detail.serviceId);
-                        return { ...detail, service };
+                        return { ...detail, service, businessImage: businessData.business.imageUrl };
                     });
-
+                    
                     return { ...booking, businessData, bookingDetail: detailedBooking };
                 }));
-
+                console.log("Booking Details : \n",bookingsWithServiceDetails);
                 setBookings(bookingsWithServiceDetails);
             } catch (error) {
                 setError("Failed to load bookings");
@@ -67,14 +67,26 @@ const BookingHistory = () => {
                     bookings.map((booking, index) => (
                         <div 
                             key={index} 
-                            className="bg-white border border-gray-100 rounded-lg shadow-sm hover:shadow-md transition-all duration-300"
+                            className="flex bg-white border border-gray-100 rounded-lg shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden"
                         >
-                            {/* Booking Header */}
-                            <div className="bg-gray-50 px-6 py-4 rounded-t-lg border-b border-gray-200">
-                                <div className="flex justify-between items-center">
-                                    <h2 className="text-2xl font-semibold text-gray-800">
+                            {/* Image Section */}
+                            <div className="w-1/3 relative">
+                                <img 
+                                    src={booking.bookingDetail[0].businessImage || '/api/placeholder/400/300'} 
+                                    alt={booking.businessData.business.businessName}
+                                    className="w-full h-full object-cover"
+                                />
+                                <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white p-3">
+                                    <h2 className="text-xl font-semibold">
                                         {booking.businessData.business.businessName}
                                     </h2>
+                                </div>
+                            </div>
+
+                            {/* Booking Details Section */}
+                            <div className="w-2/3 p-6">
+                                {/* Booking Status */}
+                                <div className="flex justify-between items-center mb-4">
                                     <span 
                                         className={`px-3 py-1 rounded-full text-sm font-medium 
                                         ${booking.status === 'confirmed' ? 'bg-green-100 text-green-800' : 
@@ -83,28 +95,32 @@ const BookingHistory = () => {
                                     >
                                         {booking.status}
                                     </span>
+                                    <p className="text-gray-500">
+                                        Booked on {new Date(booking.bookingDate).toLocaleDateString()}
+                                    </p>
                                 </div>
-                                <p className="text-gray-500 mt-1">
-                                    Booked on {new Date(booking.bookingDate).toLocaleDateString()}
-                                </p>
-                            </div>
 
-                            {/* Booking Details */}
-                            <div className="p-6">
+                                {/* Booking Details */}
                                 {booking.bookingDetail.map((detail, idx) => (
                                     <div 
                                         key={idx} 
-                                        className="bg-white rounded-lg border border-gray-100 shadow-sm p-4 mb-4 
-                                        hover:bg-gray-50 transition-all duration-200"
+                                        className="bg-gray-50 rounded-lg p-4 mb-4 border border-gray-200"
                                     >
                                         <div className="flex justify-between items-center mb-3">
                                             <h3 className="text-lg font-medium text-gray-700">
                                                 {detail.service ? detail.service.ticketType : 'N/A'}
                                             </h3>
+                                            
                                             <span className="text-amber-600 font-semibold">
                                                 {detail.service ? `${detail.service.price} THB` : 'N/A'}
                                             </span>
                                         </div>
+                                        <div className="flex justify-between items-center mb-3">
+                                            <h3 className="text-lg font-medium text-gray-700">
+                                                Test
+                                            </h3>
+                                        </div>
+                                        
                                         <div className="text-gray-600">
                                             <div className="flex justify-between">
                                                 <p>Start Date: {new Date(detail.startDate).toLocaleDateString()}</p>

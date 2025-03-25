@@ -48,6 +48,7 @@ export const HotelEdit = (prop) => {
 
     const updateData = async () =>{
         // alert(item._id)
+        setServiceImage((item.media[0]))
         room.price = parseFloat(room.price)
         room.totalRooms = parseFloat(room.totalRooms)
         console.log(room)

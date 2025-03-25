@@ -76,11 +76,12 @@ export const BusinessBlock = (prop) => {
             </div>
 
             <div className="flex gap-16 justify-end p-5">
-            <Link to={`/profile/mainBusiness/createBusiness/adddetails/${business._id}`}>
+            
                  <BusinessEditBtn icon={faFileLines} popup={"Information"}/>
-            </Link>
-               
+            
+            <Link to={`/profile/mainBusiness/createBusiness/adddetails/${business._id}`}>   
                 <BusinessEditBtn icon={faPenToSquare} popup={"Edit"} onClick={() => handleDelete(business._id)}/>
+            </Link>    
                 <BusinessEditBtn icon={faTrash} popup={"Delete"}/>
             </div>
         </div>

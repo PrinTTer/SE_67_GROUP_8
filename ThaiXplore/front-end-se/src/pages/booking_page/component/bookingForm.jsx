@@ -2,14 +2,23 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const BookingForm = (prop) => {
-    const {item, category} = prop;
+    const {item, category , bookingDetail} = prop;
+
+
+    const safeDate = (dateString) => {
+        const date = new Date(dateString);
+        if (isNaN(date.getTime())) return "";
+        
+        date.setHours(date.getHours() + 7);
+        return date.toISOString().slice(0, 10); // ใช้แค่ส่วนของวันที่
+    };
 
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
     const [email, setEmail] = useState("");
     const [phoneNumber, setPhoneNumber] = useState("");
-    const [checkInDate, setCheckInDate] = useState("");
-    const [checkOutDate, setCheckOutDate] = useState("");
+    const [checkInDate, setCheckInDate] = useState(safeDate(bookingDetail.startDate));
+    const [checkOutDate, setCheckOutDate] = useState(safeDate(bookingDetail.endDate));
     const [description, setDescription] = useState("");
 
     const navigate = useNavigate();
@@ -30,7 +39,7 @@ const BookingForm = (prop) => {
 
         // ส่ง object ไปยังหน้า booking
         console.log(bookingData);
-        navigate('/paymentSelector', { state: {bookingData,item,category} });
+        navigate('/paymentSelector', { state: {bookingData,item,category,bookingDetail} });
     };
 
     return(

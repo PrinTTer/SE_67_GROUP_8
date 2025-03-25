@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTimes, faCalendarAlt, faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faTimes, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { ServiceDropdown } from "./dropDownService";
 import { useNavigate } from "react-router-dom";
 import { postData, putData } from "../../../services/apiService";

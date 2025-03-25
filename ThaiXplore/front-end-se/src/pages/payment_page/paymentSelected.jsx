@@ -8,7 +8,7 @@ const PaymentSelector = () => {
     const [method, setMethod] = useState("");
 
     const location = useLocation();
-    const { bookingData, item, category } = location.state || {};
+    const { bookingData, item, category ,bookingDetail} = location.state || {};
     const navigate = useNavigate();
 
     console.log("Booking Data: ", bookingData);
@@ -16,8 +16,9 @@ const PaymentSelector = () => {
     console.log("Category of Service: ", category);
 
     const handleSelect = (selectedMethod) => {
+        
         setMethod(selectedMethod);  // Set the method (either "credit card" or "paypal")
-        navigate('/payment', { state: { bookingData, item, category, method: selectedMethod } });  // Navigate with the method
+        navigate('/payment', { state: { bookingData, item, category, method: selectedMethod ,bookingDetail} });  // Navigate with the method
     }
 
     return (
@@ -79,7 +80,7 @@ const PaymentSelector = () => {
                     <div className="mt-8 pt-6 border-t border-gray-100">
                         <div className="flex justify-between items-center">
                             <div className="text-gray-600">Total amount:</div>
-                            <div className="text-xl font-bold text-amber-600">THB {item?.price} ฿</div>
+                            <div className="text-xl font-bold text-amber-600">THB {item?.price*bookingDetail.bookingAmount} ฿</div>
                         </div>
                     </div>
                 </div>

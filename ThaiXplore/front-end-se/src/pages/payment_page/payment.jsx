@@ -6,7 +6,7 @@ import { postData } from "../../services/apiService";
 
 const Payment = () => {
     const location = useLocation();
-    const { bookingData, item, category, method } = location.state || {};
+    const { bookingData, item, category, method , bookingDetail } = location.state || {};
     const navigate = useNavigate();
 
     // สร้าง state สำหรับฟอร์มข้อมูลการชำระเงิน
@@ -34,7 +34,7 @@ const Payment = () => {
                 serviceId: item?._id,  // serviceId ที่เกี่ยวข้องกับ booking
                 startDate: new Date(bookingData?.checkInDate).toISOString(),
                 endDate: new Date(bookingData?.checkOutDate).toISOString(),
-                amount: "1" 
+                amount: bookingDetail.bookingAmount
             }
         ]
     };
@@ -87,7 +87,7 @@ const Payment = () => {
                         </div>
                         <div className="flex flex-1 p-4">
                             <div className="flex flex-3 w-full">
-                                <PaymentUserDetail user={bookingData} />
+                                <PaymentUserDetail user={bookingData} bookingDetail={bookingDetail} />
                             </div>
                         </div>
                     </div>

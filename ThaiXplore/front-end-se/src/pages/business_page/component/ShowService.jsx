@@ -69,14 +69,14 @@ export const ShowService = (prop) => {
     }
 
     try {
-      await deleteData(endpoint + id);
+      deleteData(endpoint + id);
 
       if(endpoint.includes("room")){
         endpoint= '/rooms/';
       } 
         endpoint = endpoint+`${id}/images/1`;
         console.log("EndPoint   "+endpoint)
-         deleteData(endpoint);
+      deleteData(endpoint);
 
       fetchData();
     } catch (error) {

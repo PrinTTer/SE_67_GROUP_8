@@ -1,28 +1,45 @@
-import  { useState } from "react";
+import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser, faUserPlus, faUserMinus, faBed, faUsers } from "@fortawesome/free-solid-svg-icons";
 
 const GuestSelector = (prop) => {
-  const { type } = prop
+  const { type, bookingDetail } = prop;
   const [isOpen, setIsOpen] = useState(false);
   const [adults, setAdults] = useState(1);
   const [children, setChildren] = useState(0);
   const [rooms, setRooms] = useState(1);
-  // alert(type)
+  const [amount, setAmount] = useState();
+  const [finalAdults, setFinalAdults] = useState(adults);
+  const [finalChildren, setFinalChildren] = useState(children);
+  const [finalRooms, setFinalRooms] = useState(rooms);
+
+  useEffect(() => {
+    if (type === "hotel") {
+      setAmount("Room");
+    } else if (type === "event") {
+      setAmount("Ticket");
+    } else if (type === "carRental") {
+      setAmount("Car");
+    } else if (type === "restaurant") {
+      setAmount("Set");
+    }
+  }, [type]);
+
   const togglePopup = () => setIsOpen(!isOpen);
-  let amount
-  if(type=="hotel"){
-    amount = "Room"
-  }
-  else if(type=="event"){
-    amount = "Ticket"
-  }
-  else if(type=="carRental"){
-    amount = "Car"
-  }
-  else if(type=="restaurant"){
-    amount = "Set"
-  }
+
+  const handleSubmit = () => {
+    setFinalAdults(adults); // update final values after "Done" button click
+    setFinalChildren(children);
+    setFinalRooms(rooms);
+    bookingDetail.adult = adults;
+    bookingDetail.child = children;
+    bookingDetail.bookingAmount = rooms;
+    console.log("adult" + bookingDetail.adult);
+    console.log("child" + bookingDetail.child);
+    console.log("bookingAmount" + bookingDetail.bookingAmount);
+    togglePopup();
+  };
+
   return (
     <div className="relative w-52"> {/* Smaller width */}
       {/* Button to open popup */}
@@ -30,7 +47,7 @@ const GuestSelector = (prop) => {
         onClick={togglePopup}
         className="w-full border border-gray-300 rounded-md px-2 py-2 flex justify-between items-center text-black text-sm font-medium"
       >
-        {`${adults} Adult, ${children} Child, ${rooms} ${amount} `}
+        {`${finalAdults} Adult, ${finalChildren} Child, ${finalRooms} ${amount} `}
         <FontAwesomeIcon icon={faUsers} className="text-gray-500 ml-2 text-xs" />
       </button>
 
@@ -78,7 +95,7 @@ const GuestSelector = (prop) => {
           </div>
 
           {/* Room Selector */}
-          <div className={`flex justify-between items-center py-1  `}>
+          <div className="flex justify-between items-center py-1">
             <span className="font-medium"><FontAwesomeIcon icon={faBed} className="mr-1"/> {amount}</span>
             <div className="flex items-center space-x-1">
               <button
@@ -100,7 +117,7 @@ const GuestSelector = (prop) => {
           {/* Done Button */}
           <div className="text-right mt-2">
             <button
-              onClick={togglePopup}
+              onClick={handleSubmit}
               className="bg-blue-500 text-white px-3 py-1 text-xs rounded-md"
             >
               Done

@@ -13,7 +13,7 @@ export const HotelService = (prop) => {
     { businessId: id, roomType: "", guestAmount: "", roomSize: "", price: "", facilities: [""], totalRooms: "" }
   ]);
   const [errors, setErrors] = useState([{}]);
-  
+
   // Add new form
   const addForm = () => {
     setForms([

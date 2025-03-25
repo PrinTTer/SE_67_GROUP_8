@@ -76,7 +76,7 @@ const AddDetails = () => {
               })
             }
             
-            <ServiceBlock  title={topicBusines[1]} type={type} businessId={id}/>
+            <ServiceBlock  title={topicBusines[1]} type={type} business={business} businessId={id}/>
           </div>
           <div className={`bg-[#D9D9D9] p-4 rounded-lg ${!show ? "block" : "hidden"}`}>
             <PackageBlock />

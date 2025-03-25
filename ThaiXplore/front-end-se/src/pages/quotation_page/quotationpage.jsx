@@ -1,7 +1,7 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faDollarSign, faPenToSquare, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faArrowLeft, faCircleArrowLeft, faDollarSign, faFile, faPenToSquare, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState } from 'react';
-import { deleteData, fetchData } from '../../services/apiService';
+import { deleteData, fetchData, putData } from '../../services/apiService';
 import { QuotationPopUp } from '../detail_page/component/QuotationPopUp';
 import useSocket from '../../hooks/useSocket';
 import { useSelector } from 'react-redux';
@@ -15,13 +15,12 @@ const QuotationPage = () => {
     const [completeQuotation, setCompleteQuotation] = useState([]);
     const [loading, setLoading] = useState(false);
 
-    console.log(user);
     useEffect(() => {
         const socket = socketRef.current;
       
         if (socket) {
           socket.on("newRequest", (data) => {
-            console.log("New quotation received:", data); 
+            console.log("data--->" , data);
             fetch();
           });
         }
@@ -37,11 +36,17 @@ const QuotationPage = () => {
     const fetch = async () => {
         try {
             setLoading(true);
-            const pended = await fetchData("/quotations-pended");
+            const pend = await fetchData("/quotations-pended");
+            const pended = pend.filter((item, index) => item.status !== "complete");
             setPendedQuotation(pended);
             const received = await fetchData("/quotations-received");
-            setReceivedQuotation(received);
-            const completed = pended.filter((item, index) => item.status === "complete");
+            const receivedPending = received.filter((item , index) => item.status !== "complete");
+            const receivedComplete = received.filter((item , index) => item.status === "complete");
+            setReceivedQuotation(receivedPending);
+            const completed = pend.filter((item, index) => item.status === "complete");
+            receivedComplete.map((item,idx) => {
+                completed.push(item);
+            })
             setCompleteQuotation(completed);
         } catch (error) {
             console.log(error);
@@ -109,6 +114,7 @@ const QuotationList = (prop) => {
             {data.map((item, index) => (
                 <Quotationfield
                     key={index}
+                    type={status}
                     business={item.companyName}
                     status={item.status}
                     isEven={index % 2 === 0}
@@ -122,7 +128,7 @@ const QuotationList = (prop) => {
 };
 
 const Quotationfield = (prop) => {
-    const { business, status, isEven, quotation, loading, setLoading } = prop;
+    const { business, status, isEven, quotation, loading, setLoading, type } = prop;
     const [details, setDetails] = useState({});
     // Status styling
     const getStatusStyle = (status) => {
@@ -172,11 +178,16 @@ const Quotationfield = (prop) => {
                     </span>
                 </div>
                 <div className="flex justify-end gap-5 mr-20">
-                    {status.toLowerCase() === "waiting for pay" &&
-                        <QuotationEditBtn icon={faDollarSign} popup="Payment" color="text-amber-500" />
+                    {
+                        type === "pending" ? 
+                            status === "offer" ? 
+                            <QuotationEditBtn icon={faPenToSquare} type={type} popup="Edit" color="text-blue-500" business={details} quotation={quotation} /> :
+                            <QuotationEditBtn icon={faFile} type={type} popup="Offer" color="text-gray-500" business={details} quotation={quotation} fetch={fetch}/>
+                        : type === "received" 
+                        
+                        
                     }
-                    <QuotationEditBtn icon={faPenToSquare} popup="Edit" color="text-blue-500" business={details} quotation={quotation} />
-                    <QuotationEditBtn icon={faTrash} popup="Delete" color="text-red-500" business={details} quotation={quotation} />
+                    <QuotationEditBtn icon={faTrash} type={type} popup="Delete" color="text-red-500" business={details} quotation={quotation} fetch={fetch}/>
                 </div>
             </div>
             :
@@ -185,10 +196,9 @@ const Quotationfield = (prop) => {
 };
 
 const QuotationEditBtn = (prop) => {
-    const { icon, popup, color = "text-gray-600", business, quotation } = prop;
+    const { icon, popup, color = "text-gray-600", business, quotation, fetch, type } = prop;
     const [showPopup, setShowPopup] = useState(false);
 
-    // console.log(quotation);
 
     const checkBtn = async () => {
         if (popup === "Edit") {
@@ -196,18 +206,21 @@ const QuotationEditBtn = (prop) => {
         } else if (popup === "Delete") {
             try {
                 await deleteData(`/quotations/${quotation._id}`);
+                window.location.reload();
             } catch (error) {
                 console.log(error);
             }
-        } else if (popup === "Comfirm") {
-
-        }
+        } else if (popup === "Offer") {
+            setShowPopup(true)
+        } 
     }
 
+    // console.log(quotation);
+    // console.log("Business",business);
     return (
         <>
 
-            {showPopup && popup === "Edit" && <QuotationPopUp onClose={() => setShowPopup(false)} serviceBusiness={business?.services} quotation={quotation} />}
+            {showPopup && (popup === "Edit" || popup === "Offer") && <QuotationPopUp popup={popup} type={type} business={business} onClose={() => setShowPopup(false)} serviceBusiness={business?.services} quotation={quotation} />}
 
             <div
                 onClick={() => checkBtn()}

@@ -17,6 +17,7 @@ export const ShowService = (prop) => {
   const Topic = getTopic(type);
   const [imageType, setImageType] = useState();
   
+  console.log(data);
   useEffect (()=>{
     //Fetch Image
     fetchData();

@@ -117,5 +117,8 @@ const getTopic = (category) => {
     else if (category === 'restaurant'){
         List = ['courseName', 'menuList', 'price'];
     }
+    else if(category === 'package'){
+        List = []
+    } 
     return List;
 };

@@ -17,6 +17,7 @@ const BookingHistory = () => {
                 const bookingsData = await fetchData("/bookings");
                 const bookingsWithServiceDetails = await Promise.all(bookingsData.map(async (booking) => {
                     const businessData = await fetchData(`/businesses/${booking.businessId}`);
+                    console.log(businessData);
                     const detailedBooking = booking.bookingDetail.map(detail => {
                         const service = businessData.services.find(service => service._id === detail.serviceId);
                         return { ...detail, service, businessImage: businessData.business.imageUrl };
@@ -83,7 +84,7 @@ const BookingHistory = () => {
                                     </div>
                                 ) : (
                                     <img 
-                                    src={`http://localhost:3000/public/uploads/service/${checkService(booking.businessData.business.category)}/${booking.bookingDetail[0].service?.media}`} 
+                                    src={`http://localhost:3000/public/uploads/services/${checkService(booking.businessData.business.category)}/${booking?.bookingDetail[0]?.service?.media[0]}`} 
                                     alt={booking.businessData.business.businessName}
                                     className="w-full h-full object-cover"
                                     />
@@ -129,7 +130,6 @@ const BookingHistory = () => {
                                         </div>
                                         <div className="flex justify-between items-center mb-3">
                                             <h3 className="text-lg font-medium text-gray-700">
-                                                Test
                                             </h3>
                                         </div>
                                         
@@ -164,18 +164,39 @@ const BookingHistory = () => {
 export default BookingHistory;
 
 
-const checkService = (prop) => {
-    const {categoryForImage} = prop;
+const checkService = (categoryForImage) => {
+    console.log("categoryForImage: ",categoryForImage);
+    let category;
     if(categoryForImage === "hotel"){
-        return("rooms");
+        category = "rooms";
     }
     else if(categoryForImage === "carRental"){
-        return("cars");
+        category = "cars";
     }
     else if(categoryForImage === "restaurant"){
-        return("courses");
+        category = "courses";
     }
     else if(categoryForImage === "event"){
-        return("events");
+        category = "events";
     }
+    console.log(category);
+    return category;
 }
+
+
+const getTopic = (category) => {
+    let List = [];
+    if(category === 'hotel'){
+        List = ['roomType', 'guestAmount', 'roomSize', 'price', 'facilities'];
+    }
+    else if (category === 'event'){
+        List = ['ticketType', 'price', 'eventDate', 'start', 'end'];
+    }
+    else if (category === 'carRental'){
+        List = ['carBrand',  'amountSeat', 'price'];
+    }
+    else if (category === 'restaurant'){
+        List = ['courseName', 'menuList', 'price'];
+    }
+    return List;
+};

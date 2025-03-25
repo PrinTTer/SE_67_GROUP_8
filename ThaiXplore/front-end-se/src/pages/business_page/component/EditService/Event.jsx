@@ -1,8 +1,11 @@
 import { useState } from 'react';
-import { putData } from '../../../../services/apiService';
+import { putData,deleteData, postDataWithFiles } from '../../../../services/apiService';
 
 export const EventEdit = (prop) => {
   const { item, setShowEditPopUp ,fetchData} = prop;
+  const [selectedImage, setSelectedImage] = useState(`http://localhost:3000/public/uploads/services/events/${item.media[0]}`);
+  const [editImage, setImage] = useState(item.media[0])
+  const [getImage, setServiceImage] = useState(item.media[0])
 
   // ฟังก์ชันแปลงวันที่ที่ปลอดภัย
   const safeDate = (dateString) => {
@@ -47,15 +50,52 @@ export const EventEdit = (prop) => {
 
     console.log(event);  // ตรวจสอบข้อมูล
     // สมมุติว่า putData เป็นฟังก์ชันที่ทำการอัพเดตข้อมูล
-    if (await putData(`events/${item._id}`, event)) {
+    if ( putData(`events/${item._id}`, event)) {
+
+      if(getImage != editImage)
+      await deleteData(`/events/${item._id}/images/1`)
+      await postDataWithFiles(`/events/${item._id}/images`, [editImage] ,event, "services_events")
+      
+
+
       setShowEditPopUp(false);
       fetchData();
     }
   };
 
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0]; // เลือกไฟล์ที่เลือกมา
+    if (file) {
+      setImage(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setSelectedImage(reader.result); // ตั้งค่าให้แสดงไฟล์ที่เลือก
+      };
+      reader.readAsDataURL(file); // แปลงไฟล์เป็น base64
+    }
+    
+  }
   return (
     <div>
       <div className="grid grid-cols-2 gap-6">
+        <div className="row-span-2">
+            <input
+              type="file"
+              id="image-upload"
+              style={{ display: 'none' }} // ซ่อน input file
+              onChange={handleImageChange} // เมื่อเลือกไฟล์
+            />
+            <label htmlFor="image-upload" className="cursor-pointer">
+              
+                <img
+                  src={selectedImage}
+                  alt="Uploaded"
+                  className="w-full h-auto object-cover rounded-md shadow-lg"
+                />
+              
+            </label>
+        </div>
         <div className="mb-4">
           <div>Ticket Type</div>
           <input
@@ -97,6 +137,7 @@ export const EventEdit = (prop) => {
           <div>Start Date</div>
           <input
             type="datetime-local"
+            
             value={event.start}
             onChange={(e) => handleChange(e, 'start')}
             className="p-2 border border-gray-300 rounded w-full"
@@ -106,6 +147,7 @@ export const EventEdit = (prop) => {
           <div>End Date</div>
           <input
             type="datetime-local"
+            min={event.start}
             value={event.end}
             onChange={(e) => handleChange(e, 'end')}
             className="p-2 border border-gray-300 rounded w-full"

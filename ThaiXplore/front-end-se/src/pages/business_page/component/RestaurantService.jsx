@@ -117,6 +117,8 @@ export const RestaurantService = (prop) => {
   };
 
   // ฟังก์ชัน insertData ที่ใช้ส่งข้อมูลฟอร์ม
+  const [imgType,setImageType] = useState();
+
   const insertData = async (index) => {
     if (validateForm(index)) {
       try {
@@ -127,13 +129,14 @@ export const RestaurantService = (prop) => {
         
         console.log(formData);
         const postResponse =await postData(`/businesses/${id}/courses`, formData);
-        fetchData();
-
+        
+        setImageType("rooms")
         console.log("Course : " +postResponse._id)
         const endpoint = `/courses/${postResponse._id}/images`;
-        postDataWithFiles(endpoint, [image],  "services_courses");
+        postDataWithFiles(endpoint, [image], formData, "services_courses");
         alert("Course added successfully!");
         removeForm(index);
+        fetchData();
       } catch (error) {
         console.error("Error adding course:", error);
         alert("Failed to add the course. Please try again.");
@@ -143,7 +146,7 @@ export const RestaurantService = (prop) => {
 
   return (
     <div className="bg-white rounded-lg shadow-lg p-8 border border-amber-100">
-      <ShowService id={id} type={type} fetchData={fetchData} data={data}/>
+      <ShowService id={id} type={type} fetchData={fetchData} data={data} imgType={imgType}/>
       <div className="items-center flex mb-6 border-b border-amber-200 pb-4">
         <h2 className="text-2xl font-semibold text-amber-800">
           Add {title?.split(" ")[0] || "Restaurant"}

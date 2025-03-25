@@ -5,10 +5,9 @@ import { ServiceDropdown } from "./dropDownService";
 import { useNavigate } from "react-router-dom";
 import { postData, putData } from "../../../services/apiService";
 import { useSelector } from "react-redux";
-import useSocket from "../../../hooks/useSocket";
 
 export const QuotationPopUp = (prop) => {
-  const { onClose, serviceBusiness, quotation, business, popup, type } = prop;
+  const { onClose, serviceBusiness, quotation, business, popup, type, socketRef } = prop;
   const [formData, setFormData] = useState({
     companyName: "",
     province: "",
@@ -22,15 +21,23 @@ export const QuotationPopUp = (prop) => {
     items: [{ serviceId: "", quantity: "", price: "", amount: "" }],
   });
   const { user } = useSelector((state) => state.auth);
-  const socketRef = useSocket(user);
 
   const sendQuotationSocket = (status) => {
     const socket = socketRef.current;
     const receiverId = business.business.userId;
+    console.log("IN ===> ", receiverId);
     if (socket) {
       socket.emit("sendRequest",{receiverId, status}); // ส่งข้อมูลไปยัง server ผ่าน WebSocket
     }
   };
+
+  const sendQuotationSocketToPender = (status) => {
+    const socket = socketRef.current;
+    const receiverId = quotation.userId;
+    if (socket) {
+      socket.emit("sendRequest",{receiverId, status}); // ส่งข้อมูลไปยัง server ผ่าน WebSocket
+    }
+  }
 
   const setDefaultValues = () => {
     if (quotation) {
@@ -112,17 +119,19 @@ export const QuotationPopUp = (prop) => {
       }
       
       if(!quotation){
-        sendQuotationSocket({request : "Create"});
         await postData(`/quotations` , sendData);
+        sendQuotationSocket({request : "Create"});
         navigate("/quotation");
       }else if(popup === "Edit") {
         console.log(sendData);
+        await putData(`/quotations/${quotation._id}` , sendData);
         sendQuotationSocket({request : "Create"});
-        await putData(`/quotations/${quotation._id}` , sendData);
-        // onClose();
+        sendQuotationSocketToPender({request : "Create"});
+        onClose();
       }else if(popup === "Offer") {
-        sendQuotationSocket({request : "Offer"});
         await putData(`/quotations/${quotation._id}` , sendData);
+        sendQuotationSocket({request : "Create"});
+        sendQuotationSocketToPender({request : "Create"});
         onClose();
       }
     } catch (error) {
@@ -385,7 +394,7 @@ export const QuotationPopUp = (prop) => {
                         </td>
                         <td className="p-3">
                           {
-                            popup === "Offer" && type === "pending" || type === "complete" ? 
+                            popup === "Offer" && type === "pending" || type === "complete" || type === "received" ? 
                             (<input
                               type="number"
                               value={item.quantity || ""}
@@ -405,7 +414,7 @@ export const QuotationPopUp = (prop) => {
                         </td>
                         <td className="p-3">
                           {
-                            popup === "Offer" ?  
+                            popup === "Offer" || !popup && !type ?  
                             (<input
                               type="number"
                               value={item.price || ""}
@@ -460,7 +469,7 @@ export const QuotationPopUp = (prop) => {
               </div>
             </div>
             {
-              popup === "Offer" && type === "pending" || type === "complete" || type === "received" && popup === "Edit" ?
+              popup === "Offer" && type === "pending" || type === "complete" || type === "received" ?
               (<></>)
               :
               (<button 

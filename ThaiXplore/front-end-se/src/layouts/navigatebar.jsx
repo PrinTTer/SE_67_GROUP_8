@@ -25,6 +25,7 @@ export const NavigateBar = (prop) => {
     const [isOpen, setIsOpen] = useState(false);
     const popupRef = useRef(null);
     
+
     const { user } = useSelector((state) => state.auth);
     const dispatch = useDispatch();
 
@@ -47,6 +48,7 @@ export const NavigateBar = (prop) => {
     const logout = () => {
         dispatch(logoutUser());
     }
+
 
     return (
         <div className={`${isNaviOpen ? "flex" : "hidden"} lg:flex flex-col justify-between 

@@ -41,6 +41,7 @@ export const RestaurantEdit = (prop) => {
     };
   
     const updateData = async () => {
+      setServiceImage(item.media[0])
       course.price = parseFloat(course.price);  // แปลงราคาเป็นตัวเลข
       console.log(course);  // ตรวจสอบข้อมูล
       // สมมุติว่า putData เป็นฟังก์ชันที่ทำการอัพเดตข้อมูล

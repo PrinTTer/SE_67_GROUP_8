@@ -62,7 +62,11 @@ const AddDetails = () => {
   if (isLoading) return <p>Loading...</p>;
 
   return (
-    <>
+    <div className='flex-cols flex-1'>
+
+      <div>
+        asdasdsadasd
+      </div>
       <div className="flex flex-5  flex-col shadow-md">
         <div className="flex-1 m-9">
           <div className='flex   rounded  gap-5 ml-2'>
@@ -84,7 +88,7 @@ const AddDetails = () => {
         </div>
 
       </div>
-    </>
+    </div>
   );
 }
 

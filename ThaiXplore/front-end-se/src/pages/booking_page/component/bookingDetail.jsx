@@ -1,7 +1,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHotel, faCalendar, faCar, faUtensils } from '@fortawesome/free-solid-svg-icons';
 const BookingDetail = (prop) => {
-    const {item, category} = prop;
+    const {item, category } = prop;
     console.log("service detail: ",item);
     console.log(item.businessId);
     let Topic = [] ;
@@ -34,9 +34,12 @@ const BookingDetail = (prop) => {
         }
     };
 
+
+
     return(
         <div className="flex flex-1 flex-col w-full h-full bg-white border-r-2 border-gray-200 rounded-lg shadow-sm">
             {/* Header section with background color */}
+            
             <div className="bg-gradient-to-r from-amber-500 to-amber-600 text-white px-6 py-4">
                 <div className="flex items-center">
                     <div className="flex items-center justify-center w-8 h-8 text-white mr-3">

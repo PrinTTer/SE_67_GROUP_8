@@ -5,15 +5,16 @@ import { useNavigate } from 'react-router-dom';
 
 
 export const Service = (prop) => {
-    const { title ,category ,id } = prop
+    const { title ,category ,id , bookingDetail} = prop
     console.log(title , category)
 
     const navigate = useNavigate();
 
     const serviceDetails = (item) => {
         console.log(JSON.stringify(item)); // จะได้เห็น object จริง
+        console.log(JSON.stringify(bookingDetail))
         navigate('/booking', {
-            state: {item, category}
+            state: {item, category , bookingDetail}
         });
     };
     

@@ -92,6 +92,7 @@ export const getCourse = async (req:express.Request , res:express.Response):Prom
     const user = await getUserById(currentUserId);
 
     const courses = await getCourseById(courseId);
+    console.log(courses);
 
     return res.status(200).json(courses);
   } catch (error) {
@@ -106,7 +107,7 @@ export const uploadCourseImages = async (req: express.Request, res: express.Resp
     const currentUserId: string = get(req, 'identity._id');
     const user = await getUserById(currentUserId);
     const images = req.files;
-    
+
     if (user.role !== 'entrepreneur') {
       return res.sendStatus(401);
     }
@@ -116,6 +117,8 @@ export const uploadCourseImages = async (req: express.Request, res: express.Resp
     }
 
     const courses = await getCourseById(courseId);
+
+    console.log(courses);
 
     (images as Express.Multer.File[]).map((image, index) => {
       courses.media.push(image.filename);

@@ -32,9 +32,9 @@ const Payment = () => {
         bookingDetail: [
             {
                 serviceId: item?._id,  // serviceId ที่เกี่ยวข้องกับ booking
-                startDate: new Date(bookingData?.checkInDate).toISOString(),  // วันที่เริ่มการบริการ
-                endDate: new Date(bookingData?.checkOutDate).toISOString(),     // วันที่สิ้นสุดการบริการ
-                amount: "1"         // จำนวนเงินที่ต้องชำระ
+                startDate: new Date(bookingData?.checkInDate).toISOString(),
+                endDate: new Date(bookingData?.checkOutDate).toISOString(),
+                amount: "1" 
             }
         ]
     };
@@ -43,12 +43,12 @@ const Payment = () => {
     const handleConfirmPayment = async () => {
         try {
             // ส่งข้อมูลไปที่ API เพื่อบันทึกข้อมูลการจอง
-            //const response = await postData('/bookings', formData);
-            const response = formData;
+            const response = await postData('/bookings', formData);
+            // const response = formData;
             console.log('Payment confirmed:', response);
     
             // Redirect ไปยังหน้าที่ต้องการหลังจากการชำระเงินสำเร็จ
-            // navigate('/history');
+            navigate('/history');
         } catch (error) {
             console.error('Error confirming payment:', error);
         }

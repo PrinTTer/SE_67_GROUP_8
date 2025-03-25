@@ -1,50 +1,35 @@
-import { useState, useEffect } from 'react';
-import axios from 'axios';
+import { useState } from 'react';
 import { getTopic } from './ServiceBlock';
-import { BusinessEditBtn } from '../../../components/BusinessEditBtn';
 import { faPenToSquare, faTrash } from '@fortawesome/free-solid-svg-icons';
-import { deleteData   } from '../../../services/apiService';
-
+import { deleteData } from '../../../services/apiService';
 import { CarEdit } from './EditService/Car';
 import { RestaurantEdit } from './EditService/Course';
-import {  HotelEdit } from './EditService/Hotel';
+import { HotelEdit } from './EditService/Hotel';
 import { EventEdit } from './EditService/Event';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 export const ShowService = (prop) => {
-  const { id, type } = prop;
-
-  const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [showEditPopUp, setShowEditPopUp] = useState(false); // State สำหรับแสดง/ซ่อน PopUp
-  const [editItem, setEditItem] = useState(null); // State สำหรับเก็บข้อมูลที่จะทำการแก้ไข
-
-  const fetchData = async () => {
-    try {
-      setLoading(true);
-      const res = await axios.get(`http://localhost:3000/businesses/${id}`, { withCredentials: true });
-      const data_format = await res.data;
-      setData(data_format);
-    } catch (error) {
-      setError(error.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, );
-
+  const { id, type, data, fetchData } = prop;
+  const [showEditPopUp, setShowEditPopUp] = useState(false);
+  const [editItem, setEditItem] = useState(null);
+  console.log(id)
   const title = data?.services;
   const Topic = getTopic(type);
 
   if (!Array.isArray(Topic) || Topic.length === 0) {
-    return <div>No Topic available</div>;
+    return (
+      <div className="p-8 rounded-lg bg-amber-50 text-amber-700 text-center shadow border border-amber-200">
+        No Topic available
+      </div>
+    );
   }
 
   if (!Array.isArray(title) || title.length === 0) {
-    return <div>No services available</div>;
+    return (
+      <div className="p-8 rounded-lg bg-amber-50 text-amber-700 text-center shadow border border-amber-200">
+        No services available
+      </div>
+    );
   }
 
   const deleteService = async (id) => {
@@ -52,11 +37,11 @@ export const ShowService = (prop) => {
     if (type === "hotel") {
       endpoint = '/room/';
     } else if (type === "carRental") {
-      endpoint = '/car/';
+      endpoint = '/cars/';
     } else if (type === "event") {
-      endpoint = '/event/';
+      endpoint = '/events/';
     } else if (type === "restaurant") {
-      endpoint = '/course/';
+      endpoint = '/courses/';
     }
 
     await deleteData(endpoint + id);
@@ -68,88 +53,112 @@ export const ShowService = (prop) => {
     setShowEditPopUp(true);
   };
 
-  
+  // Get service type label for display
+  const getServiceTypeLabel = () => {
+    switch(type) {
+      case "hotel": return "Hotel Room";
+      case "carRental": return "Car Rental";
+      case "event": return "Event";
+      case "restaurant": return "Restaurant";
+      default: return "Service";
+    }
+  };
 
   return (
-    <div className="p-6 rounded-lg gap-5 mb-5 bg-yellow-50 shadow-md border border-gray-300">
-      <div className="col-span-2 border-b-2 p-2 flex items-center font-bold text-xl">
-        <span>Service Detail</span>
+    <div className="p-6 rounded-lg gap-5 mb-5 bg-amber-50 shadow-md border border-amber-200">
+      <div className="col-span-2 border-b border-amber-300 p-3 flex items-center justify-between">
+        <span className="font-bold text-xl text-amber-800">{getServiceTypeLabel()} Details</span>
       </div>
 
       {title.map((item, index) => (
-        <div key={index} className="grid grid-cols-3 gap-4 p-4 bg-white shadow-md rounded-lg mt-3">
-        {Topic.map((field, index) => (
-          <div key={index} className="flex flex-col">
-            <div className="font-bold">{field}</div>
-            {Array.isArray(item[field]) ? (
-              <ul className="list-disc pl-5 grid grid-cols-2">
-                {item[field].map((value, i) => (
-                  typeof value === "object" ? (
-                    <li key={i}>{value.name}</li>
+        <div key={index} className="grid grid-cols-1 md:grid-cols-3 gap-5 p-5 bg-white shadow-sm rounded-lg mt-4 hover:shadow-md transition-all duration-300 border border-amber-100">
+          {Topic.map((field, fieldIndex) => (
+            <div key={fieldIndex} className="flex flex-col p-2">
+              <div className="font-semibold text-amber-700 mb-2">{field}</div>
+              {Array.isArray(item[field]) ? (
+                <ul className="list-disc pl-5 grid grid-cols-2 gap-1 text-gray-600">
+                  {item[field].map((value, i) => (
+                    typeof value === "object" ? (
+                      <li key={i} className="text-sm">{value.name}</li>
+                    ) : (
+                      <li key={i} className="text-sm">{value}</li>
+                    )
+                  ))}
+                </ul>
+              ) : (
+                <div className="text-gray-600">
+                  {field.toLowerCase().includes("date") || field.toLowerCase().includes("start") || field.toLowerCase().includes("end") ? (
+                    new Date(item[field]).toLocaleString("en-GB", {
+                      year: "numeric",
+                      month: "2-digit",
+                      day: "2-digit",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    }).replace(",", "")
                   ) : (
-                    <li key={i}>{value}</li>
-                  )
-                ))}
-              </ul>
-            ) : (
-              <div>
-                {/* เช็คว่า field เป็น Date หรือไม่ */}
-                {field.toLowerCase().includes("date") || field.toLowerCase().includes("start") || field.toLowerCase().includes("end")  ? (
-                  // แปลงเป็นรูปแบบ yyyy-MM-dd hh:mm
-                  new Date(item[field]).toLocaleString("en-GB", {
-                    year: "numeric",
-                    month: "2-digit",
-                    day: "2-digit",
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  }).replace(",", "") 
-                ) : (
-                  item[field]
-                )}
-              </div>
-            )}
-          </div>
-        ))}
+                    item[field]
+                  )}
+                </div>
+              )}
+            </div>
+          ))}
 
-          <div className="flex justify-end items-center font-bold col-span-3 gap-10">
-            <div onClick={() => handleEditClick(item)}>
-              <BusinessEditBtn icon={faPenToSquare} popup={"Edit"} />
-            </div>
+          <div className="flex justify-end items-center col-span-1 md:col-span-3 gap-4 mt-2 pt-3 border-t border-amber-100">
+            <button 
+              onClick={() => handleEditClick(item)}
+              className="px-4 py-2 bg-amber-500 text-white rounded-md hover:bg-amber-600 transition flex items-center gap-2"
+            >
+              <FontAwesomeIcon icon={faPenToSquare} className="text-sm" /> Edit
+            </button>
             
-            <div onClick={() => deleteService(item._id)}>
-              <BusinessEditBtn icon={faTrash} popup={"Delete"} />
-            </div>
+            <button 
+              onClick={() => deleteService(item._id)}
+              className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition flex items-center gap-2"
+            >
+              <FontAwesomeIcon icon={faTrash} className="text-sm" /> Delete
+            </button>
           </div>
         </div>
       ))}
 
-      {/* PopUp สำหรับ Edit เมื่อ showEditPopUp เป็น true */}
       {showEditPopUp && editItem && (
-        <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center z-50">
-          <div className="bg-white p-12 rounded-lg shadow-lg w-[80%] max-w-4xl overflow-y-auto max-h-[600px]">
-            <h2 className="text-xl font-bold mb-5">Edit Service</h2>
-            <form >
-                <div className={`${type == 'hotel' ? "block" : "hidden"}`}>
-                    <HotelEdit item={editItem} setShowEditPopUp={setShowEditPopUp} />
-                </div>
-                <div className={`${type == 'restaurant' ? "block" : "hidden"}`}>
-                    <RestaurantEdit item={editItem} setShowEditPopUp={setShowEditPopUp} />
-                </div>
-                <div className={`${type == 'carRental' ? "block" : "hidden"}`}>
-                    <CarEdit item={editItem} setShowEditPopUp={setShowEditPopUp} />
-                </div>
-                <div className={`${type == 'event' ? "block" : "hidden"}`}>
-                    <EventEdit item={editItem} setShowEditPopUp={setShowEditPopUp} />
-                </div>
-
-              
-            </form>
+        <div className="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50 backdrop-blur-sm">
+          <div className="bg-white p-8 rounded-lg shadow-xl w-[90%] max-w-4xl overflow-y-auto max-h-[80vh] border border-amber-200">
+            <h2 className="text-2xl font-bold mb-6 text-amber-800 border-b pb-3 border-amber-200">
+              Edit {getServiceTypeLabel()}
+            </h2>
+            
+            <div className="overflow-y-auto pr-2">
+              <div className={`${type === 'hotel' ? "block" : "hidden"}`}>
+                <HotelEdit item={editItem} setShowEditPopUp={setShowEditPopUp} fetchData={fetchData} />
+              </div>
+              <div className={`${type === 'restaurant' ? "block" : "hidden"}`}>
+                <RestaurantEdit item={editItem} setShowEditPopUp={setShowEditPopUp} fetchData={fetchData}/>
+              </div>
+              <div className={`${type === 'carRental' ? "block" : "hidden"}`}>
+                <CarEdit item={editItem} setShowEditPopUp={setShowEditPopUp} fetchData={fetchData}/>
+              </div>
+              <div className={`${type === 'event' ? "block" : "hidden"}`}>
+                <EventEdit item={editItem} setShowEditPopUp={setShowEditPopUp} fetchData={fetchData}/>
+              </div>
+            </div>
+            
+            <div className="flex justify-end mt-6 pt-4 border-t border-amber-200">
+              <button 
+                onClick={() => setShowEditPopUp(false)}
+                className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 transition mr-3"
+              >
+                Cancel
+              </button>
+              <button 
+                className="px-4 py-2 bg-amber-500 text-white rounded-md hover:bg-amber-600 transition"
+              >
+                Save Changes
+              </button>
+            </div>
           </div>
         </div>
       )}
     </div>
   );
 };
-
-
-

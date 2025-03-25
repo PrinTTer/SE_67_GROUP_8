@@ -1,11 +1,16 @@
 import { Link } from 'react-router-dom';
 import { getDataBusiness, getBusinessbyName, getBusinessbyProvince } from '../../../data';
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 import { SearchBar } from '../../../components/SearchBar';
 import { fetchData } from '../../../services/apiService';
 import ProvinceDropdown from './dropDownProvince';
 import axios from "axios";
 import LoadingSpinner from '../../../components/LoadingSpinner';
+import { PostCardPackage } from './postPackage';
+
+let post;
+
+
 
 export const Category = () => {
   return (
@@ -60,18 +65,22 @@ export const CategoryGrid = (prop) => {
 }
 
 export const Section = (prop) => {
-  let { title } = prop;
+  let { title, viewType = "list" } = prop;
+  let isPackage = title === "Package";
   const [data, setData] = useState([]);
+  const [pack, setPackage] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const types = ['hotel', 'event', 'restaurant', 'carRental', 'News', 'Recommended', 'Package'];
+
 
   useEffect(() => {
     const getData = async () => {
       setLoading(true);
       try {
         const result = await fetchData("businesses");
-        setData(result);
+        const verified = result.filter(item => item.verify?.status === "approved");
+        setData(verified);
       } catch (error) {
         setError(error.message);
       } finally {
@@ -81,6 +90,30 @@ export const Section = (prop) => {
 
     getData();
   }, []);
+
+
+  useEffect(() => {
+    const getPackage = async () => {
+      setLoading(true);
+      try {
+        const result = await fetchData("packages");
+        setPackage(result);
+      } catch (error) {
+        setError(error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    getPackage();
+
+  }, []);
+
+  useEffect(() => {
+    if (pack.length > 0) {
+      console.log("PACK DATA", pack);
+    }
+  }, [pack]);
 
   const [dataProvince, setDataProvince] = useState([]);
 
@@ -103,14 +136,20 @@ export const Section = (prop) => {
   }, []);
 
   let post;
-  if (types.includes(title)) {
+  if (isPackage) {
+    post = pack;
+  } else if (types.includes(title)) {
     post = getDataBusiness({ category: title, json: data });
-  } else if (dataProvince.some(province => province.name_th === title) || dataProvince.some(province => province.name_en === title)) {
+  } else if (
+    dataProvince.some(province => province.name_th === title) ||
+    dataProvince.some(province => province.name_en === title)
+  ) {
     post = getBusinessbyProvince({ province: title, json: data });
   } else {
     post = getBusinessbyName({ businessName: title, json: data });
     title = `${post.length} Results Found for "${title}"`;
   }
+
 
   if (loading) {
     return (
@@ -128,17 +167,51 @@ export const Section = (prop) => {
 
   return (
     <div className="bg-white rounded-xl shadow-md overflow-hidden mb-8">
-      <div className="px-6 py-4 border-b border-gray-100">
+      <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
         <h2 className="text-2xl font-bold text-gray-800 flex items-center capitalize">
           <span className="inline-block w-1 h-6 bg-amber-500 mr-3 "></span>
           {title === "carRental" ? "car rental" : title === "hotel" ? "hotels & resorts" : title === "event" ? "activities & events" : title}
         </h2>
+        {viewType === "card" && (
+          <Link
+            to={title === "Package" ? "/package" : `/listpage/${title}`}
+            className="text-sm text-amber-500 hover:underline"
+          >
+            see more
+          </Link>
+        )}
       </div>
       <div className="p-6">
-        <div className="grid gap-6">
+        {/* <div className="grid gap-6"> */}
+        <div className={`grid ${viewType === "card" ? isPackage ? "grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4" : "grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4" : "gap-6"}`}>
+
           {post.length > 0 ? (
-            post.map((element, index) => (
-              <Post key={index} name={element.businessName} id={element._id} category={element.category} address={element.address} />
+            (viewType === "card" ? post.slice(0, 4) : post).map((element, index) => (
+              isPackage ? (
+                <PostCardPackage
+                  key={index}
+                  id={element._id}
+                  name={element.title}
+                  description={element.description}
+                  date={element.dateCreate}
+                />
+              ) : viewType === "card" ? (
+                <PostCard
+                  key={index}
+                  name={element.businessName}
+                  id={element._id}
+                  address={element.address}
+                  category={element.category}
+                />
+              ) : (
+                <PostList
+                  key={index}
+                  name={element.businessName}
+                  id={element._id}
+                  address={element.address}
+                  category={element.category}
+                />
+              )
             ))
           ) : (
             <p className="text-gray-500 text-center py-4">No results found</p>
@@ -149,8 +222,34 @@ export const Section = (prop) => {
   );
 };
 
-export const Post = (prop) => {
-  const { name, id, address, category} = prop;
+export const PostCard = (prop) => {
+  const { name, id, address, category } = prop;
+  const link = `/Detail/${id}`;
+  return (
+    <Link to={link} className="bg-white shadow rounded-xl p-4 hover:shadow-md transition-all">
+      <img src="https://i.pinimg.com/736x/a1/06/c7/a106c7e0256afac9d2e4295c42bf0163.jpg" className="w-full h-40 object-cover rounded-lg mb-3" />
+      <div className="flex items-start justify-between mb-2">
+        <h3 className="text-xl font-bold text-gray-800 hover:text-amber-600 transition-colors">{name}</h3>
+        <span className="bg-amber-50 text-amber-700 text-xs px-2 py-1 rounded-full uppercase tracking-wider">{category}</span>
+      </div>
+      <p className="text-gray-600 mb-4">{address}</p>
+      {/* <div className="flex items-center text-amber-500">
+        <span className="flex">
+          {[1, 2, 3, 4, 5].map((star) => (
+            <svg key={star} className="w-4 h-4 fill-current" viewBox="0 0 24 24">
+              <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"></path>
+            </svg>
+          ))}
+        </span>
+        <span className="text-xs text-gray-500 ml-2">(120 reviews)</span>
+      </div> */}
+    </Link>
+  );
+};
+
+
+export const PostList = (prop) => {
+  const { name, id, address, category } = prop;
   const link = `/Detail/${id}`;
 
   return (
@@ -158,7 +257,7 @@ export const Post = (prop) => {
       <div className="flex flex-col lg:flex-row rounded-lg overflow-hidden bg-white border border-gray-100">
         <div className="lg:w-1/3 overflow-hidden">
           <img
-            className="w-full h-60 lg:h-full object-cover transition-transform duration-700 hover:scale-110"
+            className="w-full h-80 lg:h-full object-cover transition-transform duration-700 hover:scale-110"
             src="https://i.pinimg.com/736x/a1/06/c7/a106c7e0256afac9d2e4295c42bf0163.jpg"
             alt={name}
           />
@@ -169,7 +268,7 @@ export const Post = (prop) => {
             <span className="bg-amber-50 text-amber-700 text-xs px-2 py-1 rounded-full uppercase tracking-wider">{category}</span>
           </div>
           <p className="text-gray-600 mb-4">{address}</p>
-          <div className="flex items-center text-amber-500">
+          {/* <div className="flex items-center text-amber-500 align-bottom">
             <span className="flex">
               {[1, 2, 3, 4, 5].map((star) => (
                 <svg key={star} className="w-4 h-4 fill-current" viewBox="0 0 24 24">
@@ -178,7 +277,7 @@ export const Post = (prop) => {
               ))}
             </span>
             <span className="text-xs text-gray-500 ml-2">(120 reviews)</span>
-          </div>
+          </div> */}
         </div>
       </div>
     </Link>

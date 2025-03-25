@@ -191,7 +191,12 @@ export const BusinessInformation = () => {
                         </div>
                     </div>
 
+                    {/* แทนที่อันแรกที่มีอยู่ เป็น อัปโหลดรูปแทนทีครับ*/}
+                    {/* <UploadDocumentBlock handleChange={handleChange} setUpLoadDocument={setUpLoadDocument} uploadDocument={uploadDocument} id={"document"} /> */}
+
                     <UploadDocumentBlock handleChange={handleChange} setUpLoadDocument={setUpLoadDocument} uploadDocument={uploadDocument} id={"document"} />
+                    
+                    
 
                     <div className="bg-white flex justify-between px-10 py-5 w-5xl drop-shadow-lg rounded-md">
                         <div className="flex w-full justify-end gap-2">

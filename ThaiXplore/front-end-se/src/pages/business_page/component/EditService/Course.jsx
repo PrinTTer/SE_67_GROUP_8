@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { putData } from '../../../../services/apiService';
 
 export const RestaurantEdit = (prop) => {
-    const { item, setShowEditPopUp } = prop;
+    const { item, setShowEditPopUp ,fetchData} = prop;
   
     // State สำหรับการเก็บข้อมูลของ item
     const [course, setCourse] = useState({
@@ -43,7 +43,9 @@ export const RestaurantEdit = (prop) => {
       console.log(course);  // ตรวจสอบข้อมูล
       // สมมุติว่า putData เป็นฟังก์ชันที่ทำการอัพเดตข้อมูล
       if (await putData(`courses/${item._id}`, course)) {
+         fetchData();
         setShowEditPopUp(false);
+       
       }
     };
   

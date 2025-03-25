@@ -1,5 +1,7 @@
 import mongoose from "mongoose";
 
+import { Document } from 'mongoose';
+
 const QuotaionSchema = new mongoose.Schema({
     userId : {type : String , require : true},
     fromBusinessId : {type : String , require : true},
@@ -34,6 +36,10 @@ export const findServicesDetailsById = (id:string , serviceId:string) => Quotati
     {_id:id , "servicesDetails.serviceId" : serviceId},
     {"servicesDetails.$" : 1}
 );
+
+export const findPendedQuotaion = (userId:string) => QuotationModel.find({userId: userId});
+
+export const findReceivedQuotation = (businessId:string) => QuotationModel.find({toBusinessId:businessId});
 
 export const createQuotation = (values: Record<string , any>) => new QuotationModel(values).save().then((quotation)=>quotation.toObject());
 

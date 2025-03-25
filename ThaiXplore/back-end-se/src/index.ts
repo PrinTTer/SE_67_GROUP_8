@@ -4,36 +4,60 @@ import cors from "cors";
 import compression from "compression";
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
-import {config} from "./configs/config";
+import { config } from "./configs/config";
 import mongoose from "mongoose";
-import router from "./routes/index"
-import swaggerUi from 'swagger-ui-express';
-import swaggerConfig from './configs/swagger-output.json';
+import router from "./routes/index";
+import swaggerUi from "swagger-ui-express";
+import swaggerConfig from "./configs/swagger-output.json";
+import { Server } from "socket.io"; // เพิ่ม socket.io
 
 const app = express();
-app.use('/public/uploads',express.static('public/uploads'));
-
-app.use(cors({
-    origin: 'http://localhost:5173',
+const server = http.createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: "http://localhost:5173", // อนุญาตให้ React frontend เข้าถึง
     credentials: true,
-}));
+  },
+});
 
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerConfig));
+app.use("/public/uploads", express.static("public/uploads"));
+
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  })
+);
+
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerConfig));
 app.use(compression());
 app.use(cookieParser());
 app.use(bodyParser.json());
 
-const server = http.createServer(app);
-
-server.listen(config.PORT , ()=> {
-    console.log("Server running on http://localhost:3000/");
+server.listen(config.PORT, () => {
+  console.log(`Server running on http://localhost:${config.PORT}/`);
 });
 
 const MONGO_URL = config.MONGODB_URL;
 
 mongoose.Promise = Promise;
 mongoose.connect(MONGO_URL);
-mongoose.connection.on('error' , (error)=>console.log(error));
+mongoose.connection.on("error", (error) => console.log(error));
 
+app.use("/", router());
 
-app.use('/' , router());
+io.on("connection", (socket) => {
+  console.log("New user connected:", socket.id);
+
+  socket.on("sendQuotation", (data) => {
+    console.log("New Quotation:", data);
+
+    io.to(data.receiverId).emit("newQuotation", data);
+  });
+
+  socket.on("disconnect", () => {
+    console.log("User disconnected:", socket.id);
+  });
+});
+
+export { io }; 

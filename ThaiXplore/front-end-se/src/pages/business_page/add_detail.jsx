@@ -1,19 +1,33 @@
-import { useState, useEffect } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus, faTimes, faTimesCircle, faCheckCircle } from '@fortawesome/free-solid-svg-icons';
+import { useState, useEffect } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faPlus,
+  faTimes,
+  faTimesCircle,
+  faCheckCircle,
+} from "@fortawesome/free-solid-svg-icons";
 import { getTopic } from "../../data";
-import { ServiceBlock } from "./component/ServiceBlock"
-import { fetchData, postData, putData } from "../../services/apiService"
-import { useParams } from 'react-router-dom';
-import { PackageBlock } from './component/PackagePage'
-import Addblock from './component/AddBlock';
+import { ServiceBlock } from "./component/ServiceBlock";
+import { fetchData, postData, putData } from "../../services/apiService";
+import { useParams } from "react-router-dom";
+import { PackageBlock } from "./component/PackagePage";
+import Addblock from "./component/AddBlock";
+import { useSelector } from "react-redux";
 
 const AddDetails = () => {
   let { id } = useParams();
   const [isLoading, setIsLoading] = useState(false);
   const [business, setBusiness] = useState(null);
-  const [show, setShow] = useState(true)
-  const [head, setHead] = useState(business?.business?.category)
+  const [show, setShow] = useState(true);
+  const [head, setHead] = useState(business?.business?.category);
+  const { user } = useSelector((state) => state.auth);
+
+
+  useEffect(() => {
+    if (user) {
+      console.log("✅ User ID:", user._id);
+    }
+  }, [user]);
 
   const fetchBusiness = async () => {
     try {
@@ -35,29 +49,34 @@ const AddDetails = () => {
 
   let type = business?.business?.category || "event";
 
-  let topicBusines
+  let topicBusines;
   if (type == "hotel") {
-    topicBusines = ["Hotel Information", "Room details", "Specify food and beverage service information", "Recreation facility", "Description"]
+    topicBusines = [
+      "Hotel Information",
+      "Room details",
+      "Specify food and beverage service information",
+      "Recreation facility",
+      "Description",
+    ];
+  } else if (type == "event") {
+    topicBusines = ["Event Information", "Ticket details", "Description"];
+  } else if (type == "restaurant") {
+    topicBusines = [
+      "Working Date Information",
+      "Course details",
+      "Description",
+    ];
+  } else if (type == "carRental") {
+    topicBusines = ["Working Date Information", "Car details", "Description"];
   }
-  else if (type == "event") {
-    topicBusines = ["Event Information", "Ticket details", "Description"]
-  }
-  else if (type == "restaurant") {
-    topicBusines = ["Working Date Information", "Course details", "Description"]
-  }
-  else if (type == "carRental") {
-    topicBusines = ["Working Date Information", "Car details", "Description"]
-  }
-
 
   const toggle = (prop) => {
     const { title } = prop;
-    
-    if (head != title) {
-      setShow(!show)
-    }
-    setHead(title)
 
+    if (head != title) {
+      setShow(!show);
+    }
+    setHead(title);
   };
   if (isLoading) return <p>Loading...</p>;
 
@@ -65,31 +84,51 @@ const AddDetails = () => {
     <>
       <div className="flex flex-5  flex-col shadow-md">
         <div className="flex-1 m-9">
-          <div className='flex   rounded  gap-5 ml-2'>
-            <div className=' px-5 py-2 rounded-t-lg   bg-[#D9D9D9] cursor-pointer ' onClick={() => toggle({ title: type })} >{type}</div>
-            <div className=' px-5 py-2 rounded-t-lg   bg-[#D9D9D9] cursor-pointer ' onClick={() => toggle({ title: "Package" })}>Package</div>
+          <div className="flex   rounded  gap-5 ml-2">
+            <div
+              className=" px-5 py-2 rounded-t-lg   bg-[#D9D9D9] cursor-pointer "
+              onClick={() => toggle({ title: type })}
+            >
+              {type}
+            </div>
+            <div
+              className=" px-5 py-2 rounded-t-lg   bg-[#D9D9D9] cursor-pointer "
+              onClick={() => toggle({ title: "Package" })}
+            >
+              Package
+            </div>
           </div>
-          <div className={`bg-[#D9D9D9] p-4 rounded-lg ${show ? "block" : "hidden"}`}>
-            {
-              business?.details?.map((element, index) => {
-                return <Addblock key={index} title={element?.informationName} type={type} details={element} detailId = {element._id} topicBusines={topicBusines} />
-              })
-            }
-            
-            <ServiceBlock  title={topicBusines[1]} type={type} businessId={id}/>
+          <div
+            className={`bg-[#D9D9D9] p-4 rounded-lg ${
+              show ? "block" : "hidden"
+            }`}
+          >
+            {business?.details?.map((element, index) => {
+              return (
+                <Addblock
+                  key={index}
+                  title={element?.informationName}
+                  type={type}
+                  details={element}
+                  detailId={element._id}
+                  topicBusines={topicBusines}
+                />
+              );
+            })}
+            <ServiceBlock title={topicBusines[1]} type={type} />
           </div>
-          <div className={`bg-[#D9D9D9] p-4 rounded-lg ${!show ? "block" : "hidden"}`}>
-            <PackageBlock />
+          <div
+            className={`bg-[#D9D9D9] p-4 rounded-lg ${
+              !show ? "block" : "hidden"
+            }`}
+          >
+            {/* <PackageBlock businessId={id} userId={"67c46fd9ff5f29ec1b16961e"} /> */}
+            <PackageBlock businessId={id} userId={user?._id} />
           </div>
         </div>
-
       </div>
     </>
   );
-}
-
-
+};
 
 export default AddDetails;
-
-

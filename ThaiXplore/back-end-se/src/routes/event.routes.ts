@@ -8,6 +8,6 @@ export default (router:express.Router) => {
     router.post("/businesses/:businessId/events" , isAuthenticated , registerEvent);
     router.delete("/events/:eventId" , isAuthenticated , deleteEvents);
     router.put("/events/:eventId" , isAuthenticated , updateEvents);
-    router.post("/courses/:courseId/images",isAuthenticated, upload.array("files" , 6) , uploadEventImages);
-    router.delete("/courses/:courseId/images/:index",isAuthenticated , deleteEventImage);
+    router.post("/events/:eventId/images",isAuthenticated, upload.array("files" , 6) , uploadEventImages);
+    router.delete("/events/:eventId/images/:index",isAuthenticated , deleteEventImage);
 }

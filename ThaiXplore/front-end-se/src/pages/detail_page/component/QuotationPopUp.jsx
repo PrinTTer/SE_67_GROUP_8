@@ -27,11 +27,11 @@ export const QuotationPopUp = (prop) => {
   console.log(user);
 
 
-  const sendQuotationSocket = (quotationData) => {
+  const sendQuotationSocket = (status) => {
     const socket = socketRef.current;
     const receiverId = business.business.userId;
     if (socket) {
-      socket.emit("sendQuotation",{receiverId, quotationData}); // ส่งข้อมูลไปยัง server ผ่าน WebSocket
+      socket.emit("sendRequest",{receiverId, status}); // ส่งข้อมูลไปยัง server ผ่าน WebSocket
     }
   };
 
@@ -107,11 +107,11 @@ export const QuotationPopUp = (prop) => {
       }
       
       if(!quotation){
-        sendQuotationSocket(sendData);
+        sendQuotationSocket({request : "Create"});
         await postData(`/quotations` , sendData);
         navigate("/quotation");
       }else {
-        sendQuotationSocket(sendData);
+        sendQuotationSocket({request : "Update"});
         await putData(`/quotations/${quotation._id}` , sendData);
         onClose();
       }

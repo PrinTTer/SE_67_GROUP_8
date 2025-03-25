@@ -20,7 +20,7 @@ const QuotationPage = () => {
         const socket = socketRef.current;
       
         if (socket) {
-          socket.on("newQuotation", (data) => {
+          socket.on("newRequest", (data) => {
             console.log("New quotation received:", data); 
             fetch();
           });
@@ -28,7 +28,7 @@ const QuotationPage = () => {
       
         return () => {
           if (socket) {
-            socket.off("newQuotation"); 
+            socket.off("newRequest"); 
           }
         };
       }, [socketRef.current]); 

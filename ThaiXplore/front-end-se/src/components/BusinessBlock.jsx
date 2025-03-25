@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
 import { BusinessEditBtn } from "./BusinessEditBtn";
 import { Link } from 'react-router-dom';
+import { deleteData } from "../services/apiService";
 
 
 export const BusinessBlock = (prop) => {
@@ -29,6 +30,17 @@ export const BusinessBlock = (prop) => {
     useEffect(() => {
         setDescription(isTextTooLong(business.description));
     }, [])
+
+    const handleDelete = async () => {
+        // try {
+        //     const response = await deleteData(`/business/${business.id}`);
+        //     console.log(response);
+        //     window.location.reload();
+        // } catch (error) {
+        //     console.error(error);
+        // }
+        console.log(business.id);
+    }
 
     console.log(business);
 
@@ -68,7 +80,7 @@ export const BusinessBlock = (prop) => {
                  <BusinessEditBtn icon={faFileLines} popup={"Information"}/>
             </Link>
                
-                <BusinessEditBtn icon={faPenToSquare} popup={"Edit"}/>
+                <BusinessEditBtn icon={faPenToSquare} popup={"Edit"} onClick={() => handleDelete(business._id)}/>
                 <BusinessEditBtn icon={faTrash} popup={"Delete"}/>
             </div>
         </div>

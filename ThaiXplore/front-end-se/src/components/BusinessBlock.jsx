@@ -1,4 +1,4 @@
-import { faChevronDown, faFileLines, faLocationDot, faPenToSquare, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faChevronDown, faFileLines, faLocationDot, faPenToSquare, faTrash, faImage } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
 import { BusinessEditBtn } from "./BusinessEditBtn";
@@ -46,14 +46,40 @@ export const BusinessBlock = (prop) => {
 
     return (
         <div className="bg-white grid lg:grid-cols-[25%_50%_25%] w-full drop-shadow-xl rounded-xl">
-            <div>
-                <img className="object-cover rounded-l-xl" src="https://i.pinimg.com/736x/a1/06/c7/a106c7e0256afac9d2e4295c42bf0163.jpg" />
+            <div className="w-full aspect-[3/2] bg-gray-100 flex items-center justify-center relative overflow-hidden rounded-lg">
+                {business.media.length > 0 ? (
+
+                    <div className="w-full h-full overflow-hidden rounded-l-lg">
+                        <img
+                            src={`http://localhost:3000/public/uploads/businesses/images/${business.media[0]}`}
+                            alt="main-img"
+                            className="w-full h-full object-cover"
+
+                        />
+                    </div>
+
+                ) : (
+                    <div className="flex flex-col items-center justify-center text-gray-400 h-full w-full">
+                        <FontAwesomeIcon icon={faImage} className="text-4xl mb-2" />
+                        <span className="text-sm">No picture</span>
+                    </div>
+                )}
+
+                {/* {category && (
+                                <div className="absolute top-3 left-3">
+                                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-800">
+                                    {category}
+                                  </span>
+                                </div>
+                              )} */}
             </div>
             <div className="mx-5 p-5">
-                <div className="text-2xl font-semibold">
+                {/* <div className="flex text-2xl items-start justify-between font-semibold"> */}
+                <div className="flex items-start justify-between mb-2 text-2xl font-semibold">
                     {business.businessName}
+                    <span className="bg-amber-50 text-amber-700 text-xs px-2 py-1 rounded-full uppercase tracking-wider">{business.category}</span>
                 </div>
-                <div className="flex gap-2 text-gray-500">
+                <div className="flex gap-2 text-gray-600">
                     <div>
                         <FontAwesomeIcon icon={faLocationDot} />
                     </div>
@@ -61,7 +87,7 @@ export const BusinessBlock = (prop) => {
                         {business.address}
                     </div>
                 </div>
-                <div className="text-sm mt-3">
+                <div className=" mt-3">
                     <div>
                         {description}
                     </div>
@@ -76,12 +102,13 @@ export const BusinessBlock = (prop) => {
             </div>
 
             <div className="flex gap-16 justify-end p-5">
-            <Link to={`/profile/mainBusiness/createBusiness/adddetails/${business._id}`}>
-                 <BusinessEditBtn icon={faFileLines} popup={"Information"}/>
-            </Link>
-               
-                <BusinessEditBtn icon={faPenToSquare} popup={"Edit"} onClick={() => handleDelete(business._id)}/>
-                <BusinessEditBtn icon={faTrash} popup={"Delete"}/>
+
+                <BusinessEditBtn icon={faFileLines} popup={"Information"} />
+
+                <Link to={`/profile/mainBusiness/createBusiness/adddetails/${business._id}`}>
+                    <BusinessEditBtn icon={faPenToSquare} popup={"Edit"} onClick={() => handleDelete(business._id)} />
+                </Link>
+                <BusinessEditBtn icon={faTrash} popup={"Delete"} />
             </div>
         </div>
     );

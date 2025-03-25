@@ -113,7 +113,7 @@ export const BusinessInformation = () => {
             <div className="flex flex-5 w-full justify-center px-4 py-8 ">
                 <div className="w-full">
                     <div className="bg-white shadow-md rounded-lg overflow-hidden">
-                        <div className="bg-[#ff6600] text-white px-6 py-4">
+                        <div className="bg-gradient-to-r from-amber-600 to-amber-500 text-white px-6 py-4">
                             <div className="text-2xl font-bold">Business Information</div>
                         </div>
 

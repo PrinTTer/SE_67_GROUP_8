@@ -36,7 +36,7 @@ const BoxBusiness = ({ data }) => {
     }
   };
 
-  
+
 
   return (
     <>
@@ -44,60 +44,64 @@ const BoxBusiness = ({ data }) => {
         <div className="flex flex-col md:flex-row md:h-[200px]">
           {/* Image container */}
           <div className="w-full md:w-56 aspect-[3/2] md:aspect-auto bg-gray-100 flex items-center justify-center relative overflow-hidden">
-          {media.length > 0 ? (
-  <div className="flex h-full w-full">
-    {/* รูปซ้ายใหญ่ (ภาพแรก) */}
-    <div className="w-2/3 h-full overflow-hidden rounded-l-lg">
-      <img
-        src={`http://localhost:3000/public/uploads/businesses/images/${media[0]}`}
-        alt="main-img"
-        className="w-full h-full object-cover"
-        onClick={() => setShowGallery(true)}
-      />
-    </div>
+            {media.length > 0 ? (
+              <div className="flex h-full w-full">
+                {/* รูปซ้ายใหญ่ (ภาพแรก) */}
+                <div className="w-2/3 h-full overflow-hidden rounded-l-lg">
+                  <img
+                    src={`http://localhost:3000/public/uploads/businesses/images/${media[0]}`}
+                    alt="main-img"
+                    className="w-full h-full object-cover"
+                    onClick={() => setShowGallery(true)}
+                  />
+                </div>
 
-    {/* รูปขวา 2 ช่องซ้อน */}
-    <div className="w-1/3 h-full flex flex-col gap-1 pl-1">
-      {media.slice(1, 3).map((img, idx) => (
-        <div key={idx} className="relative h-1/2 w-full overflow-hidden rounded">
-          <img
-            src={`http://localhost:3000/public/uploads/businesses/images/${img}`}
-            alt={`side-img-${idx}`}
-            className="w-full h-full object-cover"
-            onClick={() => setShowGallery(true)}
-          />
-          {/* Overlay ถ้ามีรูปเหลือ */}
-          {idx === 1 && media.length > 3 && (
-            <div className="absolute inset-0 bg-gray-900/50 flex items-center justify-center text-white font-semibold text-xl rounded"
-              onClick={() => setShowGallery(true)}>
-            +{media.length - 3}
-          </div>
-          
-          )}
-        </div>
-      ))}
-    </div>
-  </div>
-) : (
-  <div className="flex flex-col items-center justify-center text-gray-400 h-full w-full">
-    <FontAwesomeIcon icon={faImage} className="text-4xl mb-2" />
-    <span className="text-sm">No picture</span>
-  </div>
-)}
+                {/* รูปขวา 2 ช่องซ้อน */}
+                <div className="w-1/3 h-full flex flex-col gap-1 pl-1">
+                  {media.slice(1, 3).map((img, idx) => (
+                    <div key={idx} className="relative h-1/2 w-full overflow-hidden rounded">
+                      <img
+                        src={`http://localhost:3000/public/uploads/businesses/images/${img}`}
+                        alt={`side-img-${idx}`}
+                        className="w-full h-full object-cover"
+                        onClick={() => setShowGallery(true)}
+                      />
+                      {/* Overlay ถ้ามีรูปเหลือ */}
+                      {idx === 1 && media.length > 3 && (
+                        <div className="absolute inset-0 bg-gray-900/50 flex items-center justify-center text-white font-semibold text-xl rounded"
+                          onClick={() => setShowGallery(true)}>
+                          +{media.length - 3}
+                        </div>
 
-            {category && (
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <div className="flex flex-col items-center justify-center text-gray-400 h-full w-full">
+                <FontAwesomeIcon icon={faImage} className="text-4xl mb-2" />
+                <span className="text-sm">No picture</span>
+              </div>
+            )}
+
+            {/* {category && (
               <div className="absolute top-3 left-3">
                 <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-800">
                   {category}
                 </span>
               </div>
-            )}
+            )} */}
           </div>
 
           {/* Content container */}
           <div className="flex-1 p-5 relative overflow-hidden">
             <div className="pr-24 space-y-3 text-gray-600 text-sm">
+            <div className="flex items-start justify-between mb-2">
+              
               <h3 className="text-lg font-semibold text-gray-900">{businessName}</h3>
+              <span className="bg-amber-50 text-amber-700 text-xs px-2 py-1 rounded-full uppercase tracking-wider">{category}</span>
+              </div>
               <p className="flex items-start">
                 <svg className="h-5 w-5 text-gray-400 mr-2 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
@@ -148,8 +152,8 @@ const BoxBusiness = ({ data }) => {
         </div>
       </div>
 
-{/* Document Modal */}
-{showDocs && (
+      {/* Document Modal */}
+      {showDocs && (
         <div className="fixed inset-0 flex justify-center items-center z-50 p-4">
           <div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-md relative animate-fadeIn">
             <div className="flex items-center justify-between mb-4 pb-3 border-b border-gray-200">
@@ -190,7 +194,7 @@ const BoxBusiness = ({ data }) => {
                 <p className="mt-4 text-gray-600">No documents attached</p>
               </div>
             )}
-            
+
             <div className="mt-6 flex justify-end">
               <button
                 onClick={() => setShowDocs(false)}
@@ -204,11 +208,11 @@ const BoxBusiness = ({ data }) => {
       )}
 
       {showGallery && (
-    <PictureShow
-      images={media}
-      onClose={() => setShowGallery(false)}
-    />
-  )}
+        <PictureShow
+          images={media}
+          onClose={() => setShowGallery(false)}
+        />
+      )}
     </>
   );
 };

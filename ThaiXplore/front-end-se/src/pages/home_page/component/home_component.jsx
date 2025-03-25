@@ -227,67 +227,46 @@ export const Section = (prop) => {
 
 export const PostCard = (prop) => {
   const { name, id, address, category, media } = prop;
-  const [showGallery, setShowGallery] = useState(false);
+
   const link = `/Detail/${id}`;
   return (
     <>
-    <Link to={link} className="bg-white shadow rounded-xl p-4 hover:shadow-md transition-all">
-      <div className="w-full md:w-56 aspect-[3/2] md:aspect-auto bg-gray-100 flex items-center justify-center relative overflow-hidden">
-                {media.length > 0 ? (
-        <div className="flex h-full w-full">
-          {/* รูปซ้ายใหญ่ (ภาพแรก) */}
-          <div className="w-2/3 h-full overflow-hidden rounded-l-lg">
-            <img
-              src={`http://localhost:3000/public/uploads/businesses/images/${media[0]}`}
-              alt="main-img"
-              className="w-full h-full object-cover"
-              onClick={() => setShowGallery(true)}
-            />
-          </div>
-      
-          {/* รูปขวา 2 ช่องซ้อน */}
-          <div className="w-1/3 h-full flex flex-col gap-1 pl-1">
-            {media.slice(1, 3).map((img, idx) => (
-              <div key={idx} className="relative h-1/2 w-full overflow-hidden rounded">
-                <img
-                  src={`http://localhost:3000/public/uploads/businesses/images/${img}`}
-                  alt={`side-img-${idx}`}
-                  className="w-full h-full object-cover"
-                  onClick={() => setShowGallery(true)}
-                />
-                {/* Overlay ถ้ามีรูปเหลือ */}
-                {idx === 1 && media.length > 3 && (
-                  <div className="absolute inset-0 bg-gray-900/50 flex items-center justify-center text-white font-semibold text-xl rounded"
-                    onClick={() => setShowGallery(true)}>
-                  +{media.length - 3}
-                </div>
-                
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-      ) : (
-        <div className="flex flex-col items-center justify-center text-gray-400 h-full w-full">
-          <FontAwesomeIcon icon={faImage} className="text-4xl mb-2" />
-          <span className="text-sm">No picture</span>
-        </div>
-      )}
-      
-                  {category && (
+      <Link to={link} className="bg-white shadow rounded-xl p-4 hover:shadow-md transition-all">
+        <div className="w-full aspect-[3/2] bg-gray-100 flex items-center justify-center relative overflow-hidden rounded-lg mb-2">
+          {media.length > 0 ? (
+
+            <div className="w-full h-full overflow-hidden rounded-l-lg">
+              <img
+                src={`http://localhost:3000/public/uploads/businesses/images/${media[0]}`}
+                alt="main-img"
+                className="w-full h-full object-cover"
+
+              />
+            </div>
+
+
+
+          ) : (
+            <div className="flex flex-col items-center justify-center text-gray-400 h-full w-full">
+              <FontAwesomeIcon icon={faImage} className="text-4xl mb-2" />
+              <span className="text-sm">No picture</span>
+            </div>
+          )}
+
+          {/* {category && (
                     <div className="absolute top-3 left-3">
                       <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-800">
                         {category}
                       </span>
                     </div>
-                  )}
-                </div>
-      <div className="flex items-start justify-between mb-2">
-        <h3 className="text-xl font-bold text-gray-800 hover:text-amber-600 transition-colors">{name}</h3>
-        <span className="bg-amber-50 text-amber-700 text-xs px-2 py-1 rounded-full uppercase tracking-wider">{category}</span>
-      </div>
-      <p className="text-gray-600 mb-4">{address}</p>
-      {/* <div className="flex items-center text-amber-500">
+                  )} */}
+        </div>
+        <div className="flex items-start justify-between mb-2">
+          <h3 className="text-xl font-bold text-gray-800 hover:text-amber-600 transition-colors">{name}</h3>
+          <span className="bg-amber-50 text-amber-700 text-xs px-2 py-1 rounded-full uppercase tracking-wider">{category}</span>
+        </div>
+        <p className="text-gray-600 mb-4">{address}</p>
+        {/* <div className="flex items-center text-amber-500">
         <span className="flex">
           {[1, 2, 3, 4, 5].map((star) => (
             <svg key={star} className="w-4 h-4 fill-current" viewBox="0 0 24 24">
@@ -297,15 +276,15 @@ export const PostCard = (prop) => {
         </span>
         <span className="text-xs text-gray-500 ml-2">(120 reviews)</span>
       </div> */}
-    </Link>
+      </Link>
 
 
-    {showGallery && (
+      {/* {showGallery && (
     <PictureShow
       images={media}
       onClose={() => setShowGallery(false)}
     />
-  )}
+  )} */}
 
     </>
   );
@@ -318,59 +297,39 @@ export const PostList = (prop) => {
 
   return (
     <Link to={link} className="block transition-all duration-300 hover:shadow-lg">
-      <div className="flex flex-col lg:flex-row rounded-lg overflow-hidden bg-white border border-gray-100">
-      <div className="w-full md:w-56 aspect-[3/2] md:aspect-auto bg-gray-100 flex items-center justify-center relative overflow-hidden">
-                {media.length > 0 ? (
-        <div className="flex h-full w-full">
-          {/* รูปซ้ายใหญ่ (ภาพแรก) */}
-          <div className="w-2/3 h-full overflow-hidden rounded-l-lg">
-            <img
-              src={`http://localhost:3000/public/uploads/businesses/images/${media[0]}`}
-              alt="main-img"
-              className="w-full h-full object-cover"
-              onClick={() => setShowGallery(true)}
-            />
-          </div>
-      
-          {/* รูปขวา 2 ช่องซ้อน */}
-          <div className="w-1/3 h-full flex flex-col gap-1 pl-1">
-            {media.slice(1, 3).map((img, idx) => (
-              <div key={idx} className="relative h-1/2 w-full overflow-hidden rounded">
-                <img
-                  src={`http://localhost:3000/public/uploads/businesses/images/${img}`}
-                  alt={`side-img-${idx}`}
-                  className="w-full h-full object-cover"
-                  onClick={() => setShowGallery(true)}
-                />
-                {/* Overlay ถ้ามีรูปเหลือ */}
-                {idx === 1 && media.length > 3 && (
-                  <div className="absolute inset-0 bg-gray-900/50 flex items-center justify-center text-white font-semibold text-xl rounded"
-                    onClick={() => setShowGallery(true)}>
-                  +{media.length - 3}
-                </div>
-                
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-      ) : (
-        <div className="flex flex-col items-center justify-center text-gray-400 h-full w-full">
-          <FontAwesomeIcon icon={faImage} className="text-4xl mb-2" />
-          <span className="text-sm">No picture</span>
-        </div>
-      )}
-      
-                  {category && (
+      <div className="bg-white grid lg:grid-cols-[25%_50%_25%] w-full drop-shadow-xl rounded-xl">
+        <div className="w-full md:w-56 aspect-[3/2] bg-gray-100 flex items-center justify-center relative overflow-hidden">
+          {media.length > 0 ? (
+
+            <div className="w-full h-full overflow-hidden rounded-l-lg">
+              <img
+                src={`http://localhost:3000/public/uploads/businesses/images/${media[0]}`}
+                alt="main-img"
+                className="w-full h-full object-cover"
+
+              />
+            </div>
+
+
+
+          ) : (
+            <div className="flex flex-col items-center justify-center text-gray-400 h-full w-full">
+              <FontAwesomeIcon icon={faImage} className="text-4xl mb-2" />
+              <span className="text-sm">No picture</span>
+            </div>
+          )}
+
+          {/* {category && (
                     <div className="absolute top-3 left-3">
                       <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-800">
                         {category}
                       </span>
                     </div>
-                  )}
-                </div>
-        <div className="p-6 lg:w-2/3">
-          <div className="flex items-start justify-between mb-2">
+                  )} */}
+        </div>
+        {/* <div className="p-6 lg:w-2/3"> */}
+        <div className="mx-5 p-5">
+          <div className="flex items-start justify-between m-2">
             <h3 className="text-xl font-bold text-gray-800 hover:text-amber-600 transition-colors">{name}</h3>
             <span className="bg-amber-50 text-amber-700 text-xs px-2 py-1 rounded-full uppercase tracking-wider">{category}</span>
           </div>

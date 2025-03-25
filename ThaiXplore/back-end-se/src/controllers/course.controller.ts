@@ -106,6 +106,7 @@ export const uploadCourseImages = async (req: express.Request, res: express.Resp
     const currentUserId: string = get(req, 'identity._id');
     const user = await getUserById(currentUserId);
     const images = req.files;
+    
     if (user.role !== 'entrepreneur') {
       return res.sendStatus(401);
     }

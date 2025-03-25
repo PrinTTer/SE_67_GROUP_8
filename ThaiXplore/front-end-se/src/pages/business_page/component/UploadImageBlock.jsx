@@ -1,46 +1,55 @@
-// import { faCirclePlus } from "@fortawesome/free-solid-svg-icons";
-// import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-// import React, { useState } from "react";
-// import { FileUploaded } from "./FileUploaded";
+import { faCircleXmark, faCirclePlus } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React from "react";
 
-// export const UploadImage = (prop) => {
-//     const {setUpLoadImg , uploadImg} = prop;
+export const UploadImageBlock = ({ uploadImages, setUploadImages }) => {
+  const handleChange = (e) => {
+    if (!e.target.files) return;
+    const files = Array.from(e.target.files);
+    setUploadImages((prev) => [...prev, ...files]);
+  };
 
-//     async function handleChange(e) {
-//         if (!e.target.file) return;
-//         const file = e.target.files[0];
+  const deleteImage = (index) => {
+    setUploadImages((prev) => prev.filter((_, i) => i !== index));
+  };
 
-//         uploadImg(file);
-//     }
+  return (
+    <div className="bg-white flex flex-col px-6 py-4 w-full border border-gray-200 rounded-md shadow-sm">
+      <div className="flex justify-between items-center mb-4 font-semibold">
+        <div>Image Upload</div>
+        <label htmlFor="image-upload" className="cursor-pointer text-green-500 text-lg">
+          <FontAwesomeIcon icon={faCirclePlus} />
+          <input
+            id="image-upload"
+            type="file"
+            accept="image/*"
+            hidden
+            multiple
+            onChange={handleChange}
+          />
+        </label>
+      </div>
 
-//     const uploadImg = (file) => {
-//         setUpLoadImg((prev) => [...prev, file]);
-//     }
-
-//     const deleteImage = (fileIndex) => {
-//         setUpLoadImg(uploadDocument.filter((obj, index) => index != fileIndex));
-//     }
-
-//     return (
-//         <div className="bg-white flex justify-between px-10 py-5 w-5xl drop-shadow-lg rounded-md">
-//             <div className="flex flex-col gap-2 w-full">
-//                 <div className="flex justify-between font-semibold">
-//                     <div>
-//                         Document Upload
-//                     </div>
-//                     <div className="flex text-green-400 w-fit h-fit cursor-pointer">
-//                         <input type="file" id="img" hidden onChange={handleChange} />
-//                         <label htmlFor="img" className="cursor-pointer text-lg"><FontAwesomeIcon icon={faCirclePlus}/></label>
-//                     </div>
-//                 </div>
-//                 <div className="flex flex-col gap-2">
-//                     {
-//                         .map((obj, index) => (
-//                             <FileUploaded key={index} index={index} deleteFile={deleteFile} item={obj} />
-//                         ))uploadImg
-//                     }
-//                 </div>
-//             </div>
-//         </div>
-//     );
-// }
+      <div className="flex flex-wrap gap-4">
+        {uploadImages.map((img, index) => {
+          const url = URL.createObjectURL(img);
+          return (
+            <div key={index} className="relative w-28 h-28 border rounded overflow-hidden">
+              <img
+                src={url}
+                alt={`upload-${index}`}
+                className="object-cover w-full h-full"
+              />
+              <button
+                onClick={() => deleteImage(index)}
+                className="absolute top-0 right-0 text-red-500 hover:text-red-600"
+              >
+                <FontAwesomeIcon icon={faCircleXmark} />
+              </button>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+};

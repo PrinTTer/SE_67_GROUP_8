@@ -5,6 +5,8 @@ import { faBed, faCarSide, faPersonHiking, faUtensils } from "@fortawesome/free-
 import { UploadDocumentBlock } from "./UploadDocumentBlock";
 import { Link, useNavigate } from "react-router-dom";
 import { postData, postDataWithFiles } from "../../../services/apiService";
+import { UploadImageBlock } from "./UploadImageBlock";
+
 
 export const BusinessInformation = () => {
     const [category, setCategory] = useState("hotel");
@@ -14,6 +16,8 @@ export const BusinessInformation = () => {
     const [subDistrict, setSubDistrict] = useState("");
     const [postalCode, setPostalCode] = useState("");
     const [uploadDocument, setUpLoadDocument] = useState([]);
+    const [uploadImages, setUploadImages] = useState([]);
+
     const [dataForm, setDataForm] = useState({
         businessName: "",
         description: "",
@@ -77,22 +81,32 @@ export const BusinessInformation = () => {
                 topicBusines = ["Working Date Information"]
             }
 
-            const res = await postDataWithFiles("/businesses/", uploadDocument, dataForm, "businesses_verifies");
+            // const res = await postDataWithFiles("/businesses/", uploadDocument, dataForm, "businesses_verifies");
+            const res = await postDataWithFiles("/businesses", [], dataForm, "businesses_verifies");
+            
+            if (uploadDocument.length > 0) {
+                await postDataWithFiles(`/businesses/${res._id}/documents`, uploadDocument, null, "businesses_verifies");
+              }
 
-            await Promise.all(
-                topicBusines.map(async (item, idx) => {
-                    const obj = {
-                        informationName: item,
-                        details: [String]
-                    }
-                    await postData(`/businesses/${res._id}/businessdetails`, obj);
+              if (uploadImages.length > 0) {
+                await postDataWithFiles(`/businesses/${res._id}/images`, uploadImages, null, "businesses_images");
+              }
+
+              await Promise.all(
+                topicBusines.map((item) => {
+                  const obj = {
+                    informationName: item,
+                    details: [String],
+                  };
+                  return postData(`/businesses/${res._id}/businessdetails`, obj);
                 })
-            )
-            navigate("/profile/mainbusiness");
-        } catch (error) {
-            console.log(error);
-        }
-    }
+              );
+          
+              navigate("/profile/mainbusiness");
+            } catch (error) {
+              console.log(error);
+            }
+          };
 
     return (
         <div className="bg-white min-h-screen w-full max-w-[1200px] mx-auto">
@@ -191,6 +205,13 @@ export const BusinessInformation = () => {
                                     </div>
                                 </div>
                             </div>
+
+                            {/* upload Image */}
+                            <UploadImageBlock
+  uploadImages={uploadImages}
+  setUploadImages={setUploadImages}
+/>
+
 
                             <UploadDocumentBlock
                                 handleChange={handleChange}

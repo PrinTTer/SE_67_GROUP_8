@@ -2,9 +2,10 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/pagination";
 import { Navigation, Pagination, Autoplay } from "swiper/modules";
-import home1 from "../assets/home1.jpg";
-import home2 from "../assets/home2.jpg";
-import home3 from "../assets/home3.png";
+import home1 from "../assets/Yi-Peng-Lantern-Festival-1.webp";
+import home2 from "../assets/car.jpg";
+import home3 from "../assets/viewbangkok.jpg";
+import home4 from "../assets/burn.jpeg";
 
 const ImageSlider = () => {
     return (
@@ -25,6 +26,9 @@ const ImageSlider = () => {
             </SwiperSlide>
             <SwiperSlide>
                 <img src={home3} alt="Mountain" className="h-full w-full rounded-2xl object-cover"/>
+            </SwiperSlide>
+            <SwiperSlide>
+                <img src={home4} alt="Mountain" className="h-full w-full rounded-2xl object-cover"/>
             </SwiperSlide>
         </Swiper>
     );

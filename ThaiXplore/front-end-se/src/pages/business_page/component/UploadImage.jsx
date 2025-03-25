@@ -1,7 +1,7 @@
 // import { faCirclePlus } from "@fortawesome/free-solid-svg-icons";
 // import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 // import React, { useState } from "react";
-// import { ImageUploaded } from "./ImageUploaded";
+// import { FileUploaded } from "./FileUploaded";
 
 // export const UploadImage = (prop) => {
 //     const {setUpLoadImg , uploadImg} = prop;
@@ -35,9 +35,9 @@
 //                 </div>
 //                 <div className="flex flex-col gap-2">
 //                     {
-//                         uploadImg.map((obj, index) => (
+//                         .map((obj, index) => (
 //                             <FileUploaded key={index} index={index} deleteFile={deleteFile} item={obj} />
-//                         ))
+//                         ))uploadImg
 //                     }
 //                 </div>
 //             </div>

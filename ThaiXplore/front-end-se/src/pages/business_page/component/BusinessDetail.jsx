@@ -51,8 +51,6 @@ export const BusinessInformation = () => {
         }
     }
 
-
-
     useEffect(() => {
         setDataForm((prev) => ({
             ...prev,
@@ -64,7 +62,7 @@ export const BusinessInformation = () => {
     const onSubmit = async () => {
         try {
             let type = category || "event";
-            
+
             let topicBusines
             if (type == "hotel") {
                 topicBusines = ["Hotel Information", "Specify food and beverage service information", "Recreation facility"]
@@ -82,136 +80,142 @@ export const BusinessInformation = () => {
             const res = await postDataWithFiles("/businesses/", uploadDocument, dataForm, "businesses_verifies");
 
             await Promise.all(
-                topicBusines.map(async (item , idx) => {
+                topicBusines.map(async (item, idx) => {
                     const obj = {
-                        informationName : item,
-                        details : [String]
+                        informationName: item,
+                        details: [String]
                     }
-                    await postData(`/businesses/${res._id}/businessdetails` , obj);
+                    await postData(`/businesses/${res._id}/businessdetails`, obj);
                 })
             )
             navigate("/profile/mainbusiness");
         } catch (error) {
             console.log(error);
         }
-
     }
 
-
     return (
-        <div>
-            <div className="flex flex-col my-4 mx-20">
-                <div className="text-xl mb-4">
-                    Business Informations
-                </div>
-                <div className="flex flex-col gap-5">
-                    <CreateInformation title={"Business Name"} handleChange={handleChange} id={"businessName"} />
-                    <CreateInformation title={"Descriptions"} handleChange={handleChange} id={"description"} />
-
-                    <div className="bg-white flex justify-between px-10 py-5 w-5xl drop-shadow-lg rounded-md">
-                        <div className="flex flex-col gap-10 w-full">
-                            <div className="font-semibold">
-                                Category
-                            </div>
-                            <div className="flex justify-evenly">
-
-                                <div onClick={() => setCategory("hotel")} className="flex flex-col gap-2 justify-center cursor-pointer">
-                                    <div className="flex justify-center">
-                                        <div className={`${category === 'hotel' ? "text-blue-400" : "text-gray-400"} flex justify-center p-5  rounded-full w-fit h-fit`}>
-                                            <FontAwesomeIcon icon={faBed} size="xl" />
-                                            <div className={` ${category === 'hotel' ? "border-blue-400" : ""} absolute bottom-10 border p-10 rounded-full`}></div>
-                                        </div>
-                                    </div>
-                                    <div className={`${category === 'hotel' ? "text-blue-400" : "text-gray-400"} text-sm`}>
-                                        Hotels & Homes
-                                    </div>
-                                </div>
-
-                                <div onClick={() => setCategory("carRental")} className="flex flex-col gap-2 justify-center cursor-pointer">
-                                    <div className="flex justify-center">
-                                        <div className={`${category === 'carRental' ? "text-blue-400" : "text-gray-400"} flex justify-center p-5  rounded-full w-fit h-fit`}>
-                                            <FontAwesomeIcon icon={faCarSide} size="xl" />
-                                            <div className={` ${category === 'carRental' ? "border-blue-400" : ""} absolute bottom-10 border p-10 rounded-full`}></div>
-                                        </div>
-                                    </div>
-                                    <div className={`${category === 'carRental' ? "text-blue-400" : "text-gray-400"} text-sm`}>
-                                        Car Rentals
-                                    </div>
-                                </div>
-
-                                <div onClick={() => setCategory("restaurant")} className="flex flex-col gap-2 justify-center cursor-pointer">
-                                    <div className="flex justify-center">
-                                        <div className={`${category === 'restaurant' ? "text-blue-400" : "text-gray-400"} flex justify-center p-5  rounded-full w-fit h-fit`}>
-                                            <FontAwesomeIcon icon={faUtensils} size="xl" />
-                                            <div className={` ${category === 'restaurant' ? "border-blue-400" : ""} absolute bottom-10 border p-10 rounded-full`}></div>
-                                        </div>
-                                    </div>
-                                    <div className={`${category === 'restaurant' ? "text-blue-400" : "text-gray-400"} text-sm`}>
-                                        Restaurants
-                                    </div>
-                                </div>
-
-                                <div onClick={() => setCategory("event")} className="flex flex-col gap-2 justify-center cursor-pointer">
-                                    <div className="flex justify-center">
-                                        <div className={`${category === 'event' ? "text-blue-400" : "text-gray-400"} flex justify-center p-5  rounded-full w-fit h-fit`}>
-                                            <FontAwesomeIcon icon={faPersonHiking} size="xl" />
-                                            <div className={` ${category === 'event' ? "border-blue-400" : ""} absolute bottom-10 border p-10 rounded-full`}></div>
-                                        </div>
-                                    </div>
-                                    <div className={`${category === 'event' ? "text-blue-400" : "text-gray-400"} text-sm`}>
-                                        Activities & Events
-                                    </div>
-                                </div>
-                            </div>
+        <div className="bg-white min-h-screen w-full max-w-[1200px] mx-auto">
+            <div className="flex flex-5 w-full justify-center px-4 py-8 ">
+                <div className="w-full">
+                    <div className="bg-white shadow-md rounded-lg overflow-hidden">
+                        <div className="bg-[#ff6600] text-white px-6 py-4">
+                            <div className="text-2xl font-bold">Business Information</div>
                         </div>
-                    </div>
 
-                    <CreateInformation title={"Email Contact"} placeholder={"example@gmail.com"} handleChange={handleChange} id={"email"} />
-                    <CreateInformation title={"Phone Number"} handleChange={handleChange} id={"phoneNumber"} />
-                    <div className="bg-white flex justify-between px-10 py-5 w-5xl drop-shadow-lg rounded-md">
-                        <div className="flex flex-col gap-2">
-                            <div className="font-semibold">
-                                Address
-                            </div>
-                            <div className="border border-gray-300 rounded-md">
-                                <input id="address" onChange={handleChange} className="focus:outline-0 px-4 py-2 w-xl" type="text" placeholder="Address" />
-                            </div>
-                            <div className="border border-gray-300 rounded-md">
-                                <input id="subDistrict" onChange={handleChange} className="focus:outline-0 px-4 py-2 w-xl" type="text" placeholder="Sub District" />
-                            </div>
-                            <div className="border border-gray-300 rounded-md">
-                                <input id="district" onChange={handleChange} className="focus:outline-0 px-4 py-2 w-xl" type="text" placeholder="District" />
-                            </div>
-                            <div className="border border-gray-300 rounded-md">
-                                <input id="province" onChange={handleChange} className="focus:outline-0 px-4 py-2 w-xl" type="text" placeholder="Province" />
-                            </div>
-                            <div className="border border-gray-300 rounded-md">
-                                <input id="postalCode" onChange={handleChange} className="focus:outline-0 px-4 py-2 w-xl" type="text" placeholder="Postal Code" />
-                            </div>
-                        </div>
-                    </div>
+                        <div className="p-6 space-y-6">
+                            <CreateInformation
+                                title="Business Name"
+                                handleChange={handleChange}
+                                id="businessName"
+                                className="border-[#ff6600] focus:ring-[#ff6600]"
+                            />
+                            <CreateInformation
+                                title="Descriptions"
+                                handleChange={handleChange}
+                                id="description"
+                                className="border-[#ff6600] focus:ring-[#ff6600]"
+                            />
 
-                    {/* แทนที่อันแรกที่มีอยู่ เป็น อัปโหลดรูปแทนทีครับ*/}
-                    {/* <UploadDocumentBlock handleChange={handleChange} setUpLoadDocument={setUpLoadDocument} uploadDocument={uploadDocument} id={"document"} /> */}
+                            <div className="bg-white border border-gray-200 rounded-lg shadow-sm">
+                                <div className="px-6 py-4">
+                                    <div className="font-semibold text-lg mb-4 text-[#ff6600]">
+                                        Category
+                                    </div>
+                                    <div className="flex justify-between gap-4 px-8">
+                                        {[
+                                            { value: "hotel", icon: faBed, label: "Hotels & Resorts" },
+                                            { value: "carRental", icon: faCarSide, label: "Car Rental" },
+                                            { value: "restaurant", icon: faUtensils, label: "Restaurant" },
+                                            { value: "event", icon: faPersonHiking, label: "Activities & Events" },
+                                        ].map((item) => (
+                                            <div
+                                                key={item.value}
+                                                onClick={() => setCategory(item.value)}
+                                                className="flex flex-col items-center cursor-pointer group"
+                                            >
+                                                <div className={`
+                w-16 h-16 flex items-center justify-center rounded-full transition-all duration-300
+                ${category === item.value
+                                                        ? 'bg-[#ff6600] text-white'
+                                                        : 'bg-gray-100 text-gray-500 group-hover:bg-[#ffd6b0]'}
+            `}>
+                                                    <FontAwesomeIcon icon={item.icon} size="lg" />
+                                                </div>
+                                                <div className={`mt-2 text-sm text-center ${category === item.value ? 'text-[#ff6600]' : 'text-gray-500 group-hover:text-[#ff6600]'}`}>
+                                                    {item.label}
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
 
-                    <UploadDocumentBlock handleChange={handleChange} setUpLoadDocument={setUpLoadDocument} uploadDocument={uploadDocument} id={"document"} />
-                    
-                    
-
-                    <div className="bg-white flex justify-between px-10 py-5 w-5xl drop-shadow-lg rounded-md">
-                        <div className="flex w-full justify-end gap-2">
-                            <div onClick={onSubmit} className="flex px-3 py-2 bg-green-400 transition-all text-white hover:bg-green-300 w-fit h-fit cursor-pointer rounded-md">
-                                Submit
-                            </div>
-                            <Link to="/profile/mainbusiness">
-                                <div className="flex px-3 py-2 bg-red-400 text-white transition-all hover:bg-red-300 w-fit h-fit cursor-pointer rounded-md">
-                                    Cancel
                                 </div>
-                            </Link>
+                            </div>
+
+                            <CreateInformation
+                                title="Email Contact"
+                                placeholder="example@gmail.com"
+                                handleChange={handleChange}
+                                id="email"
+                                className="border-[#ff6600] focus:ring-[#ff6600]"
+                            />
+                            <CreateInformation
+                                title="Phone Number"
+                                handleChange={handleChange}
+                                id="phoneNumber"
+                                className="border-[#ff6600] focus:ring-[#ff6600]"
+                            />
+
+                            <div className="bg-white border border-gray-200 rounded-lg shadow-sm">
+                                <div className="px-6 py-4">
+                                    <div className="font-semibold text-lg mb-4 text-[#ff6600]">
+                                        Address
+                                    </div>
+                                    <div className="space-y-4">
+                                        {[
+                                            { id: "address", placeholder: "Address" },
+                                            { id: "subDistrict", placeholder: "Sub District" },
+                                            { id: "district", placeholder: "District" },
+                                            { id: "province", placeholder: "Province" },
+                                            { id: "postalCode", placeholder: "Postal Code" }
+                                        ].map((field) => (
+                                            <input
+                                                key={field.id}
+                                                id={field.id}
+                                                onChange={handleChange}
+                                                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#ff6600] focus:border-transparent"
+                                                type="text"
+                                                placeholder={field.placeholder}
+                                            />
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <UploadDocumentBlock
+                                handleChange={handleChange}
+                                setUpLoadDocument={setUpLoadDocument}
+                                uploadDocument={uploadDocument}
+                                id="document"
+                            />
+
+                            <div className="flex justify-end space-x-4">
+                                <button
+                                    onClick={onSubmit}
+                                    className="px-6 py-2 bg-[#ff6600] text-white rounded-md hover:bg-[#ff8533] transition-colors"
+                                >
+                                    Submit
+                                </button>
+                                <Link to="/profile/mainbusiness">
+                                    <button className="px-6 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition-colors">
+                                        Cancel
+                                    </button>
+                                </Link>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     );
-}
+};

@@ -97,7 +97,7 @@ function Detail() {
                 <p>Request Quotation</p>
               </div>
             </Link>
-            {showPopup && <QuotationPopUp onClose={() => setShowPopup(false)} serviceBusiness={data?.services}/>}
+            {showPopup && <QuotationPopUp onClose={() => setShowPopup(false)} business={data} serviceBusiness={data?.services}/>}
 
 
 

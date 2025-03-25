@@ -57,7 +57,7 @@ export const postDataWithFiles = async (endpoint, files, data, title) => {
     const formData = new FormData();
     formData.append("title", title);
 
-    if (data) {
+    if(data){
       formData.append("data", JSON.stringify(data));
     }
 

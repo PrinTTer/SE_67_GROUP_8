@@ -60,14 +60,39 @@ const AddDetails = () => {
 
   };
   if (isLoading) return <p>Loading...</p>;
-
+  
   return (
     <div className='flex-cols flex-1'>
 
-      <div>
-        asdasdsadasd
-      </div>
+      
       <div className="flex flex-5  flex-col shadow-md">
+      <div className=" m-9 ">
+        {/* 1 Image */}
+        <div className={` grid grid-cols-1  ${business?.business?.media?.length === 1 ? "block":"hidden"}`}>
+            <img
+              src={`http://localhost:3000/public/uploads/businesses/images/${business?.business?.media[0]}`}
+              alt="Business Image"
+              className="w-full h-[400px] object-cover"
+            />
+        </div>
+         {/* No Image */}
+         <div className={`col-span-2 ${business?.business?.media?.length === 0 ? "block":"hidden"}`}>
+            <img
+              src={`https://st2.depositphotos.com/1561359/12101/v/950/depositphotos_121012076-stock-illustration-blank-photo-icon.jpg`}
+              alt="Business Image"
+              className="w-full h-[400px] object-cover"
+            />
+        </div>
+
+        
+          
+
+      </div>
+        
+
+       
+      
+
         <div className="flex-1 m-9">
           <div className='flex   rounded  gap-5 ml-2'>
             <div className=' px-5 py-2 rounded-t-lg   bg-[#D9D9D9] cursor-pointer ' onClick={() => toggle({ title: type })} >{type}</div>
@@ -91,6 +116,7 @@ const AddDetails = () => {
     </div>
   );
 }
+
 
 
 

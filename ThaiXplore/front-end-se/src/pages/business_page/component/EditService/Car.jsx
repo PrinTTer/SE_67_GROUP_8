@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import { putData } from '../../../../services/apiService';
+import { deleteData , postDataWithFiles } from '../../../../services/apiService';
 
 export const CarEdit = (prop) => {
     const { item, setShowEditPopUp , fetchData } = prop;
-  
+    const [selectedImage, setSelectedImage] = useState(`http://localhost:3000/public/uploads/services/cars/${item.media[0]}`);
+    const [editImage, setImage] = useState(item.media[0])
     // State สำหรับการเก็บข้อมูลของ item
     const [car, setCar] = useState({
       businessId: item.businessId,
@@ -31,15 +33,46 @@ export const CarEdit = (prop) => {
       console.log(car);  // ตรวจสอบข้อมูล
       // สมมุติว่า putData เป็นฟังก์ชันที่ทำการอัพเดตข้อมูล
       if (await putData(`cars/${item._id}`, car)) {
-        fetchData();
-        setShowEditPopUp(false);
+
+        //await deleteData(`/cars/${item._id}/images/1`)
+        //await postDataWithFiles(`/cars/${item._id}/images`, [editImage] ,car, "services_cars")
         
+        setShowEditPopUp(false);
+        fetchData();
       }
     };
-  
+
+    const handleImageChange = (e) => {
+      const file = e.target.files[0]; // เลือกไฟล์ที่เลือกมา
+      if (file) {
+        setImage(file);
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setSelectedImage(reader.result); // ตั้งค่าให้แสดงไฟล์ที่เลือก
+        };
+        reader.readAsDataURL(file); // แปลงไฟล์เป็น base64
+      }
+    }
     return (
       <div>
         <div className="grid grid-cols-2 gap-6">
+        <div className="row-span-2">
+          <input
+            type="file"
+            id="image-upload"
+            style={{ display: 'none' }} // ซ่อน input file
+            onChange={handleImageChange} // เมื่อเลือกไฟล์
+          />
+          <label htmlFor="image-upload" className="cursor-pointer">
+            
+              <img
+                src={selectedImage}
+                alt="Uploaded"
+                className="w-full h-auto object-cover rounded-md shadow-lg"
+              />
+            
+          </label>
+        </div>
           <div className="mb-4">
             <div>Car Brand</div>
             <input

@@ -1,17 +1,21 @@
-import { useState } from 'react';
-import { putData } from '../../../../services/apiService';
+import {  useState } from 'react';
+import { putData , putDataWithFiles ,deleteData, postDataWithFiles } from '../../../../services/apiService';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTimesCircle } from '@fortawesome/free-solid-svg-icons';
 
 
 export const HotelEdit = (prop) => {
     const { item , setShowEditPopUp ,fetchData } = prop;
-  
+    const [selectedImage, setSelectedImage] = useState(`http://localhost:3000/public/uploads/services/rooms/${item.media[0]}`);
+    const [editImage, setImage] = useState(item.media[0])
     // State สำหรับการเก็บข้อมูลของ item
     const [room, setRoom] = useState({
       roomType: item.roomType ,
       guestAmount: item.guestAmount,
       roomSize: item.roomSize,
       price: item.price,
-      facilities: item.facilities
+      facilities: item.facilities,
+      totalRooms : item.totalRooms
      
     });
   
@@ -43,30 +47,59 @@ export const HotelEdit = (prop) => {
     const updateData = async () =>{
         // alert(item._id)
         room.price = parseFloat(room.price)
+        room.totalRooms = parseFloat(room.totalRooms)
         console.log(room)
         if(putData(`rooms/${item._id}`, room)){
-          fetchData();
+          
+          await deleteData(`/rooms/${item._id}/images/1`)
+          await postDataWithFiles(`/rooms/${item._id}/images`, [editImage] ,room, "services_rooms")
+
+           //await postDataWithFiles(`/rooms/${item._id}/images`, [editImage] ,room, "services_rooms")
+          console.log("Image here")
+          console.log(editImage)
           setShowEditPopUp(false);
-          
+          fetchData();
         }
-          
+        
     }
+
+
+  // ฟังก์ชันจัดการการอัพโหลดรูปภาพ
+  const handleImageChange = (e) => {
+    const file = e.target.files[0]; // เลือกไฟล์ที่เลือกมา
+    if (file) {
+      setImage(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setSelectedImage(reader.result); // ตั้งค่าให้แสดงไฟล์ที่เลือก
+      };
+      reader.readAsDataURL(file); // แปลงไฟล์เป็น base64
+    }
+    
+  };
   
+ 
+
     return (
       <div >
         <div className='grid grid-cols-2 gap-6'>
-        <div className='row-span-2'>
-            {item.media && item.media[0] ? (
+        <div className="row-span-2">
+          <input
+            type="file"
+            id="image-upload"
+            style={{ display: 'none' }} // ซ่อน input file
+            onChange={handleImageChange} // เมื่อเลือกไฟล์
+          />
+          <label htmlFor="image-upload" className="cursor-pointer">
+            
               <img
-                src={`http://localhost:3000/public/uploads/services/rooms/${item.media[0]}`}
-                alt={item.media[0]}
+                src={selectedImage}
+                alt="Uploaded"
                 className="w-full h-auto object-cover rounded-md shadow-lg"
-
               />
-            ) : (
-              <img src="path/to/placeholder-image.jpg" alt="Placeholder" className="w-50 h-100" />
-            )}
-          </div>
+            
+          </label>
+        </div>
           <div className="mb-4">
             <div>Room Type</div>
             <input
@@ -104,8 +137,17 @@ export const HotelEdit = (prop) => {
             />
           </div>
           
+          <div className="mb-4">
+            <div>Total Rooms</div>
+            <input
+              type="number"
+              value={room.totalRooms}
+              onChange={(e) => handleChange(e, 'totalRooms')}
+              className="p-2 border border-gray-300 rounded w-full"
+            />
+          </div>
 
-            <div>
+          <div>
 
             
           <div className="font-bold mb-2">Facilities</div>
@@ -117,13 +159,13 @@ export const HotelEdit = (prop) => {
                 value={facility}
                 onChange={(e) => handleFacilityChange(index, e.target.value)}
               />
-              <button
-                type="button"
-                className="ml-2 bg-red-500 text-white p-2 rounded"
-                onClick={() => handleRemoveFacility(index)}
-              >
-                ✖
-              </button>
+              
+                 <FontAwesomeIcon
+                                     icon={faTimesCircle}
+                                     className="text-red-500 text-lg ml-2 cursor-pointer"
+                                     onClick={() =>  handleRemoveFacility(index)}
+                                   />
+              
             </div>
           ))}
           <button
@@ -148,7 +190,7 @@ export const HotelEdit = (prop) => {
                 >
                   Save
                 </button>
-              </div>
+        </div>
       </div>
     );
   };

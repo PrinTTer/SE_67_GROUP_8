@@ -9,15 +9,18 @@ import { EventEdit } from './EditService/Event';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 export const ShowService = (prop) => {
-  const { id, type, data, fetchData } = prop;
+  const { id, type, data, fetchData ,imgType } = prop;
   const [showEditPopUp, setShowEditPopUp] = useState(false);
   const [editItem, setEditItem] = useState(null);
   console.log(id);
   const title = data?.services;
   const Topic = getTopic(type);
   const [imageType, setImageType] = useState();
-
+  
   useEffect (()=>{
+    //Fetch Image
+    fetchData();
+
     switch(type) {
       case "hotel":
         setImageType("rooms");
@@ -33,9 +36,9 @@ export const ShowService = (prop) => {
         break;
     }
     console.log("IMAGE " + imageType)
-  },[])
+  },[imgType])
 
-  if (!Array.isArray(Topic) || Topic.length === 0) {
+  if (!Array.isArray(Topic) || Topic.length === 0 ) {
     return (
       <div className="p-8 rounded-lg bg-amber-50 text-amber-700 text-center shadow border border-amber-200">
         No Topic available
@@ -51,7 +54,7 @@ export const ShowService = (prop) => {
     );
   }
 
-  const deleteService = async (id) => {
+  const deleteService = async (id ) => {
     let endpoint;
     if (type === "hotel") {
       endpoint = '/room/';
@@ -65,6 +68,8 @@ export const ShowService = (prop) => {
 
     try {
       await deleteData(endpoint + id);
+      //await deleteData(endpoint+`${id}/images/1`);
+
       fetchData();
     } catch (error) {
       console.error("Error deleting service:", error);
@@ -106,16 +111,14 @@ export const ShowService = (prop) => {
       {title.map((item, index) => (
         <div key={index} className="grid grid-cols-1 md:grid-cols-3 gap-5 p-5 bg-white shadow-sm rounded-lg mt-4 hover:shadow-md transition-all duration-300 border border-amber-100">
           <div className='row-span-5'>
-            {item.media && item.media[0] ? (
+            
               <img
                 src={`http://localhost:3000/public/uploads/services/${imageType}/${item.media[0]}`}
                 alt={item.media[0]}
                 className="w-full h-auto object-cover rounded-md shadow-lg"
 
               />
-            ) : (
-              <img src="path/to/placeholder-image.jpg" alt="Placeholder" className="w-50 h-100" />
-            )}
+            
           </div>
 
           {Topic.map((field, fieldIndex) => (

@@ -110,9 +110,9 @@ export const uploadCourseImages = async (req: express.Request, res: express.Resp
       return res.sendStatus(401);
     }
 
-    if (!images) {
-      return res.sendStatus(400);
-    }
+    // if (!images) {
+    //   return res.sendStatus(400);
+    // }
 
     const courses = await getCourseById(courseId);
 

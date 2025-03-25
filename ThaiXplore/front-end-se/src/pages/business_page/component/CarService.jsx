@@ -89,13 +89,17 @@ export const CarService = (prop) => {
 
         console.log(formData);
         const postResponse =await postData(`/businesses/${id}/cars`, formData);
-        fetchData();
+        
 
         const endpoint = `/cars/${postResponse._id}/images`;
+
+        
+
         postDataWithFiles(endpoint, [image], forms, "services_cars");
 
 
         alert("Car added successfully!");
+        fetchData();
         removeForm(index);
       } catch (error) {
         console.error("Error adding car:", error);

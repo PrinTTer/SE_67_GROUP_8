@@ -13,7 +13,7 @@ export const HotelService = (prop) => {
     { businessId: id, roomType: "", guestAmount: "", roomSize: "", price: "", facilities: [""], totalRooms: "" }
   ]);
   const [errors, setErrors] = useState([{}]);
-
+  
   // Add new form
   const addForm = () => {
     setForms([
@@ -123,6 +123,7 @@ export const HotelService = (prop) => {
   
   // ฟังก์ชัน insertData
   let postResponse;
+  const [imgType,setImageType] = useState();
   const insertData = async (index) => {
     if (validateForm(index)) {
       const formData = forms[index];
@@ -140,22 +141,24 @@ export const HotelService = (prop) => {
       // รอให้ postData เสร็จสิ้นก่อน
        postResponse = await postData(`/businesses/${id}/rooms`, formData);
        console.log("Res");
-      console.log(postResponse)
+       console.log(postResponse)
       
       
         const endpoint = `/rooms/${postResponse._id}/images`;
-        postDataWithFiles(endpoint, [image], forms, "services_rooms");
+        setImageType("rooms")
   
-      
-        fetchData();
-        removeForm(index);
+        if(postDataWithFiles(endpoint, [image], forms, "services_rooms")){
+          fetchData();
+          removeForm(index);
+        }
+          
     }
   };
   
 
   return (
     <div className="bg-white rounded-lg shadow-lg p-8 border border-amber-100">
-      <ShowService id={id} type={type} fetchData={fetchData} data={data} />
+      <ShowService id={id} type={type} fetchData={fetchData} data={data} imgType={imgType}  />
       <div className="items-center flex mb-6 border-b border-amber-200 pb-4">
         <h2 className="text-2xl font-semibold text-amber-800">
           Add {title?.split(" ")[0] || "Room"}

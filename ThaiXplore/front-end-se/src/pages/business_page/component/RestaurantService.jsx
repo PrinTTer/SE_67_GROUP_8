@@ -129,8 +129,9 @@ export const RestaurantService = (prop) => {
         const postResponse =await postData(`/businesses/${id}/courses`, formData);
         fetchData();
 
+        console.log("Course : " +postResponse._id)
         const endpoint = `/courses/${postResponse._id}/images`;
-        postDataWithFiles(endpoint, [image], forms, "services_courses");
+        postDataWithFiles(endpoint, [image],  "services_courses");
         alert("Course added successfully!");
         removeForm(index);
       } catch (error) {

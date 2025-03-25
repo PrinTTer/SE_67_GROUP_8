@@ -55,6 +55,18 @@ export const HotelEdit = (prop) => {
     return (
       <div >
         <div className='grid grid-cols-2 gap-6'>
+        <div className='row-span-2'>
+            {item.media && item.media[0] ? (
+              <img
+                src={`http://localhost:3000/public/uploads/services/rooms/${item.media[0]}`}
+                alt={item.media[0]}
+                className="w-full h-auto object-cover rounded-md shadow-lg"
+
+              />
+            ) : (
+              <img src="path/to/placeholder-image.jpg" alt="Placeholder" className="w-50 h-100" />
+            )}
+          </div>
           <div className="mb-4">
             <div>Room Type</div>
             <input
@@ -91,14 +103,7 @@ export const HotelEdit = (prop) => {
               className="p-2 border border-gray-300 rounded w-full"
             />
           </div>
-          <div className="mb-4">
-            <div>Image</div>
-            <input
-              type="file"
-              onChange={(e) => handleChange(e, 'image')}
-              className="p-2 border border-gray-300 rounded w-full"
-            />
-          </div>
+          
 
             <div>
 
@@ -133,12 +138,12 @@ export const HotelEdit = (prop) => {
         <div className="flex justify-end gap-4">
                 <button
                   type="button"
-                  className="bg-gray-500 text-white p-2 rounded"
+                  className="bg-gray-300 text-gray-700 p-2 rounded"
                   onClick={() => setShowEditPopUp(false)} // ปิด PopUp
                 >
                   Cancel
                 </button>
-                <button type="button" className="bg-blue-500 text-white p-2 rounded"
+                <button type="button" className="bg-amber-500 text-white p-2 rounded"
                  onClick={updateData}
                 >
                   Save

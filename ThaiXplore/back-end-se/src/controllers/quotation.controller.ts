@@ -3,12 +3,10 @@ import { get, values } from "lodash";
 import { getUserById } from "../models/users";
 import { createQuotation, deleteQuotation, findPendedQuotaion, findQuotation, findQuotationByUserId, findReceivedQuotation, updateQuotationById } from "../models/quotation";
 import { getBusinessByuserId } from "../models/business";
-import mongoose, { Document } from 'mongoose';
 
 export const registerQuotation = async (req: express.Request, res: express.Response): Promise<any> => {
     try {
-        const { fromBusinessId } = req.params;
-        const { toBusinessId, companyName, email, phoneNumber, description } = req.body;
+        const { toBusinessId, companyName, email, phoneNumber, description, name, address } = req.body;
         const servicesDetails: Array<any> = req.body.servicesDetails;
         const currentUserId: string = get(req, 'identity._id');
 
@@ -18,7 +16,7 @@ export const registerQuotation = async (req: express.Request, res: express.Respo
             return res.sendStatus(401);
         }
 
-        if (!fromBusinessId || !toBusinessId || !companyName || !email || !phoneNumber || !description || !servicesDetails) {
+        if ( !toBusinessId || !companyName || !email || !phoneNumber || !description || !servicesDetails || !name) {
             return res.sendStatus(400);
         }
 
@@ -29,7 +27,6 @@ export const registerQuotation = async (req: express.Request, res: express.Respo
         }
         const quotation = await createQuotation({
             userId: user._id,
-            fromBusinessId,
             toBusinessId,
             companyName,
             email,
@@ -37,11 +34,14 @@ export const registerQuotation = async (req: express.Request, res: express.Respo
             date,
             description,
             status: "pending",
+            name,
+            address,
             servicesDetails,
             total: 0,
             quotationTransaction: transaction
         });
 
+        
 
         return res.status(201).json(quotation);
     } catch (err) {

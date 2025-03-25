@@ -10,6 +10,7 @@ import router from "./routes/index";
 import swaggerUi from "swagger-ui-express";
 import swaggerConfig from "./configs/swagger-output.json";
 import { Server } from "socket.io"; // เพิ่ม socket.io
+import WebSocket from "./utils/websocket";
 
 const app = express();
 const server = http.createServer(app);
@@ -46,18 +47,6 @@ mongoose.connection.on("error", (error) => console.log(error));
 
 app.use("/", router());
 
-io.on("connection", (socket) => {
-  console.log("New user connected:", socket.id);
+WebSocket(io);
 
-  socket.on("sendQuotation", (data) => {
-    console.log("New Quotation:", data);
-
-    io.to(data.receiverId).emit("newQuotation", data);
-  });
-
-  socket.on("disconnect", () => {
-    console.log("User disconnected:", socket.id);
-  });
-});
-
-export { io }; 
+export { io };

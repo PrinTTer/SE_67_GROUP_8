@@ -76,6 +76,7 @@ export const CarService = (prop) => {
 
     return isValid;
   };
+  const [imgType,setImageType] = useState();
 
   const insertData = async (index) => {
     if (validateForm(index)) {
@@ -97,6 +98,7 @@ export const CarService = (prop) => {
 
         postDataWithFiles(endpoint, [image], forms, "services_cars");
 
+        setImageType("rooms")
 
         alert("Car added successfully!");
         fetchData();
@@ -110,7 +112,8 @@ export const CarService = (prop) => {
 
   return (
     <div className="bg-white rounded-lg shadow-lg p-8 border border-amber-100">
-      <ShowService id={id} type={type} fetchData={fetchData} data={data} />
+        
+      <ShowService id={id} type={type} fetchData={fetchData} data={data} imgType={imgType}/>
       <div className="items-center flex mb-6 border-b border-amber-200 pb-4">
         <h2 className="text-2xl font-semibold text-amber-800">
           Add {title?.split(" ")[0] || "Car"}

@@ -6,6 +6,7 @@ export const CarEdit = (prop) => {
     const { item, setShowEditPopUp , fetchData } = prop;
     const [selectedImage, setSelectedImage] = useState(`http://localhost:3000/public/uploads/services/cars/${item.media[0]}`);
     const [editImage, setImage] = useState(item.media[0])
+    const [getImage, setServiceImage] = useState(item.media[0])
     // State สำหรับการเก็บข้อมูลของ item
     const [car, setCar] = useState({
       businessId: item.businessId,
@@ -34,8 +35,10 @@ export const CarEdit = (prop) => {
       // สมมุติว่า putData เป็นฟังก์ชันที่ทำการอัพเดตข้อมูล
       if (await putData(`cars/${item._id}`, car)) {
 
-        //await deleteData(`/cars/${item._id}/images/1`)
-        //await postDataWithFiles(`/cars/${item._id}/images`, [editImage] ,car, "services_cars")
+        if(getImage != editImage)
+        await deleteData(`/cars/${item._id}/images/1`)
+      
+        await postDataWithFiles(`/cars/${item._id}/images`, [editImage] ,car, "services_cars")
         
         setShowEditPopUp(false);
         fetchData();

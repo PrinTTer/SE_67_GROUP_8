@@ -10,7 +10,7 @@ const BookingForm = (prop) => {
     const [phoneNumber, setPhoneNumber] = useState("");
     const [checkInDate, setCheckInDate] = useState("");
     const [checkOutDate, setCheckOutDate] = useState("");
-    const [specialRequests, setSpecialRequests] = useState("");
+    const [description, setDescription] = useState("");
 
     const navigate = useNavigate();
 
@@ -25,7 +25,7 @@ const BookingForm = (prop) => {
             phoneNumber,
             checkInDate,
             checkOutDate,
-            specialRequests,
+            description,
         };
 
         // ส่ง object ไปยังหน้า booking
@@ -85,15 +85,16 @@ const BookingForm = (prop) => {
                                 type="tel"
                                 icon="📱"
                                 value={phoneNumber}
+                                limit={10}
                                 onChange={(e) => setPhoneNumber(e.target.value)} 
                             />
                             <div className="col-span-1 md:col-span-2">
                                 <TextArea
-                                    label="Special Requests"
+                                    label="Description"
                                     placeholder="Any additional information or special requests..."
                                     icon="📋"
-                                    value={specialRequests}
-                                    onChange={(e) => setSpecialRequests(e.target.value)} 
+                                    value={description}
+                                    onChange={(e) => setDescription(e.target.value)} 
                                 />
                             </div>
                         </div>
@@ -127,7 +128,7 @@ const BookingForm = (prop) => {
 
 // TextField component with onChange handler for input field
 export const TextField = (prop) => {
-    const { label, placeholder, type = "text", icon, value, onChange } = prop;
+    const { label, placeholder, type = "text", icon, value, limit, onChange } = prop;
     return(
         <div className="relative">
             <label className="text-gray-700 font-medium block mb-2 flex items-center">
@@ -137,7 +138,7 @@ export const TextField = (prop) => {
             <input
                 type={type}
                 value={value}
-                onChange={onChange}
+                onChange={onChange} maxLength={limit}
                 className="w-full p-3 text-gray-700 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all duration-200 placeholder-gray-400"
                 placeholder={placeholder}
             />

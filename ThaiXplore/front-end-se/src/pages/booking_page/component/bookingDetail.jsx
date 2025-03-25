@@ -2,7 +2,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHotel, faCalendar, faCar, faUtensils } from '@fortawesome/free-solid-svg-icons';
 const BookingDetail = (prop) => {
     const {item, category} = prop;
-    console.log(item);
+    console.log("service detail: ",item);
+    console.log(item.businessId);
     let Topic = [] ;
     Topic = getTopic(category);
     

@@ -6,13 +6,12 @@ import { putData } from "../../../services/apiService";
 const ProfileForm = () => {
     const { user } = useSelector((state) => state.auth);
     const [data, setData] = useState("");
-    const [error, setError] = useState("");  // เพิ่ม state สำหรับเก็บ error
+    const [error, setError] = useState("");
 
     useEffect(() => {
         if (user) {
             setData(user);
         }
-
     }, [user]);
 
     const handleFieldUpdate = async (field, value) => {
@@ -27,49 +26,87 @@ const ProfileForm = () => {
 
         setData(updatedData);
 
-        if(field === "password"){
-            updatedData = value
-            try {
-                await putData("/users/change-password", updatedData); // ✅ ส่งข้อมูลทั้งหมดไปยัง API
-                console.log(`Updated ${field} successfully!`);
-            } catch (error) {
-                console.error(`Error updating ${field}:`, error);
+        try {
+            if (field === "password") {
+                await putData("/users/change-password", value);
+            } else if (field === "email") {
+                await putData("/users/change-email", value);
+            } else {
+                await putData("/users", updatedData);
             }
-        }
-        else if(field === "email"){
-            updatedData = value
-            console.log(updatedData);
-            try {
-                await putData("/users/change-email", updatedData); // ✅ ส่งข้อมูลทั้งหมดไปยัง API
-                console.log(`Updated ${field} successfully!`);
-            } catch (error) {
-                console.error(`Error updating ${field}:`, error);
-            }
-        }
-        else{
-            try {
-                await putData("/users", updatedData); // ✅ ส่งข้อมูลทั้งหมดไปยัง API
-                console.log(`Updated ${field} successfully!`);
-            } catch (error) {
-                console.error(`Error updating ${field}:`, error);
-            }
+            console.log(`Updated ${field} successfully!`);
+        } catch (error) {
+            console.error(`Error updating ${field}:`, error);
+            setError(`Failed to update ${field}`);
         }
     };
 
     return (
-        <div className="flex flex-1 w-full h-full flex-col bg-gray-50">
-            <h1 className="text-2xl font-bold mx-5 my-5">Profile</h1>
-            <div className="flex flex-1 mx-5 justify-center items-start">
-                <div className="grid grid-cols-1 gap-4">
-                    <EditingField label="Name" field="name" value={data?.firstName + " " + data?.lastName} hasProfileImage={true} profileImage={data?.media} actionLabel="Edit" onSave={handleFieldUpdate} />
-                    <EditingField label="Email" field="email" value={data?.email} actionLabel="Edit" onSave={handleFieldUpdate} />
-                    <EditingField label="Phone" field="phoneNumber" value={data?.phoneNumber} actionLabel="Edit" onSave={handleFieldUpdate} />
-                    <EditingField label="Address" field="address" value={data?.address} actionLabel="Edit" onSave={handleFieldUpdate} />
-                    <EditingField label="Password" field="password" actionLabel="Edit" onSave={handleFieldUpdate} />
+        <div className="min-h-screen bg-gray-50 p-6">
+            <div className="container mx-auto max-w-4xl">
+                <h1 className="text-3xl font-bold mb-6 bg-gradient-to-r from-amber-500 to-amber-600 bg-clip-text text-transparent">
+                    Profile Settings
+                </h1>
+
+                <div className="space-y-4">
+                    <EditingField 
+                        label="Name" 
+                        field="name" 
+                        value={data?.firstName + " " + data?.lastName} 
+                        hasProfileImage={true} 
+                        profileImage={data?.media} 
+                        actionLabel="Edit" 
+                        onSave={handleFieldUpdate} 
+                    />
+                    <EditingField 
+                        label="Email" 
+                        field="email" 
+                        value={data?.email} 
+                        actionLabel="Edit" 
+                        onSave={handleFieldUpdate} 
+                    />
+                    <EditingField 
+                        label="Phone" 
+                        field="phoneNumber" 
+                        value={data?.phoneNumber} 
+                        actionLabel="Edit" 
+                        onSave={handleFieldUpdate} 
+                    />
+                    <EditingField 
+                        label="Address" 
+                        field="address" 
+                        value={data?.address} 
+                        actionLabel="Edit" 
+                        onSave={handleFieldUpdate} 
+                    />
+                    <EditingField 
+                        label="Password" 
+                        field="password" 
+                        actionLabel="Edit" 
+                        onSave={handleFieldUpdate} 
+                    />
                 </div>
+
+                {error && (
+                    <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg flex items-center">
+                        <svg 
+                            className="w-6 h-6 text-red-500 mr-3" 
+                            fill="none" 
+                            stroke="currentColor" 
+                            viewBox="0 0 24 24" 
+                            xmlns="http://www.w3.org/2000/svg"
+                        >
+                            <path 
+                                strokeLinecap="round" 
+                                strokeLinejoin="round" 
+                                strokeWidth={2} 
+                                d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" 
+                            />
+                        </svg>
+                        <span className="text-red-700">{error}</span>
+                    </div>
+                )}
             </div>
-            {/* แสดงข้อความ error หากมี */}
-            {error && <div className="text-red-500 mt-2">{sessionStorage.getItem}</div>}
         </div>
     );
 };

@@ -48,6 +48,8 @@ export const EventEdit = (prop) => {
     event.price = parseFloat(event.price);
     event.amountSeat = parseFloat(event.quantity);
 
+    setServiceImage(item.media[0])
+
     console.log(event);  // ตรวจสอบข้อมูล
     // สมมุติว่า putData เป็นฟังก์ชันที่ทำการอัพเดตข้อมูล
     if ( putData(`events/${item._id}`, event)) {

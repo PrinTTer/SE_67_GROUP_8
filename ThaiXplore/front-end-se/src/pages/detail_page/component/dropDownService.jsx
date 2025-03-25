@@ -21,6 +21,7 @@ export const ServiceDropdown = (prop) => {
     const selectedValue = e.target.value;
     setSelectedService(selectedValue);
     onSelect(selectedValue); 
+    console.log("selectedValue   " + selectedValue)
   };
 
   return (
@@ -32,7 +33,7 @@ export const ServiceDropdown = (prop) => {
       >
         <option value="">Select Service</option>
         {data.map((service) => (
-          <option key={service._id} value={service[detailKey]}>
+          <option key={service._id} value={service._id}>
             {service[detailKey]}
           </option>
         ))}

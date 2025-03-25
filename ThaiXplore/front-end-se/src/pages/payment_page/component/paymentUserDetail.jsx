@@ -1,5 +1,5 @@
 export const PaymentUserDetail = (prop) => {
-    const {user} = prop;
+    const {user , bookingDetail} = prop;
     console.log(user);
 
     if(!user){
@@ -24,7 +24,7 @@ export const PaymentUserDetail = (prop) => {
             <UserDetail label={"Last Name"} value={user?.lastName}/>
             <UserDetail label={"Email"} value={user?.email}/>
             <UserDetail label={"Phone"} value={user?.phoneNumber}/>
-            <UserDetail label={"Guests"} value={user?.amount || "1"}/>        
+            <UserDetail label={"Guests"} value={bookingDetail.adult + bookingDetail.child || "1"}/>        
         </div>
     );
 }

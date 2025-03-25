@@ -5,7 +5,7 @@ import DateRangePicker from './DatePicker';
 import GuestSelector from './GuestSelector';
 
 export const RightSideBar = (prop) => {
-    const { type } = prop
+    const { type , bookingDetail} = prop
     const [time, setTime] = useState("");
 
     useEffect(() => {
@@ -13,7 +13,15 @@ export const RightSideBar = (prop) => {
         const hours = String(now.getHours()).padStart(2, '0');
         const minutes = String(now.getMinutes()).padStart(2, '0');
         setTime(`${hours}:${minutes}`);
+
+        
     }, []);
+
+    const TimeSet = (e) =>{
+        bookingDetail.time = e;
+    }
+
+    
 
     return (
         <div className="flex flex-1 flex-col items-center border-solid border-gray-300 border-l-2 sticky top-0 h-screen">
@@ -25,11 +33,11 @@ export const RightSideBar = (prop) => {
             <div>
                 
                 <div className="border-l-3 border-[#F96868] pl-1 text-[#007CE8] font-bold mb-3">How many people?</div>
-                <GuestSelector type={type}/>
+                <GuestSelector type={type} bookingDetail={bookingDetail}/>
 
                 
                 <div className="border-l-3 border-[#F96868] pl-1 text-[#007CE8] font-bold mt-3 mb-3">Date</div>
-                <DateRangePicker />
+                <DateRangePicker  bookingDetail={bookingDetail} />
 
                
                 {type === "restaurant" && (
@@ -39,13 +47,14 @@ export const RightSideBar = (prop) => {
                             type="time"
                             className="border rounded-lg p-2 mb-6 cursor-pointer"
                             value={time}
-                            onChange={(e) => setTime(e.target.value)}
+                            onChange={(e) => TimeSet(e.target.value)}
                         />
                     </>
                 )}
 
 
             </div>
+          
         </div>
     );
 };

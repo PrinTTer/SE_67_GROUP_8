@@ -26,7 +26,7 @@ const MainBusiness = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-gray-100 w-full">
       <div className="container mx-auto px-4 py-8">
         <div className="bg-white shadow-md rounded-lg overflow-hidden">
           <div className="bg-[#ff6600] text-white px-6 py-4">

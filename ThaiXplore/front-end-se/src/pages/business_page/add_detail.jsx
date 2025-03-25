@@ -76,11 +76,7 @@ const AddDetails = () => {
               })
             }
             
-<<<<<<< HEAD
             <ServiceBlock  title={topicBusines[1]} type={type} business={business} businessId={id}/>
-=======
-            <ServiceBlock  title={topicBusines[1]} type={type} businessId={id} business={business} fetchBusiness={fetchBusiness}/>
->>>>>>> aee55bd14885cab40b65cc080c19b2503651df77
           </div>
           <div className={`bg-[#D9D9D9] p-4 rounded-lg ${!show ? "block" : "hidden"}`}>
             <PackageBlock />

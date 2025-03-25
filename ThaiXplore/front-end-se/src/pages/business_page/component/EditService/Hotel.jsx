@@ -1,5 +1,5 @@
 import {  useState } from 'react';
-import { putData , putDataWithFiles ,deleteData, postDataWithFiles } from '../../../../services/apiService';
+import { putData , deleteData, postDataWithFiles } from '../../../../services/apiService';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimesCircle } from '@fortawesome/free-solid-svg-icons';
 

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { putDataWithFiles } from "../../../services/apiService";
+import { postDataWithFiles } from "../../../services/apiService";
+
 
 export const EditingField = (prop) => {
     const { label, field, value, hasProfileImage, profileImage, actionLabel, onSave } = prop;
@@ -31,8 +32,8 @@ export const EditingField = (prop) => {
         const file = event.target.files[0];
         if (file) {
             try {
-                const response = await putDataWithFiles(
-                    "users/upload-profile", [file], "users_images",
+                const response = await postDataWithFiles(
+                    "users/upload-profile", [file], null, "users_images",
                 );
 
                 onSave("profileImage", response.fileUrl || file);
@@ -41,7 +42,7 @@ export const EditingField = (prop) => {
                 setError("เกิดข้อผิดพลาดในการอัพโหลดรูปโปรไฟล์");
             }
         }
-        //window.location.reload();
+        window.location.reload();
     };
 
     const handleSave = () => {

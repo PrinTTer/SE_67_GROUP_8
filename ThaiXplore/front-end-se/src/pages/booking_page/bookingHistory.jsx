@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react';
 import { fetchData } from '../../services/apiService';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faClipboardList } from '@fortawesome/free-solid-svg-icons';
+import { faClipboardList, faImage } from '@fortawesome/free-solid-svg-icons';
 
 const BookingHistory = () => {
     const [bookings, setBookings] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [categoryForImage, setCategoryForImage] = useState("");
 
     useEffect(() => {
         const fetchBookings = async () => {
@@ -35,6 +36,10 @@ const BookingHistory = () => {
 
         fetchBookings();
     }, []);
+
+    // useEffect(()=> {
+    //     console.log(checkService(bookings[0].businessData[0].business.category))
+    // }, []);
 
     return (
         <div className="container mx-auto px-4 py-8">
@@ -71,11 +76,18 @@ const BookingHistory = () => {
                         >
                             {/* Image Section */}
                             <div className="w-1/3 relative">
-                                <img 
-                                    src={booking.bookingDetail[0].businessImage || '/api/placeholder/400/300'} 
+                                {booking.bookingDetail[0].service?.media === undefined ? (
+                                    <div className="flex flex-col items-center justify-center text-gray-400 h-full w-full">
+                                        <FontAwesomeIcon icon={faImage} className="text-4xl mb-2" />
+                                        <span className="text-sm">No picture</span>
+                                    </div>
+                                ) : (
+                                    <img 
+                                    src={`http://localhost:3000/public/uploads/service/${checkService(booking.businessData.business.category)}/${booking.bookingDetail[0].service?.media}`} 
                                     alt={booking.businessData.business.businessName}
                                     className="w-full h-full object-cover"
-                                />
+                                    />
+                                )}
                                 <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white p-3">
                                     <h2 className="text-xl font-semibold">
                                         {booking.businessData.business.businessName}
@@ -150,3 +162,20 @@ const BookingHistory = () => {
 };
 
 export default BookingHistory;
+
+
+const checkService = (prop) => {
+    const {categoryForImage} = prop;
+    if(categoryForImage === "hotel"){
+        return("rooms");
+    }
+    else if(categoryForImage === "carRental"){
+        return("cars");
+    }
+    else if(categoryForImage === "restaurant"){
+        return("courses");
+    }
+    else if(categoryForImage === "event"){
+        return("events");
+    }
+}

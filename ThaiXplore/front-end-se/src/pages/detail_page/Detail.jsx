@@ -30,9 +30,9 @@ function Detail() {
   };
 
   const [bookingDetail, setBookingDetail] = useState({
-    adult: "",
-    child: "",
-    bookingAmount: "",
+    adult: 1,
+    child: 0,
+    bookingAmount: 1,
     startDate: safeDateGMT7(new Date()),  // ปรับเวลาที่นี่ให้ตรงกับ GMT+7
     endDate: safeDateGMT7(new Date()),    // ปรับเวลาที่นี่ให้ตรงกับ GMT+7
     time: "",
@@ -104,7 +104,7 @@ function Detail() {
         <div className='flex flex-2 m-5'>
           <div className='flex-2 '>
             <p className='font-bold text-2xl'>{data?.business?.businessName}</p>
-            <p>{data?.business?.address}</p>
+            <p>{data?.business?.address.replace(","," ")}</p>
 
           </div>
           <div className='flex flex-2 justify-end'>

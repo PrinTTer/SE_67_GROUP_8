@@ -33,6 +33,7 @@ export const PackageBlock = ({ businessId, userId }) => {
     totalPackage: 1,
     services: [],
     media: [],
+    existingMedia: [], // Add this to track existing media
   });
 
   useEffect(() => {
@@ -62,7 +63,11 @@ export const PackageBlock = ({ businessId, userId }) => {
         const pkgRes = await fetchData(`/packages/business/${businessId}`);
         const pkgMapped = pkgRes.map((pkg) => ({
           id: pkg._id,
-          data: { ...pkg, media: pkg.media || [] },
+          data: { 
+            ...pkg, 
+            media: [], // Keep this empty for new file uploads
+            existingMedia: pkg.media || [] // Store existing media separately
+          },
         }));
         setPackages(
           pkgMapped.length > 0
@@ -90,7 +95,7 @@ export const PackageBlock = ({ businessId, userId }) => {
     const payload = {
       title: data.title,
       description: data.description,
-      media: [],
+      media: data.existingMedia || [], // Use existing media in payload
       dateCreate: data.dateCreate || new Date().toISOString(),
       startDate: data.startDate,
       endDate: data.endDate,
@@ -120,6 +125,7 @@ export const PackageBlock = ({ businessId, userId }) => {
         updateIdCallback(packageId);
       }
 
+      // Only upload new media files if there are any
       if (data.media && data.media.length > 0) {
         await postDataWithFiles(
           `/packages/${packageId}/images`,
@@ -127,6 +133,10 @@ export const PackageBlock = ({ businessId, userId }) => {
           {},
           "services_packages"
         );
+        
+        // After successful upload, update the package with the newly added media
+        const updatedPackage = await fetchData(`/packages/${packageId}`);
+        updateIdCallback(packageId, updatedPackage.media);
       }
 
       alert("Saved successfully");
@@ -147,7 +157,7 @@ export const PackageBlock = ({ businessId, userId }) => {
     }
   };
 
-  const handleDeleteImage = async (packageId, index) => {
+  const handleDeleteImage = async (packageId, imagePath, index) => {
     try {
       await deleteData(`/packages/${packageId}/images/${index}`);
       const updated = packages.map((pkg) =>
@@ -156,7 +166,7 @@ export const PackageBlock = ({ businessId, userId }) => {
               ...pkg,
               data: {
                 ...pkg.data,
-                media: pkg.data.media.filter((_, i) => i !== index - 1),
+                existingMedia: pkg.data.existingMedia.filter((path) => path !== imagePath),
               },
             }
           : pkg
@@ -280,7 +290,7 @@ export const PackageBlock = ({ businessId, userId }) => {
 
               <div>
                 <label className="block text-gray-700 font-medium mb-1">
-                  Upload Images
+                  Upload New Images
                 </label>
                 <input
                   type="file"
@@ -297,23 +307,56 @@ export const PackageBlock = ({ businessId, userId }) => {
               </div>
             </div>
 
-            {/* Display Uploaded Images */}
-            {pkg.data._id && pkg.data.media.length > 0 && (
-              <div className="flex flex-wrap gap-4 mb-4">
-                {pkg.data.media.map((img, idx) => (
-                  <div key={idx} className="relative w-32 h-32">
-                    <img
-                      src={`http://localhost:3000/public/uploads/services/packages/${img}`}
-                      className="object-cover w-full h-full rounded border"
-                    />
-                    <button
-                      onClick={() => handleDeleteImage(pkg.data._id, idx + 1)}
-                      className="absolute top-0 right-0 bg-red-500 text-white text-xs p-1 rounded-bl"
-                    >
-                      ✕
-                    </button>
-                  </div>
-                ))}
+            {/* Display Existing Uploaded Images */}
+            {pkg.data._id && pkg.data.existingMedia && pkg.data.existingMedia.length > 0 && (
+              <div className="mb-4">
+                <h4 className="font-medium text-gray-700 mb-2">Existing Images</h4>
+                <div className="flex flex-wrap gap-4 mb-4">
+                  {pkg.data.existingMedia.map((img, idx) => (
+                    <div key={idx} className="relative w-32 h-32">
+                      <img
+                        src={`http://localhost:3000/public/uploads/services/packages/${img}`}
+                        className="object-cover w-full h-full rounded border"
+                        alt={`Package image ${idx + 1}`}
+                      />
+                      <button
+                        onClick={() => handleDeleteImage(pkg.data._id, img, idx + 1)}
+                        className="absolute top-0 right-0 bg-red-500 text-white text-xs p-1 rounded-bl"
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Show new uploaded files preview */}
+            {pkg.data.media && pkg.data.media.length > 0 && (
+              <div className="mb-4">
+                <h4 className="font-medium text-gray-700 mb-2">New Images to Upload</h4>
+                <div className="flex flex-wrap gap-4">
+                  {Array.from(pkg.data.media).map((file, idx) => (
+                    <div key={idx} className="relative w-32 h-32">
+                      <img
+                        src={URL.createObjectURL(file)}
+                        className="object-cover w-full h-full rounded border"
+                        alt={`New image ${idx + 1}`}
+                      />
+                      <button
+                        onClick={() => 
+                          updatePackageData(pkg.id, {
+                            ...pkg.data,
+                            media: Array.from(pkg.data.media).filter((_, i) => i !== idx)
+                          })
+                        }
+                        className="absolute top-0 right-0 bg-red-500 text-white text-xs p-1 rounded-bl"
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
 
@@ -395,11 +438,20 @@ export const PackageBlock = ({ businessId, userId }) => {
 
             <button
               onClick={() =>
-                handleSave(pkg.id, pkg.data, (newId) => {
+                handleSave(pkg.id, pkg.data, (newId, updatedMedia) => {
                   setPackages((prev) =>
                     prev.map((p) =>
                       p.id === pkg.id
-                        ? { ...p, id: newId, data: { ...p.data, _id: newId } }
+                        ? { 
+                            ...p, 
+                            id: newId, 
+                            data: { 
+                              ...p.data, 
+                              _id: newId,
+                              existingMedia: updatedMedia || p.data.existingMedia,
+                              media: [] // Clear the media array after upload
+                            } 
+                          }
                         : p
                     )
                   );

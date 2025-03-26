@@ -4,17 +4,29 @@ import { fetchData } from '../../services/apiService';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClipboardList, faImage } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from 'react-router-dom';
+import BookingDetail from './component/bookingDetail';
 
 const PackageHistory = () => {
     const { user } = useSelector((state) => state.auth);  // ใช้ Redux store เพื่อดึงข้อมูลผู้ใช้
     const [packages, setPackages] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
-
     const navigate = useNavigate();
 
-    const handlePackage = () => {
-        navigate('/booking', { state: null } );
+    // ส่ง package ที่ user ใช้ ไปยังหน้า booking
+    const handlePackage = (thisPackage) => {
+        const item = thisPackage
+        const category = "package";
+        const bookingDetail = {
+            adult: "",
+            bookingAmount: "",
+            child : "",
+            endDate : "",
+            startDate : "",
+            time : "",
+        };
+        console.log("Packages what I want to use: ",item ,category);
+        navigate('/booking', { state: {item, category, bookingDetail} } );
     }
 
 
@@ -118,7 +130,7 @@ const PackageHistory = () => {
                                     {user.packages[index]?.status === "unused" ? (
                                         <span 
                                             className={"px-3 py-1 bg-amber-100 text-amber-800 rounded-full text-sm font-medium hover:cursor-pointer hover:bg-amber-200 hover:shadow-md"}
-                                            // onClick={handlePackage}
+                                            onClick={()=>handlePackage(user?.packages[index])}
                                         >
                                             Use This Package
                                         </span>

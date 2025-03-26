@@ -1,3 +1,5 @@
+import React from 'react';
+
 const PackageCard = ({ data }) => {
   const { image, title, subtitle, description, price } = data;
 

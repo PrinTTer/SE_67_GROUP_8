@@ -1,9 +1,10 @@
-import { useParams } from 'react-router-dom';
-import { useEffect, useState } from 'react';
-import huahinPoster from '../../assets/huahin_desktop.jpg';
-import { fetchData } from '../../services/apiService';
+import { useParams, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import huahinPoster from "../../assets/huahin_desktop.jpg";
+import { fetchData, postData } from "../../services/apiService";
 
 const DetailPackage = () => {
+  const navigate = useNavigate();
   const { id } = useParams();
   const [packageData, setPackageData] = useState(null);
   const [mergedServices, setMergedServices] = useState([]);
@@ -32,17 +33,39 @@ const DetailPackage = () => {
   };
 
   useEffect(() => {
-    const fetchPackage = async () => {
+    const loadPackageAndBusinesses = async () => {
       try {
-        const detail = await fetchData(`packages/${id}`);
-        setPackageData(detail);
-        setSelectedServices(detail.services.map((s) => s.serviceId));
+        const pkg = await fetchData(`/packages/${id}`);
+        setPackageData(pkg);
+
+        const businessIds = [...new Set(pkg.services.map((s) => s.businessId))];
+        const businessList = await Promise.all(
+          businessIds.map((id) => fetchData(`/businesses/${id}`))
+        );
+
+        const allBusinessServices = businessList.flatMap((b) =>
+          b.services.map((s) => ({
+            ...s,
+            businessId: b.business._id,
+            businessName: b.business.businessName,
+            businessCategory: b.business.category,
+          }))
+        );
+
+        const fullServices = pkg.services.map((s) => {
+          const matched = allBusinessServices.find(
+            (b) => b._id === s.serviceId
+          );
+          return { ...s, ...matched };
+        });
+
+        setMergedServices(fullServices);
       } catch (error) {
-        console.error("Error loading package:", error);
+        console.error("Error loading data:", error);
       }
     };
-  
-    fetchPackage();
+
+    loadPackageAndBusinesses();
   }, [id]);
 
   if (!packageData)
@@ -318,10 +341,6 @@ const DetailPackage = () => {
             </p>
           </div>
         </div>
-
-        <button className="mt-6 w-full bg-amber-500 hover:bg-amber-600 text-white font-bold py-2 px-4 rounded-xl">
-          ซื้อแพคเกจ
-        </button>
       </div>
     </div>
   );

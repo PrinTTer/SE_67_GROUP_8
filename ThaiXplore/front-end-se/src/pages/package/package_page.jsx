@@ -1,15 +1,26 @@
-import React, { useEffect, useState } from 'react';
-import { RightBar } from '../home_page/component/home_component';
-import PackageCard from './component/package_card';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
-import { Link } from 'react-router-dom'; // ⬅️ อย่าลืม import
+import React, { useEffect, useState, useMemo } from "react";
+import { RightBar } from "../home_page/component/home_component";
+import PackageCard from "./component/package_card";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faChevronLeft,
+  faChevronRight,
+  faFilter,
+  faSearch,
+} from "@fortawesome/free-solid-svg-icons";
+import { Link } from "react-router-dom";
+import { fetchData } from "../../services/apiService";
 
+const getPackageImageUrl = (filename) => {
+  return `http://localhost:3000/public/uploads/services/packages/${filename}`;
+};
 
 const PackagePage = () => {
-    const [packages, setPackages] = useState([]);
-    const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 20;
+  const [packages, setPackages] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [sortOption, setSortOption] = useState("latest");
+  const [isLoading, setIsLoading] = useState(true);
+  const itemsPerPage = 6;
 
   useEffect(() => {
     const loadPackages = async () => {
@@ -66,13 +77,15 @@ const PackagePage = () => {
   const currentItems = sortedPackages.slice(indexOfFirstItem, indexOfLastItem);
   const totalPages = Math.ceil(sortedPackages.length / itemsPerPage);
 
-    const nextPage = () => {
-        if (currentPage < totalPages) setCurrentPage(currentPage + 1);
-    };
+  const nextPage = () => {
+    if (currentPage < totalPages) setCurrentPage(currentPage + 1);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
-    const prevPage = () => {
-        if (currentPage > 1) setCurrentPage(currentPage - 1);
-    };
+  const prevPage = () => {
+    if (currentPage > 1) setCurrentPage(currentPage - 1);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   return (
     <div className="flex flex-5 w-full bg-gray-50 min-h-screen">
@@ -133,31 +146,44 @@ const PackagePage = () => {
                 <div className="flex justify-center items-center mt-12 mb-6">
                   <div className="inline-flex shadow-sm rounded-lg overflow-hidden">
                     <button
-                        onClick={prevPage}
-                        disabled={currentPage === 1}
-                        className={`px-4 py-2 rounded ${currentPage === 1 ? "bg-gray-300 text-gray-500 cursor-not-allowed" : "bg-blue-500 text-white hover:bg-blue-700"}`}
+                      onClick={prevPage}
+                      disabled={currentPage === 1}
+                      className={`flex items-center px-5 py-3 border ${
+                        currentPage === 1
+                          ? "bg-gray-50 text-gray-300 cursor-not-allowed border-gray-200"
+                          : "bg-white text-amber-600 hover:bg-amber-50 border-amber-200"
+                      }`}
                     >
                       <FontAwesomeIcon icon={faChevronLeft} className="mr-2" />
                       <span>Previous Page</span>
                     </button>
-                    <span className="px-4 py-2 text-gray-700">
-                        {currentPage} / {totalPages}
-                    </span>
+
+                    <div className="flex items-center justify-center px-5 py-3 bg-amber-500 text-white font-medium border-l border-r border-amber-300">
+                      {currentPage} / {totalPages}
+                    </div>
+
                     <button
-                        onClick={nextPage}
-                        disabled={currentPage === totalPages}
-                        className={`px-4 py-2 rounded ${currentPage === totalPages ? "bg-gray-300 text-gray-500 cursor-not-allowed" : "bg-blue-500 text-white hover:bg-blue-700"}`}
+                      onClick={nextPage}
+                      disabled={currentPage === totalPages}
+                      className={`flex items-center px-5 py-3 border ${
+                        currentPage === totalPages
+                          ? "bg-gray-50 text-gray-300 cursor-not-allowed border-gray-200"
+                          : "bg-white text-amber-600 hover:bg-amber-50 border-amber-200"
+                      }`}
                     >
                       <span>Next Page</span>
                       <FontAwesomeIcon icon={faChevronRight} className="ml-2" />
                     </button>
+                  </div>
                 </div>
-            </div>
-
-            {/* Right Bar */}
-            <RightBar pagetitle="package" />
+              )}
+            </>
+          )}
         </div>
-    );
+      </div>
+      <RightBar pagetitle="package" />
+    </div>
+  );
 };
 
 export default PackagePage;

@@ -2,7 +2,8 @@ import express from "express";
 import { get, values } from "lodash";
 import { getUserById } from "../models/users";
 import { createQuotation, deleteQuotation, findPendedQuotaion, findQuotation, findQuotationByUserId, findReceivedQuotation, updateQuotationById } from "../models/quotation";
-import { getBusinessByuserId } from "../models/business";
+import { getBusinessById, getBusinessByuserId } from "../models/business";
+import { BusinessCategoryFactory } from "factory/BusinessCategoryFactory";
 
 export const registerQuotation = async (req: express.Request, res: express.Response): Promise<any> => {
     try {
@@ -16,7 +17,7 @@ export const registerQuotation = async (req: express.Request, res: express.Respo
             return res.sendStatus(401);
         }
 
-        if ( !toBusinessId || !companyName || !email || !phoneNumber || !description || !servicesDetails || !name) {
+        if (!toBusinessId || !companyName || !email || !phoneNumber || !description || !servicesDetails || !name) {
             return res.sendStatus(400);
         }
 
@@ -41,7 +42,7 @@ export const registerQuotation = async (req: express.Request, res: express.Respo
             quotationTransaction: transaction
         });
 
-        
+
 
         return res.status(201).json(quotation);
     } catch (err) {
@@ -165,8 +166,8 @@ export const getReceivedQuotation = async (req: express.Request, res: express.Re
         await Promise.all(
             businesses.map(async (business) => {
                 const quotation = await findReceivedQuotation(business._id.toString());
-                if(quotation){
-                    quotation.map((object , index) => {
+                if (quotation) {
+                    quotation.map((object, index) => {
                         quotations.push(object);
                     })
                 }
@@ -194,6 +195,42 @@ export const getPendedQuotation = async (req: express.Request, res: express.Resp
         const quotations = await findPendedQuotaion(user._id.toString());
 
         return res.status(200).json(quotations);
+    } catch (error) {
+        console.log(error);
+        return res.sendStatus(400);
+    }
+}
+
+export const getAllDetailQuotaion = async (req: express.Request, res: express.Response): Promise<any> => {
+    try {
+        const { quotationId } = req.params;
+        const currentUserId: string = get(req, 'identity._id');
+
+        const user = await getUserById(currentUserId);
+
+        if (user.role !== 'entrepreneur') {
+            return res.sendStatus(401);
+        }
+
+        if (!quotationId) {
+            return res.sendStatus(400);
+        }
+        const quotation = await findQuotation(quotationId);
+        const business = await getBusinessById(quotation.toBusinessId);
+
+        const services = await Promise.all(
+            quotation.servicesDetails.map(async (item) => {
+                const categoryStrategy = BusinessCategoryFactory.createCategory(
+                    business.category,
+                    quotation.toBusinessId
+                );
+                return await categoryStrategy.getProvideServiceById(item.serviceId);
+            })
+        );
+
+
+
+        return res.status(200).json({quotation,services});
     } catch (error) {
         console.log(error);
         return res.sendStatus(400);

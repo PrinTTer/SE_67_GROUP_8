@@ -1,12 +1,12 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Link, useParams } from 'react-router-dom';
 
-import {  faFileInvoice } from '@fortawesome/free-solid-svg-icons';
+import { faFileInvoice } from '@fortawesome/free-solid-svg-icons';
 import { getBusiness } from '../../data';
 import { faBed, faStar } from '@fortawesome/free-solid-svg-icons';
 import { RightSideBar } from './component/RightBar';
 import { Service } from './component/service';
-import  {QuotationPopUp}  from './component/QuotationPopUp';
+import { QuotationPopUp } from './component/QuotationPopUp';
 import { useState, useEffect } from 'react';
 
 import LoadingSpinner from '../../components/LoadingSpinner';
@@ -17,15 +17,19 @@ import { useSelector } from 'react-redux';
 import PictureShow from '../businessmanage_page/component/picture_show';
 
 function Detail() {
+  const maxLength = 200;
   const { id } = useParams()
   const business = getBusiness("Hotel A")
   const { user } = useSelector((state) => state.auth);
   const socketRef = useSocket(user);
   const [show, setShow] = useState(true)
   const [showPopup, setShowPopup] = useState(false);
+  const [showMore, setShowMore] = useState(false);
+
+
   const safeDateGMT7 = (dateString) => {
     const date = new Date(dateString);
-    
+
     date.setHours(date.getHours() + 7);
     return date.toISOString().slice(0, 16); // รูปแบบ "yyyy-MM-ddTHH:mm"
   };
@@ -71,7 +75,7 @@ const [ media , setMedia] = useState([])
   }, []);
 
   const [head, setHead] = useState(data?.business?.category)
-   const toggle = (prop) => {
+  const toggle = (prop) => {
     const { title } = prop
     if (head != title) {
       setShow(!show)
@@ -80,7 +84,15 @@ const [ media , setMedia] = useState([])
 
   };
 
-  console.log("this->",data);
+  const descriptions = {
+    informationName: "description",
+    details: [data?.business?.description]
+  }
+
+
+  console.log("this->", data);
+  const isLong = data?.business?.description.length > maxLength;
+
 
   if (loading) {
     return (
@@ -89,12 +101,12 @@ const [ media , setMedia] = useState([])
       </div>
     );
   }
-  
-  
+
+
   if (error) return <p className="text-red-500">Error: {error}</p>;
 
-  
-  
+
+
 
   return (
     <>
@@ -195,8 +207,22 @@ const [ media , setMedia] = useState([])
         <div className='flex flex-2 m-5'>
           <div className='flex-2 '>
             <p className='font-bold text-2xl'>{data?.business?.businessName}</p>
-            <p>{data?.business?.address.replace(","," ")}</p>
-
+            <p>{data?.business?.address.replace(",", " ")}</p>
+            <div>
+              <div className="text-gray-500">
+                {isLong && !showMore
+                  ? `${data?.business?.description.substring(0, maxLength)}...`
+                  : data?.business?.description}
+                {isLong && (
+                  <span
+                    onClick={() => setShowMore(!showMore)}
+                    className="text-blue-500 cursor-pointer ml-1"
+                  >
+                    {showMore ? 'See less' : 'See more'}
+                  </span>
+                )}
+              </div>
+            </div>
           </div>
           <div className='flex flex-2 justify-end'>
 
@@ -207,7 +233,7 @@ const [ media , setMedia] = useState([])
                 <p>Request Quotation</p>
               </div>
             </Link>
-            {showPopup && <QuotationPopUp socketRef={socketRef} onClose={() => setShowPopup(false)} business={data} serviceBusiness={data?.services}/>}
+            {showPopup && <QuotationPopUp socketRef={socketRef} onClose={() => setShowPopup(false)} business={data} serviceBusiness={data?.services} />}
 
 
 
@@ -222,10 +248,10 @@ const [ media , setMedia] = useState([])
               <div className=' px-5 py-2 rounded-t-lg    bg-yellow-50 cursor-pointer ' onClick={() => toggle({ title: "Package" })}>Package</div>
             </div>
             {/* Info & Service */}
+
             <div className={show ? 'block' : 'hidden'}>
               {
                 data?.details?.map((element, index) => {
-
                   return <Info key={index} infoTitle={element} />
                 })
               }
@@ -240,7 +266,7 @@ const [ media , setMedia] = useState([])
       </div>
 
       {/* Right Bar */}
-      <RightSideBar type={data?.business?.category} bookingDetail={bookingDetail}/>
+      <RightSideBar type={data?.business?.category} bookingDetail={bookingDetail} />
 
     </>
   )
@@ -251,7 +277,7 @@ const [ media , setMedia] = useState([])
 const Info = (prop) => {
   const { infoTitle } = prop
   const { title } = useParams();
-  console.log(title)
+  console.log("param=>", title)
 
   return (
     <div className="p-4 rounded-lg gap-5 mb-5 bg-yellow-50 shadow-md border border-gray-300">
@@ -260,7 +286,6 @@ const Info = (prop) => {
         <FontAwesomeIcon icon={faBed} className="mr-3 text-lg" />
         <span>{infoTitle.informationName}</span>
       </div>
-
 
       <div className={`grid ${Array.isArray(infoTitle.details) ? "grid-cols-2" : "grid-cols-1"} gap-4 p-2`}>
         {infoTitle.details.map((element, index) => {

@@ -22,6 +22,8 @@ export const QuotationPopUp = (prop) => {
     items: [{ serviceId: "", quantity: "", price: "", amount: "" }],
   });
   const { user } = useSelector((state) => state.auth);
+  
+  console.log(quotation);
 
   const sendQuotationSocket = (status) => {
     const socket = socketRef.current;
@@ -129,6 +131,9 @@ export const QuotationPopUp = (prop) => {
         sendQuotationSocketToPender({ request: "Create" });
         onClose();
       } else if (popup === "Offer") {
+        if(type === "pending") {
+          navigate("/payment",{state: {} });
+        }
         await putData(`/quotations/${quotation._id}`, sendData);
         sendQuotationSocket({ request: "Create" });
         sendQuotationSocketToPender({ request: "Create" });

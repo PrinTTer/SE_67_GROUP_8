@@ -10,22 +10,21 @@ const VerifyBusiness = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(5);
 
-    const getBusinesses = async () => {
-        setLoading(true);
-        try {
-            const result = await fetchData("/businesses");
-            setBusinesses(result);
-        } catch (err) {
-            setError(err.message);
-        } finally {
-            setLoading(false);
-        }
-    };
-    
     useEffect(() => {
-        getBusinesses(); // เรียกใช้งานตอน mount
+        const getBusinesses = async () => {
+            setLoading(true);
+            try {
+                const result = await fetchData("/businesses");
+                setBusinesses(result);
+            } catch (err) {
+                setError(err.message);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        getBusinesses();
     }, []);
-    
 
     // console.log("Businesses:", businesses);
 
@@ -126,8 +125,7 @@ const VerifyBusiness = () => {
 
                         <div className="space-y-4">
                             {currentItems.map((business, index) => (
-                                <BoxBusiness key={business._id || index} data={business} setData={getBusinesses} />
-
+                                <BoxBusiness key={business._id || index} data={business} />
                             ))}
                         </div>
                     </div>

@@ -9,8 +9,7 @@ import LoadingSpinner from '../../../components/LoadingSpinner';
 import { PostCardPackage } from './postPackage';
 import PictureShow from '../../businessmanage_page/component/picture_show';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChevronDown, faCheck, faTimes, faLocationDot, faImage } from '@fortawesome/free-solid-svg-icons';
-
+import { faFileLines, faCheck, faTimes, faImage } from '@fortawesome/free-solid-svg-icons';
 
 
 
@@ -74,7 +73,6 @@ export const Section = (prop) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const types = ['hotel', 'event', 'restaurant', 'carRental', 'News', 'Recommended', 'Package'];
-
 
 
   useEffect(() => {
@@ -206,7 +204,6 @@ export const Section = (prop) => {
                   address={element.address}
                   category={element.category}
                   media={element.media}
-                  description={element.description}
                 />
               ) : (
                 <PostList
@@ -216,7 +213,6 @@ export const Section = (prop) => {
                   address={element.address}
                   category={element.category}
                   media={element.media}
-                  description={element.description}
                 />
               )
             ))
@@ -230,58 +226,68 @@ export const Section = (prop) => {
 };
 
 export const PostCard = (prop) => {
-  const { name, id, address, category, media, description } = prop;
-
-
+  const { name, id, address, category, media } = prop;
+  const [showGallery, setShowGallery] = useState(false);
   const link = `/Detail/${id}`;
   return (
     <>
-      <Link to={link} className="bg-white shadow rounded-xl p-4 hover:shadow-md transition-all">
-        <div className="w-full aspect-[3/2] bg-gray-100 flex items-center justify-center relative overflow-hidden rounded-lg mb-2">
-          {media.length > 0 ? (
-
-            <div className="w-full h-full overflow-hidden rounded-l-lg">
-              <img
-                src={`http://localhost:3000/public/uploads/businesses/images/${media[0]}`}
-                alt="main-img"
-                className="w-full h-full object-cover"
-
-              />
-            </div>
-
-
-
-          ) : (
-            <div className="flex flex-col items-center justify-center text-gray-400 h-full w-full">
-              <FontAwesomeIcon icon={faImage} className="text-4xl mb-2" />
-              <span className="text-sm">No picture</span>
-            </div>
-          )}
-
-          {/* {category && (
+    <Link to={link} className="bg-white shadow rounded-xl p-4 hover:shadow-md transition-all">
+      <div className="w-full md:w-56 aspect-[3/2] md:aspect-auto bg-gray-100 flex items-center justify-center relative overflow-hidden">
+                {media.length > 0 ? (
+        <div className="flex h-full w-full">
+          {/* รูปซ้ายใหญ่ (ภาพแรก) */}
+          <div className="w-2/3 h-full overflow-hidden rounded-l-lg">
+            <img
+              src={`http://localhost:3000/public/uploads/businesses/images/${media[0]}`}
+              alt="main-img"
+              className="w-full h-full object-cover"
+              onClick={() => setShowGallery(true)}
+            />
+          </div>
+      
+          {/* รูปขวา 2 ช่องซ้อน */}
+          <div className="w-1/3 h-full flex flex-col gap-1 pl-1">
+            {media.slice(1, 3).map((img, idx) => (
+              <div key={idx} className="relative h-1/2 w-full overflow-hidden rounded">
+                <img
+                  src={`http://localhost:3000/public/uploads/businesses/images/${img}`}
+                  alt={`side-img-${idx}`}
+                  className="w-full h-full object-cover"
+                  onClick={() => setShowGallery(true)}
+                />
+                {/* Overlay ถ้ามีรูปเหลือ */}
+                {idx === 1 && media.length > 3 && (
+                  <div className="absolute inset-0 bg-gray-900/50 flex items-center justify-center text-white font-semibold text-xl rounded"
+                    onClick={() => setShowGallery(true)}>
+                  +{media.length - 3}
+                </div>
+                
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      ) : (
+        <div className="flex flex-col items-center justify-center text-gray-400 h-full w-full">
+          <FontAwesomeIcon icon={faImage} className="text-4xl mb-2" />
+          <span className="text-sm">No picture</span>
+        </div>
+      )}
+      
+                  {category && (
                     <div className="absolute top-3 left-3">
                       <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-800">
                         {category}
                       </span>
                     </div>
-                  )} */}
-        </div>
-        <div className="flex items-start justify-between mb-2">
-          <h3 className="text-xl font-bold text-gray-800 hover:text-amber-600 transition-colors">{name}</h3>
-          <span className="bg-amber-50 text-amber-700 text-xs px-2 py-1 rounded-full uppercase tracking-wider">{category}</span>
-        </div>
-        <div className="flex gap-2 text-gray-600">
-            <div>
-              <FontAwesomeIcon icon={faLocationDot} />
-            </div>
-            <div className="flex text-gray-600 line-clamp-1">
-              {address}
-            </div>
-          </div>
-        <div className="mt-3 text-gray-600 line-clamp-3">
-  {description}
-</div>
-        {/* <div className="flex items-center text-amber-500">
+                  )}
+                </div>
+      <div className="flex items-start justify-between mb-2">
+        <h3 className="text-xl font-bold text-gray-800 hover:text-amber-600 transition-colors">{name}</h3>
+        <span className="bg-amber-50 text-amber-700 text-xs px-2 py-1 rounded-full uppercase tracking-wider">{category}</span>
+      </div>
+      <p className="text-gray-600 mb-4">{address}</p>
+      {/* <div className="flex items-center text-amber-500">
         <span className="flex">
           {[1, 2, 3, 4, 5].map((star) => (
             <svg key={star} className="w-4 h-4 fill-current" viewBox="0 0 24 24">
@@ -291,15 +297,15 @@ export const PostCard = (prop) => {
         </span>
         <span className="text-xs text-gray-500 ml-2">(120 reviews)</span>
       </div> */}
-      </Link>
+    </Link>
 
 
-      {/* {showGallery && (
+    {showGallery && (
     <PictureShow
       images={media}
       onClose={() => setShowGallery(false)}
     />
-  )} */}
+  )}
 
     </>
   );
@@ -307,85 +313,78 @@ export const PostCard = (prop) => {
 
 
 export const PostList = (prop) => {
-  const { name, id, address, category, media, description} = prop;
+  const { name, id, address, category, media } = prop;
   const link = `/Detail/${id}`;
-  
+
   return (
     <Link to={link} className="block transition-all duration-300 hover:shadow-lg">
-      <div className="bg-white grid lg:grid-cols-[20%_70%_10%] w-full min-h-[200px] drop-shadow-xl rounded-xl ">
-        <div className="w-full md:w-56 h-full aspect-[3/2] bg-gray-100 flex items-center justify-center relative overflow-hidden">
-          {media.length > 0 ? (
-            <div className="flex h-full w-full">
-              {/* รูปซ้ายใหญ่ (ภาพแรก) */}
-              <div className="w-2/3 h-full overflow-hidden rounded-l-lg">
+      <div className="flex flex-col lg:flex-row rounded-lg overflow-hidden bg-white border border-gray-100">
+      <div className="w-full md:w-56 aspect-[3/2] md:aspect-auto bg-gray-100 flex items-center justify-center relative overflow-hidden">
+                {media.length > 0 ? (
+        <div className="flex h-full w-full">
+          {/* รูปซ้ายใหญ่ (ภาพแรก) */}
+          <div className="w-2/3 h-full overflow-hidden rounded-l-lg">
+            <img
+              src={`http://localhost:3000/public/uploads/businesses/images/${media[0]}`}
+              alt="main-img"
+              className="w-full h-full object-cover"
+              onClick={() => setShowGallery(true)}
+            />
+          </div>
+      
+          {/* รูปขวา 2 ช่องซ้อน */}
+          <div className="w-1/3 h-full flex flex-col gap-1 pl-1">
+            {media.slice(1, 3).map((img, idx) => (
+              <div key={idx} className="relative h-1/2 w-full overflow-hidden rounded">
                 <img
-                  src={`http://localhost:3000/public/uploads/businesses/images/${media[0]}`}
-                  alt="main-img"
+                  src={`http://localhost:3000/public/uploads/businesses/images/${img}`}
+                  alt={`side-img-${idx}`}
                   className="w-full h-full object-cover"
-                // onClick={() => setShowGallery(true)}
+                  onClick={() => setShowGallery(true)}
                 />
+                {/* Overlay ถ้ามีรูปเหลือ */}
+                {idx === 1 && media.length > 3 && (
+                  <div className="absolute inset-0 bg-gray-900/50 flex items-center justify-center text-white font-semibold text-xl rounded"
+                    onClick={() => setShowGallery(true)}>
+                  +{media.length - 3}
+                </div>
+                
+                )}
               </div>
-
-              {/* รูปขวา 2 ช่องซ้อน */}
-              <div className="w-1/3 h-full flex flex-col gap-1 pl-1">
-                {media.slice(1, 3).map((img, idx) => (
-                  <div key={idx} className="relative h-1/2 w-full overflow-hidden rounded">
-                    <img
-                      src={`http://localhost:3000/public/uploads/businesses/images/${img}`}
-                      alt={`side-img-${idx}`}
-                      className="w-full h-full object-cover"
-                    // onClick={() => setShowGallery(true)}
-                    />
-                    {/* Overlay ถ้ามีรูปเหลือ */}
-                    {idx === 1 && media.length > 3 && (
-                      <div className="absolute inset-0 bg-gray-900/50 flex items-center justify-center text-white font-semibold text-xl rounded"
-                      // onClick={() => setShowGallery(true)}
-                      >
-                        +{media.length - 3}
-                      </div>
-
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-          ) : (
-            <div className="flex flex-col items-center justify-center text-gray-400 h-full w-full">
-              <FontAwesomeIcon icon={faImage} className="text-4xl mb-2" />
-              <span className="text-sm">No picture</span>
-            </div>
-          )}
-
-          {/* {category && (
+            ))}
+          </div>
+        </div>
+      ) : (
+        <div className="flex flex-col items-center justify-center text-gray-400 h-full w-full">
+          <FontAwesomeIcon icon={faImage} className="text-4xl mb-2" />
+          <span className="text-sm">No picture</span>
+        </div>
+      )}
+      
+                  {category && (
                     <div className="absolute top-3 left-3">
                       <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-800">
                         {category}
                       </span>
                     </div>
-                  )} */}
-        </div>
-        {/* <div className="p-6 lg:w-2/3"> */}
-        <div className="mx-5 p-5">
-          {/* <div className="flex text-2xl items-start justify-between font-semibold"> */}
-          <div className="flex items-start justify-between mb-2 text-2xl font-semibold">
-            {name}
+                  )}
+                </div>
+        <div className="p-6 lg:w-2/3">
+          <div className="flex items-start justify-between mb-2">
+            <h3 className="text-xl font-bold text-gray-800 hover:text-amber-600 transition-colors">{name}</h3>
             <span className="bg-amber-50 text-amber-700 text-xs px-2 py-1 rounded-full uppercase tracking-wider">{category}</span>
           </div>
-          <div className="flex gap-2 text-gray-600">
-            <div>
-              <FontAwesomeIcon icon={faLocationDot} />
-            </div>
-            <div className="flex line-clamp-2">
-              {address}
-            </div>
-          </div>
-          <div className=" mt-3">
-          <div className="mt-3 text-gray-600 line-clamp-3">
-  {description}
-</div>
-
-            
-          </div>
+          <p className="text-gray-600 mb-4">{address}</p>
+          {/* <div className="flex items-center text-amber-500 align-bottom">
+            <span className="flex">
+              {[1, 2, 3, 4, 5].map((star) => (
+                <svg key={star} className="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                  <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"></path>
+                </svg>
+              ))}
+            </span>
+            <span className="text-xs text-gray-500 ml-2">(120 reviews)</span>
+          </div> */}
         </div>
       </div>
     </Link>

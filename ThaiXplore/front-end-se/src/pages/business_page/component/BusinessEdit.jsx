@@ -2,6 +2,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPenToSquare } from '@fortawesome/free-solid-svg-icons';
 import {  useState  } from 'react';
 import { ModalEditBusiness , ModalEditImage } from './ModalBusinessEdit';
+import PictureShow from '../../businessmanage_page/component/picture_show';
 
 
 
@@ -9,11 +10,11 @@ export const BusinessEdit = (prop) => {
   const { business , fetchBusiness } = prop;
   const [isModalOpen, setIsModalOpen] = useState(false); // สถานะของ pop-up
   const [isImageOpen, setIsImageOpen] = useState(false); // สถานะของ pop-up
-
+  const [showGallery, setShowGallery] = useState(false);
   const [showMore, setShowMore] = useState(false);
   
   const maxLength = 200;
-
+  const media = business?.business?.media || [];
   const isLong = business?.business?.description.length > maxLength;
   const openImage = () => {
     console.log("Opening modal");
@@ -51,6 +52,7 @@ export const BusinessEdit = (prop) => {
           src={`http://localhost:3000/public/uploads/businesses/images/${business?.business?.media[0]}`}
           alt="Business Image"
           className="w-full h-[400px] object-cover"
+          onClick={() => setShowGallery(true)}
         />
       </div>
 
@@ -60,12 +62,47 @@ export const BusinessEdit = (prop) => {
           src="https://st2.depositphotos.com/1561359/12101/v/950/depositphotos_121012076-stock-illustration-blank-photo-icon.jpg"
           alt="Business Image"
           className="w-full h-[400px] object-cover"
+          onClick={() => setShowGallery(true)}
         />
       </div>
 
       {/* Image Gallery if there are 3 images */}
       <div className={`${business?.business?.media?.length > 2 ? 'block' : 'hidden'}`}>
-        <ImageGallery images={business?.business?.media} />
+      <div className="flex h-full w-full">
+    {/* รูปซ้ายใหญ่ (ภาพแรก) */}
+    <div className="w-2/3 h-full overflow-hidden rounded-l-lg">
+    {media[0] && (
+      <img
+        src={`http://localhost:3000/public/uploads/businesses/images/${media[0]}`}
+        alt="main-img"
+        className="w-full h-full object-cover"
+        onClick={() => setShowGallery(true)}
+      />
+      )}
+    </div>
+
+    {/* รูปขวา 2 ช่องซ้อน */}
+    <div className="w-1/3 h-full flex flex-col gap-1 pl-1">
+      {media.slice(1, 3).map((img, idx) => (
+        <div key={idx} className="relative h-1/2 w-full overflow-hidden rounded">
+          <img
+            src={`http://localhost:3000/public/uploads/businesses/images/${img}`}
+            alt={`side-img-${idx}`}
+            className="w-full h-full object-cover"
+            onClick={() => setShowGallery(true)}
+          />
+          {/* Overlay ถ้ามีรูปเหลือ */}
+          {idx === 1 && media.length > 3 && (
+            <div className="absolute inset-0 bg-gray-900/50 flex items-center justify-center text-white font-semibold text-xl rounded"
+              onClick={() => setShowGallery(true)}>
+            +{media.length - 3}
+          </div>
+          
+          )}
+        </div>
+      ))}
+    </div>
+  </div>
       </div>
 
       <div className="grid grid-cols-2 mt-3">
@@ -123,51 +160,16 @@ export const BusinessEdit = (prop) => {
         />
 
         )}
+
+        {showGallery && (
+    <PictureShow
+      images={media}
+      onClose={() => setShowGallery(false)}
+    />
+  )}
     </div>
   );
 };
-
-const ImageGallery = (prop) => {
-  const { images  } = prop;
-  const [showAll, setShowAll] = useState(false);
-
-  // ตรวจสอบว่า images ไม่เป็น undefined และเป็น Array ก่อนใช้งาน
-  const displayedImages = showAll 
-    ? images 
-    : (Array.isArray(images) ? images.slice(0, 3) : []);
-  const totalImages = Array.isArray(images) ? images.length : 0;
-
- 
-
-  return (
-    <div>
-      <div className="grid grid-cols-3 gap-4 m-9">
-        {displayedImages.map((image, index) => (
-          <div key={index} className="relative">
-            <img
-              src={`http://localhost:3000/public/uploads/businesses/images/${image}`}
-              alt={`Business Image ${index + 1}`}
-              className="w-full h-[200px] object-cover rounded-lg"
-            />
-          </div>
-        ))}
-      </div>
-
-      {totalImages > 3 && (
-        <div className="text-center mt-4">
-          <button
-            onClick={() => setShowAll(!showAll)}
-            className="text-blue-500 font-medium"
-          >
-            {showAll ? 'ดูน้อยลง' : `See All ${totalImages} Images`}
-          </button>
-        </div>
-      )}
-    </div>
-  );
-};
-
-
 
 
 

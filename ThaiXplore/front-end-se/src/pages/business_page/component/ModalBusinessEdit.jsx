@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark,faCircleXmark,faCirclePlus  } from "@fortawesome/free-solid-svg-icons";
-import { postDataWithFiles , deleteData } from "../../../services/apiService";
+import { postDataWithFiles , deleteData ,putData } from "../../../services/apiService";
 
 export const ModalEditBusiness = (prop) => {
   const { closeModal, business, fetchBusiness } = prop;
@@ -19,7 +19,7 @@ export const ModalEditBusiness = (prop) => {
     postalCode: business?.address.split(" ").slice(-4)[3],
   });
 
-  const [cat, setCat] = useState();
+  
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
@@ -116,17 +116,16 @@ export const ModalEditBusiness = (prop) => {
       address: updatedAddress,
     };
 
-    console.log("Updated form to be sent: ", updatedForm);
-    console.log(uploadImages)
-    // try {
-    //   const response = await putData(`/businesses/${business._id}`, updatedForm);
-    //   if (response) {
-    //     fetchBusiness();  // Refresh data
-    //     closeModal();     // Close modal
-    //   }
-    // } catch (error) {
-    //   console.error("Error saving changes:", error);
-    // }
+   
+    try {
+      const response = await putData(`/businesses/${business._id}`, updatedForm);
+      if (response) {
+        fetchBusiness();  // Refresh data
+        closeModal();     // Close modal
+      }
+    } catch (error) {
+      console.error("Error saving changes:", error);
+    }
   };
 
  
@@ -255,7 +254,10 @@ export const ModalEditImage = (prop) => {
     
   }, []);
   
- 
+ const close = () =>{
+      fetchBusiness();
+      closeModal();
+ }
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-30 flex justify-center items-center z-50 p-4">
@@ -263,11 +265,11 @@ export const ModalEditImage = (prop) => {
         {/* ส่วนของเนื้อหาใน Modal */}
         <div className="p-6 flex flex-col">
           {/* เพิ่ม UploadImageBlock */}
-          <UploadImageBlock uploadImages={uploadImages} setUploadImages={setUploadImages} business={business} />
+          <UploadImageBlock uploadImages={uploadImages} setUploadImages={setUploadImages} business={business}  />
           
           {/* ปุ่ม Back ที่จะปิด Modal */}
           <button
-            onClick={closeModal}
+            onClick={close}
             className="mt-4 px-6 py-3 bg-orange-300 text-white rounded-xl hover:bg-orange-500 transition-colors duration-200 self-end"
           >
             Go Detail Page
@@ -288,6 +290,7 @@ const UploadImageBlock = (prop) => {
     const files = Array.from(e.target.files);
     postDataWithFiles(`/businesses/${business._id}/images`, files ,null, "businesses_images")
     setUploadImages((prev) => [...prev, ...files]);
+    
   };
 
   // Handle image deletion
@@ -296,6 +299,7 @@ const UploadImageBlock = (prop) => {
     console.log("Index is "+index + "   " + business._id)
     deleteData(`/businesses/${business._id}/images/${index+1}`)
     setUploadImages((prev) => prev.filter((_, i) => i !== index));
+    
   };
 
   return (

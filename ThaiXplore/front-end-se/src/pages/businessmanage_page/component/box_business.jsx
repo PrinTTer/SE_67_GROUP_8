@@ -5,7 +5,8 @@ import { putData } from '../../../services/apiService';
 import PictureShow from './picture_show';
 
 
-const BoxBusiness = ({ data }) => {
+const BoxBusiness = (prop) => {
+  const { data } = prop
   const {
     businessName = '-',
     category = '-',

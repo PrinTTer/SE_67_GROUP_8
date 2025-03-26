@@ -5,23 +5,7 @@ import { putData } from '../../../services/apiService';
 import PictureShow from './picture_show';
 
 
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> front-end-se
-const BoxBusiness = (prop) => {
-  const { data } = prop
-    const {
-    businessName = '-',
-    category = '-',
-    address = '-',
-    phoneNumber = '-',
-    description = '-',
-    media = [],
-  } = data;
-<<<<<<< HEAD
-=======
-=======
+
 // ✅ ถูก
 const BoxBusiness = ({ data, setData }) => {
   // const {
@@ -32,8 +16,7 @@ const BoxBusiness = ({ data, setData }) => {
   //   description = '-',
   //   media = [],
   // } = data;
->>>>>>> front-end-print
->>>>>>> front-end-se
+
 
   const [showDocs, setShowDocs] = useState(false);
   const [showGallery, setShowGallery] = useState(false);
@@ -55,8 +38,6 @@ const BoxBusiness = ({ data, setData }) => {
       console.error('Error updating status:', error);
     }
   };
-
-  
 
   return (
     <>

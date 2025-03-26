@@ -27,7 +27,8 @@ export const BusinessInformation = () => {
         category: "",
         verify: {
             status: "pending",
-            document: []
+            document: [],
+            description: "",
         }
     });
     const navigate = useNavigate();
@@ -83,37 +84,37 @@ export const BusinessInformation = () => {
 
             // const res = await postDataWithFiles("/businesses/", uploadDocument, dataForm, "businesses_verifies");
             const res = await postDataWithFiles("/businesses", [], dataForm, "businesses_verifies");
-            
+
             if (uploadDocument.length > 0) {
                 await postDataWithFiles(`/businesses/${res._id}/documents`, uploadDocument, null, "businesses_verifies");
-              }
-
-              if (uploadImages.length > 0) {
-                await postDataWithFiles(`/businesses/${res._id}/images`, uploadImages, null, "businesses_images");
-              }
-
-              await Promise.all(
-                topicBusines.map((item) => {
-                  const obj = {
-                    informationName: item,
-                    details: [String],
-                  };
-                  return postData(`/businesses/${res._id}/businessdetails`, obj);
-                })
-              );
-          
-              navigate("/profile/mainbusiness");
-            } catch (error) {
-              console.log(error);
             }
-          };
+
+            if (uploadImages.length > 0) {
+                await postDataWithFiles(`/businesses/${res._id}/images`, uploadImages, null, "businesses_images");
+            }
+
+            await Promise.all(
+                topicBusines.map((item) => {
+                    const obj = {
+                        informationName: item,
+                        details: [String],
+                    };
+                    return postData(`/businesses/${res._id}/businessdetails`, obj);
+                })
+            );
+
+            navigate("/profile/mainbusiness");
+        } catch (error) {
+            console.log(error);
+        }
+    };
 
     return (
         <div className="bg-white min-h-screen w-full max-w-[1200px] mx-auto">
             <div className="flex flex-5 w-full justify-center px-4 py-8 ">
                 <div className="w-full">
                     <div className="bg-white shadow-md rounded-lg overflow-hidden">
-                        <div className="bg-[#ff6600] text-white px-6 py-4">
+                        <div className="bg-gradient-to-r from-amber-600 to-amber-500 text-white px-6 py-4">
                             <div className="text-2xl font-bold">Business Information</div>
                         </div>
 
@@ -208,9 +209,9 @@ export const BusinessInformation = () => {
 
                             {/* upload Image */}
                             <UploadImageBlock
-  uploadImages={uploadImages}
-  setUploadImages={setUploadImages}
-/>
+                                uploadImages={uploadImages}
+                                setUploadImages={setUploadImages}
+                            />
 
 
                             <UploadDocumentBlock

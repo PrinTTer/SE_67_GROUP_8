@@ -120,8 +120,6 @@ const QuotationList = (prop) => {
                     status={item.status}
                     isEven={index % 2 === 0}
                     quotation={item}
-                    loading={loading}
-                    setLoading={setLoading}
                 />
             ))}
         </div>
@@ -129,8 +127,9 @@ const QuotationList = (prop) => {
 };
 
 const Quotationfield = (prop) => {
-    const { business, status, isEven, quotation, loading, setLoading, type, socketRef } = prop;
+    const { business, status, isEven, quotation, type, socketRef } = prop;
     const [details, setDetails] = useState({});
+    const [loading , setLoading] = useState(false);
     // Status styling
     const getStatusStyle = (status) => {
         switch (status.toLowerCase()) {
@@ -180,7 +179,8 @@ const Quotationfield = (prop) => {
                 </div>
                 <div className="flex justify-end gap-5 mr-20">
                     {
-                        type === "pending" ?
+                        !loading ? 
+                        (type === "pending" ?
                             status !== "offered" ?
                                 <QuotationEditBtn socketRef={socketRef} icon={faPenToSquare} type={type} popup="Edit" color="text-blue-500" business={details} quotation={quotation} /> :
                                 <QuotationEditBtn socketRef={socketRef} icon={faCoins} type={type} popup="Offer" color="text-yellow-500" business={details} quotation={quotation} fetch={fetch} />
@@ -193,9 +193,9 @@ const Quotationfield = (prop) => {
                                     <QuotationEditBtn socketRef={socketRef} icon={faReceipt} type={type} popup="Edit" color="text-blue-500" business={details} quotation={quotation} /> :
                                     <QuotationEditBtn socketRef={socketRef} icon={faReceipt} type={type} popup="Offer" color="text-gray-500" business={details} quotation={quotation} fetch={fetch} />
                             :
-                            <></>
-                        
-                        
+                            <></>)
+                        :
+                        (<></>)
                     }
                     <QuotationEditBtn socketRef={socketRef} icon={faTrash} type={type} popup="Delete" color="text-red-500" business={details} quotation={quotation} fetch={fetch} />
                 </div>

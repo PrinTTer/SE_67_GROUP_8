@@ -27,7 +27,7 @@ export const QuotationPopUp = (prop) => {
     const receiverId = business.business.userId;
     console.log("IN ===> ", receiverId);
     if (socket) {
-      socket.emit("sendRequest",{receiverId, status}); // ส่งข้อมูลไปยัง server ผ่าน WebSocket
+      socket.emit("sendRequest", { receiverId, status }); // ส่งข้อมูลไปยัง server ผ่าน WebSocket
     }
   };
 
@@ -35,32 +35,32 @@ export const QuotationPopUp = (prop) => {
     const socket = socketRef.current;
     const receiverId = quotation.userId;
     if (socket) {
-      socket.emit("sendRequest",{receiverId, status}); // ส่งข้อมูลไปยัง server ผ่าน WebSocket
+      socket.emit("sendRequest", { receiverId, status }); // ส่งข้อมูลไปยัง server ผ่าน WebSocket
     }
   }
 
   const setDefaultValues = () => {
     if (quotation) {
-      console.log(quotation);
+      const [province , subDistrict , district] = quotation.address ? quotation.address.split(",") : "";
       const data = {
         companyName: quotation.companyName,
-        province: "",
-        subDistrict: "",
-        district: "",
+        province: province,
+        subDistrict: subDistrict,
+        district: district,
         name: quotation.name,
-        phone: quotation.phoneNumber ,
-        email: quotation.email ,
-        date: quotation.date ,
-        description: quotation.description ,
-        items: quotation.servicesDetails ,
+        phone: quotation.phoneNumber,
+        email: quotation.email,
+        date: quotation.date,
+        description: quotation.description,
+        items: quotation.servicesDetails,
       }
       setFormData(data);
     }
   }
-  
-  useEffect(()=>{
+
+  useEffect(() => {
     setDefaultValues();
-  },[])
+  }, [])
 
 
   const handleChange = (e, index = null, field = null) => {
@@ -91,7 +91,7 @@ export const QuotationPopUp = (prop) => {
   const calculateTotal = () => {
     return formData.items.reduce((sum, item) => sum + (parseFloat(item.amount) || 0), 0);
   };
-  
+
   const navigate = useNavigate();
   const handleSubmit = async () => {
     try {
@@ -99,39 +99,39 @@ export const QuotationPopUp = (prop) => {
         alert("กรุณากรอกข้อมูลสำคัญให้ครบถ้วน!");
         // return;
       }
-      
+
       const status = (
-        popup === "Offer" && type === "pending" ? "complete" 
-        : popup === "Edit" && type === "pending" ? "pending" 
-        : popup === "Edit" && type === "received" ? "offered"
-        : "pending"
+        popup === "Offer" && type === "pending" ? "complete"
+          : popup === "Edit" && type === "pending" ? "pending"
+            : popup === "Edit" && type === "received" ? "offered"
+              : "pending"
       );
       const sendData = {
-          toBusinessId : serviceBusiness[0].businessId,
-          name : formData.name,
-          address : formData.address,
-          companyName : formData.companyName,
-          email : formData.email,
-          phoneNumber : formData.phone,
-          description : formData.description,
-          servicesDetails : formData.items,
-          status : status
+        toBusinessId: serviceBusiness[0].businessId,
+        name: formData.name,
+        address: formData.subDistrict + "," + formData.district + "," + formData.province,
+        companyName: formData.companyName,
+        email: formData.email,
+        phoneNumber: formData.phone,
+        description: formData.description,
+        servicesDetails: formData.items,
+        status: status
       }
-      
-      if(!quotation){
-        await postData(`/quotations` , sendData);
-        sendQuotationSocket({request : "Create"});
+
+      if (!quotation) {
+        await postData(`/quotations`, sendData);
+        sendQuotationSocket({ request: "Create" });
         navigate("/quotation");
-      }else if(popup === "Edit") {
+      } else if (popup === "Edit") {
         console.log(sendData);
-        await putData(`/quotations/${quotation._id}` , sendData);
-        sendQuotationSocket({request : "Create"});
-        sendQuotationSocketToPender({request : "Create"});
+        await putData(`/quotations/${quotation._id}`, sendData);
+        sendQuotationSocket({ request: "Create" });
+        sendQuotationSocketToPender({ request: "Create" });
         onClose();
-      }else if(popup === "Offer") {
-        await putData(`/quotations/${quotation._id}` , sendData);
-        sendQuotationSocket({request : "Create"});
-        sendQuotationSocketToPender({request : "Create"});
+      } else if (popup === "Offer") {
+        await putData(`/quotations/${quotation._id}`, sendData);
+        sendQuotationSocket({ request: "Create" });
+        sendQuotationSocketToPender({ request: "Create" });
         onClose();
       }
     } catch (error) {
@@ -139,7 +139,7 @@ export const QuotationPopUp = (prop) => {
     }
   };
 
-  const formatCurrency = (amount , item) => {
+  const formatCurrency = (amount, item) => {
     return new Intl.NumberFormat('th-TH', { style: 'currency', currency: 'THB' }).format(amount);
   };
 
@@ -149,8 +149,8 @@ export const QuotationPopUp = (prop) => {
         {/* Header with gradient background */}
         <div className="absolute top-0 left-0 right-0 h-16 bg-gradient-to-r from-orange-500 to-amber-500 rounded-t-xl flex items-center px-8">
           <h2 className="text-2xl font-bold text-white">ใบเสนอราคา (Quotation)</h2>
-          <button 
-            onClick={onClose} 
+          <button
+            onClick={onClose}
             className="absolute right-4 top-4 text-white hover:text-gray-200 transition-colors"
           >
             <FontAwesomeIcon icon={faTimes} className="text-xl" />
@@ -167,29 +167,29 @@ export const QuotationPopUp = (prop) => {
               <div className="col-span-2">
                 {
                   (popup === "Offer" && type === "pending") || type === "received" || type === "complete" ?
-                  (<input
-                    type="text"
-                    name="companyName"
-                    placeholder="ชื่อบริษัท *"
-                    readOnly
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-300 focus:border-orange-500 outline-none transition-all"
-                    value={formData.companyName || ""}
-                    onChange={handleChange}
-                  />) 
-                  :
-                  (<input
-                    type="text"
-                    name="companyName"
-                    placeholder="ชื่อบริษัท *"
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-300 focus:border-orange-500 outline-none transition-all"
-                    value={formData.companyName || ""}
-                    onChange={handleChange}
-                  />)
+                    (<input
+                      type="text"
+                      name="companyName"
+                      placeholder="ชื่อบริษัท *"
+                      readOnly
+                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-300 focus:border-orange-500 outline-none transition-all"
+                      value={formData.companyName || ""}
+                      onChange={handleChange}
+                    />)
+                    :
+                    (<input
+                      type="text"
+                      name="companyName"
+                      placeholder="ชื่อบริษัท *"
+                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-300 focus:border-orange-500 outline-none transition-all"
+                      value={formData.companyName || ""}
+                      onChange={handleChange}
+                    />)
                 }
-                
+
               </div>
               {
-                  (popup === "Offer" && type === "pending") || type === "received" || type === "complete" ?
+                (popup === "Offer" && type === "pending") || type === "received" || type === "complete" ?
                   (<input
                     type="text"
                     name="province"
@@ -198,7 +198,7 @@ export const QuotationPopUp = (prop) => {
                     className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-300 focus:border-orange-500 outline-none transition-all"
                     value={formData.province || ""}
                     onChange={handleChange}
-                  />) 
+                  />)
                   :
                   (<input
                     type="text"
@@ -208,10 +208,10 @@ export const QuotationPopUp = (prop) => {
                     value={formData.province || ""}
                     onChange={handleChange}
                   />)
-                }
-              
+              }
+
               {
-                  (popup === "Offer" && type === "pending") || type === "received" || type === "complete" ?
+                (popup === "Offer" && type === "pending") || type === "received" || type === "complete" ?
                   (<input
                     type="text"
                     name="district"
@@ -220,7 +220,7 @@ export const QuotationPopUp = (prop) => {
                     className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-300 focus:border-orange-500 outline-none transition-all"
                     value={formData.district || ""}
                     onChange={handleChange}
-                  />) 
+                  />)
                   :
                   (<input
                     type="text"
@@ -230,9 +230,9 @@ export const QuotationPopUp = (prop) => {
                     value={formData.district || ""}
                     onChange={handleChange}
                   />)
-                }
+              }
               {
-                  (popup === "Offer" && type === "pending") || type === "received" || type === "complete" ?
+                (popup === "Offer" && type === "pending") || type === "received" || type === "complete" ?
                   (<input
                     type="text"
                     name="subDistrict"
@@ -241,7 +241,7 @@ export const QuotationPopUp = (prop) => {
                     className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-300 focus:border-orange-500 outline-none transition-all"
                     value={formData.subDistrict || ""}
                     onChange={handleChange}
-                  />) 
+                  />)
                   :
                   (<input
                     type="text"
@@ -251,8 +251,8 @@ export const QuotationPopUp = (prop) => {
                     value={formData.subDistrict || ""}
                     onChange={handleChange}
                   />)
-                }
-            
+              }
+
             </div>
           </div>
 
@@ -262,69 +262,69 @@ export const QuotationPopUp = (prop) => {
             <div className="grid grid-cols-2 gap-4">
               {
                 (popup === "Offer" && type === "pending") || type === "received" || type === "complete" ?
-                (<input
-                  type="text"
-                  name="name"
-                  placeholder="ชื่อผู้ติดต่อ *"
-                  readOnly
-                  className="p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-300 focus:border-orange-500 outline-none transition-all"
-                  value={formData.name || ""}
-                  onChange={handleChange}
-                />)
-                :
-                (<input
-                  type="text"
-                  name="name"
-                  placeholder="ชื่อผู้ติดต่อ *"
-                  className="p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-300 focus:border-orange-500 outline-none transition-all"
-                  value={formData.name || ""}
-                  onChange={handleChange}
-                />)
+                  (<input
+                    type="text"
+                    name="name"
+                    placeholder="ชื่อผู้ติดต่อ *"
+                    readOnly
+                    className="p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-300 focus:border-orange-500 outline-none transition-all"
+                    value={formData.name || ""}
+                    onChange={handleChange}
+                  />)
+                  :
+                  (<input
+                    type="text"
+                    name="name"
+                    placeholder="ชื่อผู้ติดต่อ *"
+                    className="p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-300 focus:border-orange-500 outline-none transition-all"
+                    value={formData.name || ""}
+                    onChange={handleChange}
+                  />)
               }
-          
+
               {
                 (popup === "Offer" && type === "pending") || type === "received" || type === "complete" ?
-                (<input
-                  type="text"
-                  name="phone"
-                  placeholder="เบอร์โทรศัพท์ *"
-                  readOnly
-                  className="p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-300 focus:border-orange-500 outline-none transition-all"
-                  value={formData.phone || ""}
-                  onChange={handleChange}
-                />)
-                :
-                (<input
-                  type="text"
-                  name="phone"
-                  placeholder="เบอร์โทรศัพท์ *"
-                  className="p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-300 focus:border-orange-500 outline-none transition-all"
-                  value={formData.phone || ""}
-                  onChange={handleChange}
-                />)
+                  (<input
+                    type="text"
+                    name="phone"
+                    placeholder="เบอร์โทรศัพท์ *"
+                    readOnly
+                    className="p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-300 focus:border-orange-500 outline-none transition-all"
+                    value={formData.phone || ""}
+                    onChange={handleChange}
+                  />)
+                  :
+                  (<input
+                    type="text"
+                    name="phone"
+                    placeholder="เบอร์โทรศัพท์ *"
+                    className="p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-300 focus:border-orange-500 outline-none transition-all"
+                    value={formData.phone || ""}
+                    onChange={handleChange}
+                  />)
               }
               {
                 (popup === "Offer" && type === "pending") || type === "received" || type === "complete" ?
-                (<input
-                  type="email"
-                  name="email"
-                  placeholder="อีเมล *"
-                  readOnly
-                  className="col-span-2 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-300 focus:border-orange-500 outline-none transition-all"
-                  value={formData.email || ""}
-                  onChange={handleChange}
-                />)
-                :
-                (<input
-                  type="email"
-                  name="email"
-                  placeholder="อีเมล *"
-                  className="col-span-2 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-300 focus:border-orange-500 outline-none transition-all"
-                  value={formData.email || ""}
-                  onChange={handleChange}
-                />)
+                  (<input
+                    type="email"
+                    name="email"
+                    placeholder="อีเมล *"
+                    readOnly
+                    className="col-span-2 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-300 focus:border-orange-500 outline-none transition-all"
+                    value={formData.email || ""}
+                    onChange={handleChange}
+                  />)
+                  :
+                  (<input
+                    type="email"
+                    name="email"
+                    placeholder="อีเมล *"
+                    className="col-span-2 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-300 focus:border-orange-500 outline-none transition-all"
+                    value={formData.email || ""}
+                    onChange={handleChange}
+                  />)
               }
-          
+
             </div>
           </div>
 
@@ -333,27 +333,27 @@ export const QuotationPopUp = (prop) => {
             <h3 className="font-semibold text-gray-700 mb-2 border-b border-orange-300 pb-1">รายละเอียดเพิ่มเติม</h3>
             <div className="grid grid-cols-1 gap-4">
               {
-                (popup === "Offer" && type === "pending") || type === "received" || type === "complete" ? 
-                (<textarea
-                  type="text"
-                  name="description"
-                  placeholder="ข้อมูลเพิ่มเติม *"
-                  readOnly
-                  className="p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-300 focus:border-orange-500 outline-none transition-all"
-                  value={formData.description || ""}
-                  onChange={handleChange}
-                />)
-                :
-                (<textarea
-                  type="text"
-                  name="description"
-                  placeholder="ข้อมูลเพิ่มเติม *"
-                  className="p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-300 focus:border-orange-500 outline-none transition-all"
-                  value={formData.description || ""}
-                  onChange={handleChange}
-                />)
+                (popup === "Offer" && type === "pending") || type === "received" || type === "complete" ?
+                  (<textarea
+                    type="text"
+                    name="description"
+                    placeholder="ข้อมูลเพิ่มเติม *"
+                    readOnly
+                    className="p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-300 focus:border-orange-500 outline-none transition-all"
+                    value={formData.description || ""}
+                    onChange={handleChange}
+                  />)
+                  :
+                  (<textarea
+                    type="text"
+                    name="description"
+                    placeholder="ข้อมูลเพิ่มเติม *"
+                    className="p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-300 focus:border-orange-500 outline-none transition-all"
+                    value={formData.description || ""}
+                    onChange={handleChange}
+                  />)
               }
-              
+
             </div>
           </div>
 
@@ -378,13 +378,13 @@ export const QuotationPopUp = (prop) => {
                   <tbody>
                     {formData.items.map((item, index) => (
                       <tr key={index} className={index % 2 === 0 ? "bg-white" : "bg-orange-50"}>
-                        <>{console.log("item-->" ,item)}</>
+                        <>{console.log("item-->", item)}</>
                         <td className="p-3">
                           <ServiceDropdown
                             data={serviceBusiness}
                             popup={popup}
                             type={type}
-                            defaultValue={formData.items[index]?.serviceId} 
+                            defaultValue={formData.items[index]?.serviceId}
                             onSelect={(value) => {
                               const updatedItems = [...formData.items];
                               updatedItems[index].serviceId = value;
@@ -394,56 +394,56 @@ export const QuotationPopUp = (prop) => {
                         </td>
                         <td className="p-3">
                           {
-                            popup === "Offer" && type === "pending" || type === "complete" || type === "received" ? 
-                            (<input
-                              type="number"
-                              value={item.quantity || ""}
-                              readOnly
-                              onChange={(e) => handleChange(e, index, "quantity")}
-                              className="w-full p-2 border border-gray-300 rounded text-center bg-white focus:ring-2 focus:ring-orange-300 focus:border-orange-500 outline-none transition-all"
-                            />)
-                            :
-                            (<input
-                              type="number"
-                              value={item.quantity || ""}
-                              onChange={(e) => handleChange(e, index, "quantity")}
-                              className="w-full p-2 border border-gray-300 rounded text-center bg-white focus:ring-2 focus:ring-orange-300 focus:border-orange-500 outline-none transition-all"
-                            />)
+                            popup === "Offer" && type === "pending" || type === "complete" || type === "received" ?
+                              (<input
+                                type="number"
+                                value={item.quantity || ""}
+                                readOnly
+                                onChange={(e) => handleChange(e, index, "quantity")}
+                                className="w-full p-2 border border-gray-300 rounded text-center bg-white focus:ring-2 focus:ring-orange-300 focus:border-orange-500 outline-none transition-all"
+                              />)
+                              :
+                              (<input
+                                type="number"
+                                value={item.quantity || ""}
+                                onChange={(e) => handleChange(e, index, "quantity")}
+                                className="w-full p-2 border border-gray-300 rounded text-center bg-white focus:ring-2 focus:ring-orange-300 focus:border-orange-500 outline-none transition-all"
+                              />)
                           }
-                          
+
                         </td>
                         <td className="p-3">
                           {
-                            popup === "Offer" || !popup && !type ?  
-                            (<input
-                              type="number"
-                              value={item.price || ""}
-                              readOnly
-                              onChange={(e) => handleChange(e, index, "price")}
-                              className="w-full p-2 border border-gray-300 rounded text-center bg-white focus:ring-2 focus:ring-orange-300 focus:border-orange-500 outline-none transition-all"
-                            />)
-                            :
-                            type === "pending" ?
-                            (<input
-                              type="number"
-                              value={item.price || ""}
-                              readOnly
-                              onChange={(e) => handleChange(e, index, "price")}
-                              className="w-full p-2 border border-gray-300 rounded text-center bg-white focus:ring-2 focus:ring-orange-300 focus:border-orange-500 outline-none transition-all"
-                            />)
-                            :
-                            (<input
-                              type="number"
-                              value={item.price || ""}
-                              onChange={(e) => handleChange(e, index, "price")}
-                              className="w-full p-2 border border-gray-300 rounded text-center bg-white focus:ring-2 focus:ring-orange-300 focus:border-orange-500 outline-none transition-all"
-                            />)
+                            popup === "Offer" || !popup && !type ?
+                              (<input
+                                type="number"
+                                value={item.price || ""}
+                                readOnly
+                                onChange={(e) => handleChange(e, index, "price")}
+                                className="w-full p-2 border border-gray-300 rounded text-center bg-white focus:ring-2 focus:ring-orange-300 focus:border-orange-500 outline-none transition-all"
+                              />)
+                              :
+                              type === "pending" ?
+                                (<input
+                                  type="number"
+                                  value={item.price || ""}
+                                  readOnly
+                                  onChange={(e) => handleChange(e, index, "price")}
+                                  className="w-full p-2 border border-gray-300 rounded text-center bg-white focus:ring-2 focus:ring-orange-300 focus:border-orange-500 outline-none transition-all"
+                                />)
+                                :
+                                (<input
+                                  type="number"
+                                  value={item.price || ""}
+                                  onChange={(e) => handleChange(e, index, "price")}
+                                  className="w-full p-2 border border-gray-300 rounded text-center bg-white focus:ring-2 focus:ring-orange-300 focus:border-orange-500 outline-none transition-all"
+                                />)
                           }
                         </td>
                         <td className="p-3">
                           <input
                             type="text"
-                            value={item.amount ? formatCurrency(item.amount,item) : ""}
+                            value={item.amount ? formatCurrency(item.amount, item) : ""}
                             readOnly
                             className="w-full p-2 border border-gray-200 rounded text-center bg-gray-50"
                           />
@@ -451,16 +451,16 @@ export const QuotationPopUp = (prop) => {
                         <td className="p-3 text-center">
                           {
                             popup === "Offer" || type === "complete" ?
-                            (<></>)
-                            :
-                            (<button
-                              onClick={() => removeRow(index)}
-                              className="text-white bg-red-500 hover:bg-red-600 w-8 h-8 flex items-center justify-center rounded-full transition-colors"
-                            >
-                              <FontAwesomeIcon icon={faTimes} />
-                            </button>)
+                              (<></>)
+                              :
+                              (<button
+                                onClick={() => removeRow(index)}
+                                className="text-white bg-red-500 hover:bg-red-600 w-8 h-8 flex items-center justify-center rounded-full transition-colors"
+                              >
+                                <FontAwesomeIcon icon={faTimes} />
+                              </button>)
                           }
-                          
+
                         </td>
                       </tr>
                     ))}
@@ -470,14 +470,14 @@ export const QuotationPopUp = (prop) => {
             </div>
             {
               popup === "Offer" && type === "pending" || type === "complete" || type === "received" ?
-              (<></>)
-              :
-              (<button 
-                onClick={addRow} 
-                className="mt-3 flex items-center text-orange-500 hover:text-orange-600 font-medium transition-colors"
-              >
-                <FontAwesomeIcon icon={faPlus} className="mr-1" /> เพิ่มรายการ
-              </button>)
+                (<></>)
+                :
+                (<button
+                  onClick={addRow}
+                  className="mt-3 flex items-center text-orange-500 hover:text-orange-600 font-medium transition-colors"
+                >
+                  <FontAwesomeIcon icon={faPlus} className="mr-1" /> เพิ่มรายการ
+                </button>)
             }
           </div>
 
@@ -486,28 +486,28 @@ export const QuotationPopUp = (prop) => {
             <div className="text-xl font-bold text-gray-800">
               ยอดรวมทั้งสิ้น: <span className="text-orange-600">{formatCurrency(calculateTotal())}</span>
             </div>
-            
+
             <div className="flex gap-3 mt-4 sm:mt-0">
-              <button 
-                onClick={onClose} 
+              <button
+                onClick={onClose}
                 className="px-5 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors font-medium"
               >
                 ยกเลิก
               </button>
               {
                 popup === "Offer" && type === "received" ?
-                (<></>)
-                : type === "complete" ?
-                (<></>)
-                : 
-                (<button 
-                  onClick={handleSubmit} 
-                  className="px-5 py-2 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-lg hover:from-orange-600 hover:to-amber-600 transition-colors shadow-md font-medium"
-                >
-                  {popup === "Offer" && type === "pending" ? "ชำระเงิน" : type === "received" && popup === "Edit" ? "เสนอราคา"  : "บันทึกข้อมูล"}
-                </button>)
+                  (<></>)
+                  : type === "complete" ?
+                    (<></>)
+                    :
+                    (<button
+                      onClick={handleSubmit}
+                      className="px-5 py-2 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-lg hover:from-orange-600 hover:to-amber-600 transition-colors shadow-md font-medium"
+                    >
+                      {popup === "Offer" && type === "pending" ? "ชำระเงิน" : type === "received" && popup === "Edit" ? "เสนอราคา" : "บันทึกข้อมูล"}
+                    </button>)
               }
-              
+
             </div>
           </div>
         </div>

@@ -58,7 +58,7 @@ export const BusinessInformation = () => {
     useEffect(() => {
         setDataForm((prev) => ({
             ...prev,
-            address: `${address.value} ${subDistrict.value} ${district.value} ${province.value} ${postalCode.value}`,
+            address: `${address.value},${subDistrict.value},${district.value},${province.value},${postalCode.value}`,
             category: category,
         }));
     }, [category, address, subDistrict, district, province, postalCode])

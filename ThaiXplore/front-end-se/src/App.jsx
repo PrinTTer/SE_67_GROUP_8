@@ -37,7 +37,7 @@ function App() {
   const currentPath = useSelector((state) => state.path.currentPath);
   const { user } = useSelector((state) => state.auth);
   const [isNaviOpen , setIsNaviOpen] = useState(false);
-
+  
   const openNavi = () => {
     setIsNaviOpen(!isNaviOpen);
   }

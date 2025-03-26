@@ -11,12 +11,15 @@ import { useState, useEffect } from 'react';
 
 import LoadingSpinner from '../../components/LoadingSpinner';
 import { fetchData } from '../../services/apiService';
+import useSocket from '../../hooks/useSocket';
+import { useSelector } from 'react-redux';
 
 
 function Detail() {
   const { id } = useParams()
   const business = getBusiness("Hotel A")
- 
+  const { user } = useSelector((state) => state.auth);
+  const socketRef = useSocket(user);
   const [show, setShow] = useState(true)
   const [showPopup, setShowPopup] = useState(false);
   const safeDateGMT7 = (dateString) => {
@@ -113,7 +116,7 @@ function Detail() {
                 <p>Request Quotation</p>
               </div>
             </Link>
-            {showPopup && <QuotationPopUp onClose={() => setShowPopup(false)} business={data} serviceBusiness={data?.services}/>}
+            {showPopup && <QuotationPopUp socketRef={socketRef} onClose={() => setShowPopup(false)} business={data} serviceBusiness={data?.services}/>}
 
 
 

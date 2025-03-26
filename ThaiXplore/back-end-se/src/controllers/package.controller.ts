@@ -1,7 +1,7 @@
 import express from "express";
 import { get } from "lodash";
 import { getUserById } from "../models/users";
-import { createPackage, deletePackage, getPackageById, getPackages } from "../models/package";
+import { createPackage, deletePackage, getPackageById, getPackages ,getPackagesByBusinessId} from "../models/package";
 import path from "path";
 import fs from "fs";
 
@@ -149,3 +149,23 @@ export const getPackage = async (req:express.Request , res:express.Response):Pro
         return res.sendStatus(400);
     }
 }
+
+export const getAllPackagesbyBussinessId = async (
+    req: express.Request,
+    res: express.Response
+  ): Promise<any> => {
+    try {
+      const { businessId } = req.params;
+  
+      if (!businessId) {
+        return res.sendStatus(400);
+      }
+  
+      const packages = await getPackagesByBusinessId(businessId);
+  
+      return res.status(200).json(packages);
+    } catch (error) {
+      console.log(error);
+      return res.sendStatus(400);
+    }
+  };

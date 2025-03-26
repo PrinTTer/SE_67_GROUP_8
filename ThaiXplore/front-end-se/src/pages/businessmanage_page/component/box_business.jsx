@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFileLines, faCheck, faTimes, faImage } from '@fortawesome/free-solid-svg-icons';
 import { putData } from '../../../services/apiService';
@@ -7,7 +7,7 @@ import PictureShow from './picture_show';
 
 const BoxBusiness = (prop) => {
   const { data } = prop
-  const {
+    const {
     businessName = '-',
     category = '-',
     address = '-',

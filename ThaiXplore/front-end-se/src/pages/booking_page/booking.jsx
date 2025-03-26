@@ -35,8 +35,6 @@ const Booking = () => {
                 }
             }
             fetchPackage();
-        }else if(category === "quotation"){
-            
         }
         
     }, []);

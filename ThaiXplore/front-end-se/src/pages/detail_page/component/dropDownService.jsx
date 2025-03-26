@@ -4,6 +4,7 @@ export const ServiceDropdown = ({ data, onSelect, defaultValue, type, popup }) =
   const [selectedService, setSelectedService] = useState(defaultValue || ""); // ใช้ค่าเริ่มต้น
 
   let detailKey = "";
+
   if (Object.keys(data[0]).includes("roomType")) {
     detailKey = "roomType";
   } else if (Object.keys(data[0]).includes("carBrand")) {
@@ -13,6 +14,7 @@ export const ServiceDropdown = ({ data, onSelect, defaultValue, type, popup }) =
   } else if (Object.keys(data[0]).includes("ticketType")) {
     detailKey = "ticketType";
   }
+
 
   useEffect(() => {
     setSelectedService(defaultValue || "");
@@ -27,33 +29,33 @@ export const ServiceDropdown = ({ data, onSelect, defaultValue, type, popup }) =
   return (
     <div className="w-full p-1 text-center">
       {
-        (popup === "Offer" && type === "pending") || type === "received" || type === "complete" ? 
-        (<select
-          className="p-1 border bg-white rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
-          value={selectedService}
-          disabled
-          onChange={handleSelectChange}
-        >
-          <option value="">Select Service</option>
-          {data.map((service) => (
-            <option key={service._id} value={service._id}>
-              {service[detailKey]}
-            </option>
-          ))}
-        </select>)
-        :
-        (<select
-          className="p-1 border bg-white rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
-          value={selectedService}
-          onChange={handleSelectChange}
-        >
-          <option value="">Select Service</option>
-          {data.map((service) => (
-            <option key={service._id} value={service._id}>
-              {service[detailKey]}
-            </option>
-          ))}
-        </select>)
+        (popup === "Offer" && type === "pending") || type === "received" || type === "complete" ?
+          (<select
+            className="p-1 border bg-white rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+            value={selectedService}
+            disabled
+            onChange={handleSelectChange}
+          >
+            <option value="">Select Service</option>
+            {data.map((service) => (
+              <option key={service._id} value={service._id}>
+                {service[detailKey]}
+              </option>
+            ))}
+          </select>)
+          :
+          (<select
+            className="p-1 border bg-white rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+            value={selectedService}
+            onChange={handleSelectChange}
+          >
+            <option value="">Select Service</option>
+            {data.map((service) => (
+              <option key={service._id} value={service._id}>
+                {service[detailKey]}
+              </option>
+            ))}
+          </select>)
       }
     </div>
   );

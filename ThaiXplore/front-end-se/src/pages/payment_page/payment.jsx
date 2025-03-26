@@ -2,23 +2,22 @@ import { useState } from "react";
 import BookingDetail from "../booking_page/component/bookingDetail";
 import { useLocation, useNavigate } from "react-router-dom";
 import { PaymentUserDetail } from "./component/paymentUserDetail";
-import { postData } from "../../services/apiService";
+import { postData, putData } from "../../services/apiService";
+import useSocket from "../../hooks/useSocket";
+import { useSelector } from "react-redux";
 
 const Payment = () => {
     const location = useLocation();
-    const { bookingData, item, category, method , bookingDetail } = location.state || {};
+    const { user } = useSelector((state) => state.auth);
+    const { bookingData, item, category, method, bookingDetail } = location.state || {};
     const navigate = useNavigate();
-
+    const socketRef = useSocket(user); // เชื่อมต่อกับ WebSocket
     // สร้าง state สำหรับฟอร์มข้อมูลการชำระเงิน
-    const [cardName, setCardName] = useState(""); 
-    const [cardNumber, setCardNumber] = useState(""); 
-    const [validUntil, setValidUntil] = useState(""); 
+    const [cardName, setCardName] = useState("");
+    const [cardNumber, setCardNumber] = useState("");
+    const [validUntil, setValidUntil] = useState("");
     const [cvc, setCvc] = useState("");
 
-    
-
-    console.log("item: ", item);
-    console.log("pay with: ", method);
 
     // เตรียมข้อมูลที่จะส่งไปยัง API
     const formData = {
@@ -40,16 +39,44 @@ const Payment = () => {
         ]
     };
 
+    const sendQuotationSocket = (status) => {
+        const socket = socketRef.current;
+        const receiverId = bookingDetail.user_Id;
+        if (socket) {
+            socket.emit("sendRequest", { receiverId, status }); // ส่งข้อมูลไปยัง server ผ่าน WebSocket
+        }
+    };
+
+    const sendQuotationSocketToPender = (status) => {
+        const socket = socketRef.current;
+        const receiverId = item.quotation.userId;
+        if (socket) {
+            socket.emit("sendRequest", { receiverId, status }); // ส่งข้อมูลไปยัง server ผ่าน WebSocket
+        }
+    }
+
     // ฟังก์ชันสำหรับ handle การกดยืนยันการชำระเงิน
     const handleConfirmPayment = async () => {
         try {
-            // ส่งข้อมูลไปที่ API เพื่อบันทึกข้อมูลการจอง
-            const response = await postData('/bookings', formData);
-            // const response = formData;
-            console.log('Payment confirmed:', response);
-    
-            // Redirect ไปยังหน้าที่ต้องการหลังจากการชำระเงินสำเร็จ
-            navigate('/history');
+            const sendData = {
+                transaction: {
+                    transactionDate: new Date().toISOString(),
+                    paymentMethod: method
+                },
+                status : "complete"
+            };
+            if (Array.isArray(item.services)) {
+                const response = await putData(`/quotations/${item?.quotation._id}`, sendData);
+                console.log(response);
+                sendQuotationSocket({ request: "Create" });
+                sendQuotationSocketToPender({ request: "Create" });
+                navigate('/quotation');
+            } else {
+                const response = await postData('/bookings', formData);
+                console.log('Payment confirmed:', response);
+
+                navigate('/history');
+            }
         } catch (error) {
             console.error('Error confirming payment:', error);
         }
@@ -71,7 +98,7 @@ const Payment = () => {
                                 <PaymentForm label={"Name on Card"} word={"Sutthipat Pramnoi"} value={cardName} setValue={setCardName} />
                             </div>
                             <div className="col-span-3">
-                                <PaymentForm label={"Credit Card Number"} word={"XXXX XXXX XXXX XXXX"} value={cardNumber} setValue={setCardNumber} limit={16}/>
+                                <PaymentForm label={"Credit Card Number"} word={"XXXX XXXX XXXX XXXX"} value={cardNumber} setValue={setCardNumber} limit={16} />
                             </div>
                             <div>
                                 <PaymentForm label={"Valid Until"} word={"MM/YY"} value={validUntil} setValue={setValidUntil} />
@@ -81,7 +108,7 @@ const Payment = () => {
                             </div>
                         </div>
                     </div>
-                    
+
                     <div className="flex flex-[2.5] flex-col border border-gray-100 rounded-lg shadow-md overflow-hidden">
                         <div className="w-auto bg-gradient-to-r from-amber-500 to-amber-600 px-6 py-4">
                             <h1 className="font-bold text-xl text-white">Customer Details</h1>
@@ -92,14 +119,16 @@ const Payment = () => {
                             </div>
                         </div>
                     </div>
-                    
+
                     <div className="flex flex-1 flex-col border border-gray-100 rounded-lg shadow-md overflow-hidden">
                         <div className="flex flex-1 justify-between items-center px-6 py-4 border-b border-gray-100">
                             <h1 className="font-bold text-xl text-gray-800">Total Amount</h1>
-                            <h1 className="font-bold text-xl text-amber-600">THB {item?.price} ฿</h1>
+                            <h1 className="font-bold text-xl text-amber-600">THB {
+                                Array.isArray(item?.services) ? item.quotation.total : item?.price * bookingDetail.bookingAmount
+                            }  ฿</h1>
                         </div>
                         <div className="flex flex-1 justify-center items-center p-6">
-                            <button 
+                            <button
                                 onClick={handleConfirmPayment}  // เรียกใช้งานฟังก์ชัน confirm payment
                                 className="flex justify-center items-center w-1/2 py-4 bg-gradient-to-r from-amber-500 to-amber-600 rounded-lg hover:from-amber-600 hover:to-amber-700 transition-all duration-300 shadow-md"
                             >
@@ -121,7 +150,7 @@ export const PaymentForm = (prop) => {
     return (
         <div className="flex flex-col">
             <label className="font-medium text-gray-700 mb-1">{label}</label>
-            <input 
+            <input
                 type="text"
                 className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all duration-200"
                 placeholder={word}

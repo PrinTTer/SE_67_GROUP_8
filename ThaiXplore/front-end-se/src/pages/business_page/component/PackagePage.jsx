@@ -3,6 +3,7 @@ import {
   postData,
   fetchData,
   postDataWithFiles,
+  putData
 } from "../../../services/apiService";
 import {
   faPlusCircle,
@@ -24,18 +25,20 @@ export const PackageBlock = ({ businessId, userId }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    const loadQuotations = async () => {
+    const loadQuotationsAndPackages = async () => {
       setIsLoading(true);
       try {
+        // 1. Quotations
         const all = await fetchData("/quotations");
         const filtered = all.filter((q) => q.userId === userId);
         setQuotations(filtered);
-
+  
+        // 2. Services
         const businessIds = [...new Set(filtered.map((q) => q.toBusinessId))];
         const businesses = await Promise.all(
           businessIds.map((id) => fetchData(`/businesses/${id}`))
         );
-
+  
         const servicesWithDetails = businesses.flatMap((b) =>
           b.services.map((s) => ({
             ...s,
@@ -45,15 +48,33 @@ export const PackageBlock = ({ businessId, userId }) => {
           }))
         );
         setServiceDetails(servicesWithDetails);
+  
+        // 3. ✅ Packages ของ business นี้
+        const res = await fetchData(`/packages/business/${businessId}`);
+        const existingPackages = res.map((pkg) => ({
+          id: pkg._id,
+          data: {
+            ...pkg,
+            media: [], // ยังไม่ load ไฟล์จริง
+          },
+        }));
+  
+        // 4. Set เข้า state
+        setPackages(
+          existingPackages.length > 0
+            ? existingPackages
+            : [{ id: Date.now(), data: getEmptyPackage() }]
+        );
       } catch (err) {
-        console.error("Error fetching quotations or services:", err);
+        console.error("Error loading data:", err);
       } finally {
         setIsLoading(false);
       }
     };
-
-    if (businessId && userId) loadQuotations();
+  
+    if (businessId && userId) loadQuotationsAndPackages();
   }, [businessId, userId]);
+  
 
   const addPackage = () => {
     setPackages([...packages, { id: Date.now(), data: getEmptyPackage() }]);
@@ -72,52 +93,60 @@ export const PackageBlock = ({ businessId, userId }) => {
   const handleSubmit = async () => {
     setIsLoading(true);
     try {
-      const pkg = packages[0].data;
-
-      const payload = {
-        title: pkg.title,
-        description: pkg.description,
-        media: [],
-        dateCreate: new Date().toISOString(),
-        startDate: pkg.startDate,
-        endDate: pkg.endDate,
-        totalExpirationDate: pkg.totalExpirationDate,
-        price: pkg.price,
-        totalPackage: pkg.totalPackage,
-        services: pkg.services.map((s) => ({
-          quotationId: s.quotationId,
-          serviceId: s.serviceId,
-          businessId: s.businessId,
-        })),
-      };
-
-      // POST to create Package first
-      const newPackage = await postData(
-        `/businesses/${businessId}/packages`,
-        payload
-      );
-      const packageId = newPackage._id;
-      console.log("Package created:", packageId);
-
-      // POST images if available
-      if (pkg.media && pkg.media.length > 0) {
-        await postDataWithFiles(
-          `/packages/${packageId}/images`,
-          pkg.media,
-          {}, // No additional data
-          "services_packages" // title
-        );
-        console.log("Images uploaded successfully");
+      for (const pkg of packages) {
+        const data = pkg.data;
+        const payload = {
+          title: data.title,
+          description: data.description,
+          media: [],
+          dateCreate: data.dateCreate || new Date().toISOString(),
+          startDate: data.startDate,
+          endDate: data.endDate,
+          totalExpirationDate: data.totalExpirationDate,
+          price: data.price,
+          totalPackage: data.totalPackage,
+          services: data.services.map((s) => ({
+            quotationId: s.quotationId,
+            serviceId: s.serviceId,
+            businessId: s.businessId,
+          })),
+        };
+  
+        let packageId = pkg.id;
+        const isExisting = typeof packageId === "string" && packageId.length === 24;
+  
+        if (isExisting) {
+          await putData(`/packages/${packageId}`, payload);
+          console.log(`Updated package ${packageId}`);
+        } else {
+          const newPkg = await postData(
+            `/businesses/${businessId}/packages`,
+            payload
+          );
+          packageId = newPkg._id;
+          console.log(`Created package ${packageId}`);
+        }
+  
+        if (data.media && data.media.length > 0) {
+          await postDataWithFiles(
+            `/packages/${packageId}/images`,
+            data.media,
+            {},
+            "services_packages"
+          );
+          console.log("Uploaded images for:", packageId);
+        }
       }
-
-      alert("Package submitted with images successfully!");
+  
+      alert("All packages submitted successfully!");
     } catch (err) {
       console.error(err);
-      alert("Failed to submit package");
+      alert("Failed to submit packages");
     } finally {
       setIsLoading(false);
     }
   };
+  
 
   return (
     <div className="p-6 bg-white rounded-lg shadow-lg border border-yellow-100">

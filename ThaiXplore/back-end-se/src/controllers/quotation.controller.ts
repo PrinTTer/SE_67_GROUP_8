@@ -3,7 +3,7 @@ import { get, values } from "lodash";
 import { getUserById } from "../models/users";
 import { createQuotation, deleteQuotation, findPendedQuotaion, findQuotation, findQuotationByUserId, findReceivedQuotation, updateQuotationById } from "../models/quotation";
 import { getBusinessById, getBusinessByuserId } from "../models/business";
-import { BusinessCategoryFactory } from "factory/BusinessCategoryFactory";
+import { BusinessCategoryFactory } from "../factory/BusinessCategoryFactory";
 
 export const registerQuotation = async (req: express.Request, res: express.Response): Promise<any> => {
     try {

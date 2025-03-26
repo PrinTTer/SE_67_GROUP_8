@@ -30,18 +30,19 @@ const BoxBusiness = ({ data, setData }) => {
 
 
 
-  const truncateDescription = (text, maxLength = 150) => {
+  const truncateDescription = (text, maxLength = 180) => {
     return text.length <= maxLength ? text : text.substring(0, maxLength) + '...';
   };
 
   const handleStatusChange = async (status) => {
     console.log('Status:', status);
+    console.log('Reject Description:', rejectDescription); // NEW
     try {
       await putData(`/businesses/${data._id}`, {
         verify: {
           document: data.verify.document,
           status: status,
-          description: status === "rejected" ? rejectDescription : null, // NEW
+          description: status === "rejected" ? rejectDescription : " ", // NEW
         },
       });
     } catch (error) {
@@ -141,8 +142,8 @@ const BoxBusiness = ({ data, setData }) => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
                 <p className="flex items-start text-sm text-gray-600 break-words">
-  {truncateDescription(data.description)}
-</p>
+                  {truncateDescription(data.description)}
+                </p>
 
               </p>
             </div>
@@ -157,13 +158,16 @@ const BoxBusiness = ({ data, setData }) => {
                 <FontAwesomeIcon icon={faFileLines} />
               </button>
 
-              <button
-                className="w-10 h-10 flex items-center justify-center rounded-full bg-green-50 border border-green-200 text-green-600 hover:bg-green-100 transition-colors shadow-sm"
-                onClick={() => confirmChangeStatus('approved')}
-                title="Approve"
-              >
-                <FontAwesomeIcon icon={faCheck} />
-              </button>
+              {data.verify?.status === "pending" && (
+                <button
+                  className="w-10 h-10 flex items-center justify-center rounded-full bg-green-50 border border-green-200 text-green-600 hover:bg-green-100 transition-colors shadow-sm"
+                  onClick={() => confirmChangeStatus('approved')}
+                  title="Approve"
+                >
+                  <FontAwesomeIcon icon={faCheck} />
+                </button>
+              )}
+
               <button
                 className="w-10 h-10 flex items-center justify-center rounded-full bg-red-50 border border-red-200 text-red-500 hover:bg-red-100 transition-colors shadow-sm"
                 onClick={() => confirmChangeStatus('rejected')}
@@ -233,64 +237,68 @@ const BoxBusiness = ({ data, setData }) => {
         </div>
       )}
 
-{showConfirm && (
-  <div className="fixed inset-0 flex items-center justify-center bg-black/30 z-50">
-    <div className="bg-white rounded-lg shadow-lg p-6 w-[350px]">
-      <h2 className="text-lg font-bold text-gray-800">Confirm Status Change</h2>
-      <p className="text-gray-600 mt-2">
-        Are you sure you want to{" "}
-        <span className={`font-semibold ${pendingStatus === 'approved' ? 'text-green-600' : 'text-red-500'}`}>
-          {pendingStatus}
-        </span>{" "}
-        this business?
-      </p>
+      {showConfirm && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black/30 z-50">
+          <div className="bg-white rounded-lg shadow-lg p-6 w-[350px]">
+            <div className='flex items-center justify-between mb-4 pb-3 border-b border-gray-200'>
+            <h2 className="text-lg font-bold text-gray-800">Confirm Status Change</h2>
+            </div>
+            
+            <p className="text-gray-600 mt-2">
+              Are you sure you want to{" "}
+              <span className={`font-semibold ${pendingStatus === 'approved' ? 'text-green-600' : 'text-red-500'}`}>
+                {pendingStatus}
+              </span>{" "}
+              this business?
+            </p>
+            
 
-      {pendingStatus === 'rejected' && (
-        <div className="mt-4">
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Reason for rejection
-          </label>
-          <textarea
-            rows={3}
-            className="w-full border rounded-md p-2 text-sm text-gray-800 focus:ring-amber-500 focus:border-amber-500"
-            placeholder="Please provide reason..."
-            value={rejectDescription}
-            onChange={(e) => setRejectDescription(e.target.value)}
-          />
+            {pendingStatus === 'rejected' && (
+              <div className="mt-4">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Reason for rejection
+                </label>
+                <textarea
+                  rows={3}
+                  className="w-full border rounded-md p-2 text-sm text-gray-800 focus:ring-amber-500 focus:border-amber-500"
+                  placeholder="Please provide reason..."
+                  value={rejectDescription}
+                  onChange={(e) => setRejectDescription(e.target.value)}
+                />
+              </div>
+            )}
+
+            <div className="mt-4 flex justify-end space-x-3">
+              <button
+                className="bg-gray-300 text-white px-4 py-2 rounded"
+                onClick={() => {
+                  setShowConfirm(false);
+                  setPendingStatus(null);
+                  setRejectDescription(""); // reset
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                className={`px-4 py-2 rounded text-white ${pendingStatus === 'approved' ? 'bg-green-600' : 'bg-red-600'}`}
+                onClick={async () => {
+                  try {
+                    await handleStatusChange(pendingStatus);
+                    await fetchData();
+                    setShowConfirm(false);
+                    setPendingStatus(null);
+                    setRejectDescription("");
+                  } catch (error) {
+                    console.error('Failed to update status', error);
+                  }
+                }}
+              >
+                Confirm
+              </button>
+            </div>
+          </div>
         </div>
       )}
-
-      <div className="mt-4 flex justify-end space-x-3">
-        <button
-          className="bg-gray-300 text-white px-4 py-2 rounded"
-          onClick={() => {
-            setShowConfirm(false);
-            setPendingStatus(null);
-            setRejectDescription(""); // reset
-          }}
-        >
-          Cancel
-        </button>
-        <button
-          className={`px-4 py-2 rounded text-white ${pendingStatus === 'approved' ? 'bg-green-600' : 'bg-red-600'}`}
-          onClick={async () => {
-            try {
-              await handleStatusChange(pendingStatus);
-              await fetchData();
-              setShowConfirm(false);
-              setPendingStatus(null);
-              setRejectDescription("");
-            } catch (error) {
-              console.error('Failed to update status', error);
-            }
-          }}
-        >
-          Confirm
-        </button>
-      </div>
-    </div>
-  </div>
-)}
 
 
 

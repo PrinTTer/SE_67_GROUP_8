@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
 import { BusinessEditBtn } from "./BusinessEditBtn";
 import { Link } from 'react-router-dom';
-import { deleteData, postDataWithFiles } from "../services/apiService";
+import { deleteData, postDataWithFiles, putData } from "../services/apiService";
 import { toast } from "react-toastify";
 
 export const BusinessBlock = (prop) => {
@@ -13,24 +13,44 @@ export const BusinessBlock = (prop) => {
 
     //const [isMouseEnter, setIsMouseEnter] = useState(false);
 
-    const isTextTooLong = (text) => {
-        let description = "";
-        return text.split(" ").filter((value, idx) => idx < 40).map((value, idx) => idx === 39 ? description + value + " ...." : description + value + " ");
-    };
+
+    const truncateDescription = (text, maxLength = 180) => {
+        return text.length <= maxLength ? text : text.substring(0, maxLength) + '...';
+      };
+
+      const isTextTooLong = (text) => {
+        if (!text) return "";
+        const words = text.split(" ");
+        const truncated = words.slice(0, 40).join(" ");
+        return words.length > 40 ? truncated + "..." : truncated;
+      };
+      
+      
+
+    //   const checkIsShow = () => {
+    //     if (isShow) {
+    //       setDescription(isTextTooLong(business.description));
+    //     } else {
+    //       setDescription(business.description);
+    //     }
+    //     setIsShow(!isShow);
+    //   };
 
     const checkIsShow = () => {
-        if (isShow) {
-            setDescription(isTextTooLong(business.description));
-            setIsShow(false);
-        } else {
-            setDescription(business.description);
-            setIsShow(true);
-        }
-    }
+        setIsShow(prev => !prev);
+      };
+      
+      
 
-    useEffect(() => {
-        setDescription(isTextTooLong(business.description));
-    }, [])
+      useEffect(() => {
+        if (business?.description) {
+          setIsShow(false); // ซ่อนไว้ก่อนเสมอ
+          setDescription(isTextTooLong(business.description));
+        }
+      }, [business?.description]);
+      
+      
+      
 
 
     const [showConfirm, setShowConfirm] = useState(false);
@@ -210,17 +230,22 @@ export const BusinessBlock = (prop) => {
                         </div>
                     </div>
                     <div className=" mt-3">
-                        <div className="break-words overflow-hidden max-w-full">
-                            {description}
-                        </div>
+                    {/* <div className="break-words overflow-hidden max-w-full">
+  {isShow ? business.description : isTextTooLong(business.description)}
+</div> */}
 
-                        <div onClick={() => checkIsShow()}
+
+<p className="flex items-start text-sm text-gray-600 break-words">
+                  {truncateDescription(description)}
+                </p>
+
+                        {/* <div onClick={() => checkIsShow()}
                             className="text-blue-500 flex gap-1 cursor-pointer transition-all hover:text-blue-300">
-                            <div>Show more</div>
+                            <div>{isShow ? "Show less" : "Show more"}</div>
                             <div className={`${isShow ? "rotate-180" : ""} transition-all ease-in-out`}>
                                 <FontAwesomeIcon icon={faChevronDown} />
                             </div>
-                        </div>
+                        </div> */}
                     </div>
                 </div>
 
@@ -236,16 +261,54 @@ export const BusinessBlock = (prop) => {
             </div>
 
             {showDescription && (
-                <div className="fixed inset-0 flex items-center justify-center bg-black/30 z-50">
-                    <div className="bg-white rounded-lg shadow-lg p-6 w-[350px]">
-                        <h2 className="text-lg font-bold text-gray-800">Description</h2>
-                        <p className="text-gray-700 mt-1">{business.verify.description}</p>
-                        <div className="mt-4 flex justify-end">
-                            <button className="bg-gray-400 text-white px-4 py-2 rounded" onClick={() => setShowDescription(false)}>Close</button>
-                        </div>
-                    </div>
-                </div>
-            )}
+  <div className="fixed inset-0 flex items-center justify-center bg-black/30 z-50">
+    <div className="bg-white rounded-lg shadow-lg p-6 w-[400px]">
+      <div className="mb-4 pb-3 border-b border-gray-200">
+        <h2 className="text-lg font-bold text-gray-800">Description</h2>
+        <p className="text-gray-700 mt-1">{business.verify.description}</p>
+        <p className="text-red-500 text-sm mt-2">
+          * Please upload new document(s) before requesting approval again.
+        </p>
+      </div>
+
+      <div className="mt-4 flex justify-end space-x-3">
+        <button
+          className="bg-gray-400 text-white px-4 py-2 rounded"
+          onClick={() => setShowDescription(false)}
+        >
+          Close
+        </button>
+        <button
+          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+          onClick={async () => {
+            try {
+              await putData(
+                `/businesses/${business._id}`,
+                
+                {
+                  verify: {
+                    status: "pending",
+                    document: business.verify.document || [],
+                    description: "",
+                  },
+                }
+              );
+              toast.success("🔄 Request sent! Status changed to pending.");
+              setShowDescription(false);
+              fetchBusinesses(); // อัปเดตข้อมูลใหม่
+            } catch (error) {
+              toast.error("❌ Failed to re-submit approval.");
+              console.error(error);
+            }
+          }}
+        >
+          Request Approval Again
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
 
             {showConfirm && (
                 <div className="fixed inset-0 flex items-center justify-center bg-black/30 z-50">
@@ -321,6 +384,7 @@ export const BusinessBlock = (prop) => {
                             <button
                                 onClick={() => fechData()}
                                 className="px-4 py-2 bg-gray-100 text-gray-800 rounded-md hover:bg-gray-200"
+                               
                             >
                                 Close
                             </button>

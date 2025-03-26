@@ -3,23 +3,19 @@ import {
   postData,
   fetchData,
   postDataWithFiles,
-  putData
+  putData,
+  deleteData,
 } from "../../../services/apiService";
 import {
   faPlusCircle,
   faTimesCircle,
   faBox,
-  faCalendarAlt,
-  faTags,
-  faFileAlt,
   faCheckCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export const PackageBlock = ({ businessId, userId }) => {
-  const [packages, setPackages] = useState([
-    { id: Date.now(), data: getEmptyPackage() },
-  ]);
+  const [packages, setPackages] = useState([{ id: Date.now(), data: getEmptyPackage() }]);
   const [quotations, setQuotations] = useState([]);
   const [serviceDetails, setServiceDetails] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -28,17 +24,15 @@ export const PackageBlock = ({ businessId, userId }) => {
     const loadQuotationsAndPackages = async () => {
       setIsLoading(true);
       try {
-        // 1. Quotations
         const all = await fetchData("/quotations");
         const filtered = all.filter((q) => q.userId === userId);
         setQuotations(filtered);
-  
-        // 2. Services
+
         const businessIds = [...new Set(filtered.map((q) => q.toBusinessId))];
         const businesses = await Promise.all(
           businessIds.map((id) => fetchData(`/businesses/${id}`))
         );
-  
+
         const servicesWithDetails = businesses.flatMap((b) =>
           b.services.map((s) => ({
             ...s,
@@ -48,18 +42,16 @@ export const PackageBlock = ({ businessId, userId }) => {
           }))
         );
         setServiceDetails(servicesWithDetails);
-  
-        // 3. ✅ Packages ของ business นี้
+
         const res = await fetchData(`/packages/business/${businessId}`);
         const existingPackages = res.map((pkg) => ({
           id: pkg._id,
           data: {
             ...pkg,
-            media: [], // ยังไม่ load ไฟล์จริง
+            media: pkg.media || [],
           },
         }));
-  
-        // 4. Set เข้า state
+
         setPackages(
           existingPackages.length > 0
             ? existingPackages
@@ -71,10 +63,9 @@ export const PackageBlock = ({ businessId, userId }) => {
         setIsLoading(false);
       }
     };
-  
+
     if (businessId && userId) loadQuotationsAndPackages();
   }, [businessId, userId]);
-  
 
   const addPackage = () => {
     setPackages([...packages, { id: Date.now(), data: getEmptyPackage() }]);
@@ -82,6 +73,22 @@ export const PackageBlock = ({ businessId, userId }) => {
 
   const removePackage = (id) => {
     setPackages(packages.filter((pkg) => pkg.id !== id));
+  };
+
+  const handleDeletePackage = async (packageId) => {
+    if (!window.confirm("Are you sure you want to delete this package?")) return;
+
+    setIsLoading(true);
+    try {
+      await deleteData(`/packages/${packageId}`);
+      setPackages(packages.filter((p) => p.id !== packageId));
+      alert("Package deleted successfully.");
+    } catch (err) {
+      console.error(err);
+      alert("Failed to delete package");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const updatePackageData = (id, newData) => {
@@ -111,10 +118,10 @@ export const PackageBlock = ({ businessId, userId }) => {
             businessId: s.businessId,
           })),
         };
-  
+
         let packageId = pkg.id;
         const isExisting = typeof packageId === "string" && packageId.length === 24;
-  
+
         if (isExisting) {
           await putData(`/packages/${packageId}`, payload);
           console.log(`Updated package ${packageId}`);
@@ -126,7 +133,7 @@ export const PackageBlock = ({ businessId, userId }) => {
           packageId = newPkg._id;
           console.log(`Created package ${packageId}`);
         }
-  
+
         if (data.media && data.media.length > 0) {
           await postDataWithFiles(
             `/packages/${packageId}/images`,
@@ -134,10 +141,9 @@ export const PackageBlock = ({ businessId, userId }) => {
             {},
             "services_packages"
           );
-          console.log("Uploaded images for:", packageId);
         }
       }
-  
+
       alert("All packages submitted successfully!");
     } catch (err) {
       console.error(err);
@@ -146,15 +152,11 @@ export const PackageBlock = ({ businessId, userId }) => {
       setIsLoading(false);
     }
   };
-  
 
   return (
     <div className="p-6 bg-white rounded-lg shadow-lg border border-yellow-100">
       <div className="flex items-center mb-6 border-b border-yellow-200 pb-4">
-        <FontAwesomeIcon
-          icon={faBox}
-          className="text-yellow-500 text-2xl mr-3"
-        />
+        <FontAwesomeIcon icon={faBox} className="text-yellow-500 text-2xl mr-3" />
         <h2 className="text-2xl font-bold text-gray-800">Manage Packages</h2>
       </div>
 
@@ -177,7 +179,11 @@ export const PackageBlock = ({ businessId, userId }) => {
             key={pkg.id}
             data={pkg.data}
             onChange={(newData) => updatePackageData(pkg.id, newData)}
-            onRemove={() => removePackage(pkg.id)}
+            onRemove={() =>
+              typeof pkg.id === "string" && pkg.id.length === 24
+                ? handleDeletePackage(pkg.id)
+                : removePackage(pkg.id)
+            }
             quotationOptions={quotations}
             serviceDetails={serviceDetails}
           />
@@ -190,7 +196,7 @@ export const PackageBlock = ({ businessId, userId }) => {
         className="mt-8 px-6 py-3 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 shadow-md transition-all duration-200 flex items-center justify-center w-full sm:w-auto"
       >
         <FontAwesomeIcon icon={faCheckCircle} className="mr-2" />
-        {isLoading ? "Submitting data..." : "Save All Packages"}
+        {isLoading ? "Submitting..." : "Save All Packages"}
       </button>
     </div>
   );
@@ -224,37 +230,19 @@ const PackageForm = ({
     onChange(updated);
   };
 
-  const addServiceFromDropdown = (serviceObj) => {
-    updateField("services", [
-      ...localData.services,
-      {
-        quotationId: serviceObj.quotationId,
-        serviceId: serviceObj.serviceId,
-        businessId: serviceObj.businessId,
-      },
-    ]);
-  };
-
-  const removeService = (index) => {
-    updateField(
-      "services",
-      localData.services.filter((_, i) => i !== index)
-    );
-  };
-
-  const allServices = quotationOptions.flatMap((q) =>
-    q.servicesDetails.map((s) => {
-      const matched = serviceDetails.find(
-        (detail) => detail._id === s.serviceId
+  const handleDeleteImage = async (packageId, index) => {
+    if (!window.confirm("Delete this image?")) return;
+    try {
+      await deleteData(`/packages/${packageId}/images/${index}`);
+      updateField(
+        "media",
+        data.media.filter((_, i) => i !== index - 1)
       );
-      return {
-        ...s,
-        quotationId: q._id,
-        toBusinessId: q.toBusinessId,
-        ...matched,
-      };
-    })
-  );
+    } catch (err) {
+      console.error(err);
+      alert("Failed to delete image");
+    }
+  };
 
   return (
     <div className="bg-yellow-50 p-5 rounded-lg shadow-md mb-6 border border-yellow-200 transition-all duration-300">
@@ -263,10 +251,7 @@ const PackageForm = ({
           {localData.title || "New Package"}
         </h3>
         <div className="flex space-x-3">
-          <button
-            onClick={() => setIsExpanded(!isExpanded)}
-            className="text-yellow-600 hover:text-yellow-800"
-          >
+          <button onClick={() => setIsExpanded(!isExpanded)} className="text-yellow-600 hover:text-yellow-800">
             {isExpanded ? "Collapse" : "Expand"}
           </button>
           <FontAwesomeIcon
@@ -279,225 +264,39 @@ const PackageForm = ({
 
       {isExpanded && (
         <>
-          {/* Input Fields */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-            <div>
-              <label className="block text-gray-700 font-medium mb-1">
-                Package Name
-              </label>
-              <input
-                className="w-full p-2 border border-yellow-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent bg-white"
-                placeholder="Package Name"
-                value={localData.title}
-                onChange={(e) => updateField("title", e.target.value)}
-              />
-            </div>
-
-            <div>
-              <label className="block text-gray-700 font-medium mb-1">
-                Price
-              </label>
-              <input
-                className="w-full p-2 border border-yellow-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent bg-white"
-                type="number"
-                placeholder="Price"
-                value={localData.price}
-                onChange={(e) => updateField("price", e.target.value)}
-              />
-            </div>
-
-            <div>
-              <label className="block text-gray-700 font-medium mb-1">
-                Quantity
-              </label>
-              <input
-                className="w-full p-2 border border-yellow-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent bg-white"
-                type="number"
-                placeholder="Quantity"
-                value={localData.totalPackage}
-                onChange={(e) => updateField("totalPackage", e.target.value)}
-              />
-            </div>
-
-            <div>
-              <label className="block text-gray-700 font-medium mb-1">
-                Validity Period (days)
-              </label>
-              <input
-                className="w-full p-2 border border-yellow-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent bg-white"
-                type="number"
-                placeholder="Validity Period (days)"
-                value={localData.totalExpirationDate}
-                onChange={(e) =>
-                  updateField("totalExpirationDate", e.target.value)
-                }
-              />
-            </div>
-
-            <div>
-              <label className="block text-gray-700 font-medium mb-1">
-                Start Date
-              </label>
-              <input
-                className="w-full p-2 border border-yellow-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent bg-white"
-                type="date"
-                placeholder="Start Date"
-                value={localData.startDate}
-                onChange={(e) => updateField("startDate", e.target.value)}
-              />
-            </div>
-
-            <div>
-              <label className="block text-gray-700 font-medium mb-1">
-                End Date
-              </label>
-              <input
-                className="w-full p-2 border border-yellow-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent bg-white"
-                type="date"
-                placeholder="End Date"
-                value={localData.endDate}
-                onChange={(e) => updateField("endDate", e.target.value)}
-              />
-            </div>
-
-            <div className="md:col-span-2">
-              <label className="block text-gray-700 font-medium mb-1">
-                Package Description
-              </label>
-              <textarea
-                className="w-full p-2 border border-yellow-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent min-h-20 bg-white"
-                placeholder="Package Description"
-                value={localData.description}
-                onChange={(e) => updateField("description", e.target.value)}
-              />
-            </div>
-            <div>
-              <label className="block text-gray-700 font-medium mb-1">
-                Upload Package Images
-              </label>
-              <input
-                type="file"
-                accept="image/*"
-                multiple
-                onChange={(e) =>
-                  updateField("media", Array.from(e.target.files))
-                }
-                className="w-full p-2 border border-yellow-200 rounded-lg bg-white"
-              />
-            </div>
+            <input className="input" placeholder="Package Name" value={localData.title} onChange={(e) => updateField("title", e.target.value)} />
+            <input className="input" type="number" placeholder="Price" value={localData.price} onChange={(e) => updateField("price", e.target.value)} />
+            <input className="input" type="number" placeholder="Quantity" value={localData.totalPackage} onChange={(e) => updateField("totalPackage", e.target.value)} />
+            <input className="input" type="number" placeholder="Validity Days" value={localData.totalExpirationDate} onChange={(e) => updateField("totalExpirationDate", e.target.value)} />
+            <input className="input" type="date" placeholder="Start Date" value={localData.startDate} onChange={(e) => updateField("startDate", e.target.value)} />
+            <input className="input" type="date" placeholder="End Date" value={localData.endDate} onChange={(e) => updateField("endDate", e.target.value)} />
+            <textarea className="input col-span-2" placeholder="Description" value={localData.description} onChange={(e) => updateField("description", e.target.value)} />
+            <input type="file" accept="image/*" multiple onChange={(e) => updateField("media", Array.from(e.target.files))} />
           </div>
 
-          {/* Dropdown Services */}
-          <div className="mt-6 p-4 bg-white rounded-lg shadow-sm border border-yellow-100">
-            <label className="font-bold flex items-center text-gray-700 mb-2">
-              <FontAwesomeIcon
-                icon={faPlusCircle}
-                className="text-yellow-500 mr-2"
-              />
-              Add Services from Quotations
-            </label>
-            <select
-              className="w-full p-3 border border-yellow-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent bg-white"
-              onChange={(e) => {
-                const selected = allServices.find(
-                  (s) => s.serviceId === e.target.value
-                );
-                if (selected) addServiceFromDropdown(selected);
-              }}
-            >
-              <option value="">-- Select a Service --</option>
-              {allServices.map((s, index) => (
-                <option key={index} value={s.serviceId}>
-                  [{s.businessCategory}] {renderServiceByCategory(s)}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {/* Selected Services */}
-          <div className="mt-6 p-4 bg-white rounded-lg shadow-sm border border-yellow-100">
-            <h4 className="font-bold text-gray-700 mb-3 flex items-center">
-              <FontAwesomeIcon
-                icon={faCheckCircle}
-                className="text-yellow-500 mr-2"
-              />
-              Selected Services
-            </h4>
-
-            {localData.services.length === 0 ? (
-              <p className="text-gray-500 italic">No services selected yet</p>
-            ) : (
-              <div className="space-y-2">
-                {localData.services.map((s, idx) => (
-                  <div
-                    key={idx}
-                    className="p-3 bg-yellow-50 rounded-md border border-yellow-100"
+          {/* ✅ Show uploaded images */}
+          {data._id && data.media && data.media.length > 0 && (
+            <div className="mt-2 flex flex-wrap gap-4">
+              {data.media.map((imgName, idx) => (
+                <div key={idx} className="relative w-32 h-32">
+                  <img
+                    src={`http://localhost:3000/public/uploads/services/packages/${imgName}`}
+                    alt="uploaded"
+                    className="object-cover w-full h-full rounded border"
+                  />
+                  <button
+                    onClick={() => handleDeleteImage(data._id, idx + 1)}
+                    className="absolute top-0 right-0 bg-red-500 text-white text-xs p-1 rounded-bl"
                   >
-                    <div className="flex items-center justify-between mb-2">
-                      <p className="font-medium">
-                        {findServiceName(s.serviceId, allServices)}
-                      </p>
-                      <FontAwesomeIcon
-                        icon={faTimesCircle}
-                        className="text-red-500 cursor-pointer hover:text-red-700"
-                        onClick={() => removeService(idx)}
-                      />
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-2 text-sm">
-                      <div className="p-2 bg-white rounded border border-yellow-100">
-                        <span className="font-semibold">Service ID:</span>
-                        <div className="text-gray-700 break-all mt-1">
-                          {s.serviceId}
-                        </div>
-                      </div>
-                      <div className="p-2 bg-white rounded border border-yellow-100">
-                        <span className="font-semibold">Business ID:</span>
-                        <div className="text-gray-700 break-all mt-1">
-                          {s.businessId}
-                        </div>
-                      </div>
-                      <div className="p-2 bg-white rounded border border-yellow-100">
-                        <span className="font-semibold">Quotation ID:</span>
-                        <div className="text-gray-700 break-all mt-1">
-                          {s.quotationId}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
+                    ✕
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
         </>
       )}
     </div>
   );
-};
-
-// Helper function to find service name from ID
-const findServiceName = (serviceId, allServices) => {
-  const service = allServices.find((s) => s.serviceId === serviceId);
-  if (!service) return "Service name not found";
-  return `Service: ${renderServiceByCategory(service)}`;
-};
-
-const renderServiceByCategory = (service) => {
-  const category = service.businessCategory;
-  if (!category) return "Unknown type";
-
-  switch (category) {
-    case "hotel":
-      return `Room ${service.roomType} (${service.guestAmount} people)`;
-    case "carRental":
-      return `Car ${service.carBrand} (${service.amountSeat} seats)`;
-    case "event":
-      return `Ticket ${service.ticketType} - Date ${new Date(
-        service.eventDate
-      ).toLocaleDateString("en-US")}`;
-    case "restaurant":
-    case "course":
-      return `Course ${service.courseName || "Unnamed"}`;
-    default:
-      return `ID: ${service._id}`;
-  }
 };

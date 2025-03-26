@@ -8,6 +8,7 @@ import { useSelector } from "react-redux";
 
 export const QuotationPopUp = (prop) => {
   const { onClose, serviceBusiness, quotation, business, popup, type, socketRef } = prop;
+  
   const [formData, setFormData] = useState({
     companyName: "",
     province: "",
@@ -25,7 +26,6 @@ export const QuotationPopUp = (prop) => {
   const sendQuotationSocket = (status) => {
     const socket = socketRef.current;
     const receiverId = business.business.userId;
-    console.log("IN ===> ", receiverId);
     if (socket) {
       socket.emit("sendRequest", { receiverId, status }); // ส่งข้อมูลไปยัง server ผ่าน WebSocket
     }

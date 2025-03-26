@@ -104,7 +104,7 @@ function Detail() {
         <div className='flex flex-2 m-5'>
           <div className='flex-2 '>
             <p className='font-bold text-2xl'>{data?.business?.businessName}</p>
-            <p>{data?.business?.address}</p>
+            <p>{data?.business?.address.replace(","," ")}</p>
 
           </div>
           <div className='flex flex-2 justify-end'>

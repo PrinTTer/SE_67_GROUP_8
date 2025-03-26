@@ -12,11 +12,11 @@ export const ModalEditBusiness = (prop) => {
     description: business?.description,
     phone: business?.phoneNumber,
     email: business?.email,
-    address: business?.address.split(" ").slice(0, -4).join(" "),
-    subDistrict: business?.address.split(" ").slice(-4)[0],
-    district: business?.address.split(" ").slice(-4)[1],
-    province: business?.address.split(" ").slice(-4)[2],
-    postalCode: business?.address.split(" ").slice(-4)[3],
+    address: business?.address.split(",").slice(0, -4).join(" "),
+    subDistrict: business?.address.split(",").slice(-4)[0],
+    district: business?.address.split(",").slice(-4)[1],
+    province: business?.address.split(",").slice(-4)[2],
+    postalCode: business?.address.split(",").slice(-4)[3],
   });
 
   
@@ -26,7 +26,7 @@ export const ModalEditBusiness = (prop) => {
     
     
      
-  
+      
       // Create the URL for each file in the media array
       const updatedImages = business.media.map(
         (fileName) => `http://localhost:3000/public/uploads/businesses/images/${fileName}`
@@ -48,21 +48,21 @@ export const ModalEditBusiness = (prop) => {
     const newErrors = {};
 
     // Address fields validation - ห้ามมีช่องว่างระหว่างคำ
-    const noSpacesRegex = /^\S+$/;  // ต้องไม่ให้มีช่องว่าง
+    
     if (!form.address.trim() ) {
       newErrors.address = "Address cannot be empty .";
     }
-    if (!form.subDistrict.trim() || !noSpacesRegex.test(form.subDistrict)) {
-      newErrors.subDistrict = "Sub District cannot be empty or have spaces between words.";
+    if (!form.subDistrict.trim() ) {
+      newErrors.subDistrict = "Sub District cannot be empty  words.";
     }
-    if (!form.district.trim() || !noSpacesRegex.test(form.district)) {
-      newErrors.district = "District cannot be empty or have spaces between words.";
+    if (!form.district.trim() ) {
+      newErrors.district = "District cannot be empty  words.";
     }
-    if (!form.province.trim() || !noSpacesRegex.test(form.province)) {
-      newErrors.province = "Province cannot be empty or have spaces between words.";
+    if (!form.province.trim()) {
+      newErrors.province = "Province cannot be empty  words.";
     }
-    if (!form.postalCode.trim() || !noSpacesRegex.test(form.postalCode)) {
-      newErrors.postalCode = "Postal Code cannot be empty or have spaces between words.";
+    if (!form.postalCode.trim() ) {
+      newErrors.postalCode = "Postal Code cannot be empty  words.";
     }
 
     const postalCodeRegex = /^\d{5}$/;
@@ -101,7 +101,7 @@ export const ModalEditBusiness = (prop) => {
       return; // If validation fails, prevent saving changes
     }
 
-    const updatedAddress = `${form.address} ${form.subDistrict} ${form.district} ${form.province} ${form.postalCode}`;
+    const updatedAddress = `${form.address},${form.subDistrict},${form.district},${form.province},${form.postalCode}`;
 
     setForm((prevForm) => ({
       ...prevForm,

@@ -83,30 +83,30 @@ export const BusinessInformation = () => {
 
             // const res = await postDataWithFiles("/businesses/", uploadDocument, dataForm, "businesses_verifies");
             const res = await postDataWithFiles("/businesses", [], dataForm, "businesses_verifies");
-            
+
             if (uploadDocument.length > 0) {
                 await postDataWithFiles(`/businesses/${res._id}/documents`, uploadDocument, null, "businesses_verifies");
-              }
-
-              if (uploadImages.length > 0) {
-                await postDataWithFiles(`/businesses/${res._id}/images`, uploadImages, null, "businesses_images");
-              }
-
-              await Promise.all(
-                topicBusines.map((item) => {
-                  const obj = {
-                    informationName: item,
-                    details: [String],
-                  };
-                  return postData(`/businesses/${res._id}/businessdetails`, obj);
-                })
-              );
-          
-              navigate("/profile/mainbusiness");
-            } catch (error) {
-              console.log(error);
             }
-          };
+
+            if (uploadImages.length > 0) {
+                await postDataWithFiles(`/businesses/${res._id}/images`, uploadImages, null, "businesses_images");
+            }
+
+            await Promise.all(
+                topicBusines.map((item) => {
+                    const obj = {
+                        informationName: item,
+                        details: [String],
+                    };
+                    return postData(`/businesses/${res._id}/businessdetails`, obj);
+                })
+            );
+
+            navigate("/profile/mainbusiness");
+        } catch (error) {
+            console.log(error);
+        }
+    };
 
     return (
         <div className="bg-white min-h-screen w-full max-w-[1200px] mx-auto">
@@ -208,9 +208,9 @@ export const BusinessInformation = () => {
 
                             {/* upload Image */}
                             <UploadImageBlock
-  uploadImages={uploadImages}
-  setUploadImages={setUploadImages}
-/>
+                                uploadImages={uploadImages}
+                                setUploadImages={setUploadImages}
+                            />
 
 
                             <UploadDocumentBlock

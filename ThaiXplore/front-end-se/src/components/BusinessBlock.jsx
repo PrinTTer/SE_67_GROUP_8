@@ -1,15 +1,16 @@
-import { faChevronDown, faFileLines, faLocationDot, faPenToSquare, faTrash, faImage } from "@fortawesome/free-solid-svg-icons";
+import { faChevronDown, faFileLines, faLocationDot, faPenToSquare, faTrash, faImage, faCircleXmark  } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
 import { BusinessEditBtn } from "./BusinessEditBtn";
 import { Link } from 'react-router-dom';
 import { deleteData } from "../services/apiService";
-
+import { toast } from "react-toastify";
 
 export const BusinessBlock = (prop) => {
     const { business } = prop;
     const [description, setDescription] = useState("");
     const [isShow, setIsShow] = useState(false);
+    
     //const [isMouseEnter, setIsMouseEnter] = useState(false);
 
     const isTextTooLong = (text) => {
@@ -31,33 +32,72 @@ export const BusinessBlock = (prop) => {
         setDescription(isTextTooLong(business.description));
     }, [])
 
-    const handleDelete = async () => {
-        // try {
-        //     const response = await deleteData(`/business/${business.id}`);
-        //     console.log(response);
-        //     window.location.reload();
-        // } catch (error) {
-        //     console.error(error);
-        // }
-        console.log(business.id);
-    }
 
-    console.log(business);
+    const [showConfirm, setShowConfirm] = useState(false);
+const [selectedBusinessId, setSelectedBusinessId] = useState(null);
+const [showDocs, setShowDocs] = useState(false);
+
+const confirmDeleteBusiness = () => {
+  setSelectedBusinessId(business._id);
+  setShowConfirm(true);
+};
+
+const handleDelete = async () => {
+  try {
+    await deleteData(`/businesses/${selectedBusinessId}`);
+    toast.success("✅ Business deleted successfully!", {
+      position: "top-right",
+      autoClose: 2500
+    });
+    window.location.reload();
+  } catch (error) {
+    console.error("Error deleting business:", error);
+    toast.error("❌ Failed to delete business. Please try again.");
+  }
+  setShowConfirm(false);
+};
+
+
+    
 
     return (
-        <div className="bg-white grid lg:grid-cols-[25%_50%_25%] w-full drop-shadow-xl rounded-xl">
+        <>
+        <div className="bg-white grid lg:grid-cols-[25%_60%_15%] w-full drop-shadow-xl rounded-xl">
             <div className="w-full aspect-[3/2] bg-gray-100 flex items-center justify-center relative overflow-hidden rounded-lg">
                 {business.media.length > 0 ? (
+                    <div className="flex h-full w-full">
+                        {/* รูปซ้ายใหญ่ (ภาพแรก) */}
+                        <div className="w-2/3 h-full overflow-hidden rounded-l-lg">
+                            <img
+                                src={`http://localhost:3000/public/uploads/businesses/images/${business.media[0]}`}
+                                alt="main-img"
+                                className="w-full h-full object-cover"
+                                onClick={() => setShowGallery(true)}
+                            />
+                        </div>
 
-                    <div className="w-full h-full overflow-hidden rounded-l-lg">
-                        <img
-                            src={`http://localhost:3000/public/uploads/businesses/images/${business.media[0]}`}
-                            alt="main-img"
-                            className="w-full h-full object-cover"
+                        {/* รูปขวา 2 ช่องซ้อน */}
+                        <div className="w-1/3 h-full flex flex-col gap-1 pl-1">
+                            {business.media.slice(1, 3).map((img, idx) => (
+                                <div key={idx} className="relative h-1/2 w-full overflow-hidden rounded">
+                                    <img
+                                        src={`http://localhost:3000/public/uploads/businesses/images/${img}`}
+                                        alt={`side-img-${idx}`}
+                                        className="w-full h-full object-cover"
+                                        onClick={() => setShowGallery(true)}
+                                    />
+                                    {/* Overlay ถ้ามีรูปเหลือ */}
+                                    {idx === 1 && business.media.length > 3 && (
+                                        <div className="absolute inset-0 bg-gray-900/50 flex items-center justify-center text-white font-semibold text-xl rounded"
+                                            onClick={() => setShowGallery(true)}>
+                                            +{business.media.length - 3}
+                                        </div>
 
-                        />
+                                    )}
+                                </div>
+                            ))}
+                        </div>
                     </div>
-
                 ) : (
                     <div className="flex flex-col items-center justify-center text-gray-400 h-full w-full">
                         <FontAwesomeIcon icon={faImage} className="text-4xl mb-2" />
@@ -77,8 +117,21 @@ export const BusinessBlock = (prop) => {
                 {/* <div className="flex text-2xl items-start justify-between font-semibold"> */}
                 <div className="flex items-start justify-between mb-2 text-2xl font-semibold">
                     {business.businessName}
-                    <span className="bg-amber-50 text-amber-700 text-xs px-2 py-1 rounded-full uppercase tracking-wider">{business.category}</span>
+                    <div className="flex gap-2 flex-wrap">
+                        <span className={`text-xs px-2 py-1 rounded-full uppercase tracking-wider ${business.verify?.status === "approved" ? "bg-green-100 text-green-900"
+                                : business.verify?.status === "pending" ? "bg-blue-100 text-blue-900"
+                                    : "bg-red-100 text-red-900"
+                            }`}>
+                            {business.verify?.status}
+                        </span>
+
+                        <span className="bg-amber-50 text-amber-700 text-xs px-2 py-1 rounded-full uppercase tracking-wider">
+                            {business.category}
+                        </span>
+                    </div>
+
                 </div>
+
                 <div className="flex gap-2 text-gray-600">
                     <div>
                         <FontAwesomeIcon icon={faLocationDot} />
@@ -88,9 +141,10 @@ export const BusinessBlock = (prop) => {
                     </div>
                 </div>
                 <div className=" mt-3">
-                    <div>
+                    <div className="break-words overflow-hidden max-w-full">
                         {description}
                     </div>
+
                     <div onClick={() => checkIsShow()}
                         className="text-blue-500 flex gap-1 cursor-pointer transition-all hover:text-blue-300">
                         <div>Show more</div>
@@ -102,14 +156,78 @@ export const BusinessBlock = (prop) => {
             </div>
 
             <div className="flex gap-16 justify-end p-5">
-
-                <BusinessEditBtn icon={faFileLines} popup={"Information"} />
-
+            <BusinessEditBtn icon={faFileLines} popup={"Document"} onClick={() => setShowDocs(true)} />
                 <Link to={`/profile/mainBusiness/createBusiness/adddetails/${business._id}`}>
-                    <BusinessEditBtn icon={faPenToSquare} popup={"Edit"} onClick={() => handleDelete(business._id)} />
+                    <BusinessEditBtn icon={faPenToSquare} popup={"Edit"} />
                 </Link>
-                <BusinessEditBtn icon={faTrash} popup={"Delete"} />
+                
+                <BusinessEditBtn icon={faTrash} popup={"Delete"} onClick={confirmDeleteBusiness} />
+
             </div>
         </div>
+
+        {showConfirm && (
+            <div className="fixed inset-0 flex items-center justify-center bg-black/30 z-50">
+                <div className="bg-white rounded-lg shadow-lg p-6 w-[350px]">
+                    <h2 className="text-lg font-bold text-red-600">Delete Confirmation</h2>
+                    <p className="text-gray-700 mt-1">Are you sure you want to delete this business?</p>
+                    <div className="mt-4 flex justify-end space-x-3">
+                        <button className="bg-gray-400 text-white px-4 py-2 rounded" onClick={() => setShowConfirm(false)}>Cancel</button>
+                        <button className="bg-red-500 text-white px-4 py-2 rounded" onClick={handleDelete}>Delete</button>
+                    </div>
+                </div>
+            </div>
+        )}
+
+
+        {/* Document Modal */}
+        {showDocs && (
+  <div className="fixed inset-0 flex justify-center items-center z-50 p-4 bg-black/30">
+    <div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-md relative animate-fadeIn">
+      <div className="flex items-center justify-between mb-4 pb-3 border-b border-gray-200">
+        <h3 className="text-lg font-bold text-gray-800">Business Documents</h3>
+        <button
+          className="text-gray-500 hover:text-gray-700 focus:outline-none"
+          onClick={() => setShowDocs(false)}
+        >
+          <FontAwesomeIcon icon={faCircleXmark} className="h-6 w-6" />
+        </button>
+      </div>
+
+      {business?.verify?.document?.length > 0 ? (
+        <ul className="space-y-3 max-h-80 overflow-y-auto">
+          {business.verify.document.map((file, index) => (
+            <li key={index} className="p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors flex justify-between items-center">
+              <a
+                href={`http://localhost:3000/public/uploads/businesses/verifies/${file}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600 hover:text-blue-800 truncate max-w-[80%]"
+              >
+                {file}
+              </a>
+              <button className="text-red-500 hover:text-red-700" title="Delete this file">
+                <FontAwesomeIcon icon={faCircleXmark} />
+              </button>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <div className="py-12 text-center text-gray-500">No documents attached</div>
+      )}
+
+      <div className="mt-6 flex justify-end">
+        <button
+          onClick={() => setShowDocs(false)}
+          className="px-4 py-2 bg-gray-100 text-gray-800 rounded-md hover:bg-gray-200"
+        >
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
+        </>
     );
 }

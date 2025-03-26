@@ -8,11 +8,11 @@ const DetailPackage = () => {
   const { id } = useParams();
   const [packageData, setPackageData] = useState(null);
   const [mergedServices, setMergedServices] = useState([]);
-  const [isBuying, setIsBuying] = useState(false); // ✅ เพิ่ม state loading
+  const [isBuying, setIsBuying] = useState(false); // ✅ Added loading state
 
   const handleBuyPackage = async () => {
     try {
-      setIsBuying(true); // ✅ เริ่ม loading
+      setIsBuying(true); // ✅ Start loading
       const body = {
         packageId: packageData._id,
         amount: 1,
@@ -21,14 +21,14 @@ const DetailPackage = () => {
 
       const result = await postData("/users/packages", body);
 
-      alert("ซื้อแพคเกจสำเร็จ!");
-      // ถ้าต้องการพาไปหน้าอื่นหลังซื้อสำเร็จ:
+      alert("Package purchased successfully!");
+      // If you want to navigate to another page after successful purchase:
       // navigate(`/user/orders/${result.orderId}`);
     } catch (error) {
-      console.error("ซื้อแพคเกจไม่สำเร็จ", error);
-      alert("เกิดข้อผิดพลาดในการซื้อแพคเกจ กรุณาลองใหม่ภายหลัง");
+      console.error("Failed to purchase package", error);
+      alert("An error occurred while purchasing the package. Please try again later");
     } finally {
-      setIsBuying(false); // ✅ หยุด loading ไม่ว่า success หรือ fail
+      setIsBuying(false); // ✅ Stop loading whether success or fail
     }
   };
 
@@ -74,14 +74,14 @@ const DetailPackage = () => {
         <div className="animate-pulse flex flex-col items-center">
           <div className="h-32 w-32 bg-gray-200 rounded-full mb-4"></div>
           <div className="text-gray-400 text-xl font-light">
-            กำลังโหลดข้อมูล...
+            Loading...
           </div>
         </div>
       </div>
     );
 
   const formattedDate = new Date(packageData.dateCreate).toLocaleDateString(
-    "th-TH",
+    "en-US",
     {
       day: "numeric",
       month: "long",
@@ -89,7 +89,7 @@ const DetailPackage = () => {
     }
   );
 
-  const formattedPrice = new Intl.NumberFormat("th-TH", {
+  const formattedPrice = new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "THB",
     minimumFractionDigits: 0,
@@ -127,7 +127,7 @@ const DetailPackage = () => {
         {service.media?.length > 0 && (
           <img
             src={getServiceImageUrl(service.businessCategory, service.media[0])}
-            alt="รูปบริการ"
+            alt="Service Image"
             className="w-full h-48 object-cover"
           />
         )}
@@ -141,10 +141,10 @@ const DetailPackage = () => {
                       {service.roomType}
                     </h3>
                     <p className="text-sm text-gray-600">
-                      ขนาดห้อง: {service.roomSize}
+                      Size: {service.roomSize}
                     </p>
                     <p className="text-sm text-gray-600">
-                      รองรับ: {service.guestAmount} คน
+                      Capacity: {service.guestAmount} people
                     </p>
                     {service.facilities?.length > 0 && (
                       <ul className="text-sm text-gray-500 mt-1 list-disc list-inside">
@@ -162,10 +162,10 @@ const DetailPackage = () => {
                       {service.carBrand}
                     </h3>
                     <p className="text-sm text-gray-600">
-                      ทะเบียน: {service.licensePlate}
+                      License Plate: {service.licensePlate}
                     </p>
                     <p className="text-sm text-gray-600">
-                      ที่นั่ง: {service.amountSeat} คน
+                      Seats: {service.amountSeat} people
                     </p>
                   </>
                 );
@@ -173,16 +173,16 @@ const DetailPackage = () => {
                 return (
                   <>
                     <h3 className="text-lg font-semibold text-gray-800">
-                      {service.ticketType || "บัตรเข้างาน"}
+                      {service.ticketType || "Event Ticket"}
                     </h3>
                     <p className="text-sm text-gray-600">
-                      วันที่จัด:{" "}
-                      {new Date(service.eventDate).toLocaleDateString("th-TH")}
+                      Event Date:{" "}
+                      {new Date(service.eventDate).toLocaleDateString("en-US")}
                     </p>
                     <p className="text-sm text-gray-600">
-                      เวลา:{" "}
-                      {new Date(service.start).toLocaleTimeString("th-TH")} -{" "}
-                      {new Date(service.end).toLocaleTimeString("th-TH")}
+                      Time:{" "}
+                      {new Date(service.start).toLocaleTimeString("en-US")} -{" "}
+                      {new Date(service.end).toLocaleTimeString("en-US")}
                     </p>
                   </>
                 );
@@ -191,12 +191,12 @@ const DetailPackage = () => {
                 return (
                   <>
                     <h3 className="text-lg font-semibold text-gray-800">
-                      {service.courseName || "คอร์สทำอาหาร"}
+                      {service.courseName || "Cooking Course"}
                     </h3>
                     {service.menuList?.length > 0 && (
                       <>
                         <p className="text-sm text-gray-600 mb-1">
-                          เมนูที่เรียน:
+                          Menu Items:
                         </p>
                         <ul className="text-sm text-gray-500 list-disc list-inside">
                           {service.menuList.map((menu, i) => (
@@ -211,7 +211,7 @@ const DetailPackage = () => {
                 return (
                   <>
                     <h3 className="text-lg font-semibold text-gray-800">
-                      ไม่ทราบประเภทบริการ
+                      Unknown Service Type
                     </h3>
                     <pre className="text-xs text-gray-400 mt-2">
                       {JSON.stringify(service, null, 2)}
@@ -233,7 +233,7 @@ const DetailPackage = () => {
             src={
               packageData.media?.length > 0
                 ? getPackageImageUrl(packageData.media[0])
-                : huahinPoster // fallback ถ้าไม่มีรูป
+                : huahinPoster // fallback if no image
             }
             alt="poster"
             className="w-full h-auto object-cover"
@@ -247,7 +247,7 @@ const DetailPackage = () => {
               <p className="text-sm text-gray-200">{formattedDate}</p>
               <div className="h-4 w-px bg-gray-300"></div>
               <p className="text-sm font-medium bg-amber-500/90 text-white px-4 py-1 rounded-full">
-                {formattedPrice} / คน
+                {formattedPrice} / person
               </p>
             </div>
           </div>
@@ -256,7 +256,7 @@ const DetailPackage = () => {
         <div className="bg-white rounded-2xl shadow-sm p-8 mb-8">
           <h2 className="text-2xl font-semibold text-gray-800 mb-6 flex items-center">
             <span className="w-1.5 h-8 bg-amber-500 mr-3 rounded-full"></span>
-            รายละเอียดแพคเกจ
+            Package Details
           </h2>
           <div className="whitespace-pre-line text-gray-700 leading-7 font-light">
             {packageData.description}
@@ -268,7 +268,7 @@ const DetailPackage = () => {
         <div className="sticky top-8">
           <h2 className="text-2xl font-semibold text-gray-800 mb-6 flex items-center">
             <span className="w-1.5 h-8 bg-amber-500 mr-3 rounded-full"></span>
-            บริการภายในแพคเกจ
+            Services Included
           </h2>
 
           <div className="space-y-6">
@@ -281,12 +281,12 @@ const DetailPackage = () => {
 
           <div className="mt-8 space-y-4">
             <div className="flex justify-between items-center text-lg border-t border-b border-gray-100 py-4">
-              <span className="font-medium text-gray-800">ราคารวม</span>
+              <span className="font-medium text-gray-800">Total Price</span>
               <span className="font-bold text-gray-900">{formattedPrice}</span>
             </div>
             <button
               onClick={handleBuyPackage}
-              disabled={isBuying} // ✅ ปิดปุ่มตอน loading
+              disabled={isBuying} // ✅ Disable button when loading
               className={`w-full ${
                 isBuying
                   ? "bg-gray-400 cursor-not-allowed"
@@ -315,11 +315,11 @@ const DetailPackage = () => {
                       d="M4 12a8 8 0 018-8v8z"
                     ></path>
                   </svg>
-                  กำลังซื้อ...
+                  Purchasing...
                 </>
               ) : (
                 <>
-                  <span>ซื้อแพคเกจเลย</span>
+                  <span>Buy Package Now</span>
                   <svg
                     className="ml-2 w-5 h-5"
                     fill="none"
@@ -337,7 +337,7 @@ const DetailPackage = () => {
               )}
             </button>
             <p className="text-center text-xs text-gray-500 mt-2">
-              การันตีราคาถูกที่สุด ไม่มีค่าใช้จ่ายแอบแฝง
+              Guaranteed lowest price. No hidden fees.
             </p>
           </div>
         </div>

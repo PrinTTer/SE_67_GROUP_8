@@ -32,9 +32,14 @@ const PackagePage = () => {
         const formatted = response.map((pkg) => ({
           id: pkg._id,
           title: pkg.title,
-          subtitle: `เริ่ม ${new Date(pkg.startDate).toLocaleDateString("th-TH")} - ${new Date(pkg.endDate).toLocaleDateString("th-TH")}`,
+          subtitle: `${new Date(pkg.startDate).toLocaleDateString(
+            "th-TH"
+          )} - ${new Date(pkg.endDate).toLocaleDateString("th-TH")}`,
           description: pkg.description,
-          image: pkg.media.length > 0 ? getPackageImageUrl(pkg.media[0]) : "https://placehold.co/600x400?text=No+Image",
+          image:
+            pkg.media.length > 0
+              ? getPackageImageUrl(pkg.media[0])
+              : "https://placehold.co/600x400?text=No+Image",
           price: pkg.price || 0,
           dateCreate: pkg.dateCreate || new Date().toISOString(),
         }));
@@ -58,7 +63,9 @@ const PackagePage = () => {
       case "priceHigh":
         return sorted.sort((a, b) => b.price - a.price);
       case "latest":
-        return sorted.sort((a, b) => new Date(b.dateCreate) - new Date(a.dateCreate));
+        return sorted.sort(
+          (a, b) => new Date(b.dateCreate) - new Date(a.dateCreate)
+        );
       case "popular":
         return sorted;
       default:
@@ -104,16 +111,16 @@ const PackagePage = () => {
           ) : (
             <>
               <div className="flex justify-between items-center mb-6">
-                <p className="text-gray-600">แสดง {packages.length} แพคเกจ</p>
+                <p className="text-gray-600">Show {packages.length} Package</p>
                 <select
                   value={sortOption}
                   onChange={(e) => setSortOption(e.target.value)}
                   className="border border-gray-200 rounded-lg px-3 py-2 outline-none focus:border-amber-400 bg-white"
                 >
-                  <option value="latest">เรียงตามล่าสุด</option>
-                  <option value="popular">เรียงตามยอดนิยม</option>
-                  <option value="priceLow">เรียงตามราคา: ต่ำไปสูง</option>
-                  <option value="priceHigh">เรียงตามราคา: สูงไปต่ำ</option>
+                  <option value="latest">Sort by Latest</option>
+                  <option value="popular">Sort by Popularity</option>
+                  <option value="priceLow">Sort by Price: Low to High</option>
+                  <option value="priceHigh">Sort by Price: High to Low</option>
                 </select>
               </div>
 
@@ -130,7 +137,8 @@ const PackagePage = () => {
                   ))
                 ) : (
                   <div className="col-span-full text-center py-16">
-                    <p className="text-gray-500 text-lg">ไม่พบแพคเกจที่ค้นหา</p>
+                  <p className="text-gray-500 text-lg">No packages found</p>
+
                   </div>
                 )}
               </div>
@@ -148,7 +156,7 @@ const PackagePage = () => {
                       }`}
                     >
                       <FontAwesomeIcon icon={faChevronLeft} className="mr-2" />
-                      <span>หน้าก่อนหน้า</span>
+                      <span>Previous Page</span>
                     </button>
 
                     <div className="flex items-center justify-center px-5 py-3 bg-amber-500 text-white font-medium border-l border-r border-amber-300">
@@ -164,7 +172,7 @@ const PackagePage = () => {
                           : "bg-white text-amber-600 hover:bg-amber-50 border-amber-200"
                       }`}
                     >
-                      <span>หน้าถัดไป</span>
+                      <span>Next Page</span>
                       <FontAwesomeIcon icon={faChevronRight} className="ml-2" />
                     </button>
                   </div>

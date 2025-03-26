@@ -91,7 +91,7 @@ export const PackageBlock = ({ businessId, userId }) => {
         })),
       };
 
-      //POST สร้าง Package ก่อน
+      // POST to create Package first
       const newPackage = await postData(
         `/businesses/${businessId}/packages`,
         payload
@@ -99,21 +99,21 @@ export const PackageBlock = ({ businessId, userId }) => {
       const packageId = newPackage._id;
       console.log("Package created:", packageId);
 
-      //POST รูปภาพถ้ามี
+      // POST images if available
       if (pkg.media && pkg.media.length > 0) {
         await postDataWithFiles(
           `/packages/${packageId}/images`,
           pkg.media,
-          {}, // ไม่มีข้อมูลเสริมอื่น
+          {}, // No additional data
           "services_packages" // title
         );
-        console.log("รูปภาพถูกอัปโหลดแล้ว");
+        console.log("Images uploaded successfully");
       }
 
-      alert("ส่ง Package สำเร็จพร้อมรูปภาพ!");
+      alert("Package submitted with images successfully!");
     } catch (err) {
       console.error(err);
-      alert("ส่ง Package ไม่สำเร็จ");
+      alert("Failed to submit package");
     } finally {
       setIsLoading(false);
     }
@@ -126,7 +126,7 @@ export const PackageBlock = ({ businessId, userId }) => {
           icon={faBox}
           className="text-yellow-500 text-2xl mr-3"
         />
-        <h2 className="text-2xl font-bold text-gray-800">จัดการแพ็คเกจ</h2>
+        <h2 className="text-2xl font-bold text-gray-800">Manage Packages</h2>
       </div>
 
       <div
@@ -134,13 +134,13 @@ export const PackageBlock = ({ businessId, userId }) => {
         onClick={addPackage}
       >
         <FontAwesomeIcon icon={faPlusCircle} className="mr-2" />
-        <span className="font-medium">เพิ่มแพ็คเกจใหม่</span>
+        <span className="font-medium">Add New Package</span>
       </div>
 
       {isLoading ? (
         <div className="text-center py-8">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-yellow-500 mx-auto"></div>
-          <p className="mt-4 text-gray-600">กำลังโหลดข้อมูล...</p>
+          <p className="mt-4 text-gray-600">Loading data...</p>
         </div>
       ) : (
         packages.map((pkg) => (
@@ -161,7 +161,7 @@ export const PackageBlock = ({ businessId, userId }) => {
         className="mt-8 px-6 py-3 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 shadow-md transition-all duration-200 flex items-center justify-center w-full sm:w-auto"
       >
         <FontAwesomeIcon icon={faCheckCircle} className="mr-2" />
-        {isLoading ? "กำลังส่งข้อมูล..." : "บันทึกแพ็คเกจทั้งหมด"}
+        {isLoading ? "Submitting data..." : "Save All Packages"}
       </button>
     </div>
   );
@@ -231,14 +231,14 @@ const PackageForm = ({
     <div className="bg-yellow-50 p-5 rounded-lg shadow-md mb-6 border border-yellow-200 transition-all duration-300">
       <div className="flex justify-between items-center mb-4">
         <h3 className="font-bold text-lg text-gray-800">
-          {localData.title || "แพ็คเกจใหม่"}
+          {localData.title || "New Package"}
         </h3>
         <div className="flex space-x-3">
           <button
             onClick={() => setIsExpanded(!isExpanded)}
             className="text-yellow-600 hover:text-yellow-800"
           >
-            {isExpanded ? "ย่อ" : "ขยาย"}
+            {isExpanded ? "Collapse" : "Expand"}
           </button>
           <FontAwesomeIcon
             icon={faTimesCircle}
@@ -254,11 +254,11 @@ const PackageForm = ({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
             <div>
               <label className="block text-gray-700 font-medium mb-1">
-                ชื่อแพ็คเกจ
+                Package Name
               </label>
               <input
-                className="w-full p-2 border border-yellow-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
-                placeholder="ชื่อแพ็คเกจ"
+                className="w-full p-2 border border-yellow-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent bg-white"
+                placeholder="Package Name"
                 value={localData.title}
                 onChange={(e) => updateField("title", e.target.value)}
               />
@@ -266,12 +266,12 @@ const PackageForm = ({
 
             <div>
               <label className="block text-gray-700 font-medium mb-1">
-                ราคา
+                Price
               </label>
               <input
-                className="w-full p-2 border border-yellow-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
+                className="w-full p-2 border border-yellow-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent bg-white"
                 type="number"
-                placeholder="ราคา"
+                placeholder="Price"
                 value={localData.price}
                 onChange={(e) => updateField("price", e.target.value)}
               />
@@ -279,12 +279,12 @@ const PackageForm = ({
 
             <div>
               <label className="block text-gray-700 font-medium mb-1">
-                จำนวน
+                Quantity
               </label>
               <input
-                className="w-full p-2 border border-yellow-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
+                className="w-full p-2 border border-yellow-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent bg-white"
                 type="number"
-                placeholder="จำนวน"
+                placeholder="Quantity"
                 value={localData.totalPackage}
                 onChange={(e) => updateField("totalPackage", e.target.value)}
               />
@@ -292,12 +292,12 @@ const PackageForm = ({
 
             <div>
               <label className="block text-gray-700 font-medium mb-1">
-                อายุการใช้งาน (วัน)
+                Validity Period (days)
               </label>
               <input
-                className="w-full p-2 border border-yellow-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
+                className="w-full p-2 border border-yellow-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent bg-white"
                 type="number"
-                placeholder="อายุการใช้งาน (วัน)"
+                placeholder="Validity Period (days)"
                 value={localData.totalExpirationDate}
                 onChange={(e) =>
                   updateField("totalExpirationDate", e.target.value)
@@ -307,12 +307,12 @@ const PackageForm = ({
 
             <div>
               <label className="block text-gray-700 font-medium mb-1">
-                วันที่เริ่มต้น
+                Start Date
               </label>
               <input
-                className="w-full p-2 border border-yellow-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
+                className="w-full p-2 border border-yellow-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent bg-white"
                 type="date"
-                placeholder="วันที่เริ่มต้น"
+                placeholder="Start Date"
                 value={localData.startDate}
                 onChange={(e) => updateField("startDate", e.target.value)}
               />
@@ -320,12 +320,12 @@ const PackageForm = ({
 
             <div>
               <label className="block text-gray-700 font-medium mb-1">
-                วันที่สิ้นสุด
+                End Date
               </label>
               <input
-                className="w-full p-2 border border-yellow-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
+                className="w-full p-2 border border-yellow-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent bg-white"
                 type="date"
-                placeholder="วันที่สิ้นสุด"
+                placeholder="End Date"
                 value={localData.endDate}
                 onChange={(e) => updateField("endDate", e.target.value)}
               />
@@ -333,18 +333,18 @@ const PackageForm = ({
 
             <div className="md:col-span-2">
               <label className="block text-gray-700 font-medium mb-1">
-                รายละเอียดแพ็คเกจ
+                Package Description
               </label>
               <textarea
-                className="w-full p-2 border border-yellow-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent min-h-20"
-                placeholder="รายละเอียดแพ็คเกจ"
+                className="w-full p-2 border border-yellow-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent min-h-20 bg-white"
+                placeholder="Package Description"
                 value={localData.description}
                 onChange={(e) => updateField("description", e.target.value)}
               />
             </div>
             <div>
               <label className="block text-gray-700 font-medium mb-1">
-                อัพโหลดรูปภาพเเพ็คเกจ
+                Upload Package Images
               </label>
               <input
                 type="file"
@@ -353,7 +353,7 @@ const PackageForm = ({
                 onChange={(e) =>
                   updateField("media", Array.from(e.target.files))
                 }
-                className="w-full p-2 border border-yellow-200 rounded-lg"
+                className="w-full p-2 border border-yellow-200 rounded-lg bg-white"
               />
             </div>
           </div>
@@ -365,7 +365,7 @@ const PackageForm = ({
                 icon={faPlusCircle}
                 className="text-yellow-500 mr-2"
               />
-              เพิ่มบริการจากใบเสนอราคา
+              Add Services from Quotations
             </label>
             <select
               className="w-full p-3 border border-yellow-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent bg-white"
@@ -376,7 +376,7 @@ const PackageForm = ({
                 if (selected) addServiceFromDropdown(selected);
               }}
             >
-              <option value="">-- เลือกบริการ --</option>
+              <option value="">-- Select a Service --</option>
               {allServices.map((s, index) => (
                 <option key={index} value={s.serviceId}>
                   [{s.businessCategory}] {renderServiceByCategory(s)}
@@ -392,11 +392,11 @@ const PackageForm = ({
                 icon={faCheckCircle}
                 className="text-yellow-500 mr-2"
               />
-              บริการที่เลือกแล้ว
+              Selected Services
             </h4>
 
             {localData.services.length === 0 ? (
-              <p className="text-gray-500 italic">ยังไม่มีบริการที่เลือก</p>
+              <p className="text-gray-500 italic">No services selected yet</p>
             ) : (
               <div className="space-y-2">
                 {localData.services.map((s, idx) => (
@@ -448,26 +448,26 @@ const PackageForm = ({
 // Helper function to find service name from ID
 const findServiceName = (serviceId, allServices) => {
   const service = allServices.find((s) => s.serviceId === serviceId);
-  if (!service) return "ไม่พบชื่อบริการ";
-  return `บริการ: ${renderServiceByCategory(service)}`;
+  if (!service) return "Service name not found";
+  return `Service: ${renderServiceByCategory(service)}`;
 };
 
 const renderServiceByCategory = (service) => {
   const category = service.businessCategory;
-  if (!category) return "ไม่ทราบประเภท";
+  if (!category) return "Unknown type";
 
   switch (category) {
     case "hotel":
-      return `ห้อง ${service.roomType} (${service.guestAmount} คน)`;
+      return `Room ${service.roomType} (${service.guestAmount} people)`;
     case "carRental":
-      return `รถ ${service.carBrand} (${service.amountSeat} ที่นั่ง)`;
+      return `Car ${service.carBrand} (${service.amountSeat} seats)`;
     case "event":
-      return `บัตร ${service.ticketType} - วันที่ ${new Date(
+      return `Ticket ${service.ticketType} - Date ${new Date(
         service.eventDate
-      ).toLocaleDateString("th-TH")}`;
+      ).toLocaleDateString("en-US")}`;
     case "restaurant":
     case "course":
-      return `คอร์ส ${service.courseName || "ไม่ระบุชื่อ"}`;
+      return `Course ${service.courseName || "Unnamed"}`;
     default:
       return `ID: ${service._id}`;
   }

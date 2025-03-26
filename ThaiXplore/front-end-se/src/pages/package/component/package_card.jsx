@@ -28,7 +28,7 @@ const PackageCard = ({ data }) => {
         
         <div className="mt-5 flex justify-between items-center">
           {/* <span className="text-lg font-bold text-gray-800">{price}</span> */}
-          <span className="text-xs text-amber-600 font-medium tracking-wider">ราคา : {price} BATH</span>
+          <span className="text-xs text-amber-600 font-medium tracking-wider">price : {price} BATH</span>
         </div>
       </div>
     </div>

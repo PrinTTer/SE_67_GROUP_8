@@ -6,20 +6,37 @@ import { getBusiness } from '../../data';
 import { faBed, faStar } from '@fortawesome/free-solid-svg-icons';
 import { RightSideBar } from './component/RightBar';
 import { Service } from './component/service';
- import  {QuotationPopUp}  from './component/QuotationPopUp';
+import  {QuotationPopUp}  from './component/QuotationPopUp';
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+
 import LoadingSpinner from '../../components/LoadingSpinner';
 import { fetchData } from '../../services/apiService';
+import useSocket from '../../hooks/useSocket';
+import { useSelector } from 'react-redux';
 
 
 function Detail() {
   const { id } = useParams()
   const business = getBusiness("Hotel A")
- 
+  const { user } = useSelector((state) => state.auth);
+  const socketRef = useSocket(user);
   const [show, setShow] = useState(true)
   const [showPopup, setShowPopup] = useState(false);
+  const safeDateGMT7 = (dateString) => {
+    const date = new Date(dateString);
+    
+    date.setHours(date.getHours() + 7);
+    return date.toISOString().slice(0, 16); // รูปแบบ "yyyy-MM-ddTHH:mm"
+  };
 
+  const [bookingDetail, setBookingDetail] = useState({
+    adult: "",
+    child: "",
+    bookingAmount: "",
+    startDate: safeDateGMT7(new Date()),  // ปรับเวลาที่นี่ให้ตรงกับ GMT+7
+    endDate: safeDateGMT7(new Date()),    // ปรับเวลาที่นี่ให้ตรงกับ GMT+7
+    time: "",
+  });
 
 
   //fetch from axios
@@ -66,6 +83,8 @@ function Detail() {
   
   
   if (error) return <p className="text-red-500">Error: {error}</p>;
+
+  
   
 
   return (
@@ -80,7 +99,7 @@ function Detail() {
           <img className="w-full h-48 object-cover" src={business.image.thrid} />
           <img className="w-full h-48 object-cover col-span-2" src={business.image.fourth} />
         </div>
-
+        
 
         <div className='flex flex-2 m-5'>
           <div className='flex-2 '>
@@ -97,7 +116,7 @@ function Detail() {
                 <p>Request Quotation</p>
               </div>
             </Link>
-            {showPopup && <QuotationPopUp onClose={() => setShowPopup(false)} business={data} serviceBusiness={data?.services}/>}
+            {showPopup && <QuotationPopUp socketRef={socketRef} onClose={() => setShowPopup(false)} business={data} serviceBusiness={data?.services}/>}
 
 
 
@@ -119,7 +138,7 @@ function Detail() {
                   return <Info key={index} infoTitle={element} />
                 })
               }
-              <Service title={data.services} category={data?.business?.category} id={data?.business?._id} />
+              <Service title={data.services} category={data?.business?.category} id={data?.business?._id} bookingDetail={bookingDetail} />
             </div>
 
 
@@ -130,7 +149,7 @@ function Detail() {
       </div>
 
       {/* Right Bar */}
-      <RightSideBar type={data?.business?.category} />
+      <RightSideBar type={data?.business?.category} bookingDetail={bookingDetail}/>
 
     </>
   )

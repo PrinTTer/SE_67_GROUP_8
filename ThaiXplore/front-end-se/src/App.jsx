@@ -28,6 +28,7 @@ import Payment from "./pages/payment_page/payment";
 import PaymentSelector from "./pages/payment_page/paymentSelected";
 import QuotationPage from "./pages/quotation_page/quotationpage"
 import BookingHistory from "./pages/booking_page/bookingHistory";
+import PackageHistory from "./pages/booking_page/packageHistory";
 
 
 function App() {
@@ -36,7 +37,7 @@ function App() {
   const currentPath = useSelector((state) => state.path.currentPath);
   const { user } = useSelector((state) => state.auth);
   const [isNaviOpen , setIsNaviOpen] = useState(false);
-
+  
   const openNavi = () => {
     setIsNaviOpen(!isNaviOpen);
   }
@@ -91,6 +92,7 @@ function App() {
             <Route path="/booking" element={<Booking />} />
             <Route path="/payment" element={<Payment />} />
             <Route path="/history" element={<BookingHistory />} />
+            <Route path="/packageHistory" element={<PackageHistory/>} />
             <Route path="/paymentSelector" element={<PaymentSelector />} />
             <Route path="/quotation" element={<QuotationPage />} />
             <Route path="/verifyBusiness" element={<VerifyBusiness />} />

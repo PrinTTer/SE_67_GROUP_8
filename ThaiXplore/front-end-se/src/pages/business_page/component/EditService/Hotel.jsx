@@ -1,5 +1,5 @@
 import {  useState } from 'react';
-import { putData , putDataWithFiles ,deleteData, postDataWithFiles } from '../../../../services/apiService';
+import { putData  ,deleteData, postDataWithFiles } from '../../../../services/apiService';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimesCircle } from '@fortawesome/free-solid-svg-icons';
 
@@ -8,6 +8,8 @@ export const HotelEdit = (prop) => {
     const { item , setShowEditPopUp ,fetchData } = prop;
     const [selectedImage, setSelectedImage] = useState(`http://localhost:3000/public/uploads/services/rooms/${item.media[0]}`);
     const [editImage, setImage] = useState(item.media[0])
+    const [getImage, setServiceImage] = useState(item.media[0])
+
     // State สำหรับการเก็บข้อมูลของ item
     const [room, setRoom] = useState({
       roomType: item.roomType ,
@@ -46,17 +48,18 @@ export const HotelEdit = (prop) => {
 
     const updateData = async () =>{
         // alert(item._id)
+        setServiceImage((item.media[0]))
         room.price = parseFloat(room.price)
         room.totalRooms = parseFloat(room.totalRooms)
         console.log(room)
         if(putData(`rooms/${item._id}`, room)){
-          
+
+          if(getImage != editImage)
           await deleteData(`/rooms/${item._id}/images/1`)
           await postDataWithFiles(`/rooms/${item._id}/images`, [editImage] ,room, "services_rooms")
 
            //await postDataWithFiles(`/rooms/${item._id}/images`, [editImage] ,room, "services_rooms")
-          console.log("Image here")
-          console.log(editImage)
+        
           setShowEditPopUp(false);
           fetchData();
         }

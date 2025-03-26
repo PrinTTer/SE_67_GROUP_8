@@ -11,7 +11,8 @@ const BusinessSchema = new mongoose.Schema({
     category : {type : String , require : true},
     verify : {
         document : {type : [String] , require : false},
-        status : {type : String , require : false}
+        status : {type : String , require : false},
+        description : {type : String , require : false}
     },
     followBusiness : {type : [String] , require : false},
     dateCreate : {type : Date , require : true}

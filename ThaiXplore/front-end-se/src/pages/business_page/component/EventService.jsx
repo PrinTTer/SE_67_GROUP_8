@@ -7,6 +7,9 @@ import { ShowService } from './ShowService';
 
 export const EventService = (prop) => {
   const { id, title, type, fetchData, data } = prop;
+  
+
+
   const [forms, setForms] = useState([
     { businessId: id, ticketType: "", price: "", quantity: "", eventDate: "", start: "", end: "" }
   ]);
@@ -102,6 +105,8 @@ export const EventService = (prop) => {
   };
 
   // ฟังก์ชัน insertData ที่ใช้ส่งข้อมูลฟอร์ม
+  const [imgType,setImageType] = useState();
+
   const insertData = async (index) => {
     if (validateForm(index)) {
       try {
@@ -112,20 +117,23 @@ export const EventService = (prop) => {
         
         const postResponse = await postData(`/businesses/${id}/events`, formData);
         alert("Event added successfully!");
-        fetchData();
-          const endpoint = `/events/${postResponse._id}/images`;
-          postDataWithFiles(endpoint, [image], forms, "services_events");
+        
+        const endpoint = `/events/${postResponse._id}/images`;
+        postDataWithFiles(endpoint, [image], forms, "services_events");
+
         removeForm(index);
+        setImageType("events")
+        fetchData();
       } catch (error) {
         console.error("Error adding event:", error);
         alert("Failed to add the event. Please try again.");
-      }
+      } 
     }
   };
 
   return (
     <div className="bg-white rounded-lg shadow-md p-6 border border-amber-100">
-      <ShowService id={id} type={type} fetchData={fetchData} data={data}/>
+      <ShowService id={id} type={type} fetchData={fetchData} data={data} imgType={imgType}/>
       
       <div className="flex items-center justify-between mb-5 border-b border-amber-200 pb-4 mt-6">
         <h2 className="text-xl font-semibold text-amber-800">

@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react';
 import { fetchData } from '../../services/apiService';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faClipboardList } from '@fortawesome/free-solid-svg-icons';
+import { faClipboardList, faImage } from '@fortawesome/free-solid-svg-icons';
 
 const BookingHistory = () => {
     const [bookings, setBookings] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [categoryForImage, setCategoryForImage] = useState("");
 
     useEffect(() => {
         const fetchBookings = async () => {
@@ -16,6 +17,7 @@ const BookingHistory = () => {
                 const bookingsData = await fetchData("/bookings");
                 const bookingsWithServiceDetails = await Promise.all(bookingsData.map(async (booking) => {
                     const businessData = await fetchData(`/businesses/${booking.businessId}`);
+                    console.log(businessData);
                     const detailedBooking = booking.bookingDetail.map(detail => {
                         const service = businessData.services.find(service => service._id === detail.serviceId);
                         return { ...detail, service, businessImage: businessData.business.imageUrl };
@@ -35,6 +37,10 @@ const BookingHistory = () => {
 
         fetchBookings();
     }, []);
+
+    // useEffect(()=> {
+    //     console.log(checkService(bookings[0].businessData[0].business.category))
+    // }, []);
 
     return (
         <div className="container mx-auto px-4 py-8">
@@ -71,11 +77,18 @@ const BookingHistory = () => {
                         >
                             {/* Image Section */}
                             <div className="w-1/3 relative">
-                                <img 
-                                    src={booking.bookingDetail[0].businessImage || '/api/placeholder/400/300'} 
+                                {booking.bookingDetail[0].service?.media === undefined ? (
+                                    <div className="flex flex-col items-center justify-center text-gray-400 h-full w-full">
+                                        <FontAwesomeIcon icon={faImage} className="text-4xl mb-2" />
+                                        <span className="text-sm">No picture</span>
+                                    </div>
+                                ) : (
+                                    <img 
+                                    src={`http://localhost:3000/public/uploads/services/${checkService(booking.businessData.business.category)}/${booking?.bookingDetail[0]?.service?.media[0]}`} 
                                     alt={booking.businessData.business.businessName}
                                     className="w-full h-full object-cover"
-                                />
+                                    />
+                                )}
                                 <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white p-3">
                                     <h2 className="text-xl font-semibold">
                                         {booking.businessData.business.businessName}
@@ -117,7 +130,6 @@ const BookingHistory = () => {
                                         </div>
                                         <div className="flex justify-between items-center mb-3">
                                             <h3 className="text-lg font-medium text-gray-700">
-                                                Test
                                             </h3>
                                         </div>
                                         
@@ -150,3 +162,41 @@ const BookingHistory = () => {
 };
 
 export default BookingHistory;
+
+
+const checkService = (categoryForImage) => {
+    console.log("categoryForImage: ",categoryForImage);
+    let category;
+    if(categoryForImage === "hotel"){
+        category = "rooms";
+    }
+    else if(categoryForImage === "carRental"){
+        category = "cars";
+    }
+    else if(categoryForImage === "restaurant"){
+        category = "courses";
+    }
+    else if(categoryForImage === "event"){
+        category = "events";
+    }
+    console.log(category);
+    return category;
+}
+
+
+const getTopic = (category) => {
+    let List = [];
+    if(category === 'hotel'){
+        List = ['roomType', 'guestAmount', 'roomSize', 'price', 'facilities'];
+    }
+    else if (category === 'event'){
+        List = ['ticketType', 'price', 'eventDate', 'start', 'end'];
+    }
+    else if (category === 'carRental'){
+        List = ['carBrand',  'amountSeat', 'price'];
+    }
+    else if (category === 'restaurant'){
+        List = ['courseName', 'menuList', 'price'];
+    }
+    return List;
+};

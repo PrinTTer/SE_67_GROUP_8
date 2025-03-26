@@ -36,7 +36,7 @@ const Addblock = (prop) => {
   // Function to clear the input fields
   const handleClear = () => {
     setInputs([]);
-    setShow(!show)
+    setShow(!show);
   };
 
   const handleInputChange = (index, value) => {

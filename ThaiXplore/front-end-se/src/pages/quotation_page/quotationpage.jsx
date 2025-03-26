@@ -1,7 +1,7 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faDollarSign, faPenToSquare, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faArrowLeft, faCircleArrowLeft, faCoins, faDollarSign, faFile, faFilePen, faPenToSquare, faReceipt, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState } from 'react';
-import { deleteData, fetchData } from '../../services/apiService';
+import { deleteData, fetchData, putData } from '../../services/apiService';
 import { QuotationPopUp } from '../detail_page/component/QuotationPopUp';
 import useSocket from '../../hooks/useSocket';
 import { useSelector } from 'react-redux';
@@ -15,33 +15,38 @@ const QuotationPage = () => {
     const [completeQuotation, setCompleteQuotation] = useState([]);
     const [loading, setLoading] = useState(false);
 
-    console.log(user);
     useEffect(() => {
         const socket = socketRef.current;
-      
+
         if (socket) {
-          socket.on("newRequest", (data) => {
-            console.log("New quotation received:", data); 
-            fetch();
-          });
+            socket.on("newRequest", (data) => {
+                console.log("data--->", data);
+                fetch();
+            });
         }
-      
+
         return () => {
-          if (socket) {
-            socket.off("newRequest"); 
-          }
+            if (socket) {
+                socket.off("newRequest");
+            }
         };
-      }, [socketRef.current]); 
-    
+    }, [socketRef.current]);
+
 
     const fetch = async () => {
         try {
             setLoading(true);
-            const pended = await fetchData("/quotations-pended");
+            const pend = await fetchData("/quotations-pended");
+            const pended = pend.filter((item, index) => item.status !== "complete");
             setPendedQuotation(pended);
             const received = await fetchData("/quotations-received");
-            setReceivedQuotation(received);
-            const completed = pended.filter((item, index) => item.status === "complete");
+            const receivedPending = received.filter((item, index) => item.status !== "complete");
+            const receivedComplete = received.filter((item, index) => item.status === "complete");
+            setReceivedQuotation(receivedPending);
+            const completed = pend.filter((item, index) => item.status === "complete");
+            receivedComplete.map((item, idx) => {
+                completed.push(item);
+            })
             setCompleteQuotation(completed);
         } catch (error) {
             console.log(error);
@@ -87,9 +92,9 @@ const QuotationPage = () => {
                         <p>Status</p>
                         <p className='text-end mr-20'>Operation</p>
                     </div>
-                    {activeTab === "Pending Quotations" && <QuotationList loading={loading} status="pending" quotations={pendedQuotation} setLoading={setLoading} />}
-                    {activeTab === "Received Quotations" && <QuotationList loading={loading} status="received" quotations={receivedQuotation} setLoading={setLoading} />}
-                    {activeTab === "Completed Quotations" && <QuotationList loading={loading} status="complete" quotations={completeQuotation} setLoading={setLoading} />}
+                    {activeTab === "Pending Quotations" && <QuotationList socketRef={socketRef} loading={loading} status="pending" quotations={pendedQuotation} setLoading={setLoading} />}
+                    {activeTab === "Received Quotations" && <QuotationList socketRef={socketRef} loading={loading} status="received" quotations={receivedQuotation} setLoading={setLoading} />}
+                    {activeTab === "Completed Quotations" && <QuotationList socketRef={socketRef} loading={loading} status="complete" quotations={completeQuotation} setLoading={setLoading} />}
                 </div>
             </div>
         </div>
@@ -97,7 +102,7 @@ const QuotationPage = () => {
 };
 
 const QuotationList = (prop) => {
-    const { status, quotations, loading, setLoading } = prop;
+    const { status, quotations, loading, setLoading, socketRef } = prop;
     const [data, setData] = useState([]);
 
     useEffect(() => {
@@ -108,7 +113,9 @@ const QuotationList = (prop) => {
         <div className="space-y-3">
             {data.map((item, index) => (
                 <Quotationfield
+                    socketRef={socketRef}
                     key={index}
+                    type={status}
                     business={item.companyName}
                     status={item.status}
                     isEven={index % 2 === 0}
@@ -122,7 +129,7 @@ const QuotationList = (prop) => {
 };
 
 const Quotationfield = (prop) => {
-    const { business, status, isEven, quotation, loading, setLoading } = prop;
+    const { business, status, isEven, quotation, loading, setLoading, type, socketRef } = prop;
     const [details, setDetails] = useState({});
     // Status styling
     const getStatusStyle = (status) => {
@@ -172,11 +179,25 @@ const Quotationfield = (prop) => {
                     </span>
                 </div>
                 <div className="flex justify-end gap-5 mr-20">
-                    {status.toLowerCase() === "waiting for pay" &&
-                        <QuotationEditBtn icon={faDollarSign} popup="Payment" color="text-amber-500" />
+                    {
+                        type === "pending" ?
+                            status !== "offered" ?
+                                <QuotationEditBtn socketRef={socketRef} icon={faPenToSquare} type={type} popup="Edit" color="text-blue-500" business={details} quotation={quotation} /> :
+                                <QuotationEditBtn socketRef={socketRef} icon={faCoins} type={type} popup="Offer" color="text-yellow-500" business={details} quotation={quotation} fetch={fetch} />
+                            : type === "received" ?
+                                status === "offered" ?
+                                    <QuotationEditBtn socketRef={socketRef} icon={faFile} type={type} popup="Offer" color="text-gray-500" business={details} quotation={quotation} /> :
+                                    <QuotationEditBtn socketRef={socketRef} icon={faFilePen} type={type} popup="Edit" color="text-blue-500" business={details} quotation={quotation} fetch={fetch} />
+                            : type === "complete" ?
+                                status === "offered" ?
+                                    <QuotationEditBtn socketRef={socketRef} icon={faReceipt} type={type} popup="Edit" color="text-blue-500" business={details} quotation={quotation} /> :
+                                    <QuotationEditBtn socketRef={socketRef} icon={faReceipt} type={type} popup="Offer" color="text-gray-500" business={details} quotation={quotation} fetch={fetch} />
+                            :
+                            <></>
+                        
+                        
                     }
-                    <QuotationEditBtn icon={faPenToSquare} popup="Edit" color="text-blue-500" business={details} quotation={quotation} />
-                    <QuotationEditBtn icon={faTrash} popup="Delete" color="text-red-500" business={details} quotation={quotation} />
+                    <QuotationEditBtn socketRef={socketRef} icon={faTrash} type={type} popup="Delete" color="text-red-500" business={details} quotation={quotation} fetch={fetch} />
                 </div>
             </div>
             :
@@ -185,10 +206,9 @@ const Quotationfield = (prop) => {
 };
 
 const QuotationEditBtn = (prop) => {
-    const { icon, popup, color = "text-gray-600", business, quotation } = prop;
+    const { icon, popup, color = "text-gray-600", business, quotation, fetch, type, socketRef } = prop;
     const [showPopup, setShowPopup] = useState(false);
 
-    // console.log(quotation);
 
     const checkBtn = async () => {
         if (popup === "Edit") {
@@ -196,24 +216,27 @@ const QuotationEditBtn = (prop) => {
         } else if (popup === "Delete") {
             try {
                 await deleteData(`/quotations/${quotation._id}`);
+                window.location.reload();
             } catch (error) {
                 console.log(error);
             }
-        } else if (popup === "Comfirm") {
-
+        } else if (popup === "Offer") {
+            setShowPopup(true)
         }
     }
 
+    // console.log(quotation);
+    // console.log("Business",business);
     return (
         <>
 
-            {showPopup && popup === "Edit" && <QuotationPopUp onClose={() => setShowPopup(false)} serviceBusiness={business?.services} quotation={quotation} />}
+            {showPopup && (popup === "Edit" || popup === "Offer") && <QuotationPopUp socketRef={socketRef} popup={popup} type={type} business={business} onClose={() => setShowPopup(false)} serviceBusiness={business?.services} quotation={quotation} />}
 
             <div
                 onClick={() => checkBtn()}
                 className="flex justify-center w-fit h-fit items-center relative cursor-pointer"
             >
-                <div className={`w-8 h-8 flex items-center justify-center rounded-full transition-all duration-300 ${color} hover:bg-gray-100`}>
+                <div className={`w-8 h-8 flex text-xl items-center justify-center rounded-full transition-all duration-300 ${color} hover:bg-gray-100`}>
                     <FontAwesomeIcon icon={icon} />
                 </div>
             </div>

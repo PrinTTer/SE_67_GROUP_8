@@ -11,13 +11,10 @@ import { RestaurantService } from './RestaurantService';
 import axios from 'axios';
 
 export const ServiceBlock = (prop) => {
-    const { title, type, businessId } = prop;
+    const { title, type, businessId, business } = prop;
     console.log("BUSID is " + businessId);
     const [show, setShow] = useState(true);
-    
-   
-    //alert(type)
-   
+       
     const toggle = () => {
         setShow(!show);
     };
@@ -44,8 +41,6 @@ export const ServiceBlock = (prop) => {
     useEffect(() => {
       fetchData();
     },[] );
-
-    
 
     return (
         <div className="shadow-md m-4 p-4 rounded-md bg-[#F1F5F9]">

@@ -6,7 +6,7 @@ import { postData } from "../../services/apiService";
 
 const Payment = () => {
     const location = useLocation();
-    const { bookingData, item, category, method } = location.state || {};
+    const { bookingData, item, category, method , bookingDetail } = location.state || {};
     const navigate = useNavigate();
 
     // สร้าง state สำหรับฟอร์มข้อมูลการชำระเงิน
@@ -32,9 +32,9 @@ const Payment = () => {
         bookingDetail: [
             {
                 serviceId: item?._id,  // serviceId ที่เกี่ยวข้องกับ booking
-                startDate: new Date(bookingData?.checkInDate).toISOString(),  // วันที่เริ่มการบริการ
-                endDate: new Date(bookingData?.checkOutDate).toISOString(),     // วันที่สิ้นสุดการบริการ
-                amount: "1"         // จำนวนเงินที่ต้องชำระ
+                startDate: new Date(bookingData?.checkInDate).toISOString(),
+                endDate: new Date(bookingData?.checkOutDate).toISOString(),
+                amount: bookingDetail.bookingAmount
             }
         ]
     };
@@ -43,12 +43,12 @@ const Payment = () => {
     const handleConfirmPayment = async () => {
         try {
             // ส่งข้อมูลไปที่ API เพื่อบันทึกข้อมูลการจอง
-            //const response = await postData('/bookings', formData);
-            const response = formData;
+            const response = await postData('/bookings', formData);
+            // const response = formData;
             console.log('Payment confirmed:', response);
     
             // Redirect ไปยังหน้าที่ต้องการหลังจากการชำระเงินสำเร็จ
-            // navigate('/history');
+            navigate('/history');
         } catch (error) {
             console.error('Error confirming payment:', error);
         }
@@ -87,7 +87,7 @@ const Payment = () => {
                         </div>
                         <div className="flex flex-1 p-4">
                             <div className="flex flex-3 w-full">
-                                <PaymentUserDetail user={bookingData} />
+                                <PaymentUserDetail user={bookingData} bookingDetail={bookingDetail} />
                             </div>
                         </div>
                     </div>

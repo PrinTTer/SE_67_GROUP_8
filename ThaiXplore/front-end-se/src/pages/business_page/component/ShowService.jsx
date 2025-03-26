@@ -17,6 +17,7 @@ export const ShowService = (prop) => {
   const Topic = getTopic(type);
   const [imageType, setImageType] = useState();
   
+  console.log(data);
   useEffect (()=>{
     //Fetch Image
     fetchData();
@@ -58,6 +59,7 @@ export const ShowService = (prop) => {
     let endpoint;
     if (type === "hotel") {
       endpoint = '/room/';
+      
     } else if (type === "carRental") {
       endpoint = '/cars/';
     } else if (type === "event") {
@@ -67,8 +69,14 @@ export const ShowService = (prop) => {
     }
 
     try {
-      await deleteData(endpoint + id);
-      //await deleteData(endpoint+`${id}/images/1`);
+      deleteData(endpoint + id);
+
+      if(endpoint.includes("room")){
+        endpoint= '/rooms/';
+      } 
+        endpoint = endpoint+`${id}/images/1`;
+        console.log("EndPoint   "+endpoint)
+      deleteData(endpoint);
 
       fetchData();
     } catch (error) {

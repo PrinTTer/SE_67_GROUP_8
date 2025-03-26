@@ -25,6 +25,7 @@ export const NavigateBar = (prop) => {
     const [isOpen, setIsOpen] = useState(false);
     const popupRef = useRef(null);
     
+
     const { user } = useSelector((state) => state.auth);
     const dispatch = useDispatch();
 
@@ -47,6 +48,7 @@ export const NavigateBar = (prop) => {
     const logout = () => {
         dispatch(logoutUser());
     }
+
 
     return (
         <div className={`${isNaviOpen ? "flex" : "hidden"} lg:flex flex-col justify-between 
@@ -179,7 +181,7 @@ export const ToggleSideBarTourist = (prop) => {
                 </div>
                 <IconSideBar iconName="My Profile" iconFont={faUser} path="/profile" />
                 <IconSideBar iconName="My Bookings" iconFont={faClipboardCheck} path="/history" />
-                <IconSideBar iconName="Travel Packages" iconFont={faCube} path="#" />
+                <IconSideBar iconName="Travel Packages" iconFont={faCube} path="/packageHistory" />
                 <div className="mx-4 my-2 border-t border-gray-100"></div>
                 <IconSideBar logout={logout} iconName="Logout" iconFont={faArrowRightFromBracket} path="/login" />
             </div>

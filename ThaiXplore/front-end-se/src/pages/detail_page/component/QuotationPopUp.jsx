@@ -1,14 +1,13 @@
 import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTimes, faCalendarAlt, faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faTimes, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { ServiceDropdown } from "./dropDownService";
 import { useNavigate } from "react-router-dom";
 import { postData, putData } from "../../../services/apiService";
 import { useSelector } from "react-redux";
-import useSocket from "../../../hooks/useSocket";
 
 export const QuotationPopUp = (prop) => {
-  const { onClose, serviceBusiness, quotation, business } = prop;
+  const { onClose, serviceBusiness, quotation, business, popup, type, socketRef } = prop;
   const [formData, setFormData] = useState({
     companyName: "",
     province: "",
@@ -22,19 +21,23 @@ export const QuotationPopUp = (prop) => {
     items: [{ serviceId: "", quantity: "", price: "", amount: "" }],
   });
   const { user } = useSelector((state) => state.auth);
-  const socketRef = useSocket(user);
-  
-  console.log(user);
-
 
   const sendQuotationSocket = (status) => {
     const socket = socketRef.current;
     const receiverId = business.business.userId;
+    console.log("IN ===> ", receiverId);
     if (socket) {
       socket.emit("sendRequest",{receiverId, status}); // ส่งข้อมูลไปยัง server ผ่าน WebSocket
     }
   };
 
+  const sendQuotationSocketToPender = (status) => {
+    const socket = socketRef.current;
+    const receiverId = quotation.userId;
+    if (socket) {
+      socket.emit("sendRequest",{receiverId, status}); // ส่งข้อมูลไปยัง server ผ่าน WebSocket
+    }
+  }
 
   const setDefaultValues = () => {
     if (quotation) {
@@ -72,6 +75,7 @@ export const QuotationPopUp = (prop) => {
     }
   };
 
+
   const addRow = () => {
     setFormData({
       ...formData,
@@ -95,6 +99,13 @@ export const QuotationPopUp = (prop) => {
         alert("กรุณากรอกข้อมูลสำคัญให้ครบถ้วน!");
         // return;
       }
+      
+      const status = (
+        popup === "Offer" && type === "pending" ? "complete" 
+        : popup === "Edit" && type === "pending" ? "pending" 
+        : popup === "Edit" && type === "received" ? "offered"
+        : "pending"
+      );
       const sendData = {
           toBusinessId : serviceBusiness[0].businessId,
           name : formData.name,
@@ -103,16 +114,24 @@ export const QuotationPopUp = (prop) => {
           email : formData.email,
           phoneNumber : formData.phone,
           description : formData.description,
-          servicesDetails : formData.items
+          servicesDetails : formData.items,
+          status : status
       }
       
       if(!quotation){
-        sendQuotationSocket({request : "Create"});
         await postData(`/quotations` , sendData);
+        sendQuotationSocket({request : "Create"});
         navigate("/quotation");
-      }else {
-        sendQuotationSocket({request : "Update"});
+      }else if(popup === "Edit") {
+        console.log(sendData);
         await putData(`/quotations/${quotation._id}` , sendData);
+        sendQuotationSocket({request : "Create"});
+        sendQuotationSocketToPender({request : "Create"});
+        onClose();
+      }else if(popup === "Offer") {
+        await putData(`/quotations/${quotation._id}` , sendData);
+        sendQuotationSocket({request : "Create"});
+        sendQuotationSocketToPender({request : "Create"});
         onClose();
       }
     } catch (error) {
@@ -120,7 +139,7 @@ export const QuotationPopUp = (prop) => {
     }
   };
 
-  const formatCurrency = (amount) => {
+  const formatCurrency = (amount , item) => {
     return new Intl.NumberFormat('th-TH', { style: 'currency', currency: 'THB' }).format(amount);
   };
 
@@ -146,39 +165,94 @@ export const QuotationPopUp = (prop) => {
             <h3 className="font-semibold text-gray-700 mb-2 border-b border-orange-300 pb-1">ข้อมูลบริษัท</h3>
             <div className="grid grid-cols-2 gap-4">
               <div className="col-span-2">
-                <input
-                  type="text"
-                  name="companyName"
-                  placeholder="ชื่อบริษัท *"
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-300 focus:border-orange-500 outline-none transition-all"
-                  value={formData.companyName || ""}
-                  onChange={handleChange}
-                />
+                {
+                  (popup === "Offer" && type === "pending") || type === "received" || type === "complete" ?
+                  (<input
+                    type="text"
+                    name="companyName"
+                    placeholder="ชื่อบริษัท *"
+                    readOnly
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-300 focus:border-orange-500 outline-none transition-all"
+                    value={formData.companyName || ""}
+                    onChange={handleChange}
+                  />) 
+                  :
+                  (<input
+                    type="text"
+                    name="companyName"
+                    placeholder="ชื่อบริษัท *"
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-300 focus:border-orange-500 outline-none transition-all"
+                    value={formData.companyName || ""}
+                    onChange={handleChange}
+                  />)
+                }
+                
               </div>
-              <input
-                type="text"
-                name="province"
-                placeholder="จังหวัด"
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-300 focus:border-orange-500 outline-none transition-all"
-                value={formData.province || ""}
-                onChange={handleChange}
-              />
-              <input
-                type="text"
-                name="district"
-                placeholder="อำเภอ/เขต"
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-300 focus:border-orange-500 outline-none transition-all"
-                value={formData.district || ""}
-                onChange={handleChange}
-              />
-              <input
-                type="text"
-                name="subDistrict"
-                placeholder="ตำบล/แขวง"
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-300 focus:border-orange-500 outline-none transition-all"
-                value={formData.subDistrict || ""}
-                onChange={handleChange}
-              />
+              {
+                  (popup === "Offer" && type === "pending") || type === "received" || type === "complete" ?
+                  (<input
+                    type="text"
+                    name="province"
+                    placeholder="จังหวัด"
+                    readOnly
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-300 focus:border-orange-500 outline-none transition-all"
+                    value={formData.province || ""}
+                    onChange={handleChange}
+                  />) 
+                  :
+                  (<input
+                    type="text"
+                    name="province"
+                    placeholder="จังหวัด"
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-300 focus:border-orange-500 outline-none transition-all"
+                    value={formData.province || ""}
+                    onChange={handleChange}
+                  />)
+                }
+              
+              {
+                  (popup === "Offer" && type === "pending") || type === "received" || type === "complete" ?
+                  (<input
+                    type="text"
+                    name="district"
+                    placeholder="อำเภอ/เขต"
+                    readOnly
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-300 focus:border-orange-500 outline-none transition-all"
+                    value={formData.district || ""}
+                    onChange={handleChange}
+                  />) 
+                  :
+                  (<input
+                    type="text"
+                    name="district"
+                    placeholder="อำเภอ/เขต"
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-300 focus:border-orange-500 outline-none transition-all"
+                    value={formData.district || ""}
+                    onChange={handleChange}
+                  />)
+                }
+              {
+                  (popup === "Offer" && type === "pending") || type === "received" || type === "complete" ?
+                  (<input
+                    type="text"
+                    name="subDistrict"
+                    placeholder="ตำบล/แขวง"
+                    readOnly
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-300 focus:border-orange-500 outline-none transition-all"
+                    value={formData.subDistrict || ""}
+                    onChange={handleChange}
+                  />) 
+                  :
+                  (<input
+                    type="text"
+                    name="subDistrict"
+                    placeholder="ตำบล/แขวง"
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-300 focus:border-orange-500 outline-none transition-all"
+                    value={formData.subDistrict || ""}
+                    onChange={handleChange}
+                  />)
+                }
+            
             </div>
           </div>
 
@@ -186,45 +260,100 @@ export const QuotationPopUp = (prop) => {
           <div className="mb-6">
             <h3 className="font-semibold text-gray-700 mb-2 border-b border-orange-300 pb-1">ข้อมูลผู้ติดต่อ</h3>
             <div className="grid grid-cols-2 gap-4">
-              <input
-                type="text"
-                name="name"
-                placeholder="ชื่อผู้ติดต่อ *"
-                className="p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-300 focus:border-orange-500 outline-none transition-all"
-                value={formData.name || ""}
-                onChange={handleChange}
-              />
-              <input
-                type="text"
-                name="phone"
-                placeholder="เบอร์โทรศัพท์ *"
-                className="p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-300 focus:border-orange-500 outline-none transition-all"
-                value={formData.phone || ""}
-                onChange={handleChange}
-              />
-              <input
-                type="email"
-                name="email"
-                placeholder="อีเมล *"
-                className="col-span-2 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-300 focus:border-orange-500 outline-none transition-all"
-                value={formData.email || ""}
-                onChange={handleChange}
-              />
+              {
+                (popup === "Offer" && type === "pending") || type === "received" || type === "complete" ?
+                (<input
+                  type="text"
+                  name="name"
+                  placeholder="ชื่อผู้ติดต่อ *"
+                  readOnly
+                  className="p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-300 focus:border-orange-500 outline-none transition-all"
+                  value={formData.name || ""}
+                  onChange={handleChange}
+                />)
+                :
+                (<input
+                  type="text"
+                  name="name"
+                  placeholder="ชื่อผู้ติดต่อ *"
+                  className="p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-300 focus:border-orange-500 outline-none transition-all"
+                  value={formData.name || ""}
+                  onChange={handleChange}
+                />)
+              }
+          
+              {
+                (popup === "Offer" && type === "pending") || type === "received" || type === "complete" ?
+                (<input
+                  type="text"
+                  name="phone"
+                  placeholder="เบอร์โทรศัพท์ *"
+                  readOnly
+                  className="p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-300 focus:border-orange-500 outline-none transition-all"
+                  value={formData.phone || ""}
+                  onChange={handleChange}
+                />)
+                :
+                (<input
+                  type="text"
+                  name="phone"
+                  placeholder="เบอร์โทรศัพท์ *"
+                  className="p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-300 focus:border-orange-500 outline-none transition-all"
+                  value={formData.phone || ""}
+                  onChange={handleChange}
+                />)
+              }
+              {
+                (popup === "Offer" && type === "pending") || type === "received" || type === "complete" ?
+                (<input
+                  type="email"
+                  name="email"
+                  placeholder="อีเมล *"
+                  readOnly
+                  className="col-span-2 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-300 focus:border-orange-500 outline-none transition-all"
+                  value={formData.email || ""}
+                  onChange={handleChange}
+                />)
+                :
+                (<input
+                  type="email"
+                  name="email"
+                  placeholder="อีเมล *"
+                  className="col-span-2 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-300 focus:border-orange-500 outline-none transition-all"
+                  value={formData.email || ""}
+                  onChange={handleChange}
+                />)
+              }
+          
             </div>
           </div>
 
           {/* Customer Description */}
           <div className="mb-6">
-            <h3 className="font-semibold text-gray-700 mb-2 border-b border-orange-300 pb-1">ข้อมูลผู้ติดต่อ</h3>
+            <h3 className="font-semibold text-gray-700 mb-2 border-b border-orange-300 pb-1">รายละเอียดเพิ่มเติม</h3>
             <div className="grid grid-cols-1 gap-4">
-              <textarea
-                type="text"
-                name="description"
-                placeholder="ข้อมูลเพิ่มเติม *"
-                className="p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-300 focus:border-orange-500 outline-none transition-all"
-                value={formData.description || ""}
-                onChange={handleChange}
-              />
+              {
+                (popup === "Offer" && type === "pending") || type === "received" || type === "complete" ? 
+                (<textarea
+                  type="text"
+                  name="description"
+                  placeholder="ข้อมูลเพิ่มเติม *"
+                  readOnly
+                  className="p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-300 focus:border-orange-500 outline-none transition-all"
+                  value={formData.description || ""}
+                  onChange={handleChange}
+                />)
+                :
+                (<textarea
+                  type="text"
+                  name="description"
+                  placeholder="ข้อมูลเพิ่มเติม *"
+                  className="p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-300 focus:border-orange-500 outline-none transition-all"
+                  value={formData.description || ""}
+                  onChange={handleChange}
+                />)
+              }
+              
             </div>
           </div>
 
@@ -249,9 +378,13 @@ export const QuotationPopUp = (prop) => {
                   <tbody>
                     {formData.items.map((item, index) => (
                       <tr key={index} className={index % 2 === 0 ? "bg-white" : "bg-orange-50"}>
+                        <>{console.log("item-->" ,item)}</>
                         <td className="p-3">
                           <ServiceDropdown
                             data={serviceBusiness}
+                            popup={popup}
+                            type={type}
+                            defaultValue={formData.items[index]?.serviceId} 
                             onSelect={(value) => {
                               const updatedItems = [...formData.items];
                               updatedItems[index].serviceId = value;
@@ -260,37 +393,74 @@ export const QuotationPopUp = (prop) => {
                           />
                         </td>
                         <td className="p-3">
-                          <input
-                            type="number"
-                            value={item.quantity || ""}
-                            onChange={(e) => handleChange(e, index, "quantity")}
-                            className="w-full p-2 border border-gray-300 rounded text-center bg-white focus:ring-2 focus:ring-orange-300 focus:border-orange-500 outline-none transition-all"
-                          />
+                          {
+                            popup === "Offer" && type === "pending" || type === "complete" || type === "received" ? 
+                            (<input
+                              type="number"
+                              value={item.quantity || ""}
+                              readOnly
+                              onChange={(e) => handleChange(e, index, "quantity")}
+                              className="w-full p-2 border border-gray-300 rounded text-center bg-white focus:ring-2 focus:ring-orange-300 focus:border-orange-500 outline-none transition-all"
+                            />)
+                            :
+                            (<input
+                              type="number"
+                              value={item.quantity || ""}
+                              onChange={(e) => handleChange(e, index, "quantity")}
+                              className="w-full p-2 border border-gray-300 rounded text-center bg-white focus:ring-2 focus:ring-orange-300 focus:border-orange-500 outline-none transition-all"
+                            />)
+                          }
+                          
                         </td>
                         <td className="p-3">
-                          <input
-                            type="number"
-                            value={item.price || ""}
-                            readOnly
-                            onChange={(e) => handleChange(e, index, "price")}
-                            className="w-full p-2 border border-gray-300 rounded text-center bg-white focus:ring-2 focus:ring-orange-300 focus:border-orange-500 outline-none transition-all"
-                          />
+                          {
+                            popup === "Offer" || !popup && !type ?  
+                            (<input
+                              type="number"
+                              value={item.price || ""}
+                              readOnly
+                              onChange={(e) => handleChange(e, index, "price")}
+                              className="w-full p-2 border border-gray-300 rounded text-center bg-white focus:ring-2 focus:ring-orange-300 focus:border-orange-500 outline-none transition-all"
+                            />)
+                            :
+                            type === "pending" ?
+                            (<input
+                              type="number"
+                              value={item.price || ""}
+                              readOnly
+                              onChange={(e) => handleChange(e, index, "price")}
+                              className="w-full p-2 border border-gray-300 rounded text-center bg-white focus:ring-2 focus:ring-orange-300 focus:border-orange-500 outline-none transition-all"
+                            />)
+                            :
+                            (<input
+                              type="number"
+                              value={item.price || ""}
+                              onChange={(e) => handleChange(e, index, "price")}
+                              className="w-full p-2 border border-gray-300 rounded text-center bg-white focus:ring-2 focus:ring-orange-300 focus:border-orange-500 outline-none transition-all"
+                            />)
+                          }
                         </td>
                         <td className="p-3">
                           <input
                             type="text"
-                            value={item.amount ? formatCurrency(item.amount) : ""}
+                            value={item.amount ? formatCurrency(item.amount,item) : ""}
                             readOnly
                             className="w-full p-2 border border-gray-200 rounded text-center bg-gray-50"
                           />
                         </td>
                         <td className="p-3 text-center">
-                          <button
-                            onClick={() => removeRow(index)}
-                            className="text-white bg-red-500 hover:bg-red-600 w-8 h-8 flex items-center justify-center rounded-full transition-colors"
-                          >
-                            <FontAwesomeIcon icon={faTimes} />
-                          </button>
+                          {
+                            popup === "Offer" || type === "complete" ?
+                            (<></>)
+                            :
+                            (<button
+                              onClick={() => removeRow(index)}
+                              className="text-white bg-red-500 hover:bg-red-600 w-8 h-8 flex items-center justify-center rounded-full transition-colors"
+                            >
+                              <FontAwesomeIcon icon={faTimes} />
+                            </button>)
+                          }
+                          
                         </td>
                       </tr>
                     ))}
@@ -298,13 +468,17 @@ export const QuotationPopUp = (prop) => {
                 </table>
               </div>
             </div>
-
-            <button 
-              onClick={addRow} 
-              className="mt-3 flex items-center text-orange-500 hover:text-orange-600 font-medium transition-colors"
-            >
-              <FontAwesomeIcon icon={faPlus} className="mr-1" /> เพิ่มรายการ
-            </button>
+            {
+              popup === "Offer" && type === "pending" || type === "complete" || type === "received" ?
+              (<></>)
+              :
+              (<button 
+                onClick={addRow} 
+                className="mt-3 flex items-center text-orange-500 hover:text-orange-600 font-medium transition-colors"
+              >
+                <FontAwesomeIcon icon={faPlus} className="mr-1" /> เพิ่มรายการ
+              </button>)
+            }
           </div>
 
           {/* Total & Buttons */}
@@ -320,12 +494,20 @@ export const QuotationPopUp = (prop) => {
               >
                 ยกเลิก
               </button>
-              <button 
-                onClick={handleSubmit} 
-                className="px-5 py-2 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-lg hover:from-orange-600 hover:to-amber-600 transition-colors shadow-md font-medium"
-              >
-                บันทึกข้อมูล
-              </button>
+              {
+                popup === "Offer" && type === "received" ?
+                (<></>)
+                : type === "complete" ?
+                (<></>)
+                : 
+                (<button 
+                  onClick={handleSubmit} 
+                  className="px-5 py-2 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-lg hover:from-orange-600 hover:to-amber-600 transition-colors shadow-md font-medium"
+                >
+                  {popup === "Offer" && type === "pending" ? "ชำระเงิน" : type === "received" && popup === "Edit" ? "เสนอราคา"  : "บันทึกข้อมูล"}
+                </button>)
+              }
+              
             </div>
           </div>
         </div>

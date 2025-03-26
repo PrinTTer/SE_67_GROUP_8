@@ -41,8 +41,6 @@ const ProfileForm = () => {
         }
     };
 
-    console.log(data?.media);
-
     return (
         <div className="min-h-screen bg-gray-50 p-6">
             <div className="container mx-auto max-w-4xl">

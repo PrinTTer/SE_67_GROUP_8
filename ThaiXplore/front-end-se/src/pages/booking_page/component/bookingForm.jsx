@@ -1,11 +1,14 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { postData } from '../../../services/apiService';
 
 const BookingForm = (prop) => {
-    const {item, category , bookingDetail} = prop;
+    const {item, category , bookingDetail, userPackage} = prop;
+    const services = item?.services;
 
     if(category==="package"){
-        console.log("From Package : ",item);
+        console.log("From Package In Booking Form: ",item);
+        console.log("User Package",userPackage);
     }
     else{
         console.log("Item from Service : ",item);
@@ -46,14 +49,48 @@ const BookingForm = (prop) => {
         // ส่ง object ไปยังหน้า booking
         console.log(bookingData);
         if(category === "package"){
-            console.log("Package Yahooo");
+            console.log("package");
         }
         else{
             navigate('/paymentSelector', { state: {bookingData,item,category,bookingDetail} });
         }
-        
     };
 
+    const handleConfirmBooking = async () => {
+        try {
+            // สร้าง formData สำหรับแต่ละ service ใน package
+            const formDataArray = services.map((service) => {
+                return {
+                    businessId: service?.businessId,  // ใช้ businessId จาก service
+                    status: "confirmed",
+                    bookingType: "package",
+                    bookingTransaction: {
+                        paymentMethod: "",  // method จะเป็น "credit card" หรือ "paypal"
+                        transactionDate: new Date().toISOString(),  // วันที่ทำธุรกรรม
+                    },
+                    description: description,  // รายละเอียดการจอง
+                    bookingDetail: [
+                        {
+                            serviceId: item?.packages?._id,  // serviceId ที่เกี่ยวข้องกับ booking
+                            startDate: new Date(checkInDate).toISOString(),
+                            endDate: new Date(checkOutDate).toISOString(),
+                            amount: "1"  // ปรับจาก bookingDetail.bookingAmount เป็น service?.bookingAmount
+                        }
+                    ]
+                };
+            });
+    
+            // ส่ง formData ทั้งหมดไปที่ API
+            console.log('Booking confirmed:', formDataArray[0]);
+            console.log('userPackage ID:', userPackage._id);
+            const response = await postData(`/bookings-package/${userPackage?._id}`, formDataArray[0]);
+            console.log('Response from API for each formData:', response);
+            // Redirect ไปยังหน้าที่ต้องการหลังจากการจองสำเร็จ
+            navigate('/packageHistory');
+        } catch (error) {
+            console.error('Error confirming booking:', error);
+        }
+    };
     return(
         <div className="flex flex-1 w-full h-full bg-gray-50">
             <div className="w-full max-w-5xl mx-auto my-8 bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
@@ -121,13 +158,23 @@ const BookingForm = (prop) => {
                         </div>
 
                         <div className="mt-8 flex justify-end">
-                            <button 
-                                type="submit" onClick={handleSubmit}
-                                className="px-6 py-3 bg-gradient-to-r from-amber-500 to-amber-600 text-white font-medium rounded-md shadow-sm hover:from-amber-600 hover:to-amber-700 transition-all duration-200 flex items-center"
-                            >
-                                <span className="mr-2">Confirm Booking</span>
-                                <span>→</span>
-                            </button>
+                            {category === "package" ? (
+                                <button 
+                                    onClick={handleConfirmBooking}
+                                    className="px-6 py-3 bg-gradient-to-r from-amber-500 to-amber-600 text-white font-medium rounded-md shadow-sm hover:from-amber-600 hover:to-amber-700 transition-all duration-200 flex items-center"
+                                >
+                                    <span className="mr-2">Confirm Booking</span>
+                                    <span>→</span>
+                                </button>
+                            ) : (
+                                <button 
+                                    onClick={handleSubmit}
+                                    className="px-6 py-3 bg-gradient-to-r from-amber-500 to-amber-600 text-white font-medium rounded-md shadow-sm hover:from-amber-600 hover:to-amber-700 transition-all duration-200 flex items-center"
+                                >
+                                    <span className="mr-2">Confirm Booking</span>
+                                    <span>→</span>
+                                </button>
+                            )}
                         </div>
                     </div>
                 </form>

@@ -121,9 +121,8 @@ const PackageHistory = () => {
                                 <div className="flex justify-between items-center mb-4">
                                     <span 
                                         className={`px-3 py-1 rounded-full text-sm font-medium 
-                                        ${pkg.status === 'confirmed' ? 'bg-green-100 text-green-800' : 
-                                          pkg.status === 'pending' ? 'bg-yellow-100 text-yellow-800' : 
-                                          'bg-red-100 text-red-800'}`}
+                                        ${user?.packages[index]?.status === 'used' ? 'bg-green-100 text-green-800' 
+                                        : 'bg-red-100 text-red-800'}`}
                                     >
                                         {user.packages[index]?.status}
                                     </span>

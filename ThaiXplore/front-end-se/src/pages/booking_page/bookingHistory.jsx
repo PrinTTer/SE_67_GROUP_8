@@ -182,21 +182,3 @@ const checkService = (categoryForImage) => {
     console.log(category);
     return category;
 }
-
-
-const getTopic = (category) => {
-    let List = [];
-    if(category === 'hotel'){
-        List = ['roomType', 'guestAmount', 'roomSize', 'price', 'facilities'];
-    }
-    else if (category === 'event'){
-        List = ['ticketType', 'price', 'eventDate', 'start', 'end'];
-    }
-    else if (category === 'carRental'){
-        List = ['carBrand',  'amountSeat', 'price'];
-    }
-    else if (category === 'restaurant'){
-        List = ['courseName', 'menuList', 'price'];
-    }
-    return List;
-};

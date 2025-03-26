@@ -34,7 +34,7 @@ const Payment = () => {
                 serviceId: item?._id,  // serviceId ที่เกี่ยวข้องกับ booking
                 startDate: new Date(bookingData?.checkInDate).toISOString(),
                 endDate: new Date(bookingData?.checkOutDate).toISOString(),
-                amount: bookingDetail.bookingAmount
+                amount: bookingDetail?.bookingAmount
             }
         ]
     };

@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 
 
 export const Service = (prop) => {
-    const { title ,category ,id , bookingDetail} = prop
+    const { title , category , bookingDetail} = prop
     console.log(title , category)
 
     const navigate = useNavigate();
@@ -17,8 +17,7 @@ export const Service = (prop) => {
             state: {item, category , bookingDetail}
         });
     };
-    
-    const linkTo = "/Detail/booking/"+id;
+
     let Topic = [] ;
     Topic = getTopic(category);
     console.log("Topic");
@@ -64,7 +63,7 @@ export const Service = (prop) => {
     );
 };
 
- const getTopic = (category) => {
+const getTopic = (category) => {
     let List = [];
     if(category === 'hotel'){
         List = ['roomType', 'guestAmount', 'roomSize', 'price', 'facilities'];

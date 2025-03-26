@@ -96,7 +96,7 @@ const Payment = () => {
                     <div className="flex flex-1 flex-col border border-gray-100 rounded-lg shadow-md overflow-hidden">
                         <div className="flex flex-1 justify-between items-center px-6 py-4 border-b border-gray-100">
                             <h1 className="font-bold text-xl text-gray-800">Total Amount</h1>
-                            <h1 className="font-bold text-xl text-amber-600">THB {item?.price} ฿</h1>
+                            <h1 className="font-bold text-xl text-amber-600">THB {item?.price*bookingDetail?.bookingAmount} ฿</h1>
                         </div>
                         <div className="flex flex-1 justify-center items-center p-6">
                             <button 

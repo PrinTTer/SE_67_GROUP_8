@@ -120,11 +120,11 @@ const PackageHistory = () => {
                                 {/* Package Status */}
                                 <div className="flex justify-between items-center mb-4">
                                     <span 
-                                        className={`px-3 py-1 rounded-full text-sm font-medium 
-                                        ${user?.packages[index]?.status === 'used' ? 'bg-green-100 text-green-800' 
-                                        : 'bg-red-100 text-red-800'}`}
+                                        className={`px-3 py-1 rounded-full text-sm font-medium  
+                                            ${user?.packages[index]?.status === 'used' ? 'bg-green-100 text-green-800' 
+                                            : 'bg-red-100 text-red-800'}`}
                                     >
-                                        {user.packages[index]?.status}
+                                        {user?.packages[index]?.status.charAt(0).toUpperCase() + user?.packages[index]?.status.slice(1)}
                                     </span>
                                     {user.packages[index]?.status === "unused" ? (
                                         <span 
@@ -135,8 +135,6 @@ const PackageHistory = () => {
                                         </span>
                                     ) : (<div></div>)
                                     }
-                                    
-
                                 </div>
 
                                 {/* Package Details */}

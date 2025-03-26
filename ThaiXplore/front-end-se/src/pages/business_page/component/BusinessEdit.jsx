@@ -127,7 +127,7 @@ export const BusinessEdit = (prop) => {
       <div className="grid grid-cols-2 mt-3">
         <div>
           <div className="font-bold text-2xl">{business?.business?.businessName}</div>
-          <div className="font-semibold">{business?.business?.address}</div>
+          <div className="font-semibold">{business?.business?.address.replace(/,/g, " ")}</div>
           <div className="text-gray-500">
             {isLong && !showMore
               ? `${business?.business?.description.substring(0, maxLength)}...`

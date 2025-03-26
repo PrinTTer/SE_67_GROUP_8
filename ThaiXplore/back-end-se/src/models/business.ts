@@ -10,8 +10,8 @@ const BusinessSchema = new mongoose.Schema({
     media : {type : [String] , require : false},
     category : {type : String , require : true},
     verify : {
-        document : {type : [String] , require : false},
-        status : {type : String , require : false},
+        document : {type : [String] , require : true},
+        status : {type : String , require : true},
         description : {type : String , require : false}
     },
     followBusiness : {type : [String] , require : false},

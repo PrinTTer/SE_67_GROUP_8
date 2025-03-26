@@ -229,7 +229,6 @@ export const getAllDetailQuotaion = async (req: express.Request, res: express.Re
         );
 
 
-
         return res.status(200).json({quotation,services});
     } catch (error) {
         console.log(error);

@@ -134,9 +134,6 @@ export const updateBusiness = async (req: express.Request , res:express.Response
             return res.sendStatus(401);
         }
 
-
-
-
         const business = await getBusinessById(businessId);
 
         business.businessName = businessName;
@@ -147,10 +144,11 @@ export const updateBusiness = async (req: express.Request , res:express.Response
         business.media = media ,
 
         role === "admin" ? business.verify = verify : business.verify = business.verify;
-
+        
         business.followBusiness = followBusiness ;
 
         business.save();
+
 
         return res.status(200).json(business);
     } catch (error) {

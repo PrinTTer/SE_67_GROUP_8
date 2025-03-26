@@ -1,10 +1,18 @@
-import { useState, useEffect } from 'react';
-
-import { ServiceBlock } from "./component/ServiceBlock"
-import { fetchData } from "../../services/apiService"
-import { useParams } from 'react-router-dom';
-import { PackageBlock } from './component/PackagePage'
-import Addblock from './component/AddBlock';
+import { useState, useEffect } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faPlus,
+  faTimes,
+  faTimesCircle,
+  faCheckCircle,
+} from "@fortawesome/free-solid-svg-icons";
+import { getTopic } from "../../data";
+import { ServiceBlock } from "./component/ServiceBlock";
+import { fetchData, postData, putData } from "../../services/apiService";
+import { useParams } from "react-router-dom";
+import { PackageBlock } from "./component/PackagePage";
+import Addblock from "./component/AddBlock";
+import { useSelector } from "react-redux";
 import { BusinessEdit } from './component/BusinessEdit';
 
 const AddDetails = () => {

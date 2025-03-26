@@ -23,7 +23,7 @@ export const UploadDocumentBlock = (prop) => {
     }
 
     return (
-        <div className="bg-white flex justify-between px-10 py-5 w-5xl drop-shadow-lg rounded-md">
+        <div className="bg-white flex flex-col px-6 py-4 w-full border border-gray-200 rounded-md shadow-sm">
             <div className="flex flex-col gap-2 w-full">
                 <div className="flex justify-between font-semibold">
                     <div>

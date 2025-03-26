@@ -6,6 +6,7 @@ import { useParams } from 'react-router-dom';
 import { PackageBlock } from './component/PackagePage'
 import Addblock from './component/AddBlock';
 import { BusinessEdit } from './component/BusinessEdit';
+import { useSelector } from 'react-redux';
 
 const AddDetails = () => {
   let { id } = useParams();

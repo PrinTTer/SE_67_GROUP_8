@@ -169,9 +169,6 @@ export const allDetailPackages = async (req: express.Request, res: express.Respo
             })
         );
 
-        console.log(services);
-
-        packages.set("services", services);  // อัปเดต DocumentArray โดยตรง
 
         return res.status(200).json({packages,services});
     } catch (error) {

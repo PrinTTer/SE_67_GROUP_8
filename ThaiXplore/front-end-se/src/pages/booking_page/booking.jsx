@@ -54,7 +54,7 @@ const Booking = () => {
                 </div>
                 <div className="flex flex-[3.8] h-full">
                     {category === "package" ? (
-                        <BookingForm item={item} category={category} bookingDetail={bookingDetail}/>
+                        <BookingForm item={packagesArr} category={category} bookingDetail={bookingDetail} userPackage={item}/>
                     ) : (
                         <BookingForm item={item} category={category} bookingDetail={bookingDetail}/>
                     )}

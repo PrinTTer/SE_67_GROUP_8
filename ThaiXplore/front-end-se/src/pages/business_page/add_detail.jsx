@@ -14,6 +14,7 @@ import { PackageBlock } from "./component/PackagePage";
 import Addblock from "./component/AddBlock";
 import { useSelector } from "react-redux";
 import { BusinessEdit } from './component/BusinessEdit';
+import LoadingSpinner from "../../components/LoadingSpinner";
 
 const AddDetails = () => {
   let { id } = useParams();
@@ -79,7 +80,13 @@ const AddDetails = () => {
     }
     setHead(title);
   };
-  if (isLoading) return <p>Loading...</p>;
+  if (isLoading) {
+    return (
+      <div className=" flex-1 min-h-[300px] p-6 bg-white rounded-xl shadow-md flex items-center justify-center">
+        <LoadingSpinner />
+      </div>
+    );
+  }
 
   return (
     <div className='flex-cols flex-1'>
@@ -87,28 +94,7 @@ const AddDetails = () => {
         <div>
           <BusinessEdit business={business} fetchBusiness={fetchBusiness} />
         </div>
-        <div className=" m-9 ">
-          {/* 1 Image */}
-          <div className={` grid grid-cols-1  ${business?.business?.media?.length === 1 ? "block" : "hidden"}`}>
-            <img
-              src={`http://localhost:3000/public/uploads/businesses/images/${business?.business?.media[0]}`}
-              alt="Business Image"
-              className="w-full h-[400px] object-cover"
-            />
-          </div>
-          {/* No Image */}
-          <div className={`col-span-2 ${business?.business?.media?.length === 0 ? "block" : "hidden"}`}>
-            <img
-              src={`https://st2.depositphotos.com/1561359/12101/v/950/depositphotos_121012076-stock-illustration-blank-photo-icon.jpg`}
-              alt="Business Image"
-              className="w-full h-[400px] object-cover"
-            />
-          </div>
-
-
-
-
-        </div>
+        
 
 
 

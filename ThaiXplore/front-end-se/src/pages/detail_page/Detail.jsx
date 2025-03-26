@@ -14,6 +14,7 @@ import { fetchData } from '../../services/apiService';
 import useSocket from '../../hooks/useSocket';
 import { useSelector } from 'react-redux';
 
+import PictureShow from '../businessmanage_page/component/picture_show';
 
 function Detail() {
   const { id } = useParams()
@@ -44,12 +45,14 @@ function Detail() {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-
+const [ media , setMedia] = useState([])
   const fetch = async () => {
     try {
       setLoading(true);
       const data_format = await fetchData(`/businesses/${id}`);
       setData(data_format);
+      
+      setMedia(data_format?.business?.media )
     } catch (error) {
       setError(error.message);
     } finally {
@@ -57,8 +60,14 @@ function Detail() {
     }
   };
 
+  const [showGallery, setShowGallery] = useState(false);
+
+  
+
   useEffect(() => {
-    fetch();
+    fetch()
+      
+    
   }, []);
 
   const [head, setHead] = useState(data?.business?.category)
@@ -93,13 +102,95 @@ function Detail() {
       {/* Mid Bar */}
       <div className='flex flex-4 flex-col '>
 
-        <div className='flex-4 grid  grid-cols-3 grid-rows-2 gap-2 m-4'>
-          <img className="w-full h-100  object-cover row-span-2" src={business.image.main} />
-          <img className="w-full h-48 object-cover" src={business.image.second} />
-          <img className="w-full h-48 object-cover" src={business.image.thrid} />
-          <img className="w-full h-48 object-cover col-span-2" src={business.image.fourth} />
+          {/* 1 Image */}
+      <div
+        className={`grid grid-cols-1 ${data?.business?.media?.length === 1 ? "block" : "hidden"}`}
+      >
+        <img
+          src={`http://localhost:3000/public/uploads/businesses/images/${data?.business?.media[0]}`}
+          alt="Business Image"
+          className="w-full h-[400px] object-cover"
+          onClick={() => setShowGallery(true)}
+        />
+      </div>
+
+      {/* No Image */}
+      <div
+        className={`col-span-2 ${data?.business?.media?.length === 0 ? "block" : "hidden"}`}
+      >
+        <img
+          src="https://st2.depositphotos.com/1561359/12101/v/950/depositphotos_121012076-stock-illustration-blank-photo-icon.jpg"
+          alt="Business Image"
+          className="w-full h-[400px] object-cover"
+          onClick={() => setShowGallery(true)}
+        />
+      </div>
+
+      {/* Image Gallery if there are 2 images */}
+      <div className={`${data?.business?.media?.length === 2 ? "block" : "hidden"}`}>
+        <div className="grid grid-cols-2 gap-2">
+          {media.slice(0, 2).map((img, idx) => (
+            <div key={idx} className="w-full h-[400px] overflow-hidden rounded">
+              <img
+                src={`http://localhost:3000/public/uploads/businesses/images/${img}`}
+                alt={`img-${idx}`}
+                className="w-full h-full object-cover"
+                onClick={() => setShowGallery(true)}
+              />
+            </div>
+          ))}
         </div>
+      </div>
+
+      {/* Image Gallery if there are 3 or more images */}
+      <div className={`${data?.business?.media?.length >= 3 ? "block" : "hidden"}`}>
+      <div className="flex h-full w-full">
+        {/* รูปซ้ายใหญ่ (ภาพแรก) */}
+        <div className="w-2/3 h-full overflow-hidden rounded-l-lg">
+          {media[0] && (
+            <img
+              src={`http://localhost:3000/public/uploads/businesses/images/${media[0]}`}
+              alt="main-img"
+              className="w-full h-full object-cover" // เพิ่ม object-cover เพื่อให้รูปภาพไม่ผิดสัดส่วน
+              onClick={() => setShowGallery(true)}
+            />
+          )}
+        </div>
+
+        {/* รูปขวา 2 ช่องซ้อน */}
+        <div className="w-1/3 h-full flex flex-col gap-1 pl-1">
+          {media.slice(1, 3).map((img, idx) => (
+            <div key={idx} className="relative h-1/2 w-full overflow-hidden rounded">
+              <img
+                src={`http://localhost:3000/public/uploads/businesses/images/${img}`}
+                alt={`side-img-${idx}`}
+                className="w-full h-full object-cover" // เพิ่ม object-cover เพื่อให้รูปภาพไม่ผิดสัดส่วน
+                onClick={() => setShowGallery(true)}
+              />
+              {/* Overlay ถ้ามีรูปเหลือ */}
+              {idx === 1 && media.length > 3 && (
+                <div
+                  className="absolute inset-0 bg-gray-900/50 flex items-center justify-center text-white font-semibold text-xl rounded"
+                  onClick={() => setShowGallery(true)}
+                >
+                  +{media.length - 3}
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      </div>
         
+      {showGallery && (
+        <PictureShow
+          images={media}
+          onClose={() => setShowGallery(false)}
+        />
+      )}
+
+
 
         <div className='flex flex-2 m-5'>
           <div className='flex-2 '>

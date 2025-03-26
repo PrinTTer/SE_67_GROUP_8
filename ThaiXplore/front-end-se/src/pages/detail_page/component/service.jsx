@@ -29,8 +29,10 @@ export const Service = (prop) => {
                 <FontAwesomeIcon icon={faBed} className="mr-3 text-lg" />
                 <span>Service Detail</span>
             </div>
+            
             { Array.isArray(title) && title.map((item, index) => (
                 <div key={index} className="grid grid-cols-3 gap-4 p-4 bg-white shadow-md rounded-lg mt-3">
+                    {/* <img src={`http://localhost:3000/public/uploads/services/images/${title.media[0]}`} /> */}
                 {Topic.map((field, index) => (
                     <div key={index}>
                         <div className="font-bold ">{field}</div>  

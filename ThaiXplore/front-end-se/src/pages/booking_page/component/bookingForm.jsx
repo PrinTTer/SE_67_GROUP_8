@@ -4,6 +4,12 @@ import { useNavigate } from 'react-router-dom';
 const BookingForm = (prop) => {
     const {item, category , bookingDetail} = prop;
 
+    if(category==="package"){
+        console.log("From Package : ",item);
+    }
+    else{
+        console.log("Item from Service : ",item);
+    }
 
     const safeDate = (dateString) => {
         const date = new Date(dateString);
@@ -39,7 +45,13 @@ const BookingForm = (prop) => {
 
         // ส่ง object ไปยังหน้า booking
         console.log(bookingData);
-        navigate('/paymentSelector', { state: {bookingData,item,category,bookingDetail} });
+        if(category === "package"){
+            console.log("Package Yahooo");
+        }
+        else{
+            navigate('/paymentSelector', { state: {bookingData,item,category,bookingDetail} });
+        }
+        
     };
 
     return(

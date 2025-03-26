@@ -208,9 +208,9 @@ export const BusinessInformation = () => {
 
                             {/* upload Image */}
                             <UploadImageBlock
-  uploadImages={uploadImages}
-  setUploadImages={setUploadImages}
-/>
+                                uploadImages={uploadImages}
+                                setUploadImages={setUploadImages}
+                            />
 
 
                             <UploadDocumentBlock

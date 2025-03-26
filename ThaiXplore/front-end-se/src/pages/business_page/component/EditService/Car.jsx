@@ -35,10 +35,10 @@ export const CarEdit = (prop) => {
       // สมมุติว่า putData เป็นฟังก์ชันที่ทำการอัพเดตข้อมูล
       if (await putData(`cars/${item._id}`, car)) {
 
-        if(getImage != editImage)
+        if(getImage != editImage){
         await deleteData(`/cars/${item._id}/images/1`)
       
-        await postDataWithFiles(`/cars/${item._id}/images`, [editImage] ,car, "services_cars")
+        await postDataWithFiles(`/cars/${item._id}/images`, [editImage] ,car, "services_cars")}
         
         setShowEditPopUp(false);
         fetchData();

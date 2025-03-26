@@ -30,9 +30,9 @@ function Detail() {
   };
 
   const [bookingDetail, setBookingDetail] = useState({
-    adult: "",
-    child: "",
-    bookingAmount: "",
+    adult: 1,
+    child: 0,
+    bookingAmount: 1,
     startDate: safeDateGMT7(new Date()),  // ปรับเวลาที่นี่ให้ตรงกับ GMT+7
     endDate: safeDateGMT7(new Date()),    // ปรับเวลาที่นี่ให้ตรงกับ GMT+7
     time: "",

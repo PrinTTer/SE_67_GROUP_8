@@ -27,7 +27,8 @@ export const BusinessInformation = () => {
         category: "",
         verify: {
             status: "pending",
-            document: []
+            document: [],
+            description: "",
         }
     });
     const navigate = useNavigate();

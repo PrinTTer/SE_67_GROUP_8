@@ -135,16 +135,22 @@ export const updateBusiness = async (req: express.Request , res:express.Response
         }
 
 
-        const business = await updateBusinessById(businessId,{
-            businessName : businessName , 
-            description : description , 
-            address : address , 
-            phoneNumber : phoneNumber , 
-            email : email ,
-            media : media ,
-            verify : role === "admin" ? verify : "" ,
-            followBusiness : followBusiness ,
-        });
+
+
+        const business = await getBusinessById(businessId);
+
+        business.businessName = businessName;
+        business.description = description;
+        business.address = address;
+        business.phoneNumber = phoneNumber ;
+        business.email = email ;
+        business.media = media ,
+
+        role === "admin" ? business.verify = verify : business.verify = business.verify;
+
+        business.followBusiness = followBusiness ;
+
+        business.save();
 
         return res.status(200).json(business);
     } catch (error) {

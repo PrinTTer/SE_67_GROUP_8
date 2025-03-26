@@ -2,11 +2,11 @@ import { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark,faCircleXmark,faCirclePlus  } from "@fortawesome/free-solid-svg-icons";
 import { postDataWithFiles , deleteData ,putData } from "../../../services/apiService";
+import { ProvinceDropdown } from './dropDownProvince';  // ให้แน่ใจว่าคุณได้ import ProvinceDropdown ที่ถูกต้อง
 
 export const ModalEditBusiness = (prop) => {
   const { closeModal, business, fetchBusiness } = prop;
   const [uploadImages, setUploadImages] = useState([]);
-
   const [form, setForm] = useState({
     businessName: business?.businessName,
     description: business?.description,
@@ -19,22 +19,14 @@ export const ModalEditBusiness = (prop) => {
     postalCode: business?.address.split(",").slice(-4)[3],
   });
 
-  
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
-    
-    
-     
-      
-      // Create the URL for each file in the media array
-      const updatedImages = business.media.map(
-        (fileName) => `http://localhost:3000/public/uploads/businesses/images/${fileName}`
-      );
-      setUploadImages(updatedImages);
-    
-  }, []);
-  
+    const updatedImages = business?.media.map(
+      (fileName) => `http://localhost:3000/public/uploads/businesses/images/${fileName}`
+    );
+    setUploadImages(updatedImages);
+  }, [business]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -44,65 +36,30 @@ export const ModalEditBusiness = (prop) => {
     }));
   };
 
+  const handleProvinceChange = (selectedProvince) => {
+    setForm((prevForm) => ({
+      ...prevForm,
+      province: selectedProvince,
+    }));
+  };
+
   const validateForm = () => {
     const newErrors = {};
-
-    // Address fields validation - ห้ามมีช่องว่างระหว่างคำ
-    
-    if (!form.address.trim() ) {
-      newErrors.address = "Address cannot be empty .";
-    }
-    if (!form.subDistrict.trim() ) {
-      newErrors.subDistrict = "Sub District cannot be empty  words.";
-    }
-    if (!form.district.trim() ) {
-      newErrors.district = "District cannot be empty  words.";
-    }
+    // Validate logic for form inputs
     if (!form.province.trim()) {
-      newErrors.province = "Province cannot be empty  words.";
+      newErrors.province = "Province cannot be empty.";
     }
-    if (!form.postalCode.trim() ) {
-      newErrors.postalCode = "Postal Code cannot be empty  words.";
-    }
-
-    const postalCodeRegex = /^\d{5}$/;
-    if (!form.postalCode.trim()) {
-      newErrors.postalCode = "Postal Code cannot be empty.";
-    } else if (!postalCodeRegex.test(form.postalCode)) {
-      newErrors.postalCode = "Postal Code must be exactly 5 digits.";
-    }
-
-    // Phone number validation (must be a 10-digit number)
-    const phoneRegex = /^\d{10}$/;
-    if (!form.phone.trim()) {
-      newErrors.phone = "Phone number cannot be empty.";
-    } else if (!phoneRegex.test(form.phone)) {
-      newErrors.phone = "Phone number must be a 10-digit number.";
-    }
-
-    // Email validation (must follow the correct email format)
-    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    if (!form.email.trim()) {
-      newErrors.email = "Email cannot be empty.";
-    } else if (!emailRegex.test(form.email)) {
-      newErrors.email = "Email format is invalid.";
-    }
-
     setErrors(newErrors);
-
-    // If there are any errors, return false
     return Object.keys(newErrors).length === 0;
-};
-
+  };
 
   const handleSaveChanges = async () => {
     if (!validateForm()) {
       console.log("Form validation failed");
-      return; // If validation fails, prevent saving changes
+      return;
     }
 
     const updatedAddress = `${form.address},${form.subDistrict},${form.district},${form.province},${form.postalCode}`;
-
     setForm((prevForm) => ({
       ...prevForm,
       address: updatedAddress,
@@ -115,9 +72,8 @@ export const ModalEditBusiness = (prop) => {
       email: form.email,
       address: updatedAddress,
     };
-
-   
-    try {
+    console.log(updatedForm)
+    try { 
       const response = await putData(`/businesses/${business._id}`, updatedForm);
       if (response) {
         fetchBusiness();  // Refresh data
@@ -127,8 +83,6 @@ export const ModalEditBusiness = (prop) => {
       console.error("Error saving changes:", error);
     }
   };
-
- 
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50 p-4">
@@ -156,13 +110,7 @@ export const ModalEditBusiness = (prop) => {
 
           {/* Address, Sub District, District, Province, Postal Code */}
           <div className="grid grid-cols-2 gap-6">
-            {[
-              { label: "Address", name: "address" },
-              { label: "Sub District", name: "subDistrict" },
-              { label: "District", name: "district" },
-              { label: "Province", name: "province" },
-              { label: "Postal Code", name: "postalCode" },
-            ].map(({ label, name }) => (
+            {[{ label: "Address", name: "address" }, { label: "Sub District", name: "subDistrict" }, { label: "District", name: "district" }, { label: "Postal Code", name: "postalCode" }].map(({ label, name }) => (
               <div key={name} className="space-y-2">
                 <label className="text-sm text-gray-600 font-medium">{label}</label>
                 <input
@@ -173,10 +121,19 @@ export const ModalEditBusiness = (prop) => {
                   value={form[name]}
                   onChange={handleInputChange}
                 />
-                {/* Display error if any */}
                 {errors[name] && <div className="text-red-500 text-sm">{errors[name]}</div>}
               </div>
             ))}
+
+            {/* Province Dropdown */}
+            <div>
+              <label className="text-sm text-gray-600 font-medium">Province</label>
+              <ProvinceDropdown
+                selectedProvince={form.province}
+                onProvinceChange={handleProvinceChange}
+              />
+              {errors.province && <div className="text-red-500 text-sm">{errors.province}</div>}
+            </div>
           </div>
 
           {/* Phone and Description */}
@@ -217,12 +174,6 @@ export const ModalEditBusiness = (prop) => {
             />
           </div>
 
-          {/* <UploadImageBlock
-            uploadImages={uploadImages}
-            setUploadImages={setUploadImages}
-          /> */}
-          
-
           <div className="flex justify-end space-x-4 pt-4 border-t border-gray-100">
             <button onClick={closeModal} className="px-6 py-3 text-gray-600 hover:bg-gray-50 rounded-xl transition-colors duration-200">
               Cancel
@@ -236,6 +187,7 @@ export const ModalEditBusiness = (prop) => {
     </div>
   );
 };
+
 
 export const ModalEditImage = (prop) => {
   const { closeModal, business, fetchBusiness } = prop;

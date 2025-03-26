@@ -225,8 +225,7 @@ const QuotationEditBtn = (prop) => {
         }
     }
 
-    // console.log(quotation);
-    // console.log("Business",business);
+   
     return (
         <>
 

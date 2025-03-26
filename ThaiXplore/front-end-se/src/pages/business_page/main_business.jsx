@@ -53,7 +53,7 @@ const MainBusiness = () => {
             ) : (
               <div className="space-y-4">
                 {businesses.map((business, index) => (
-                  <BusinessBlock key={index} business={business} />
+                  <BusinessBlock key={index} business={business} fetchBusinesses={fetchBusinesses} />
                 ))}
               </div>
             )}

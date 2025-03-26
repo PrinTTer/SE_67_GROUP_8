@@ -54,13 +54,11 @@ export const HotelEdit = (prop) => {
         console.log(room)
         if(putData(`rooms/${item._id}`, room)){
 
-          if(getImage != editImage){
+          if(getImage != editImage) {
             await deleteData(`/rooms/${item._id}/images/1`)
-
             await postDataWithFiles(`/rooms/${item._id}/images`, [editImage] ,room, "services_rooms")
+  
           }
-          
-
            //await postDataWithFiles(`/rooms/${item._id}/images`, [editImage] ,room, "services_rooms")
         
           setShowEditPopUp(false);

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 
 import { ServiceBlock } from "./component/ServiceBlock"
-import { fetchData, postData, putData } from "../../services/apiService"
+import { fetchData } from "../../services/apiService"
 import { useParams } from 'react-router-dom';
 import { PackageBlock } from './component/PackagePage'
 import Addblock from './component/AddBlock';

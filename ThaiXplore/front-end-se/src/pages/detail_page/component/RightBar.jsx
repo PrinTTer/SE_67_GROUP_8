@@ -15,9 +15,6 @@ export const RightSideBar = (prop) => {
         const hours = String(now.getHours()).padStart(2, '0');
         const minutes = String(now.getMinutes()).padStart(2, '0');
         setTime(`${hours}:${minutes}`);
-        
-     
-       
     }, []);
 
     // ฟังก์ชันคำนวณช่วงเวลา
@@ -25,38 +22,37 @@ export const RightSideBar = (prop) => {
         const [startTime, endTime] = timeRange.split(","); // แยกเวลาเริ่มต้นและเวลาสิ้นสุด
         const [startHour, startMinute] = startTime.split(':');
         const [endHour, endMinute] = endTime.split(':');
-
+    
         // แปลงเวลาเป็นนาทีเพื่อคำนวณ
         const startTotalMinutes = parseInt(startHour) * 60 + parseInt(startMinute);
         const endTotalMinutes = parseInt(endHour) * 60 + parseInt(endMinute);
-
+    
         // คำนวณระยะเวลาระหว่างเวลาเริ่มต้นถึงเวลาสิ้นสุด
         const totalMinutes = endTotalMinutes - startTotalMinutes;
         const slotDuration = totalMinutes / 7; // ระยะเวลาของแต่ละรอบ (7 รอบ)
-
+    
+        // ปรับระยะเวลาให้เป็นตัวเลขที่ลงด้วย 5
+        const adjustedSlotDuration = Math.round(slotDuration / 5) * 5; // ปัดเศษให้เป็น 5 หรือ 0
+    
         const slots = [];
         for (let i = 0; i < 7; i++) {
-            const slotStart = startTotalMinutes + i * slotDuration;
-            const slotEnd = slotStart + slotDuration;
-
+            const slotStart = startTotalMinutes + i * adjustedSlotDuration;
+            const slotEnd = slotStart + adjustedSlotDuration;
+    
             // แปลงกลับเป็นชั่วโมงและนาที
             const slotStartHour = Math.floor(slotStart / 60);
             const slotStartMinute = slotStart % 60;
             const slotEndHour = Math.floor(slotEnd / 60);
             const slotEndMinute = slotEnd % 60;
-
+    
             // สร้าง string เวลาของแต่ละรอบ
             const startTimeFormatted = `${String(slotStartHour).padStart(2, '0')}:${String(slotStartMinute).padStart(2, '0')}`;
             const endTimeFormatted = `${String(slotEndHour).padStart(2, '0')}:${String(slotEndMinute).padStart(2, '0')}`;
-
-            slots.push(`${startTimeFormatted}`);
+    
+            slots.push(`${startTimeFormatted}`); // ใช้เวลาเริ่มต้นเท่านั้น
         }
-
+    
         setTimeSlots(slots); // เก็บเวลาแต่ละรอบใน state
-    };
-
-    const TimeSet = (e) => {
-        bookingDetail.time = e;
     };
 
     // ฟังก์ชันที่ใช้ในการอัปเดตค่า date
@@ -89,7 +85,11 @@ export const RightSideBar = (prop) => {
             console.log("Details not available in bookingDetail.");
         }
     };
-    
+
+    // ฟังก์ชัน TimeSet สำหรับอัปเดตค่าเวลา
+    const TimeSet = (value) => {
+        setTime(value); // อัปเดตค่าของเวลาใน state
+    };
 
     return (
         <div className="flex flex-1 flex-col items-center border-solid border-gray-300 border-l-2 sticky top-0 h-screen">
@@ -125,7 +125,7 @@ export const RightSideBar = (prop) => {
                         <select
                             className="border rounded-lg p-2 mb-6 cursor-pointer"
                             value={time}
-                            onChange={(e) => TimeSet(e.target.value)}
+                            onChange={(e) => TimeSet(e.target.value)} // อัปเดตเวลาเมื่อมีการเลือก
                         >
                             {timeSlots.map((slot, index) => (
                                 <option key={index} value={slot}>

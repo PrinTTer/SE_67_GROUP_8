@@ -314,57 +314,77 @@ export const PostList = (prop) => {
   return (
     <Link to={link} className="block transition-all duration-300 hover:shadow-lg">
       <div className="bg-white grid lg:grid-cols-[20%_70%_10%] w-full min-h-[200px] drop-shadow-xl rounded-xl ">
-        <div className="w-full md:w-56 h-full aspect-[3/2] bg-gray-100 flex items-center justify-center relative overflow-hidden">
-          {media?.length > 0 ? (
-            <div className="flex h-full w-full">
-              {/* รูปซ้ายใหญ่ (ภาพแรก) */}
-              <div className="w-2/3 h-full overflow-hidden rounded-l-lg">
-                <img
-                  src={`http://localhost:3000/public/uploads/businesses/images/${media[0]}`}
-                  alt="main-img"
-                  className="w-full h-full object-cover"
-                // onClick={() => setShowGallery(true)}
-                />
-              </div>
+      <div className="w-full md:w-56 h-full aspect-[3/2] bg-gray-100 flex items-center justify-center relative overflow-hidden">
+  {/* ✅ No Image */}
+  {(!media || media.length === 0) && (
+    <div className="flex flex-col items-center justify-center text-gray-400 h-full w-full">
+      <FontAwesomeIcon icon={faImage} className="text-4xl mb-2" />
+      <span className="text-sm">No picture</span>
+    </div>
+  )}
 
-              {/* รูปขวา 2 ช่องซ้อน */}
-              <div className="w-1/3 h-full flex flex-col gap-1 pl-1">
-                {media.slice(1, 3).map((img, idx) => (
-                  <div key={idx} className="relative h-1/2 w-full overflow-hidden rounded">
-                    <img
-                      src={`http://localhost:3000/public/uploads/businesses/images/${img}`}
-                      alt={`side-img-${idx}`}
-                      className="w-full h-full object-cover"
-                    // onClick={() => setShowGallery(true)}
-                    />
-                    {/* Overlay ถ้ามีรูปเหลือ */}
-                    {idx === 1 && media.length > 3 && (
-                      <div className="absolute inset-0 bg-gray-900/50 flex items-center justify-center text-white font-semibold text-xl rounded"
-                      // onClick={() => setShowGallery(true)}
-                      >
-                        +{media.length - 3}
-                      </div>
+  {/* ✅ 1 Image */}
+  {media?.length === 1 && (
+    <div className="w-full h-full overflow-hidden rounded-lg">
+      <img
+        src={`http://localhost:3000/public/uploads/businesses/images/${media[0]}`}
+        alt="main-img"
+        className="w-full h-full object-cover"
+      />
+    </div>
+  )}
 
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-          ) : (
-            <div className="flex flex-col items-center justify-center text-gray-400 h-full w-full">
-              <FontAwesomeIcon icon={faImage} className="text-4xl mb-2" />
-              <span className="text-sm">No picture</span>
-            </div>
-          )}
-
-          {/* {category && (
-                    <div className="absolute top-3 left-3">
-                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-800">
-                        {category}
-                      </span>
-                    </div>
-                  )} */}
+  {/* ✅ 2 Images */}
+  {media?.length === 2 && (
+    <div className="grid grid-cols-2 w-full h-full gap-1">
+      {media.slice(0, 2).map((img, idx) => (
+        <div key={idx} className="h-full w-full overflow-hidden rounded">
+          <img
+            src={`http://localhost:3000/public/uploads/businesses/images/${img}`}
+            alt={`img-${idx}`}
+            className="w-full h-full object-cover"
+          />
         </div>
+      ))}
+    </div>
+  )}
+
+  {/* ✅ 3 or more Images */}
+  {media?.length >= 3 && (
+    <div className="flex h-full w-full">
+      {/* รูปซ้ายใหญ่ */}
+      <div className="w-2/3 h-full overflow-hidden rounded-l-lg">
+        <img
+          src={`http://localhost:3000/public/uploads/businesses/images/${media[0]}`}
+          alt="main-img"
+          className="w-full h-full object-cover"
+        />
+      </div>
+
+      {/* รูปขวา 2 ช่องซ้อน */}
+      <div className="w-1/3 h-full flex flex-col gap-1 pl-1">
+        {media.slice(1, 3).map((img, idx) => (
+          <div key={idx} className="relative h-1/2 w-full overflow-hidden rounded">
+            <img
+              src={`http://localhost:3000/public/uploads/businesses/images/${img}`}
+              alt={`side-img-${idx}`}
+              className="w-full h-full object-cover"
+            />
+            {/* Overlay ถ้ามีรูปเหลือ */}
+            {idx === 1 && media.length > 3 && (
+              <div className="absolute inset-0 bg-gray-900/50 flex items-center justify-center text-white font-semibold text-xl rounded">
+                +{media.length - 3}
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  )}
+</div>
+
+
+
         {/* <div className="p-6 lg:w-2/3"> */}
         <div className="mx-5 p-5">
           {/* <div className="flex text-2xl items-start justify-between font-semibold"> */}

@@ -128,7 +128,7 @@ export const Service = (prop) => {
                         </div>
                     ))}
 
-{(user.role === "tourist" ) && (
+{user?.role === "tourist" && (
   <div className="flex justify-end items-center font-bold col-span-3">
     <button
       onClick={() => serviceDetails(item)}
@@ -138,7 +138,8 @@ export const Service = (prop) => {
     </button>
   </div>
 )}
- 
+
+
                 </div>
             ))}
         </div>

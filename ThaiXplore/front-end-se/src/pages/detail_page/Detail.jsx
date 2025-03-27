@@ -28,7 +28,7 @@ function Detail(prop) {
   const [showPopup, setShowPopup] = useState(false);
   const [showMore, setShowMore] = useState(false);
   const [packages, setPackages] = useState([]);
-
+  
 
 
   const safeDateGMT7 = (dateString) => {
@@ -303,17 +303,18 @@ function Detail(prop) {
           </div>
           <div className='flex flex-2 justify-end'>
 
-            {
-              user?.role === "entrepreneur" ?
-                (
-                  <div className="flex cursor-pointer  gap-2 mt-1 shadow-md  rounded-full h-8 w-auto justify-center items-center p-5 mr-2 bg-blue-400 text-white font-bold" onClick={() => setShowPopup(true)}>
-                    <FontAwesomeIcon icon={faFileInvoice} />
-                    <p>Request Quotation</p>
-                  </div>
-                )
-                :
-                (<></>)
-            }
+          {
+  user?.role === "entrepreneur" && (
+    <div
+      className="flex cursor-pointer gap-2 mt-1 shadow-md rounded-full h-8 w-auto justify-center items-center p-5 mr-2 bg-blue-400 text-white font-bold"
+      onClick={() => setShowPopup(true)}
+    >
+      <FontAwesomeIcon icon={faFileInvoice} />
+      <p>Request Quotation</p>
+    </div>
+  )
+}
+
 
             {showPopup && <QuotationPopUp socketRef={socketRef} onClose={() => setShowPopup(false)} business={data} serviceBusiness={data?.services} />}
 
@@ -414,7 +415,10 @@ const Info = (prop) => {
                 <div className='font-bold'>{category == "event" ?  event[index] : ""}  </div>
                 <div className='font-bold'>{category == "hotel" && infoTitle?.informationName == "Hotel Information" ?  hotel[index] : ""}  </div>
 
-                <div>{element.includes("-") ?  formatDateTime(element, { dateOnly: true }) : element} {category=="hotel" && hotel[index] == "Hotel Standard" ? "Star" :""} </div>
+                <div>
+  {element && element.includes("-") ? formatDateTime(element, { dateOnly: true }) : element} 
+  {category === "hotel" && hotel[index] === "Hotel Standard" ? "Star" : ""}
+</div>
               </div>
 
             )}

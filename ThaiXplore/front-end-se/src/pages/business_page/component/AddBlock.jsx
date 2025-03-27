@@ -112,13 +112,12 @@ const Addblock = (prop) => {
                     <div className="text-[#8B4513]">
                       {item ? item.replace(",", " ").replace(",", "-").split(" ")[1] : ""}
                     </div>
-                  </div>
+                    </div>
                   ) : (
                     <div className="text-[#8B4513]">{item}</div>
                   )}
                 </div>
               </div>
-
             ))}
             <div className={`${!show ? "flex" : "hidden"}`}>
               {detail === "Day Work" ? (

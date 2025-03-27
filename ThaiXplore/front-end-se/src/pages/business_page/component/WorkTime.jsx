@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
 
 const TimeSchedule = (prop) => {
-    const { detail, setInputs, inputs, handleInputChange } = prop
+  const { detail, setInputs, inputs, handleInputChange } = prop;
   const [schedule, setSchedule] = useState(inputs); // เริ่มต้นจาก inputs
 
   // useEffect เพื่อให้แสดงค่าเก่าหรือค่าเริ่มต้น
@@ -13,7 +13,9 @@ const TimeSchedule = (prop) => {
 
   const handleChange = (index, field, value) => {
     const newSchedule = [...schedule];
-    const entry = newSchedule[index].split(',');
+    // ตรวจสอบว่า entry มีค่าหรือไม่ก่อนที่จะใช้ split
+    const entry = newSchedule[index] ? newSchedule[index].split(',') : ["", "09:30", "16:30"];
+    
     if (field === 'day') {
       entry[0] = value;
     } else if (field === 'startTime') {
@@ -21,6 +23,7 @@ const TimeSchedule = (prop) => {
     } else if (field === 'endTime') {
       entry[2] = value;
     }
+    
     newSchedule[index] = entry.join(',');
     setSchedule(newSchedule);
     setInputs(newSchedule); // อัพเดต inputs ที่ส่งกลับไปที่ Addblock
@@ -57,7 +60,8 @@ const TimeSchedule = (prop) => {
   return (
     <div className="bg-gradient-to-br from-blue-100 to-blue-200 p-6 rounded-xl shadow-lg ">
       {schedule.map((entry, index) => {
-        const [day, startTime, endTime] = entry.split(',');
+        // ตรวจสอบค่า entry ก่อนใช้ split
+        const [day, startTime, endTime] = entry ? entry.split(',') : ["", "09:30", "16:30"];
 
         return (
           <div key={index} className="flex items-center bg-white p-3 rounded-md mb-3 shadow-sm">

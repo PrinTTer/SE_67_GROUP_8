@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
 import { BusinessEditBtn } from "./BusinessEditBtn";
 import { Link } from 'react-router-dom';
-import { deleteData, postDataWithFiles, putData } from "../services/apiService";
+import { deleteData, postDataWithFiles } from "../services/apiService";
 import { toast } from "react-toastify";
 
 export const BusinessBlock = (prop) => {
@@ -13,44 +13,24 @@ export const BusinessBlock = (prop) => {
 
     //const [isMouseEnter, setIsMouseEnter] = useState(false);
 
-
-    const truncateDescription = (text, maxLength = 180) => {
-        return text.length <= maxLength ? text : text.substring(0, maxLength) + '...';
-      };
-
-      const isTextTooLong = (text) => {
-        if (!text) return "";
-        const words = text.split(" ");
-        const truncated = words.slice(0, 40).join(" ");
-        return words.length > 40 ? truncated + "..." : truncated;
-      };
-      
-      
-
-    //   const checkIsShow = () => {
-    //     if (isShow) {
-    //       setDescription(isTextTooLong(business.description));
-    //     } else {
-    //       setDescription(business.description);
-    //     }
-    //     setIsShow(!isShow);
-    //   };
+    const isTextTooLong = (text) => {
+        let description = "";
+        return text.split(" ").filter((value, idx) => idx < 40).map((value, idx) => idx === 39 ? description + value + " ...." : description + value + " ");
+    };
 
     const checkIsShow = () => {
-        setIsShow(prev => !prev);
-      };
-      
-      
-
-      useEffect(() => {
-        if (business?.description) {
-          setIsShow(false); // ซ่อนไว้ก่อนเสมอ
-          setDescription(isTextTooLong(business.description));
+        if (isShow) {
+            setDescription(isTextTooLong(business.description));
+            setIsShow(false);
+        } else {
+            setDescription(business.description);
+            setIsShow(true);
         }
-      }, [business?.description]);
-      
-      
-      
+    }
+
+    useEffect(() => {
+        setDescription(isTextTooLong(business.description));
+    }, [])
 
 
     const [showConfirm, setShowConfirm] = useState(false);
@@ -149,9 +129,46 @@ export const BusinessBlock = (prop) => {
         <>
             <div className="bg-white grid lg:grid-cols-[25%_60%_15%] w-full drop-shadow-xl rounded-xl">
                 <div className="w-full aspect-[3/2] bg-gray-100 flex items-center justify-center relative overflow-hidden rounded-lg">
-                    {business.media.length > 0 ? (
+                    {/* ไม่มีรูป */}
+                    {(!business.media || business.media.length === 0) && (
+                        <div className="flex flex-col items-center justify-center text-gray-400 h-full w-full">
+                            <FontAwesomeIcon icon={faImage} className="text-4xl mb-2" />
+                            <span className="text-sm">No picture</span>
+                        </div>
+                    )}
+
+                    {/* มี 1 รูป */}
+                    {business.media?.length === 1 && (
+                        <div className="w-full h-full overflow-hidden rounded-lg">
+                            <img
+                                src={`http://localhost:3000/public/uploads/businesses/images/${business.media[0]}`}
+                                alt="main-img"
+                                className="w-full h-full object-cover"
+                                onClick={() => setShowGallery(true)}
+                            />
+                        </div>
+                    )}
+
+                    {/* มี 2 รูป */}
+                    {business.media?.length === 2 && (
+                        <div className="grid grid-cols-2 w-full h-full gap-1">
+                            {business.media.map((img, idx) => (
+                                <div key={idx} className="h-full w-full overflow-hidden rounded">
+                                    <img
+                                        src={`http://localhost:3000/public/uploads/businesses/images/${img}`}
+                                        alt={`img-${idx}`}
+                                        className="w-full h-full object-cover"
+                                        onClick={() => setShowGallery(true)}
+                                    />
+                                </div>
+                            ))}
+                        </div>
+                    )}
+
+                    {/* มี 3 รูปขึ้นไป */}
+                    {business.media?.length >= 3 && (
                         <div className="flex h-full w-full">
-                            {/* รูปซ้ายใหญ่ (ภาพแรก) */}
+                            {/* รูปซ้ายใหญ่ */}
                             <div className="w-2/3 h-full overflow-hidden rounded-l-lg">
                                 <img
                                     src={`http://localhost:3000/public/uploads/businesses/images/${business.media[0]}`}
@@ -161,7 +178,7 @@ export const BusinessBlock = (prop) => {
                                 />
                             </div>
 
-                            {/* รูปขวา 2 ช่องซ้อน */}
+                            {/* รูปขวา 2 ซ้อน */}
                             <div className="w-1/3 h-full flex flex-col gap-1 pl-1">
                                 {business.media.slice(1, 3).map((img, idx) => (
                                     <div key={idx} className="relative h-1/2 w-full overflow-hidden rounded">
@@ -171,33 +188,22 @@ export const BusinessBlock = (prop) => {
                                             className="w-full h-full object-cover"
                                             onClick={() => setShowGallery(true)}
                                         />
-                                        {/* Overlay ถ้ามีรูปเหลือ */}
+                                        {/* overlay ถ้ามีเกิน 3 รูป */}
                                         {idx === 1 && business.media.length > 3 && (
-                                            <div className="absolute inset-0 bg-gray-900/50 flex items-center justify-center text-white font-semibold text-xl rounded"
-                                                onClick={() => setShowGallery(true)}>
+                                            <div
+                                                className="absolute inset-0 bg-gray-900/50 flex items-center justify-center text-white font-semibold text-xl rounded"
+                                                onClick={() => setShowGallery(true)}
+                                            >
                                                 +{business.media.length - 3}
                                             </div>
-
                                         )}
                                     </div>
                                 ))}
                             </div>
                         </div>
-                    ) : (
-                        <div className="flex flex-col items-center justify-center text-gray-400 h-full w-full">
-                            <FontAwesomeIcon icon={faImage} className="text-4xl mb-2" />
-                            <span className="text-sm">No picture</span>
-                        </div>
                     )}
-
-                    {/* {category && (
-                                <div className="absolute top-3 left-3">
-                                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-800">
-                                    {category}
-                                  </span>
-                                </div>
-                              )} */}
                 </div>
+
                 <div className="mx-5 p-5">
                     {/* <div className="flex text-2xl items-start justify-between font-semibold"> */}
                     <div className="flex items-start justify-between mb-2 text-2xl font-semibold">
@@ -230,22 +236,17 @@ export const BusinessBlock = (prop) => {
                         </div>
                     </div>
                     <div className=" mt-3">
-                    {/* <div className="break-words overflow-hidden max-w-full">
-  {isShow ? business.description : isTextTooLong(business.description)}
-</div> */}
+                        <div className="break-words overflow-hidden max-w-full">
+                            {description}
+                        </div>
 
-
-<p className="flex items-start text-sm text-gray-600 break-words">
-                  {truncateDescription(description)}
-                </p>
-
-                        {/* <div onClick={() => checkIsShow()}
+                        <div onClick={() => checkIsShow()}
                             className="text-blue-500 flex gap-1 cursor-pointer transition-all hover:text-blue-300">
-                            <div>{isShow ? "Show less" : "Show more"}</div>
+                            <div>Show more</div>
                             <div className={`${isShow ? "rotate-180" : ""} transition-all ease-in-out`}>
                                 <FontAwesomeIcon icon={faChevronDown} />
                             </div>
-                        </div> */}
+                        </div>
                     </div>
                 </div>
 
@@ -261,55 +262,16 @@ export const BusinessBlock = (prop) => {
             </div>
 
             {showDescription && (
-  <div className="fixed inset-0 flex items-center justify-center bg-black/30 z-50">
-    <div className="bg-white rounded-lg shadow-lg p-6 w-[400px]">
-      <div className="mb-4 pb-3 border-b border-gray-200">
-        <h2 className="text-lg font-bold text-gray-800">Description</h2>
-        <p className="text-gray-700 mt-1">{business.verify.description}</p>
-        <p className="text-red-500 text-sm mt-2">
-          * Please upload new document(s) before requesting approval again.
-        </p>
-      </div>
-
-      <div className="mt-4 flex justify-end space-x-3">
-        <button
-          className="bg-gray-400 text-white px-4 py-2 rounded"
-          onClick={() => setShowDescription(false)}
-        >
-          Close
-        </button>
-        <button
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-          onClick={async () => {
-            try {
-              await putData(
-                `/businesses/${business._id}`,
-                
-                {
-                  verify: {
-                    status: "pending",
-                    document: business.verify.document || [],
-                    description: "",
-                  },
-                  
-                }
-              );
-              toast.success("🔄 Request sent! Status changed to pending.");
-              setShowDescription(false);
-              fetchBusinesses(); // อัปเดตข้อมูลใหม่
-            } catch (error) {
-              toast.error("❌ Failed to re-submit approval.");
-              console.error(error);
-            }
-          }}
-        >
-          Request Approval Again
-        </button>
-      </div>
-    </div>
-  </div>
-)}
-
+                <div className="fixed inset-0 flex items-center justify-center bg-black/30 z-50">
+                    <div className="bg-white rounded-lg shadow-lg p-6 w-[350px]">
+                        <h2 className="text-lg font-bold text-gray-800">Description</h2>
+                        <p className="text-gray-700 mt-1">{business.verify.description}</p>
+                        <div className="mt-4 flex justify-end">
+                            <button className="bg-gray-400 text-white px-4 py-2 rounded" onClick={() => setShowDescription(false)}>Close</button>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             {showConfirm && (
                 <div className="fixed inset-0 flex items-center justify-center bg-black/30 z-50">
@@ -385,7 +347,6 @@ export const BusinessBlock = (prop) => {
                             <button
                                 onClick={() => fechData()}
                                 className="px-4 py-2 bg-gray-100 text-gray-800 rounded-md hover:bg-gray-200"
-                               
                             >
                                 Close
                             </button>

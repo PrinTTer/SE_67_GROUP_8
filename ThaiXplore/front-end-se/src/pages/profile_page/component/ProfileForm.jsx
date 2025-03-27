@@ -35,6 +35,7 @@ const ProfileForm = () => {
                 await putData("/users", updatedData);
             }
             console.log(`Updated ${field} successfully!`);
+            window.location.reload();
         } catch (error) {
             console.error(`Error updating ${field}:`, error);
             setError(`Failed to update ${field}`);

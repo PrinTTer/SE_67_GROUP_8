@@ -39,7 +39,6 @@ export const NavigateBar = (prop) => {
         const socket = socketRef.current;
 
         const handleNewQuotation = (data) => {
-            console.log("📄 New Notification:", data);
             dispatch(fetchUser());
         };
 
@@ -73,11 +72,6 @@ export const NavigateBar = (prop) => {
             dispatch(logoutUser());
         }, 100);
     };
-    
-
-
-    console.log(notification);
-
 
     return (
         <div className={`${isNaviOpen ? "flex" : "hidden"} lg:flex flex-col justify-between 

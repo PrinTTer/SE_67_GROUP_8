@@ -95,7 +95,6 @@ export const Section = (prop) => {
     getData();
   }, []);
 
-
   useEffect(() => {
     const getPackage = async () => {
       setLoading(true);
@@ -112,12 +111,6 @@ export const Section = (prop) => {
     getPackage();
 
   }, []);
-
-  useEffect(() => {
-    if (pack.length > 0) {
-      console.log("PACK DATA", pack);
-    }
-  }, [pack]);
 
   const [dataProvince, setDataProvince] = useState([]);
 
@@ -422,7 +415,6 @@ export const PostList = (prop) => {
 
 export const RightBar = ({ pagetitle, filterRecommended, setFilterRecommended , setSelectedProvince }) => {
   const isFilterEnabled = typeof setFilterRecommended === "function";
-  console.log("🧪 filterRecommended:", filterRecommended); // ✅ เพิ่มบรรทัดนี้
 
   return (
     <div className="hidden lg:flex flex-col gap-6 py-6 px-4 bg-gray-50 border-l border-gray-200 lg:sticky lg:top-0 h-screen w-80">

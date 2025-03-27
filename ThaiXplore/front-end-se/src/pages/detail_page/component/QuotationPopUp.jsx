@@ -5,7 +5,6 @@ import { ServiceDropdown } from "./dropDownService";
 import { useNavigate } from "react-router-dom";
 import { fetchData, postData, putData } from "../../../services/apiService";
 import { useSelector } from "react-redux";
-import { getData } from "../../../data";
 
 export const QuotationPopUp = (prop) => {
   const { onClose, serviceBusiness, quotation, business, popup, type, socketRef } = prop;

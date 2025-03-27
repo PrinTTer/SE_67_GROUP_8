@@ -30,6 +30,8 @@ import QuotationPage from "./pages/quotation_page/quotationpage"
 import BookingHistory from "./pages/booking_page/bookingHistory";
 import PackageHistory from "./pages/booking_page/packageHistory";
 import useSocket from "./hooks/useSocket";
+import { isAuthenticated } from "./services/authService";
+import { set } from "date-fns";
 
 
 function App() {
@@ -40,45 +42,50 @@ function App() {
   const [isNaviOpen, setIsNaviOpen] = useState(false);
   const [notification, setNotification] = useState(0);
   const socketRef = useSocket(user);
+  const [showConfirm, setShowConfirm] = useState(false);
 
-  console.log(user);
+  const checkDuplicateLogin = () => {
+    document.cookie = `${import.meta.env.VITE_TOKEN}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+  }
 
   const openNavi = () => {
     setIsNaviOpen(!isNaviOpen);
   }
 
+  const fetch = async () => {
+    const res = await dispatch(fetchUser());
+    dispatch(setPath(location.pathname));
+
+    if (res.error && isAuthenticated()) {
+      setShowConfirm(true);
+      checkDuplicateLogin();
+    }
+  }
 
   useEffect(() => {
-    dispatch(fetchUser());
-    dispatch(setPath(location.pathname));
+    fetch();
   }, [location, dispatch]);
-  
+
   useEffect(() => {
-    // Ensure socket is set up after user is fetched
     if (user) {
       const socket = socketRef.current;
-      
+
       if (!socket) {
         console.error("Socket not initialized");
         return;
       }
-  
+
       const handleNewQuotation = (data) => {
-        console.log("📄 New Notification:", data);
         setNotification((prev) => prev + 1);
       };
-  
-      // Safer socket event registration
+
       socket.on("newRequest", handleNewQuotation);
-  
+
       return () => {
         socket.off("newRequest", handleNewQuotation);
       };
     }
   }, [user, socketRef.current]);
-
-  console.log(socketRef);
-  console.log(user);
 
   return (
     <>
@@ -127,6 +134,33 @@ function App() {
           </div>
         </>
       )}
+
+      {showConfirm && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black/30 z-50">
+          <div className="bg-white rounded-lg shadow-lg p-6 w-[350px]">
+            <div className="flex items-center justify-between mb-4 pb-3 border-b border-gray-200">
+              <h2 className="text-lg font-bold text-gray-800">Duplicate Login Detected</h2>
+            </div>
+
+            <p className="text-gray-600 mt-2">
+              Your account has been logged in from another device.
+            </p>
+
+            <div className="mt-4 flex justify-end">
+              <button
+                className="bg-gradient-to-r from-amber-500 to-amber-600 text-white cursor-pointer font-semibold px-4 py-2 rounded-lg shadow-md transition-all duration-200"
+                onClick={() => {
+                  setShowConfirm(false);
+                }}
+              >
+                Understood
+              </button>
+            </div>
+          </div>
+        </div>
+
+      )}
+
     </>
   );
 }

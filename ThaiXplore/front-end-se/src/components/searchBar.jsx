@@ -26,8 +26,8 @@ export const SearchBar = () => {
     const Search = () => {
         const types = ["hotel", "event", "restaurant", "carRental"];
         
-        console.log("Here")
-        console.log(data) 
+        // console.log("Here")
+        // console.log(data) 
         
         if (types.includes(searchTerm)) {
             return navigate(`/listpage/${searchTerm}`);

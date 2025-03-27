@@ -14,7 +14,6 @@ export const Service = (prop) => {
         });
     };
 
-    const linkTo = "/Detail/booking/"+id;
     let Topic = getTopic(category);
     const [service, setService] = useState();
     const [head, setHead] = useState([]);
@@ -40,16 +39,52 @@ export const Service = (prop) => {
         setHead(newHead);
     }, [category]);
 
-    const formatDate = (dateString) => {
+    const formatDate = (dateString, options={}) => {
+        if (!dateString) return 'N/A';
+
+    const defaultOptions = {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true,
+        timeZone: 'Asia/Bangkok'  // Set the timezone to GMT+7 (Bangkok)
+    };
+
+    const mergedOptions = { ...defaultOptions, ...options };
+    
+    try {
         const date = new Date(dateString);
-        return date.toLocaleString('en-GB', {
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit',
-            hour: '2-digit',
-            minute: '2-digit',
-            hour12: false,
-        }).replace(',', '');
+        
+        // Check if date is valid
+        if (isNaN(date.getTime())) return 'Invalid Date';
+
+        // Format based on different scenarios
+        if (options.timeOnly) {
+            return date.toLocaleTimeString('en-US', { 
+                hour: '2-digit', 
+                minute: '2-digit', 
+                hour12: true,
+                timeZone: 'Asia/Bangkok' 
+            });
+        }
+
+        if (options.dateOnly) {
+            return date.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                timeZone: 'Asia/Bangkok' 
+            });
+        }
+
+        // Full date and time
+        return date.toLocaleString('en-US', mergedOptions);
+    } catch (error) {
+        console.error('Error formatting date:', error);
+        return 'N/A';
+    }
     };
 
     return (

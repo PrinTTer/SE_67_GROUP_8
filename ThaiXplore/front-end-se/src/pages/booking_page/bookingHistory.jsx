@@ -13,7 +13,8 @@ const formatDateTime = (dateString, options = {}) => {
         day: 'numeric',
         hour: '2-digit',
         minute: '2-digit',
-        hour12: true
+        hour12: true,
+        timeZone: 'Asia/Bangkok'  // Set the timezone to GMT+7 (Bangkok)
     };
 
     const mergedOptions = { ...defaultOptions, ...options };
@@ -29,7 +30,8 @@ const formatDateTime = (dateString, options = {}) => {
             return date.toLocaleTimeString('en-US', { 
                 hour: '2-digit', 
                 minute: '2-digit', 
-                hour12: true 
+                hour12: true,
+                timeZone: 'Asia/Bangkok' 
             });
         }
 
@@ -37,7 +39,8 @@ const formatDateTime = (dateString, options = {}) => {
             return date.toLocaleDateString('en-US', {
                 year: 'numeric',
                 month: 'long',
-                day: 'numeric'
+                day: 'numeric',
+                timeZone: 'Asia/Bangkok' 
             });
         }
 
@@ -290,7 +293,7 @@ function findAllServiceFields(service) {
 }
 
 const renderTopicContent = (content,topicField) => {
-    //console.log("What is content",content, topicField);
+    console.log("What is content",content, topicField);
     const isDateTimeField = (field) => {
         const dateTimeKeywords = ['date', 'time', 'start', 'end', 'datetime'];
         return dateTimeKeywords.some(keyword => 
@@ -318,7 +321,7 @@ const renderTopicContent = (content,topicField) => {
     
     return (
         <div className="text-gray-700">
-            {isDateTimeField(topicField)?formatDateTime(content, { dateOnly: true }):content}
+            {isDateTimeField(topicField)?formatDateTime(content):content}
         </div>
     );
 

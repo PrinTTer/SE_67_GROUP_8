@@ -1,5 +1,5 @@
 import express from "express";
-import { deletePackageImage, deletePackages, getAllPackages, getPackage, registerPackage, uploadPackageImages ,getAllPackagesbyBussinessId ,updatePackage} from "../controllers/package.controller";
+import { deletePackageImage, deletePackages, getAllPackages, getPackage, registerPackage, uploadPackageImages ,getAllPackagesbyBussinessId ,updatePackage, allDetailPackages} from "../controllers/package.controller";
 import { isAuthenticated } from "../middlewares/isAuthentication.middleware";
 import { upload } from "../middlewares/uploadFile.middleware";
 

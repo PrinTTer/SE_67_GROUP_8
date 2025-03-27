@@ -113,17 +113,17 @@ export const uploadPackageImages = async (
       return res.sendStatus(401);
     }
 
-        if (!images) {
-            return res.sendStatus(400);
-        }
+    if (!images) {
+      return res.sendStatus(400);
+    }
 
-        const packages = await getPackageById(packageId);
+    const packages = await getPackageById(packageId);
 
     (images as Express.Multer.File[]).map((image, index) => {
       packages.media.push(image.filename);
     });
 
-        await packages.save();
+    await packages.save();
 
     return res.status(201).json(packages);
   } catch (error) {
@@ -191,14 +191,125 @@ export const getAllPackages = async (
   }
 };
 
-export const getPackage = async (req:express.Request , res:express.Response):Promise<any> => {
-    try {
-        const {packageId} = req.params;
-        const packages = await getPackageById(packageId);
+export const getPackage = async (req: express.Request, res: express.Response): Promise<any> => {
+  try {
+    const { packageId } = req.params;
+    const packages = await getPackageById(packageId);
 
-        return res.status(200).json(packages);
-    } catch (error) {
-        console.log(error);
-        return res.sendStatus(400);
-    }
+    return res.status(200).json(packages);
+  } catch (error) {
+    console.log(error);
+    return res.sendStatus(400);
+  }
 }
+
+
+export const allDetailPackages = async (req: express.Request, res: express.Response): Promise<any> => {
+  try {
+    const { packageId } = req.params;
+    const packages = await getPackageById(packageId);
+
+    const services = await Promise.all(
+      packages.services.map(async (item) => {
+        const business = await getBusinessById(item.businessId);
+        const categoryStrategy = BusinessCategoryFactory.createCategory(
+          business.category,
+          item.businessId
+        );
+        return await categoryStrategy.getProvideServiceById(item.serviceId);
+      })
+    );
+
+
+    return res.status(200).json({ packages, services });
+  } catch (error) {
+    console.log(error);
+    return res.sendStatus(400);
+  }
+}
+
+
+export const updatePackage = async (
+  req: express.Request,
+  res: express.Response
+): Promise<any> => {
+  try {
+    const { packageId } = req.params;
+    const currentUserId: string = get(req, 'identity._id');
+    const user = await getUserById(currentUserId);
+
+    // เช็กสิทธิ์
+    if (!user || user.role !== 'entrepreneur') {
+      return res.sendStatus(401);
+    }
+
+    // ดึงข้อมูลจาก body
+    const {
+      title,
+      description,
+      media,
+      startDate,
+      endDate,
+      totalPackage,
+      price,
+      services,
+      totalExpirationDate,
+    } = req.body;
+
+    // ตรวจสอบความครบถ้วนของข้อมูล
+    if (
+      !packageId ||
+      !title ||
+      !description ||
+      !startDate ||
+      !endDate ||
+      !totalPackage ||
+      !services ||
+      !price
+    ) {
+      return res.sendStatus(400);
+    }
+
+    // ทำการอัปเดต
+    const updatedPackage = await updatePackagesById(packageId, {
+      title,
+      description,
+      media,
+      startDate,
+      endDate,
+      totalPackage,
+      price,
+      services,
+      totalExpirationDate,
+    });
+
+    if (!updatedPackage) {
+      return res.status(404).json({ message: "Package not found" });
+    }
+
+    return res.status(200).json(updatedPackage);
+  } catch (err) {
+    console.error("Error updating package:", err);
+    return res.sendStatus(400);
+  }
+};
+
+export const getAllPackagesbyBussinessId = async (
+  req: express.Request,
+  res: express.Response
+): Promise<any> => {
+  try {
+    const { businessId } = req.params;
+
+    if (!businessId) {
+      return res.sendStatus(400);
+    }
+
+    const packages = await getPackagesByBusinessId(businessId);
+
+    return res.status(200).json(packages);
+  } catch (error) {
+    console.log(error);
+    return res.sendStatus(400);
+  }
+};

@@ -3,7 +3,6 @@ import ImageSlider from '../../components/ImageSlider';
 import { Category, Section, RightBar } from './component/home_component';
 const HomePage = () => {
     const [filterRecommended, setFilterRecommended] = useState(false);
-    console.log("🧪 filterRecommended:", filterRecommended); // ✅ เพิ่มบรรทัดนี้
 
     return (
       <div className="flex">

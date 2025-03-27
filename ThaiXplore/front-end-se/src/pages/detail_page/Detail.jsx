@@ -1,7 +1,7 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Link, useParams } from 'react-router-dom';
 
-import { faFileInvoice } from '@fortawesome/free-solid-svg-icons';
+import { faFileInvoice, faStar } from '@fortawesome/free-solid-svg-icons';
 import { faBed, faCalendar, faBowlFood, faCar } from '@fortawesome/free-solid-svg-icons';
 import { RightSideBar } from './component/RightBar';
 import { Service } from './component/service';
@@ -25,6 +25,8 @@ function Detail(prop) {
   const [show, setShow] = useState(true)
   const [showPopup, setShowPopup] = useState(false);
   const [showMore, setShowMore] = useState(false);
+  const [packages, setPackages] = useState([]);
+
 
 
   const safeDateGMT7 = (dateString) => {
@@ -47,6 +49,8 @@ function Detail(prop) {
     try {
       setLoading(true);
       const data_format = await fetchData(`/businesses/${id}`);
+      const pkgData = await fetchData(`/packages/business/${id}`);
+      setPackages(pkgData);
       setData(data_format);
 
       setMedia(data_format?.business?.media)
@@ -70,6 +74,64 @@ function Detail(prop) {
     time: "",
     Business: data
   });
+
+  const PackageCard = ({ item }) => {
+    const imageUrl = item.media?.[0]
+      ? `http://localhost:3000/public/uploads/services/packages/${item.media[0]}`
+      : null;
+  
+    return (
+      <div className="p-4 rounded-lg gap-5 mb-5 bg-yellow-50 shadow-md border border-gray-300">
+        {imageUrl && (
+          <div className="mb-4 rounded-lg overflow-hidden">
+            <img
+              src={imageUrl}
+              alt={item.title}
+              className="w-full h-48 object-cover"
+            />
+          </div>
+        )}
+  
+        <div className="border-b-2 p-2 flex items-center font-bold mb-4">
+          <FontAwesomeIcon icon={faBed} className="mr-3 text-lg" />
+          <span>{item.title}</span>
+        </div>
+  
+        <div className="grid grid-cols-2 gap-4 p-2">
+          <div className="flex items-center">
+            <FontAwesomeIcon icon={faStar} className="mr-3 text-lg" />
+            <strong>Price:</strong> ฿{item.price}
+          </div>
+          <div className="flex items-center">
+            <FontAwesomeIcon icon={faStar} className="mr-3 text-lg" />
+            <strong>Quantity:</strong> {item.totalPackage}
+          </div>
+          <div className="flex items-center">
+            <FontAwesomeIcon icon={faStar} className="mr-3 text-lg" />
+            <strong>Valid:</strong> {item.totalExpirationDate} days
+          </div>
+          <div className="flex items-center">
+            <FontAwesomeIcon icon={faStar} className="mr-3 text-lg" />
+            <strong>Period:</strong> {new Date(item.startDate).toLocaleDateString()} - {new Date(item.endDate).toLocaleDateString()}
+          </div>
+        </div>
+  
+        <div className="mt-4">
+          <p className="text-gray-600 mb-4">{item.description}</p>
+        </div>
+  
+        <div className="flex justify-end">
+          <Link
+            to={`/detailpackage/${item._id}`}
+            className="flex gap-2 mt-1 shadow-md rounded-full h-8 w-auto justify-center items-center p-5 mr-2 bg-blue-400 text-white font-bold"
+          >
+            <FontAwesomeIcon icon={faFileInvoice} />
+            <span>View Details</span>
+          </Link>
+        </div>
+      </div>
+    );
+  };
 
 
 
@@ -277,6 +339,13 @@ function Detail(prop) {
             </div>
 
 
+            <div className={!show ? "block" : "hidden"}>
+              {packages.length > 0 ? (
+                packages.map((pkg, idx) => <PackageCard key={idx} item={pkg} />)
+              ) : (
+                <p className="text-gray-500 p-4">No packages available.</p>
+              )}
+            </div>
 
           </div>
         </div>

@@ -75,4 +75,7 @@ export class EventCategory implements BusinessCategoryStrategy {
             );
         }
     }
+    getServices(): Promise<any[]> {
+            return EventModel.find({ businessId: this.businessId });
+          }
 }

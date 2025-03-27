@@ -17,7 +17,7 @@ const QuotationPage = (prop) => {
 
     const sendQuotationSocketToPender = (status) => {
         const socket = socketRef.current;
-        const receiverId = user._id;
+        const receiverId = user?._id;
         if (socket) {
           socket.emit("sendRequest", { receiverId, status }); // ส่งข้อมูลไปยัง server ผ่าน WebSocket
         }

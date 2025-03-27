@@ -2,6 +2,7 @@ import { upload } from "../middlewares/uploadFile.middleware";
 import { getAllUsers , deleteUser, getUser, updateUser, updateUserPassword, updateUserEmail, uploadUserProfileImage, getUserProfileImage, buyPackages, deleteUserByAdmin, updateUserByAdmin, updateNotification } from "../controllers/user.controller";
 import { isAuthenticated } from "../middlewares/isAuthentication.middleware";
 import express from "express";
+import { getUserServices } from "../controllers/userService.controller";
 
 export default (router:express.Router) => {
     router.get('/all-users' ,isAuthenticated, getAllUsers);
@@ -15,5 +16,6 @@ export default (router:express.Router) => {
     router.post('/users/upload-profile' , isAuthenticated , upload.single('files') , uploadUserProfileImage);
     router.post('/users/packages' , isAuthenticated , buyPackages);
     router.put('/users/:id' , isAuthenticated , updateUserByAdmin);
+    router.get('/users/:userId/services', isAuthenticated, getUserServices);
     router.put('/users-notification/:id' , isAuthenticated , updateNotification);
 };

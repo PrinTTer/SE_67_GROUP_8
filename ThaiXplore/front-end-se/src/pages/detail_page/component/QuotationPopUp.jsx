@@ -5,7 +5,6 @@ import { ServiceDropdown } from "./dropDownService";
 import { useNavigate } from "react-router-dom";
 import { fetchData, postData, putData } from "../../../services/apiService";
 import { useSelector } from "react-redux";
-import { getData } from "../../../data";
 
 export const QuotationPopUp = (prop) => {
   const { onClose, serviceBusiness, quotation, business, popup, type, socketRef } = prop;
@@ -20,7 +19,7 @@ export const QuotationPopUp = (prop) => {
     email: "",
     date: "",
     description: "",
-    items: [{ serviceId: "", quantity: "", price: "", amount: "" }],
+    items: [{ serviceId: "", quantity: "", price: "", amount: "", remainingAmount: "" }],
   });
   const { user } = useSelector((state) => state.auth);
 
@@ -63,6 +62,7 @@ export const QuotationPopUp = (prop) => {
     setDefaultValues();
   }, [])
 
+  console.log(formData);
 
   const handleChange = (e, index = null, field = null) => {
     if (index !== null && field) {
@@ -71,6 +71,10 @@ export const QuotationPopUp = (prop) => {
       updatedItems[index].amount =
         updatedItems[index].quantity * updatedItems[index].price || "";
       setFormData({ ...formData, items: updatedItems });
+      if(field === "quantity"){
+        console.log("INN");
+        updatedItems[index]["remainingAmount"] = e.target.value;
+      }
     } else {
       setFormData({ ...formData, [e.target.name]: e.target.value });
     }
@@ -80,7 +84,7 @@ export const QuotationPopUp = (prop) => {
   const addRow = () => {
     setFormData({
       ...formData,
-      items: [...formData.items, { serviceId: "", quantity: "", price: "", amount: "" }],
+      items: [...formData.items, { serviceId: "", quantity: "", price: "", amount: "", remainingAmount: "" }],
     });
   };
 
@@ -123,7 +127,7 @@ export const QuotationPopUp = (prop) => {
       if (!quotation) {
         await postData(`/quotations`, sendData);
         const notification = {
-          notification : 1
+          notification: 1
         }
         await putData(`/users-notification/${business.business.userId}`, notification);
         sendQuotationSocket({ request: "Create" });
@@ -137,23 +141,23 @@ export const QuotationPopUp = (prop) => {
       } else if (popup === "Offer") {
         if (type === "pending") {
           const data = await fetchData(`/quotations-details/${quotation._id}`);
-          const [firstName , lastName] = quotation?.name.split(" ");
+          const [firstName, lastName] = quotation?.name.split(" ");
           const bookingData = {
-            checkInDate:"2025-03-27",
-            checkOutDate:"2025-03-27",
-            description:quotation.description,
-            email:quotation.email,
-            firstName:firstName,
-            lastName:lastName,
-            phoneNumber:quotation.phoneNumber,
+            checkInDate: "2025-03-27",
+            checkOutDate: "2025-03-27",
+            description: quotation.description,
+            email: quotation.email,
+            firstName: firstName,
+            lastName: lastName,
+            phoneNumber: quotation.phoneNumber,
           }
           const item = data;
           const category = business?.business?.category;
           const bookingDetail = {
-            user_Id : business.business.userId,
-            bookingAmount:1
+            user_Id: business.business.userId,
+            bookingAmount: 1
           }
-          navigate("/paymentSelector", { state: {bookingData,item,category,bookingDetail} });
+          navigate("/paymentSelector", { state: { bookingData, item, category, bookingDetail } });
         }
         sendQuotationSocket({ request: "Create" });
         sendQuotationSocketToPender({ request: "Create" });

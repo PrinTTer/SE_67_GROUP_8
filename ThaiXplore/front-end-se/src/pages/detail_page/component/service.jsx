@@ -2,13 +2,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBed } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from "react";
-
+import { useSelector } from 'react-redux';
 
 
 export const Service = (prop) => {
     const { title, category, id, bookingDetail } = prop;
     const navigate = useNavigate();
-    
+    const { user } = useSelector((state) => state.auth);
     const serviceDetails = (item) => {
         //console.log(bookingDetail)
         navigate('/booking', {
@@ -20,12 +20,9 @@ export const Service = (prop) => {
     let Topic = getTopic(category);
     const [service, setService] = useState();
     const [head, setHead] = useState([]);
-    const [userRole, setUserRole] = useState(""); // ✅ ย้ายเข้ามา
+    
 
-    useEffect(() => {
-        const role = localStorage.getItem("userRole");
-        setUserRole(role);
-    }, []);
+   
 
     useEffect(() => {
         switch(category){
@@ -96,7 +93,7 @@ export const Service = (prop) => {
                         </div>
                     ))}
 
-{(userRole === "traveler" || userRole === "admin") && (
+{(user.role === "tourist" ) && (
   <div className="flex justify-end items-center font-bold col-span-3">
     <button
       onClick={() => serviceDetails(item)}

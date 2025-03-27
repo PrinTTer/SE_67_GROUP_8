@@ -42,12 +42,9 @@ function Detail() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 const [ media , setMedia] = useState([])
-const [userRole, setUserRole] = useState("");
 
-useEffect(() => {
-  const role = localStorage.getItem("userRole");
-  setUserRole(role);
-}, []);
+
+
 
   const fetch = async () => {
     try {
@@ -285,7 +282,7 @@ useEffect(() => {
       </div>
 
       {/* Right Bar */}
-      {(userRole === "traveler" || userRole === "admin") && (
+      {(user?.role === "tourist") && (
   <RightSideBar type={data?.business?.category} bookingDetail={bookingDetail} />
 )}
 

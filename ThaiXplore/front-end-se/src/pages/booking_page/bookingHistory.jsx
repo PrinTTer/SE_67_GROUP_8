@@ -63,7 +63,11 @@ const BookingHistory = () => {
             setError(null);
             try {
                 const bookingsData = await fetchData("/bookings");
-                const bookingsWithServiceDetails = await Promise.all(bookingsData.map(async (booking) => {
+                console.log("bookingsData: ",bookingsData);
+
+                const normalType = bookingsData.filter((item)=>item?.bookingType!=="package");
+
+                const bookingsWithServiceDetails = await Promise.all(normalType.map(async (booking) => {
                     const businessData = await fetchData(`/businesses/${booking.businessId}`);
                     const detailedBooking = booking.bookingDetail.map(detail => {
                         const service = businessData.services.find(service => service._id === detail.serviceId);
@@ -72,6 +76,7 @@ const BookingHistory = () => {
                     
                     return { ...booking, businessData, bookingDetail: detailedBooking };
                 }));
+                console.log("bookingsWithServiceDetails: ",bookingsWithServiceDetails);
                 setBookings(bookingsWithServiceDetails);
             } catch (error) {
                 setError("Failed to load bookings");
@@ -148,6 +153,7 @@ const BookingHistory = () => {
                                                 <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-60 text-white p-4">
                                                     <h2 className="text-xl font-bold truncate">
                                                         {booking?.businessData?.business?.businessName}
+                                                        {console.log(booking)}
                                                     </h2>
                                                 </div>
                                             </div>

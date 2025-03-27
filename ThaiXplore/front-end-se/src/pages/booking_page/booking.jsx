@@ -11,11 +11,12 @@ const Booking = () => {
     const [packagesArr, setPackagesArr] = useState("");
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    
 
     //const [package, setPackage] = useState("");
-    //console.log("item: \n",item, category);
-
-    //console.log("BookingDetail",(bookingDetail));
+    console.log("item: \n",item, category);
+    console.log("category",category);
+    console.log("BookingDetail",(bookingDetail));
 
     useEffect(() => {
         if(category === "package"){

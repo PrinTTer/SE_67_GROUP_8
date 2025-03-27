@@ -13,13 +13,12 @@ function ListPage() {
   }, [title]);  // ใช้ useEffect เพื่อดูการอัพเดทค่าของ selectedProvince
 
   return (
-    <>
-      <div className="flex flex-4 flex-col bg-gray-200">
-        <Section 
-          title={filterRecommended ? "Recommended" : title} 
-          selectedProvince={selectedProvince} 
-          setSelectedProvince={setSelectedProvince} 
-        />
+    <div className="flex flex-5 w-full bg-gray-50 min-h-screen">
+      {/* LEFT SIDE */}
+      <div className="flex-1 p-6 lg:p-10">
+        <div className="max-w-7xl mx-auto">
+          <Section title={filterRecommended ? "Recommended" : title} />
+        </div>
       </div>
 
       {/* RIGHT SIDE */}
@@ -34,4 +33,3 @@ function ListPage() {
 }
 
 export default ListPage;
-

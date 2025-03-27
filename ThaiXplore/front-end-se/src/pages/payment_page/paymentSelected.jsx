@@ -2,7 +2,10 @@ import BookingDetail from "../booking_page/component/bookingDetail";
 import { useLocation, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCreditCard, faWallet } from '@fortawesome/free-solid-svg-icons';
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { set } from "date-fns";
+import { fetchData } from "../../services/apiService";
+import PackageDetail from "../booking_page/component/packageDetail";
 
 const PaymentSelector = () => {
     const [method, setMethod] = useState("");
@@ -11,9 +14,6 @@ const PaymentSelector = () => {
     const { bookingData, item, category ,bookingDetail} = location.state || {};
     const navigate = useNavigate();
 
-    console.log("Booking Data: ", bookingData);
-    console.log("Service Detail: ", item);
-    console.log("Category of Service: ", category);
 
     const handleSelect = (selectedMethod) => {
         
@@ -80,7 +80,10 @@ const PaymentSelector = () => {
                     <div className="mt-8 pt-6 border-t border-gray-100">
                         <div className="flex justify-between items-center">
                             <div className="text-gray-600">Total amount:</div>
-                            <div className="text-xl font-bold text-amber-600">THB {item?.price*bookingDetail.bookingAmount} ฿</div>
+                            <div className="text-xl font-bold text-amber-600">THB 
+                            { 
+                                Array.isArray(item?.services)  ? item.quotation.total : item?.price * bookingDetail.bookingAmount *bookingDetail.AmountDay
+                            } ฿</div>
                         </div>
                     </div>
                 </div>

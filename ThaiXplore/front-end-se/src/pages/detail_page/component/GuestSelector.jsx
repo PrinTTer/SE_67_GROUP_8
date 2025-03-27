@@ -47,53 +47,60 @@ const GuestSelector = (prop) => {
         onClick={togglePopup}
         className="w-full border border-gray-300 rounded-md px-2 py-2 flex justify-between items-center text-black text-sm font-medium"
       >
-        {`${finalAdults} Adult, ${finalChildren} Child, ${finalRooms} ${amount} `}
+       {type === "hotel" 
+          ? `${finalAdults} Adult, ${finalChildren} Child, ${finalRooms} ${amount}` 
+          : `${finalRooms} ${amount}`}
         <FontAwesomeIcon icon={faUsers} className="text-gray-500 ml-2 text-xs" />
       </button>
 
       {/* Popup Content */}
       {isOpen && (
         <div className="absolute z-10 w-48 bg-white shadow-lg rounded-md mt-1 p-3 text-sm">
-          {/* Adult Selector */}
-          <div className="flex justify-between items-center py-1">
-            <span className="font-medium"><FontAwesomeIcon icon={faUser} className="mr-1"/> Adult</span>
-            <div className="flex items-center space-x-1">
-              <button
-                onClick={() => setAdults(Math.max(1, adults - 1))}
-                className="border px-1 w-6 h-6 rounded bg-gray-200 flex items-center justify-center"
-              >
-                <FontAwesomeIcon icon={faUserMinus} className="text-xs" />
-              </button>
-              <span>{adults}</span>
-              <button
-                onClick={() => setAdults(adults + 1)}
-                className="border px-1 w-6 h-6 rounded bg-gray-200 flex items-center justify-center"
-              >
-                <FontAwesomeIcon icon={faUserPlus} className="text-xs" />
-              </button>
-            </div>
-          </div>
+          {
+            type === "hotel" && (
+              <>
+                {/* Adult Selector */}
+                <div className="flex justify-between items-center py-1">
+                  <span className="font-medium"><FontAwesomeIcon icon={faUser} className="mr-1"/> Adult</span>
+                  <div className="flex items-center space-x-1">
+                    <button
+                      onClick={() => setAdults(Math.max(1, adults - 1))}
+                      className="border px-1 w-6 h-6 rounded bg-gray-200 flex items-center justify-center"
+                    >
+                      <FontAwesomeIcon icon={faUserMinus} className="text-xs" />
+                    </button>
+                    <span>{adults}</span>
+                    <button
+                      onClick={() => setAdults(adults + 1)}
+                      className="border px-1 w-6 h-6 rounded bg-gray-200 flex items-center justify-center"
+                    >
+                      <FontAwesomeIcon icon={faUserPlus} className="text-xs" />
+                    </button>
+                  </div>
+                </div>
 
-          {/* Children Selector */}
-          <div className="flex justify-between items-center py-1">
-            <span className="font-medium"><FontAwesomeIcon icon={faUser} className="mr-1"/> Children</span>
-            <div className="flex items-center space-x-1">
-              <button
-                onClick={() => setChildren(Math.max(0, children - 1))}
-                className="border px-1 w-6 h-6 rounded bg-gray-200 flex items-center justify-center"
-              >
-                <FontAwesomeIcon icon={faUserMinus} className="text-xs" />
-              </button>
-              <span>{children}</span>
-              <button
-                onClick={() => setChildren(children + 1)}
-                className="border px-1 w-6 h-6 rounded bg-gray-200 flex items-center justify-center"
-              >
-                <FontAwesomeIcon icon={faUserPlus} className="text-xs" />
-              </button>
-            </div>
-          </div>
-
+                {/* Children Selector */}
+                <div className="flex justify-between items-center py-1">
+                  <span className="font-medium"><FontAwesomeIcon icon={faUser} className="mr-1"/> Children</span>
+                  <div className="flex items-center space-x-1">
+                    <button
+                      onClick={() => setChildren(Math.max(0, children - 1))}
+                      className="border px-1 w-6 h-6 rounded bg-gray-200 flex items-center justify-center"
+                    >
+                      <FontAwesomeIcon icon={faUserMinus} className="text-xs" />
+                    </button>
+                    <span>{children}</span>
+                    <button
+                      onClick={() => setChildren(children + 1)}
+                      className="border px-1 w-6 h-6 rounded bg-gray-200 flex items-center justify-center"
+                    >
+                      <FontAwesomeIcon icon={faUserPlus} className="text-xs" />
+                    </button>
+                  </div>
+                </div>
+              </>
+            )
+          }
           {/* Room Selector */}
           <div className="flex justify-between items-center py-1">
             <span className="font-medium"><FontAwesomeIcon icon={faBed} className="mr-1"/> {amount}</span>

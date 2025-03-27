@@ -3,12 +3,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { ServiceDropdown } from "./dropDownService";
 import { useNavigate } from "react-router-dom";
-import { postData, putData } from "../../../services/apiService";
+import { fetchData, postData, putData } from "../../../services/apiService";
 import { useSelector } from "react-redux";
+import { getData } from "../../../data";
 
 export const QuotationPopUp = (prop) => {
   const { onClose, serviceBusiness, quotation, business, popup, type, socketRef } = prop;
-  
+
   const [formData, setFormData] = useState({
     companyName: "",
     province: "",
@@ -22,8 +23,6 @@ export const QuotationPopUp = (prop) => {
     items: [{ serviceId: "", quantity: "", price: "", amount: "" }],
   });
   const { user } = useSelector((state) => state.auth);
-  
-  console.log(quotation);
 
   const sendQuotationSocket = (status) => {
     const socket = socketRef.current;
@@ -43,7 +42,7 @@ export const QuotationPopUp = (prop) => {
 
   const setDefaultValues = () => {
     if (quotation) {
-      const [province , subDistrict , district] = quotation.address ? quotation.address.split(",") : "";
+      const [province, subDistrict, district] = quotation.address ? quotation.address.split(",") : "";
       const data = {
         companyName: quotation.companyName,
         province: province,
@@ -117,7 +116,8 @@ export const QuotationPopUp = (prop) => {
         phoneNumber: formData.phone,
         description: formData.description,
         servicesDetails: formData.items,
-        status: status
+        status: status,
+        total: calculateTotal()
       }
 
       if (!quotation) {
@@ -131,10 +131,26 @@ export const QuotationPopUp = (prop) => {
         sendQuotationSocketToPender({ request: "Create" });
         onClose();
       } else if (popup === "Offer") {
-        if(type === "pending") {
-          navigate("/payment",{state: {} });
+        if (type === "pending") {
+          const data = await fetchData(`/quotations-details/${quotation._id}`);
+          const [firstName , lastName] = quotation?.name.split(" ");
+          const bookingData = {
+            checkInDate:"2025-03-27",
+            checkOutDate:"2025-03-27",
+            description:quotation.description,
+            email:quotation.email,
+            firstName:firstName,
+            lastName:lastName,
+            phoneNumber:quotation.phoneNumber,
+          }
+          const item = data;
+          const category = business?.business?.category;
+          const bookingDetail = {
+            user_Id : business.business.userId,
+            bookingAmount:1
+          }
+          navigate("/paymentSelector", { state: {bookingData,item,category,bookingDetail} });
         }
-        await putData(`/quotations/${quotation._id}`, sendData);
         sendQuotationSocket({ request: "Create" });
         sendQuotationSocketToPender({ request: "Create" });
         onClose();
@@ -143,6 +159,7 @@ export const QuotationPopUp = (prop) => {
       console.log(error);
     }
   };
+
 
   const formatCurrency = (amount, item) => {
     return new Intl.NumberFormat('th-TH', { style: 'currency', currency: 'THB' }).format(amount);

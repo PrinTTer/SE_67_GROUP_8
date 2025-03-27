@@ -236,7 +236,7 @@ const DetailPackage = () => {
                 : huahinPoster
             }
             alt="poster"
-            className="w-full h-full object-cover object-center"
+            className="w-svw h-svh object-cover object-center"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
           <div className="absolute bottom-0 left-0 p-8 w-full">

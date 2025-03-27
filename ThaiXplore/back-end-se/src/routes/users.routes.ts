@@ -17,7 +17,5 @@ export default (router:express.Router) => {
     router.post('/users/packages' , isAuthenticated , buyPackages);
     router.put('/users/:id' , isAuthenticated , updateUserByAdmin);
     router.get('/users/:userId/services', isAuthenticated, getUserServices);
-
-
     router.put('/users-notification/:id' , isAuthenticated , updateNotification);
 };

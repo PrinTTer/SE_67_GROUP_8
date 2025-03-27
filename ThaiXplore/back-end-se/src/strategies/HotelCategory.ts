@@ -76,5 +76,8 @@ export class HotelCategory implements BusinessCategoryStrategy {
             );
         }
     }
+    getServices(): Promise<any[]> {
+        return RoomModel.find({ businessId: this.businessId });
+      }
 }
 

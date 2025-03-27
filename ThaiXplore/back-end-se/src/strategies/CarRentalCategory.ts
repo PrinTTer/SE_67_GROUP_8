@@ -74,4 +74,7 @@ export class CarRentalCategory implements BusinessCategoryStrategy {
       );
     }
   }
+  getServices(): Promise<any[]> {
+          return CarModel.find({ businessId: this.businessId });
+        }
 }

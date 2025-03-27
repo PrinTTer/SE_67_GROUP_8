@@ -3,6 +3,7 @@ import { getAllUsers , deleteUser, getUser, updateUser, updateUserPassword, upda
 import { isAuthenticated } from "../middlewares/isAuthentication.middleware";
 import { isOwner } from "../middlewares/isOwner.middleware";
 import express from "express";
+import { getUserServices } from "../controllers/userServiceController";
 
 export default (router:express.Router) => {
     router.get('/all-users' ,isAuthenticated, getAllUsers);
@@ -16,4 +17,7 @@ export default (router:express.Router) => {
     router.post('/users/upload-profile' , isAuthenticated , upload.single('files') , uploadUserProfileImage);
     router.post('/users/packages' , isAuthenticated , buyPackages);
     router.put('/users/:id' , isAuthenticated , updateUserByAdmin);
+    router.get('/users/:userId/services', isAuthenticated, getUserServices);
+
+
 };

@@ -28,6 +28,7 @@ const PackageDetail = (prop) => {
                 <div className="space-y-6">
                     {services?.map((service, serviceIndex) => {
                         const matchedFields = findAllServiceFields(service);
+                        console.log(services);
                         const topicFields = getTopic(matchedFields[0]);
 
                         return (

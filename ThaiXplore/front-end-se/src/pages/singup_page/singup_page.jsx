@@ -1,12 +1,13 @@
-import { useState } from "react";
+import { use, useState } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { Link, useNavigate } from "react-router-dom";
-
+import { fetchData } from "../../services/apiService";
 
 const SignupPage = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const [user, setUser] = useState(null);
     const [formData, setFormData] = useState({
         firstName: "",
         lastName: "",
@@ -42,7 +43,6 @@ const SignupPage = () => {
         return ""; // ถ้าผ่านทุกเงื่อนไข
     };
     
-    
     const handleSubmit = (e) => {
         e.preventDefault();
         let newErrors = {};
@@ -76,6 +76,7 @@ const SignupPage = () => {
         }
     };
     
+
     
 
     return (

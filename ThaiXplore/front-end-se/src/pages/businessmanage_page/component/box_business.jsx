@@ -21,14 +21,13 @@ const BoxBusiness = ({ data, setData }) => {
   const [showConfirm, setShowConfirm] = useState(false);
   const [pendingStatus, setPendingStatus] = useState(null);
   const [rejectDescription, setRejectDescription] = useState(""); // NEW
+  const [rejectError, setRejectError] = useState(""); // 🔴 Error message
+
 
   const fetchData = async () => {
     await setData(); // ดึงข้อมูลใหม่
     setShowDocs(false);
   };
-
-
-
 
   const truncateDescription = (text, maxLength = 180) => {
     return text.length <= maxLength ? text : text.substring(0, maxLength) + '...';
@@ -66,75 +65,75 @@ const BoxBusiness = ({ data, setData }) => {
         <div className="flex flex-col md:flex-row md:h-[200px]">
           {/* Image container */}
           <div className="w-full md:w-56 aspect-[3/2] md:aspect-auto bg-gray-100 flex items-center justify-center relative overflow-hidden">
-  {(!data.media || data.media.length === 0) && (
-    <div className="flex flex-col items-center justify-center text-gray-400 h-full w-full">
-      <FontAwesomeIcon icon={faImage} className="text-4xl mb-2" />
-      <span className="text-sm">No picture</span>
-    </div>
-  )}
+            {(!data.media || data.media.length === 0) && (
+              <div className="flex flex-col items-center justify-center text-gray-400 h-full w-full">
+                <FontAwesomeIcon icon={faImage} className="text-4xl mb-2" />
+                <span className="text-sm">No picture</span>
+              </div>
+            )}
 
-  {data.media.length === 1 && (
-    <div className="w-full h-full overflow-hidden rounded-lg">
-      <img
-        src={`http://localhost:3000/public/uploads/businesses/images/${data.media[0]}`}
-        alt="main-img"
-        className="w-full h-full object-cover"
-        onClick={() => setShowGallery(true)}
-      />
-    </div>
-  )}
+            {data.media.length === 1 && (
+              <div className="w-full h-full overflow-hidden rounded-lg">
+                <img
+                  src={`http://localhost:3000/public/uploads/businesses/images/${data.media[0]}`}
+                  alt="main-img"
+                  className="w-full h-full object-cover"
+                  onClick={() => setShowGallery(true)}
+                />
+              </div>
+            )}
 
-  {data.media.length === 2 && (
-    <div className="grid grid-cols-2 w-full h-full gap-1">
-      {data.media.map((img, idx) => (
-        <div key={idx} className="h-full w-full overflow-hidden rounded">
-          <img
-            src={`http://localhost:3000/public/uploads/businesses/images/${img}`}
-            alt={`img-${idx}`}
-            className="w-full h-full object-cover"
-            onClick={() => setShowGallery(true)}
-          />
-        </div>
-      ))}
-    </div>
-  )}
+            {data.media.length === 2 && (
+              <div className="grid grid-cols-2 w-full h-full gap-1">
+                {data.media.map((img, idx) => (
+                  <div key={idx} className="h-full w-full overflow-hidden rounded">
+                    <img
+                      src={`http://localhost:3000/public/uploads/businesses/images/${img}`}
+                      alt={`img-${idx}`}
+                      className="w-full h-full object-cover"
+                      onClick={() => setShowGallery(true)}
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
 
-  {data.media.length >= 3 && (
-    <div className="flex h-full w-full">
-      {/* รูปซ้ายใหญ่ (ภาพแรก) */}
-      <div className="w-2/3 h-full overflow-hidden rounded-l-lg">
-        <img
-          src={`http://localhost:3000/public/uploads/businesses/images/${data.media[0]}`}
-          alt="main-img"
-          className="w-full h-full object-cover"
-          onClick={() => setShowGallery(true)}
-        />
-      </div>
+            {data.media.length >= 3 && (
+              <div className="flex h-full w-full">
+                {/* รูปซ้ายใหญ่ (ภาพแรก) */}
+                <div className="w-2/3 h-full overflow-hidden rounded-l-lg">
+                  <img
+                    src={`http://localhost:3000/public/uploads/businesses/images/${data.media[0]}`}
+                    alt="main-img"
+                    className="w-full h-full object-cover"
+                    onClick={() => setShowGallery(true)}
+                  />
+                </div>
 
-      {/* รูปขวา 2 ช่องซ้อน */}
-      <div className="w-1/3 h-full flex flex-col gap-1 pl-1">
-        {data.media.slice(1, 3).map((img, idx) => (
-          <div key={idx} className="relative h-1/2 w-full overflow-hidden rounded">
-            <img
-              src={`http://localhost:3000/public/uploads/businesses/images/${img}`}
-              alt={`side-img-${idx}`}
-              className="w-full h-full object-cover"
-              onClick={() => setShowGallery(true)}
-            />
-            {idx === 1 && data.media.length > 3 && (
-              <div
-                className="absolute inset-0 bg-gray-900/50 flex items-center justify-center text-white font-semibold text-xl rounded"
-                onClick={() => setShowGallery(true)}
-              >
-                +{data.media.length - 3}
+                {/* รูปขวา 2 ช่องซ้อน */}
+                <div className="w-1/3 h-full flex flex-col gap-1 pl-1">
+                  {data.media.slice(1, 3).map((img, idx) => (
+                    <div key={idx} className="relative h-1/2 w-full overflow-hidden rounded">
+                      <img
+                        src={`http://localhost:3000/public/uploads/businesses/images/${img}`}
+                        alt={`side-img-${idx}`}
+                        className="w-full h-full object-cover"
+                        onClick={() => setShowGallery(true)}
+                      />
+                      {idx === 1 && data.media.length > 3 && (
+                        <div
+                          className="absolute inset-0 bg-gray-900/50 flex items-center justify-center text-white font-semibold text-xl rounded"
+                          onClick={() => setShowGallery(true)}
+                        >
+                          +{data.media.length - 3}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
           </div>
-        ))}
-      </div>
-    </div>
-  )}
-</div>
 
 
           {/* Content container */}
@@ -262,9 +261,9 @@ const BoxBusiness = ({ data, setData }) => {
         <div className="fixed inset-0 flex items-center justify-center bg-black/30 z-50">
           <div className="bg-white rounded-lg shadow-lg p-6 w-[350px]">
             <div className='flex items-center justify-between mb-4 pb-3 border-b border-gray-200'>
-            <h2 className="text-lg font-bold text-gray-800">Confirm Status Change</h2>
+              <h2 className="text-lg font-bold text-gray-800">Confirm Status Change</h2>
             </div>
-            
+
             <p className="text-gray-600 mt-2">
               Are you sure you want to{" "}
               <span className={`font-semibold ${pendingStatus === 'approved' ? 'text-green-600' : 'text-red-500'}`}>
@@ -272,7 +271,7 @@ const BoxBusiness = ({ data, setData }) => {
               </span>{" "}
               this business?
             </p>
-            
+
 
             {pendingStatus === 'rejected' && (
               <div className="mt-4">
@@ -281,11 +280,16 @@ const BoxBusiness = ({ data, setData }) => {
                 </label>
                 <textarea
                   rows={3}
-                  className="w-full border rounded-md p-2 text-sm text-gray-800 focus:ring-amber-500 focus:border-amber-500"
+                  className={`w-full border rounded-md p-2 text-sm text-gray-800 focus:ring-amber-500 focus:border-amber-500 ${rejectError ? 'border-red-500' : ''}`}
                   placeholder="Please provide reason..."
                   value={rejectDescription}
-                  onChange={(e) => setRejectDescription(e.target.value)}
+                  onChange={(e) => {
+                    setRejectDescription(e.target.value);
+                    setRejectError(""); // เคลียร์ error เมื่อผู้ใช้เริ่มพิมพ์
+                  }}
                 />
+                {rejectError && <p className="text-red-500 text-sm mt-1">{rejectError}</p>}
+
               </div>
             )}
 
@@ -303,12 +307,18 @@ const BoxBusiness = ({ data, setData }) => {
               <button
                 className={`px-4 py-2 rounded text-white ${pendingStatus === 'approved' ? 'bg-green-600' : 'bg-red-600'}`}
                 onClick={async () => {
+                  if (pendingStatus === 'rejected' && rejectDescription.trim() === "") {
+                    setRejectError("Please provide a reason for rejection.");
+                    return; // ❌ ไม่ให้ดำเนินการต่อถ้าไม่ได้กรอก
+                  }
+
                   try {
                     await handleStatusChange(pendingStatus);
                     await fetchData();
                     setShowConfirm(false);
                     setPendingStatus(null);
                     setRejectDescription("");
+                    setRejectError(""); // reset error
                   } catch (error) {
                     console.error('Failed to update status', error);
                   }

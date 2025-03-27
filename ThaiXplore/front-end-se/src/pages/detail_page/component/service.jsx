@@ -3,6 +3,8 @@ import { faBed } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from "react";
 
+
+
 export const Service = (prop) => {
     const { title, category, id, bookingDetail } = prop;
     const navigate = useNavigate();
@@ -18,6 +20,12 @@ export const Service = (prop) => {
     let Topic = getTopic(category);
     const [service, setService] = useState();
     const [head, setHead] = useState([]);
+    const [userRole, setUserRole] = useState(""); // ✅ ย้ายเข้ามา
+
+    useEffect(() => {
+        const role = localStorage.getItem("userRole");
+        setUserRole(role);
+    }, []);
 
     useEffect(() => {
         switch(category){
@@ -88,12 +96,17 @@ export const Service = (prop) => {
                         </div>
                     ))}
 
-                    <div className="flex justify-end items-center font-bold col-span-3">
-                        <button onClick={() => serviceDetails(item)} 
-                            className="border border-[#FFA500] py-2 px-6 rounded-2xl bg-[#FFA500] text-white cursor-pointer hover:bg-[#FFD700] hover:text-[#8B4513]">
-                            Choose
-                        </button>   
-                    </div> 
+{(userRole === "traveler" || userRole === "admin") && (
+  <div className="flex justify-end items-center font-bold col-span-3">
+    <button
+      onClick={() => serviceDetails(item)}
+      className="border border-[#FFA500] py-2 px-6 rounded-2xl bg-[#FFA500] text-white cursor-pointer hover:bg-[#FFD700] hover:text-[#8B4513]"
+    >
+      Choose
+    </button>
+  </div>
+)}
+ 
                 </div>
             ))}
         </div>

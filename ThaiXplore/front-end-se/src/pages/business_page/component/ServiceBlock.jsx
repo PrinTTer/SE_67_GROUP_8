@@ -75,36 +75,43 @@ export const ServiceBlock = (prop) => {
 };
 
 
-export const FileUpload = (prop) => {
-    const { setImage } = prop
-    const [fileName, setFileName] = useState("");
-
+export const FileUpload = ({ setImage }) => {
+    const [preview, setPreview] = useState(null);
+  
     const handleChange = (event) => {
-        const file = event.target.files[0]; // Get the first file
-        if (file) {
-            setFileName(file.name); // Set file name to state
-            setImage(file);
-        }
+      const file = event.target.files[0];
+      if (file) {
+        setImage(file);                      // ส่งไฟล์ไปเก็บด้านนอก
+        setPreview(URL.createObjectURL(file)); // แสดง preview ภาพ
+      }
     };
-
+  
     return (
-        <div className="relative flex flex-col text-green-400 w-fit h-fit cursor-pointer bg-[#F8FAFC] shadow-md p-2 rounded-md">
-            {/* Hidden Input Covering Entire Area */}
-            <input
-                type="file"
-                id="img"
-                accept="image/*" 
-                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                onChange={handleChange}
+      <div className="relative flex flex-col text-green-400 w-fit h-fit bg-[#F8FAFC] shadow-md p-2 rounded-md">
+        <input
+          type="file"
+          id="img"
+          accept="image/*"
+          className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+          onChange={handleChange}
+        />
+  
+        <div className="flex flex-col items-center justify-center">
+          <FontAwesomeIcon icon={faCirclePlus} className="text-lg mb-2" />
+          {preview ? (
+            <img
+              src={preview}
+              alt="preview"
+              className="w-28 h-28 object-cover rounded-md border border-gray-300"
             />
-
-            <div className="flex items-center">
-                <FontAwesomeIcon icon={faCirclePlus} className="text-lg" />
-                <span className="ml-2 text-gray-700">{fileName || "No file selected"}</span>
-            </div>
+          ) : (
+            <span className="text-gray-700">No image selected</span>
+          )}
         </div>
+      </div>
     );
-};
+  };
+  
 
 export const getTopic = (category) => {
     let List = [];

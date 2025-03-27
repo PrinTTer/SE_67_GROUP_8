@@ -136,6 +136,7 @@ export const Section = (prop) => {
 
   useEffect(() => {
     fetchProvince();
+    
   }, []);
 
   let post;
@@ -143,11 +144,14 @@ export const Section = (prop) => {
     post = pack;
   } else if (types.includes(title)) {
     post = getDataBusiness({ category: title, json: data });
+    
   } else if (
-    dataProvince.some(province => province.name_th === title) ||
-    dataProvince.some(province => province.name_en === title)
+    dataProvince.some(province => province.name_th === title.trim()[0]) ||
+    dataProvince.some(province => province.name_en === title.trim()[0])
   ) {
-    post = data.filter(item => item.address.includes(title));
+    post = data.filter(item => 
+      item.address.includes(title) && item.category === title.trim()[1]
+    );
   } else {
     post = getBusinessbyName({ businessName: title, json: data });
     title = `${post.length} Results Found for "${title}"`;
@@ -416,7 +420,7 @@ export const RightBar = (prop) => {
           <div className="border-l-4 border-amber-500 pl-3 mb-4">
             <h4 className="text-gray-800 font-bold">Province</h4>
           </div>
-          <ProvinceDropdown />
+          <ProvinceDropdown type={pagetitle}/>
         </div>
       </div>
     </div>

@@ -212,9 +212,6 @@ export const getAllDetailQuotaion = async (req: express.Request, res: express.Re
             return res.sendStatus(401);
         }
 
-        if (!quotationId) {
-            return res.sendStatus(400);
-        }
         const quotation = await findQuotation(quotationId);
         const business = await getBusinessById(quotation.toBusinessId);
 

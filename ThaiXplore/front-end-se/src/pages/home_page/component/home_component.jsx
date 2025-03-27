@@ -147,7 +147,7 @@ export const Section = (prop) => {
     dataProvince.some(province => province.name_th === title) ||
     dataProvince.some(province => province.name_en === title)
   ) {
-    post = getBusinessbyProvince({ province: title, json: data });
+    post = data.filter(item => item.address.includes(title));
   } else {
     post = getBusinessbyName({ businessName: title, json: data });
     title = `${post.length} Results Found for "${title}"`;

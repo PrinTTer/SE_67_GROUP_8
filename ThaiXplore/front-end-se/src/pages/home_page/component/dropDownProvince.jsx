@@ -33,6 +33,7 @@ const ProvinceDropdown = (prop) => {
   const handleSelectChange = (event) => {
     setSelectedProvince(event.target.value);
     setProvince(event.target.value);
+    
     //navi(`/listpage/${event.target.value}`)
   };
 
@@ -47,7 +48,7 @@ const ProvinceDropdown = (prop) => {
         value={selectedProvince} 
         onChange={handleSelectChange} 
       >
-        <option value="hotel">--Select Province--</option>
+        <option value="">--Select Province--</option>
         {data.map((province) => (
           <option key={province.id} value={province.name_en}>
             {province.name_th} ({province.name_en})

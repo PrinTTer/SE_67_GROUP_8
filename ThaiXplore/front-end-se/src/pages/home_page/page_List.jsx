@@ -9,7 +9,7 @@ function ListPage() {
 
   useEffect(() => {
     console.log("Selected Province updated:", title);
-    setSelectedProvince("")
+    setSelectedProvince(" ")
   }, [title]);  // ใช้ useEffect เพื่อดูการอัพเดทค่าของ selectedProvince
 
   return (
@@ -18,7 +18,7 @@ function ListPage() {
       {/* LEFT SIDE */}
       <div className="flex-1 p-6 lg:p-10">
         <div className="max-w-7xl mx-auto">
-          <Section title={filterRecommended ? "Recommended" : title} />
+          <Section title={filterRecommended ? "Recommended" : title} selectedProvince={selectedProvince}  />
         </div>
       </div>
 

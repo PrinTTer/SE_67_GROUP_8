@@ -101,9 +101,10 @@ const Addblock = (prop) => {
         ) : (
           <div className="flex flex-col">
             {details?.details?.map((item, index) => (
-              <div key={index} className="text-[#8B4513]">
-                {detail === "Day Work" ? (
-                  <div className="grid grid-cols-2 gap-3">
+              <div key={index} className="text-[#8B4513] mr-20">
+                <div className={`${show ? "flex" : "hidden"} bg-[#ffff] w-60 m-2 p-3 rounded-3xl  shadow-md`}>
+                  {detail === "Day Work" ? (
+                    <div className="grid grid-cols-2 gap-3">
                     {/* ตรวจสอบว่า item ไม่เป็น null หรือ undefined ก่อนการใช้ replace */}
                     <div className="text-[#8B4513]">
                       {item ? item.replace(",", " ").split(" ")[0] : ""}
@@ -111,12 +112,12 @@ const Addblock = (prop) => {
                     <div className="text-[#8B4513]">
                       {item ? item.replace(",", " ").replace(",", "-").split(" ")[1] : ""}
                     </div>
-                  </div>
-                ) : (
-                  <div className="text-[#8B4513]">{item}</div>
-                )}
+                    </div>
+                  ) : (
+                    <div className="text-[#8B4513]">{item}</div>
+                  )}
+                </div>
               </div>
-
             ))}
             <div className={`${!show ? "flex" : "hidden"}`}>
               {detail === "Day Work" ? (

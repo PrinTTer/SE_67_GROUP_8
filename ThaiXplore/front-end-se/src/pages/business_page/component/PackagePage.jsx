@@ -695,7 +695,7 @@ console.log("allServices",allServices);
 };
 
 const renderServiceName = (s) => {
-  const showAmount = s.quotationId ? ` (${s.remainingAmount})` : "";
+  const showAmount = s.quotationId ? ` remaining (${s.remainingAmount})` : "";
 
   switch (s.businessCategory) {
     case "hotel":

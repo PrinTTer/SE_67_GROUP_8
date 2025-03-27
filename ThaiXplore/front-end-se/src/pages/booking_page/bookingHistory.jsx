@@ -7,7 +7,6 @@ const BookingHistory = () => {
     const [bookings, setBookings] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
-    const [categoryForImage, setCategoryForImage] = useState("");
 
     useEffect(() => {
         const fetchBookings = async () => {
@@ -37,6 +36,8 @@ const BookingHistory = () => {
 
         fetchBookings();
     }, []);
+
+    let Topic;
 
     // useEffect(()=> {
     //     console.log(checkService(bookings[0].businessData[0].business.category))
@@ -120,27 +121,28 @@ const BookingHistory = () => {
                                         className="bg-gray-50 rounded-lg p-4 mb-4 border border-gray-200"
                                     >
                                         <div className="flex justify-between items-center mb-3">
-                                            <h3 className="text-lg font-medium text-gray-700">
-                                                {detail.service ? detail.service.ticketType : 'N/A'}
-                                            </h3>
-                                            
+                                            {/* แสดงราคาทั้งหมด */}
                                             <span className="text-amber-600 font-semibold">
-                                                {detail.service ? `${detail.service.price} THB` : 'N/A'}
+                                                {booking.totalPrice ? `Total Price ${booking.totalPrice} THB` : 'N/A'}
                                             </span>
                                         </div>
-                                        <div className="flex justify-between items-center mb-3">
-                                            <h3 className="text-lg font-medium text-gray-700">
-                                            </h3>
-                                        </div>
                                         
-                                        <div className="text-gray-600">
-                                            <div className="flex justify-between">
-                                                <p>Start Date: {new Date(detail.startDate).toLocaleDateString()}</p>
-                                                <p>End Date: {new Date(detail.endDate).toLocaleDateString()}</p>
+                                        <div className="flex justify-between items-center mb-3">
+                                            {/* แสดงวันที่เริ่มต้นและสิ้นสุด */}
+                                            <p>Start Date: {new Date(detail.startDate).toLocaleDateString()}</p>
+                                            <p>End Date: {new Date(detail.endDate).toLocaleDateString()}</p>
+                                        </div>
+
+                                        {/* แสดงข้อมูลของบริการจาก businessData */}
+                                        <div className="mt-4">
+                                            <h3 className="text-lg font-medium text-gray-700">Service Details</h3>
+                                            <div className="bg-gray-200 border w-full h-full">
+                                                test
                                             </div>
                                         </div>
                                     </div>
                                 ))}
+
                             </div>
                         </div>
                     ))
@@ -163,6 +165,11 @@ const BookingHistory = () => {
 
 export default BookingHistory;
 
+function findAllServiceFields(service) {
+    const fieldsToCheck = ['roomType', 'ticketType', 'carBrand', 'courseName'];
+    return fieldsToCheck.filter((field) => field in service);
+}
+
 
 const checkService = (categoryForImage) => {
     console.log("categoryForImage: ",categoryForImage);
@@ -181,4 +188,20 @@ const checkService = (categoryForImage) => {
     }
     console.log(category);
     return category;
+}
+
+const getTopic = (category) => {
+    const topicMap = {
+        'roomType': ['roomType', 'guestAmount', 'roomSize', 'price', 'facilities'],
+        'ticketType': ['ticketType', 'price', 'eventDate', 'start', 'end'],
+        'carBrand': ['carBrand', 'amountSeat', 'price'],
+        'courseName': ['courseName', 'menuList', 'price']
+    };
+    return topicMap[category] || [];
+};
+
+const formatFieldLabel = (field) => {
+    return field
+        .replace(/([A-Z])/g, ' $1')
+        .replace(/^./, str => str.toUpperCase());
 }

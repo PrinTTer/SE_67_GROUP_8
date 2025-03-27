@@ -2,8 +2,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Link, useParams } from 'react-router-dom';
 
 import { faFileInvoice } from '@fortawesome/free-solid-svg-icons';
-import { getBusiness } from '../../data';
-import { faBed, faStar } from '@fortawesome/free-solid-svg-icons';
+import { faBed, faCalendar, faBowlFood, faCar } from '@fortawesome/free-solid-svg-icons';
 import { RightSideBar } from './component/RightBar';
 import { Service } from './component/service';
 import { QuotationPopUp } from './component/QuotationPopUp';
@@ -19,7 +18,7 @@ import PictureShow from '../businessmanage_page/component/picture_show';
 function Detail() {
   const maxLength = 200;
   const { id } = useParams()
-  const business = getBusiness("Hotel A")
+  // const business = getBusiness("Hotel A")
   const { user } = useSelector((state) => state.auth);
   const socketRef = useSocket(user);
   const [show, setShow] = useState(true)
@@ -34,14 +33,7 @@ function Detail() {
     return date.toISOString().slice(0, 16); // รูปแบบ "yyyy-MM-ddTHH:mm"
   };
 
-  const [bookingDetail, setBookingDetail] = useState({
-    adult: 1,
-    child: 0,
-    bookingAmount: 1,
-    startDate: safeDateGMT7(new Date()),  // ปรับเวลาที่นี่ให้ตรงกับ GMT+7
-    endDate: safeDateGMT7(new Date()),    // ปรับเวลาที่นี่ให้ตรงกับ GMT+7
-    time: "",
-  });
+
 
 
   //fetch from axios
@@ -66,13 +58,32 @@ const [ media , setMedia] = useState([])
 
   const [showGallery, setShowGallery] = useState(false);
 
+
+  const [bookingDetail, setBookingDetail] = useState({
+    adult: 1,
+    child: 0,
+    bookingAmount: 1,
+    startDate: safeDateGMT7(new Date()),  // ปรับเวลาที่นี่ให้ตรงกับ GMT+7
+    endDate: safeDateGMT7(new Date()),    // ปรับเวลาที่นี่ให้ตรงกับ GMT+7
+    time: "",
+    Business : data
+  });
+
   
 
   useEffect(() => {
-    fetch()
-      
-    
-  }, []);
+    fetch();
+  }, []); // fetch จะถูกเรียกเมื่อคอมโพเนนต์แรกเริ่มทำงาน
+  
+  useEffect(() => {
+    // อัปเดต bookingDetail เมื่อ data ถูกดึงมาแล้ว
+    if (data) {
+      setBookingDetail((prevState) => ({
+        ...prevState,
+        Business: data, // อัปเดต Business ด้วย data ที่ได้รับ
+      }));
+    }
+  }, [data]);
 
   const [head, setHead] = useState(data?.business?.category)
   const toggle = (prop) => {
@@ -207,7 +218,7 @@ const [ media , setMedia] = useState([])
         <div className='flex flex-2 m-5'>
           <div className='flex-2 '>
             <p className='font-bold text-2xl'>{data?.business?.businessName}</p>
-            <p>{data?.business?.address.replace(",", " ")}</p>
+            <p>{data?.business?.address.replace(/,/g, " ")}</p>
             <div>
               <div className="text-gray-500">
                 {isLong && !showMore
@@ -252,7 +263,7 @@ const [ media , setMedia] = useState([])
             <div className={show ? 'block' : 'hidden'}>
               {
                 data?.details?.map((element, index) => {
-                  return <Info key={index} infoTitle={element} />
+                  return <Info key={index} infoTitle={element} category={data?.business?.category} />
                 })
               }
               <Service title={data.services} category={data?.business?.category} id={data?.business?._id} bookingDetail={bookingDetail} />
@@ -275,27 +286,45 @@ const [ media , setMedia] = useState([])
 
 
 const Info = (prop) => {
-  const { infoTitle } = prop
+  const { infoTitle, category } = prop;
   const { title } = useParams();
-  console.log("param=>", title)
+  console.log("param=>", category);
+
+  const checkCategory = () => {
+    switch (category) {
+      case "hotel":
+        return faBed;
+      case "event":
+        return faCalendar;
+      case "restaurant":
+        return faBowlFood;
+      case "carRental":
+        return faCar;
+      default:
+        return null; // หากไม่ตรงกับ category ใดๆ
+    }
+  };
 
   return (
-    <div className="p-4 rounded-lg gap-5 mb-5 bg-yellow-50 shadow-md border border-gray-300">
-      {/* map detail */}
-      <div className="col-span-2 border-b-2 p-2 flex items-center font-bold">
-        <FontAwesomeIcon icon={faBed} className="mr-3 text-lg" />
+    <div className="p-4 rounded-lg gap-5 mb-5 bg-[#FAFAD2] shadow-md ">
+      <div className="col-span-2 border-b-2 border-[#D2691E] p-2 flex items-center font-bold text-[#6B4423]">
+        <FontAwesomeIcon icon={checkCategory()} className="mr-3 text-lg text-[#D2691E]" />
         <span>{infoTitle.informationName}</span>
       </div>
 
       <div className={`grid ${Array.isArray(infoTitle.details) ? "grid-cols-2" : "grid-cols-1"} gap-4 p-2`}>
-        {infoTitle.details.map((element, index) => {
-          return (
-            <div key={index} className="flex items-center">
-              <FontAwesomeIcon icon={faStar} className="mr-3 text-lg" />
-              <span>{element}</span>
-            </div>
-          );
-        })}
+        {infoTitle.details.map((element, index) => (
+          <div key={index} className="flex items-center text-[#6B4423]">
+            {infoTitle.informationName.includes('Working') ? (
+              <div className='grid grid-cols-2 gap-3 bg-white p-3 px-5 rounded-full shadow-md'>
+                <div className="text-[#8B4513]">{element.replace(",", " ").split(" ")[0]}</div>
+                <div className="text-[#8B4513]">{element.replace(",", " ").replace(",", "-").split(" ")[1]}</div>
+              </div>
+            ) : (
+              <div className="text-[#8B4513]">{element}</div>
+            )}
+          </div>
+        ))}
       </div>
     </div>
   );

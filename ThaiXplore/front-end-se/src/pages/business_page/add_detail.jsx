@@ -5,31 +5,24 @@ import {
   faTimes,
   faTimesCircle,
   faCheckCircle,
+  faBuilding,
+  faBoxOpen
 } from "@fortawesome/free-solid-svg-icons";
-import { getTopic } from "../../data";
-import { ServiceBlock } from "./component/ServiceBlock";
-import { fetchData, postData, putData } from "../../services/apiService";
+import { fetchData } from "../../services/apiService";
 import { useParams } from "react-router-dom";
 import { PackageBlock } from "./component/PackagePage";
 import Addblock from "./component/AddBlock";
 import { useSelector } from "react-redux";
 import { BusinessEdit } from './component/BusinessEdit';
 import LoadingSpinner from "../../components/LoadingSpinner";
+import { ServiceBlock } from "./component/ServiceBlock";
 
 const AddDetails = () => {
-  let { id } = useParams();
+  const { id } = useParams();
   const [isLoading, setIsLoading] = useState(false);
   const [business, setBusiness] = useState(null);
-  const [show, setShow] = useState(true);
-  const [head, setHead] = useState(business?.business?.category);
+  const [activeTab, setActiveTab] = useState('details');
   const { user } = useSelector((state) => state.auth);
-
-
-  useEffect(() => {
-    if (user) {
-      console.log("✅ User ID:", user._id);
-    }
-  }, [user]);
 
   const fetchBusiness = async () => {
     try {
@@ -49,96 +42,101 @@ const AddDetails = () => {
     }
   }, [id]);
 
-  let type = business?.business?.category || "event";
+  const type = business?.business?.category || "event";
 
-  let topicBusines;
-  if (type == "hotel") {
-    topicBusines = [
+  const topicConfig = {
+    hotel: [
       "Hotel Information",
       "Room details",
       "Specify food and beverage service information",
       "Recreation facility",
-      "Description",
-    ];
-  } else if (type == "event") {
-    topicBusines = ["Event Information", "Ticket details", "Description"];
-  } else if (type == "restaurant") {
-    topicBusines = [
-      "Working Date Information",
-      "Course details",
-      "Description",
-    ];
-  } else if (type == "carRental") {
-    topicBusines = ["Working Date Information", "Car details", "Description"];
-  }
-
-  const toggle = (prop) => {
-    const { title } = prop;
-
-    if (head != title) {
-      setShow(!show);
-    }
-    setHead(title);
+      "Description"
+    ],
+    event: ["Event Information", "Ticket details", "Description"],
+    restaurant: [
+      "Working Date Information", 
+      "Course details", 
+      "Description"
+    ],
+    carRental: ["Working Date Information", "Car details", "Description"]
   };
+
+  const topicBusines = topicConfig[type] || [];
+
   if (isLoading) {
     return (
-      <div className=" flex-1 min-h-[300px] p-6 bg-white rounded-xl shadow-md flex items-center justify-center">
+      <div className="flex-1 min-h-[300px] p-6 bg-white rounded-xl shadow-md flex items-center justify-center">
         <LoadingSpinner />
       </div>
     );
   }
 
   return (
-    <div className='flex-cols flex-1'>
-      <div className="flex flex-5  flex-col shadow-md">
-        <div>
-          <BusinessEdit business={business} fetchBusiness={fetchBusiness} />
-        </div>
-        
+    <div className="container mx-auto px-4 py-6 bg-[#F7F7F7]">
+      <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+        <BusinessEdit 
+          business={business} 
+          fetchBusiness={fetchBusiness} 
+        />
 
-
-
-
-
-        <div className="flex-1 m-9">
-          <div className="flex   rounded  gap-5 ml-2">
-            <div
-              className=" px-5 py-2 rounded-t-lg   bg-[#D9D9D9] cursor-pointer "
-              onClick={() => toggle({ title: type })}
+        <div className="p-6">
+          {/* Tabs */}
+          <div className="flex space-x-4 mb-4">
+            <button
+              onClick={() => setActiveTab('details')}
+              className={`
+                flex items-center space-x-2 px-4 py-2 rounded-lg transition-all
+                ${activeTab === 'details' 
+                  ? 'bg-[#FF6F00] text-white' 
+                  : 'bg-[#F0F0F0] text-[#4A4A4A] hover:bg-[#E0E0E0]'}
+              `}
             >
-              {type}
-            </div>
-            <div
-              className=" px-5 py-2 rounded-t-lg   bg-[#D9D9D9] cursor-pointer "
-              onClick={() => toggle({ title: "Package" })}
+              <FontAwesomeIcon icon={faBuilding} />
+              <span>{type}</span>
+            </button>
+            <button
+              onClick={() => setActiveTab('package')}
+              className={`
+                flex items-center space-x-2 px-4 py-2 rounded-lg transition-all
+                ${activeTab === 'package' 
+                  ? 'bg-[#FF6F00] text-white' 
+                  : 'bg-[#F0F0F0] text-[#4A4A4A] hover:bg-[#E0E0E0]'}
+              `}
             >
-              Package
-            </div>
+              <FontAwesomeIcon icon={faBoxOpen} />
+              <span>Package</span>
+            </button>
           </div>
-          <div
-            className={`bg-[#D9D9D9] p-4 rounded-lg ${show ? "block" : "hidden"
-              }`}
-          >
-            {business?.details?.map((element, index) => {
-              return (
-                <Addblock
-                  key={index}
-                  title={element?.informationName}
-                  type={type}
-                  details={element}
-                  detailId={element._id}
-                  topicBusines={topicBusines}
+
+          {/* Content Sections */}
+          <div className="bg-[#F0F0F0] rounded-lg p-4">
+            {activeTab === 'details' && (
+              <div>
+                {business?.details?.map((element, index) => (
+                  <Addblock
+                    key={index}
+                    title={element?.informationName}
+                    type={type}
+                    details={element}
+                    detailId={element._id}
+                    topicBusines={topicBusines}
+                  />
+                ))}
+                <ServiceBlock 
+                  title={topicBusines[1]} 
+                  type={type} 
+                  businessId={id} 
+                  business={business}
                 />
-              );
-            })}
-            <ServiceBlock title={topicBusines[1]} type={type} businessId={id} business={business}/>
-          </div>
-          <div
-            className={`bg-[#D9D9D9] p-4 rounded-lg ${!show ? "block" : "hidden"
-              }`}
-          >
-            {/* <PackageBlock businessId={id} userId={"67c46fd9ff5f29ec1b16961e"} /> */}
-            <PackageBlock businessId={id} userId={user?._id} />
+              </div>
+            )}
+
+            {activeTab === 'package' && (
+              <PackageBlock 
+                businessId={id} 
+                userId={user?._id} 
+              />
+            )}
           </div>
         </div>
       </div>
@@ -147,5 +145,3 @@ const AddDetails = () => {
 };
 
 export default AddDetails;
-
-

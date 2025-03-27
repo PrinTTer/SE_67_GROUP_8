@@ -4,6 +4,7 @@ import { faPlus, faTimesCircle, faCheckCircle } from '@fortawesome/free-solid-sv
 import { getTopic } from "../../../data";
 import BlockInput from './BlockInput';
 import { putData } from '../../../services/apiService';
+import TimeSchedule from './WorkTime';
 
 const Addblock = (prop) => {
   const { title, type, detailId, details } = prop
@@ -19,7 +20,6 @@ const Addblock = (prop) => {
     setInputs(details.details);
   },[])
 
-  // Function to show alert with the input values
   const handleCheck = async () => {
     try {
       const jsonOutput = {
@@ -33,7 +33,6 @@ const Addblock = (prop) => {
     }
   };
 
-  // Function to clear the input fields
   const handleClear = () => {
     setInputs([]);
     setShow(!show);
@@ -50,62 +49,107 @@ const Addblock = (prop) => {
   };
 
   return (
-
-    <div className="shadow-md m-4 p-4 rounded-md bg-[#F1F5F9]">
-      <div className="grid grid-cols-2 border-b-2 p-1 text-lg">
+    <div className="shadow-md m-4 p-4 rounded-md bg-[#ffff] border border-[#FFA500]">
+      <div className="grid grid-cols-2 border-b-2 border-[#FFA500] p-1 text-lg text-[#8B4513]">
         <div className='capitalize'>
           {title}
         </div>
-        <div className="flex justify-end items-end ">
+        <div className="flex justify-end items-end">
           <button>
-            <FontAwesomeIcon icon={faPlus} className="border rounded-full p-1 cursor-pointer" onClick={() => toggle(details?.details)} />
+            <FontAwesomeIcon 
+              icon={faPlus} 
+              className="border border-[#FFA500] rounded-full p-1 cursor-pointer text-[#8B4513] hover:bg-[#FFA500] hover:text-white" 
+              onClick={() => toggle(details?.details)} 
+            />
           </button>
         </div>
       </div>
 
-      <div className={`grid ${Array.isArray(detail) ? " grid-cols-2" : "grid-cols-1"} gap-4 p-2 bg-[#A0DEFF] shadow-md rounded-md mt-2`}>
+      <div className={`grid ${Array.isArray(detail) ? "grid-cols-2" : "grid-cols-1"} gap-4 p-2 bg-[#FFF4E0] shadow-md rounded-md mt-2 border border-[#FFA500]`}>
         {Array.isArray(detail) ? (
           detail.map((item, index) => (
-
-            <div key={index} className="text-gray-700 mr-20">
+            <div key={index} className="text-[#8B4513] mr-20">
               <div className='font-bold'>{item}</div>
 
-              <input type={`${item?.toLowerCase().includes("date") || item?.toLowerCase().includes("period") || item?.toLowerCase().includes("round") ? "datetime-local" : (item?.toLowerCase().includes("image") ? "file" : "text")}`}
-                className={`${addInput} bg-[#F8FAFC] p-2 rounded-md shadow-md ${!show ? "flex" : "hidden"}`} onChange={(e) => handleInputChange(index, e.target.value)} value={inputs[index] || ''}/>
+              <input 
+                type={`${
+                  item?.toLowerCase().includes("date") || 
+                  item?.toLowerCase().includes("period") || 
+                  item?.toLowerCase().includes("round") ? "datetime-local" : 
+                  (item?.toLowerCase().includes("image") ? "file" : "text")
+                }`}
+                className={`
+                  ${addInput} 
+                  bg-[#FFFAF0] 
+                  p-2 
+                  rounded-md 
+                  shadow-md 
+                  border 
+                  border-[#FFA500] 
+                  text-[#8B4513] 
+                  ${!show ? "flex" : "hidden"}
+                `} 
+                onChange={(e) => handleInputChange(index, e.target.value)} 
+                value={inputs[index] || ''}
+              />
 
-              <div className={`${show ? "flex" : "hidden"}`}>
+              <div className={`${show ? "flex" : "hidden"} text-[#8B4513]`}>
                 {inputs[index]}
               </div>
-
             </div>
           ))
         ) : (
           <div className="flex flex-col">
-            {
-              details?.details?.map((item, index) => (
-
-                <div key={index} className="text-gray-700 mr-20">
-
-                  <div className={`${show ? "flex" : "hidden"}`}>
-                    {item}
-                  </div>
-
+            {details?.details?.map((item, index) => (
+              <div key={index} className="text-[#8B4513] mr-20">
+                <div className={`${show ? "flex" : "hidden"} bg-[#ffff] w-60 m-2 p-3 rounded-3xl  shadow-md`}>
+                  {detail === "Day Work" ? (
+                    <div className='grid grid-cols-2 gap-3'>
+                      <div className="text-[#8B4513]">{item.replace(",", " ").split(" ")[0]}</div>
+                      <div className="text-[#8B4513]">{item.replace(",", " ").replace(",", "-").split(" ")[1]}</div>
+                    </div>
+                  ) : (
+                    <div className="text-[#8B4513]">{item}</div>
+                  )}
                 </div>
-              ))
-            }
+              </div>
+            ))}
             <div className={`${!show ? "flex" : "hidden"}`}>
-              <BlockInput detail={detail} setInputs={setInputs} inputs={inputs} handleInputChange={handleInputChange} addInput={addInput} />
+              {detail === "Day Work" ? (
+                <TimeSchedule 
+                  detail={detail} 
+                  setInputs={setInputs} 
+                  inputs={inputs} 
+                  handleInputChange={handleInputChange} 
+                  addInput={addInput} 
+                />
+              ) : (
+                <BlockInput 
+                  detail={detail} 
+                  setInputs={setInputs} 
+                  inputs={inputs} 
+                  handleInputChange={handleInputChange} 
+                  addInput={addInput} 
+                />
+              )}
             </div>
           </div>
         )}
-        <div className={`${!show ? "flex" : "hidden"} justify-end  col-span-2`}>
+        <div className={`${!show ? "flex" : "hidden"} justify-end col-span-2`}>
           <div>
-            <FontAwesomeIcon icon={faTimesCircle} className="text-red-500 text-4xl mr-2 border rounded-full bg-white" onClick={handleClear} />
-            <FontAwesomeIcon icon={faCheckCircle} className="text-green-500 text-4xl rounded-full bg-white" onClick={handleCheck} />
+            <FontAwesomeIcon 
+              icon={faTimesCircle} 
+              className="text-red-500 text-4xl mr-2 border border-red-500 rounded-full bg-white hover:bg-red-100" 
+              onClick={handleClear} 
+            />
+            <FontAwesomeIcon 
+              icon={faCheckCircle} 
+              className="text-green-500 text-4xl rounded-full bg-white border border-green-500 hover:bg-green-100" 
+              onClick={handleCheck} 
+            />
           </div>
         </div>
       </div>
-
     </div>
   );
 }

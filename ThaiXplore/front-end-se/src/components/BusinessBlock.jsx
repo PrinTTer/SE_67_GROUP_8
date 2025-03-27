@@ -226,7 +226,7 @@ export const BusinessBlock = (prop) => {
                             <FontAwesomeIcon icon={faLocationDot} />
                         </div>
                         <div className="flex">
-                            {business.address}
+                            {business.address.replace(/,/g, " ")}
                         </div>
                     </div>
                     <div className=" mt-3">

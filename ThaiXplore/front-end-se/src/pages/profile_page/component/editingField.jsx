@@ -78,6 +78,15 @@ export const EditingField = (prop) => {
                 return;
             }
             onSave(field, { newEmail, password });
+        } else if (field === "phoneNumber") {
+            // Validation สำหรับ phoneNumber
+            const phonePattern = /^[0-9]{10}$/;  // ตรวจสอบว่าหมายเลขโทรศัพท์มีความยาว 10 หลักและประกอบด้วยตัวเลข
+            if (!phonePattern.test(inputValue)) {
+                setError("Please enter a valid phone number (10 digits).");
+                setShowPopup(false);
+                return;
+            }
+            onSave(field, inputValue);
         } else {
             if (!inputValue.trim()) {
                 setError("Field cannot be empty!");
@@ -152,6 +161,10 @@ export const EditingField = (prop) => {
                     <p className="text-lg text-gray-800">
                         {field === "password" ? "••••••••" : field === "email" ? (newEmail || value) : value}
                     </p>
+                )}
+                {/* Display error message for phoneNumber below the input */}
+                {field === "phoneNumber" && error && (
+                    <p className="text-red-500 text-sm mt-2">{error}</p>
                 )}
             </div>
             <div>

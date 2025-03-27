@@ -134,20 +134,16 @@ export const updateBusiness = async (req: express.Request , res:express.Response
             return res.sendStatus(401);
         }
 
-        const business = await getBusinessById(businessId);
-
-        business.businessName = businessName;
-        business.description = description;
-        business.address = address;
-        business.phoneNumber = phoneNumber ;
-        business.email = email ;
-        business.media = media ,
-
-        role === "admin" ? business.verify = verify : business.verify = business.verify;
-        
-        business.followBusiness = followBusiness ;
-
-        business.save();
+        const business = await updateBusinessById(businessId, {
+            businessName: businessName,
+            description: description,
+            address: address,
+            phoneNumber: phoneNumber,
+            email: email,
+            media: media,
+            verify : verify,
+            followBusiness : followBusiness
+        })
 
 
         return res.status(200).json(business);
@@ -164,7 +160,7 @@ export const deleteBusiness = async (req: express.Request , res: express.Respons
         const user = await getUserById(currentUserId);
         const role:String = user.role;
 
-        if(role !== "entrepreneur" || role !== "admin"){
+        if(role === "tourist" ){
             return res.sendStatus(401);
         }
 

@@ -291,6 +291,7 @@ export const BusinessBlock = (prop) => {
                     document: business.verify.document || [],
                     description: "",
                   },
+                  
                 }
               );
               toast.success("🔄 Request sent! Status changed to pending.");

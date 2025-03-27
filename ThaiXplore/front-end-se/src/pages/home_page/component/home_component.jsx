@@ -197,6 +197,7 @@ export const Section = (prop) => {
                   name={element.title}
                   description={element.description}
                   date={element.dateCreate}
+                  media={element.media}
                 />
               ) : viewType === "card" ? (
                 <PostCard
@@ -271,16 +272,16 @@ export const PostCard = (prop) => {
           <span className="bg-amber-50 text-amber-700 text-xs px-2 py-1 rounded-full uppercase tracking-wider">{category}</span>
         </div>
         <div className="flex gap-2 text-gray-600">
-            <div>
-              <FontAwesomeIcon icon={faLocationDot} />
-            </div>
-            <div className="flex text-gray-600 line-clamp-1">
-              {address}
-            </div>
+          <div>
+            <FontAwesomeIcon icon={faLocationDot} />
           </div>
+          <div className="flex text-gray-600 line-clamp-1">
+            {address}
+          </div>
+        </div>
         <div className="mt-3 text-gray-600 line-clamp-3">
-  {description}
-</div>
+          {description}
+        </div>
         {/* <div className="flex items-center text-amber-500">
         <span className="flex">
           {[1, 2, 3, 4, 5].map((star) => (
@@ -307,14 +308,14 @@ export const PostCard = (prop) => {
 
 
 export const PostList = (prop) => {
-  const { name, id, address, category, media, description} = prop;
+  const { name, id, address, category, media, description } = prop;
   const link = `/Detail/${id}`;
-  
+
   return (
     <Link to={link} className="block transition-all duration-300 hover:shadow-lg">
       <div className="bg-white grid lg:grid-cols-[20%_70%_10%] w-full min-h-[200px] drop-shadow-xl rounded-xl ">
         <div className="w-full md:w-56 h-full aspect-[3/2] bg-gray-100 flex items-center justify-center relative overflow-hidden">
-          {media.length > 0 ? (
+          {media?.length > 0 ? (
             <div className="flex h-full w-full">
               {/* รูปซ้ายใหญ่ (ภาพแรก) */}
               <div className="w-2/3 h-full overflow-hidden rounded-l-lg">
@@ -380,11 +381,11 @@ export const PostList = (prop) => {
             </div>
           </div>
           <div className=" mt-3">
-          <div className="mt-3 text-gray-600 line-clamp-3">
-  {description}
-</div>
+            <div className="mt-3 text-gray-600 line-clamp-3">
+              {description}
+            </div>
 
-            
+
           </div>
         </div>
       </div>
@@ -392,8 +393,9 @@ export const PostList = (prop) => {
   );
 }
 
-export const RightBar = (prop) => {
-  const { pagetitle } = prop;
+export const RightBar = ({ pagetitle, filterRecommended, setFilterRecommended }) => {
+
+  // const { pagetitle } = prop;
 
   return (
     <div className="hidden lg:flex flex-col gap-6 py-6 px-4 bg-gray-50 border-l border-gray-200 lg:sticky lg:top-0 h-screen w-80">
@@ -408,7 +410,13 @@ export const RightBar = (prop) => {
             <h4 className="text-gray-800 font-bold">Recommend by ThaiXplore</h4>
           </div>
           <form method="post" className="space-y-2">
-            <ChkBox title="Recommended" group="Recommended" />
+            <ChkBox
+              title="Recommended"
+              group="Recommended"
+              isChecked={filterRecommended}
+              onChange={() => setFilterRecommended(prev => !prev)}
+            />
+
           </form>
         </div>
 
@@ -423,19 +431,18 @@ export const RightBar = (prop) => {
   );
 }
 
-const ChkBox = (prop) => {
-  const { title, group } = prop;
+const ChkBox = ({ title, group, isChecked, onChange }) => {
   return (
     <label className="flex items-center gap-3 py-1 px-2 rounded hover:bg-gray-100 cursor-pointer transition-colors">
-      <div className="relative">
-        <input
-          type="radio"
-          name={group}
-          className="w-4 h-4 appearance-none rounded-full border-2 border-gray-300 checked:border-amber-500 transition-colors"
-        />
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-amber-500 scale-0 transition-transform peer-checked:scale-100"></div>
-      </div>
+      <input
+        type="radio"
+        name={group}
+        checked={isChecked}
+        onChange={onChange}
+        className="w-4 h-4 appearance-none rounded-full border-2 border-gray-300 checked:border-amber-500 transition-colors"
+      />
       <span className="text-gray-700">{title}</span>
     </label>
   );
-}
+};
+

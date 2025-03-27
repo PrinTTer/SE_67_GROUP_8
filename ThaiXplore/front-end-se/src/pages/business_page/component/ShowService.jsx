@@ -153,7 +153,7 @@ export const ShowService = (prop) => {
                       minute: "2-digit",
                     }).replace(",", "")
                   ) : (
-                    item[field]
+                    item[field] 
                   )}
                 </div>
               )}

@@ -304,7 +304,7 @@ function Detail(prop) {
           <div className='flex flex-2 justify-end'>
 
             {
-              user?.role !== "tourist" ?
+              user?.role === "entrepreneur" ?
                 (
                   <div className="flex cursor-pointer  gap-2 mt-1 shadow-md  rounded-full h-8 w-auto justify-center items-center p-5 mr-2 bg-blue-400 text-white font-bold" onClick={() => setShowPopup(true)}>
                     <FontAwesomeIcon icon={faFileInvoice} />
@@ -414,7 +414,7 @@ const Info = (prop) => {
                 <div className='font-bold'>{category == "event" ?  event[index] : ""}  </div>
                 <div className='font-bold'>{category == "hotel" && infoTitle?.informationName == "Hotel Information" ?  hotel[index] : ""}  </div>
 
-                <div>{element.includes("-") ?  formatDateTime(element, { dateOnly: true }) : element} {hotel[index] == "Hotel Standard" ? "Star" :""} </div>
+                <div>{element.includes("-") ?  formatDateTime(element, { dateOnly: true }) : element} {category=="hotel" && hotel[index] == "Hotel Standard" ? "Star" :""} </div>
               </div>
 
             )}

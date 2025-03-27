@@ -5,6 +5,8 @@ import { createQuotation, deleteQuotation, findPendedQuotaion, findQuotation, fi
 import { getBusinessById, getBusinessByuserId } from "../models/business";
 import { BusinessCategoryFactory } from "../factory/BusinessCategoryFactory";
 
+
+
 export const registerQuotation = async (req: express.Request, res: express.Response): Promise<any> => {
     try {
         const { toBusinessId, companyName, email, phoneNumber, description, name, address } = req.body;
@@ -17,9 +19,11 @@ export const registerQuotation = async (req: express.Request, res: express.Respo
             return res.sendStatus(401);
         }
 
-        if (!toBusinessId || !companyName || !email || !phoneNumber || !description || !servicesDetails || !name) {
-            return res.sendStatus(400);
-        }
+        // if (!toBusinessId || !companyName || !email || !phoneNumber || !description || !servicesDetails || !name) {
+        //     return res.sendStatus(400);
+        // }
+
+        console.log(servicesDetails);
 
         const date = Date.now();
         const transaction = {
@@ -41,8 +45,6 @@ export const registerQuotation = async (req: express.Request, res: express.Respo
             total: 0,
             quotationTransaction: transaction
         });
-
-
 
         return res.status(201).json(quotation);
     } catch (err) {

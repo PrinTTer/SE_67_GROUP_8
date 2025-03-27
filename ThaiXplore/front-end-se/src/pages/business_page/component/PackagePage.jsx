@@ -64,7 +64,7 @@ export const PackageBlock = ({ businessId, userId }) => {
   
         // 2. ดึง quotations ที่ user เป็นคนขอ
         const allQuotations = await fetchData("/quotations");
-        const userQuotations = allQuotations.filter((q) => q.userId === userId);
+        const userQuotations = allQuotations.filter((q) => q.userId === userId && q.status === "complete");
         setQuotations(userQuotations);
   
         // 3. ดึง businesses จาก quotations เหล่านั้น
@@ -220,24 +220,28 @@ export const PackageBlock = ({ businessId, userId }) => {
 
   const userOwnedServices = serviceDetails.filter((s) => s.isOwnService);
 
+
 const allServices = [
   // From quotations
   ...quotations.flatMap(
-    (q) =>
+    (q) => 
       q.servicesDetails?.map((s) => {
         const matched = serviceDetails.find(
-          (detail) => detail._id === s.serviceId
+          (detail) => detail._id === s?.serviceId
         );
         return {
           ...s,
           quotationId: q._id,
+          remainingAmount: s.remainingAmount,
           ...matched,
         };
       }) || []
-  ),
+),
   // From own services
   ...userOwnedServices,
 ];
+
+console.log("allServices",allServices);
 
   // Get current packages for pagination
   const indexOfLastPackage = currentPage * packagesPerPage;
@@ -691,19 +695,20 @@ const allServices = [
 };
 
 const renderServiceName = (s) => {
+  console.log("=====>",s);
   switch (s.businessCategory) {
     case "hotel":
-      return `Room ${s.roomType} (${s.guestAmount} guests)`;
+      return `Room ${s.roomType} (${s.guestAmount} guests)  (${s.remainingAmount})`;
     case "carRental":
-      return `Car ${s.carBrand} (${s.amountSeat} seats)`;
+      return `Car ${s.carBrand} (${s.amountSeat} seats) (${s.remainingAmount})`;
     case "event":
       return `Ticket ${s.ticketType} - ${new Date(
         s.eventDate
-      ).toLocaleDateString("en-US")}`;
+      ).toLocaleDateString("en-US")} (${s.remainingAmount})`;
     case "course":
     case "restaurant":
-      return `Course ${s.courseName}`;
+      return `Course ${s.courseName} (${s.remainingAmount})`;
     default:
-      return `Service ID: ${s._id}`;
+      return `Service ID: ${s._id} (${s.remainingAmount})`;
   }
 };

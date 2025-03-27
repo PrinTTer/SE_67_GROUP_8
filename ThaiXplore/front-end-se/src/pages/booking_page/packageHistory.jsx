@@ -96,10 +96,10 @@ const PackageHistory = () => {
                         >
                             {/* Image Section */}
                             <div className="w-1/3 relative">
-                                {pkg?.image ? (
+                                {pkg?.media ? (
                                     <img 
-                                        src={pkg?.image} 
-                                        alt={pkg?.name} 
+                                        src={`http://localhost:3000/public/uploads/services/packages/${pkg?.media}`} 
+                                        alt={pkg?.title} 
                                         className="w-full h-full object-cover"
                                     />
                                 ) : (

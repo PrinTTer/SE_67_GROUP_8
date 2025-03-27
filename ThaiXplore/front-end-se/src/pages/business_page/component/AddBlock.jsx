@@ -5,7 +5,7 @@ import { getTopic } from "../../../data";
 import BlockInput from './BlockInput';
 import { putData } from '../../../services/apiService';
 import TimeSchedule from './WorkTime';
-
+import { formatDateTime } from '../../../utils/FormatDateTime';
 const Addblock = (prop) => {
   const { title, type, detailId, details } = prop;
   const [show, setShow] = useState(true);
@@ -95,7 +95,17 @@ const Addblock = (prop) => {
               />
 
               <div className={`${show ? "flex" : "hidden"} text-[#8B4513]`}>
-                {inputs[index]}
+                {
+                  (item.includes("Date") || item.includes("Sale")) ? (
+                    // ถ้า item มี "Date" หรือ "Sale", ให้แสดงวันที่และเวลา
+                    <>
+                      {formatDateTime(inputs[index], { dateOnly: true })} {formatDateTime(inputs[index], { timeOnly: true })}
+                    </>
+                  ) : (
+                    // ถ้าไม่ใช่ "Date" หรือ "Sale", ให้แสดงค่า inputs[index] ตามปกติ
+                    inputs[index]
+                  )
+                }
               </div>
             </div>
           ))

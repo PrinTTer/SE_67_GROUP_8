@@ -88,11 +88,14 @@ export const RightSideBar = (prop) => {
         } else {
             console.log("Details not available in bookingDetail.");
         }
+
+        bookingDetail.time = timeSlots[0]
     };
 
     // ฟังก์ชัน TimeSet สำหรับอัปเดตค่าเวลา
     const TimeSet = (value) => {
         setTime(value); // อัปเดตค่าของเวลาใน state
+        bookingDetail.time=value
     };
 
     const getCurrentDate = () => {

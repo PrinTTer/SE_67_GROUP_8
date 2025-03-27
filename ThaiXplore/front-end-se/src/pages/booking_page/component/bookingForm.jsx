@@ -139,14 +139,29 @@ const BookingForm = (prop) => {
                                     onChange={(e) => setCheckInDate(e.target.value)}
                                     error={errors.checkInDate}
                                     />
-                                    <TextField
-                                        label="Check-out Date"
-                                        type="date"
-                                        icon="📅"
-                                        value={checkOutDate}
-                                        onChange={(e) => setCheckOutDate(e.target.value)}
-                                        error={errors.checkOutDate}
-                                    />
+                                    { category === "restaurant" ? 
+                                        (
+                                            <TextField
+                                                label="Round"
+                                                type="text"
+                                                icon="🕙"
+                                                value={bookingDetail.time}
+                                                onChange={bookingDetail.time}  // เปลี่ยนค่า time ใน bookingDetail
+                                                error={errors.checkOutDate}
+                                            />
+                                        ):(
+                                             <TextField
+                                                label="Check-out Date"
+                                                type="date"
+                                                icon="📅"
+                                                value={checkOutDate}
+                                                onChange={(e) => setCheckOutDate(e.target.value)}
+                                                error={errors.checkOutDate}
+                                            />      
+                                        )
+                                    }
+                                   
+                                    
                                 </div>
                             )}
                             <TextField
@@ -184,14 +199,7 @@ const BookingForm = (prop) => {
                                 onChange={(e) => setPhoneNumber(e.target.value)}
                                 error={errors.phoneNumber}
                             />
-                            {/* <TextField
-                                type="text"
-                                icon="🕙"
-                                value={bookingDetail.time}
-                                limit={10}
-                                onChange={(e) => setPhoneNumber(e.target.value)}
-                                error={errors.phoneNumber}
-                            /> */}
+                            
                             <div className="col-span-1 md:col-span-2">
                                 <TextArea
                                     label="Description"

@@ -6,8 +6,9 @@ const HomePage = () => {
     console.log("🧪 filterRecommended:", filterRecommended); // ✅ เพิ่มบรรทัดนี้
 
     return (
-      <div className="flex">
-        <div className="flex-1 flex flex-col gap-5">
+      <div className="flex flex-5 w-full bg-gray-50 min-h-[1200px]">
+        <div className="flex-1 p-6 lg:p-10">
+        <div className="w-full mx-auto">
           {filterRecommended ? (
             <Section title="Recommended" viewType="list" />
           ) : (
@@ -24,6 +25,7 @@ const HomePage = () => {
               <Section title="Package" viewType="card" />
             </>
           )}
+          </div>
         </div>
     
         <RightBar

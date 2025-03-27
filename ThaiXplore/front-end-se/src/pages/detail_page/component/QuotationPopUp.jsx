@@ -28,7 +28,7 @@ export const QuotationPopUp = (prop) => {
     const socket = socketRef.current;
     const receiverId = business.business.userId;
     if (socket) {
-      socket.emit("sendRequest", { receiverId, status }); // ส่งข้อมูลไปยัง server ผ่าน WebSocket
+      socket.emit("sendRequest", { receiverId, status });
     }
   };
 
@@ -122,6 +122,10 @@ export const QuotationPopUp = (prop) => {
 
       if (!quotation) {
         await postData(`/quotations`, sendData);
+        const notification = {
+          notification : 1
+        }
+        await putData(`/users-notification/${business.business.userId}`, notification);
         sendQuotationSocket({ request: "Create" });
         navigate("/quotation");
       } else if (popup === "Edit") {

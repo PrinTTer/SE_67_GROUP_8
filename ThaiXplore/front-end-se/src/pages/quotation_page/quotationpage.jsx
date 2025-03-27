@@ -6,33 +6,48 @@ import { QuotationPopUp } from '../detail_page/component/QuotationPopUp';
 import useSocket from '../../hooks/useSocket';
 import { useSelector } from 'react-redux';
 
-const QuotationPage = () => {
+const QuotationPage = (prop) => {
+    const {socketRef} = prop;
     const { user } = useSelector((state) => state.auth);
-    const socketRef = useSocket(user); // เชื่อมต่อกับ WebSocket
     const [activeTab, setActiveTab] = useState("Pending Quotations");
     const [pendedQuotation, setPendedQuotation] = useState([]);
     const [receivedQuotation, setReceivedQuotation] = useState([]);
     const [completeQuotation, setCompleteQuotation] = useState([]);
     const [loading, setLoading] = useState(false);
 
+    const sendQuotationSocketToPender = (status) => {
+        const socket = socketRef.current;
+        const receiverId = user._id;
+        if (socket) {
+          socket.emit("sendRequest", { receiverId, status }); // ส่งข้อมูลไปยัง server ผ่าน WebSocket
+        }
+      }
+
+    const clearNotification = async () => {
+            const notification = {
+                notification : 0
+            }
+            await putData('/users' , notification);
+            sendQuotationSocketToPender({ request: "Create" });
+    }
 
     console.log("user:" , user);
     useEffect(() => {
+        if (!socketRef.current) return;
+    
         const socket = socketRef.current;
-
-        if (socket) {
-            socket.on("newRequest", (data) => {
-                console.log("data--->", data);
-                fetch();
-            });
-        }
-
-        return () => {
-            if (socket) {
-                socket.off("newRequest");
-            }
+    
+        const handleNewQuotation = (data) => {
+          console.log("📄 New Quotation:", data);
+          fetch();
         };
-    }, [socketRef.current]);
+    
+        socket.on("newRequest", handleNewQuotation);
+    
+        return () => {
+          socket.off("newRequest", handleNewQuotation);
+        };
+      }, [socketRef.current]);
 
 
     const fetch = async () => {
@@ -60,6 +75,7 @@ const QuotationPage = () => {
     }
 
     useEffect(() => {
+        clearNotification();
         fetch();
     }, []);
 
@@ -210,6 +226,21 @@ const Quotationfield = (prop) => {
 const QuotationEditBtn = (prop) => {
     const { icon, popup, color = "text-gray-600", business, quotation, fetch, type, socketRef } = prop;
     const [showPopup, setShowPopup] = useState(false);
+    const sendQuotationSocket = (status) => {
+        const socket = socketRef.current;
+        const receiverId = business?.business?.userId;
+        if (socket) {
+          socket.emit("sendRequest", { receiverId, status });
+        }
+      };
+    
+      const sendQuotationSocketToPender = (status) => {
+        const socket = socketRef.current;
+        const receiverId = quotation?.userId;
+        if (socket) {
+          socket.emit("sendRequest", { receiverId, status }); // ส่งข้อมูลไปยัง server ผ่าน WebSocket
+        }
+      }
 
 
     const checkBtn = async () => {
@@ -218,7 +249,8 @@ const QuotationEditBtn = (prop) => {
         } else if (popup === "Delete") {
             try {
                 await deleteData(`/quotations/${quotation._id}`);
-                window.location.reload();
+                sendQuotationSocket({ request: "Create" });
+                sendQuotationSocketToPender({ request: "Create" });
             } catch (error) {
                 console.log(error);
             }

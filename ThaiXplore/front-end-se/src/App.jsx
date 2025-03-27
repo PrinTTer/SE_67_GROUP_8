@@ -29,6 +29,7 @@ import PaymentSelector from "./pages/payment_page/paymentSelected";
 import QuotationPage from "./pages/quotation_page/quotationpage"
 import BookingHistory from "./pages/booking_page/bookingHistory";
 import PackageHistory from "./pages/booking_page/packageHistory";
+import useSocket from "./hooks/useSocket";
 
 
 function App() {
@@ -36,23 +37,48 @@ function App() {
   const location = useLocation(); // ดึง path ปัจจุบันจาก react-router
   const currentPath = useSelector((state) => state.path.currentPath);
   const { user } = useSelector((state) => state.auth);
-  const [isNaviOpen , setIsNaviOpen] = useState(false);
-  
+  const [isNaviOpen, setIsNaviOpen] = useState(false);
+  const [notification, setNotification] = useState(0);
+  const socketRef = useSocket(user);
+
+  console.log(user);
+
   const openNavi = () => {
     setIsNaviOpen(!isNaviOpen);
   }
+
 
   useEffect(() => {
     dispatch(fetchUser());
     dispatch(setPath(location.pathname));
   }, [location, dispatch]);
-
-
   
+  useEffect(() => {
+    // Ensure socket is set up after user is fetched
+    if (user) {
+      const socket = socketRef.current;
+      
+      if (!socket) {
+        console.error("Socket not initialized");
+        return;
+      }
+  
+      const handleNewQuotation = (data) => {
+        console.log("📄 New Notification:", data);
+        setNotification((prev) => prev + 1);
+      };
+  
+      // Safer socket event registration
+      socket.on("newRequest", handleNewQuotation);
+  
+      return () => {
+        socket.off("newRequest", handleNewQuotation);
+      };
+    }
+  }, [user, socketRef.current]);
 
-  // console.log(currentPath);
-  // console.log(user);
-
+  console.log(socketRef);
+  console.log(user);
 
   return (
     <>
@@ -65,40 +91,40 @@ function App() {
         </Routes>
       ) : (
         <>
-        <TopBarResponsive setIsNaviOpen={openNavi} isNaviOpen={isNaviOpen}/>
-        <div className="flex flex-1 lg:flex-row">
-          <NavigateBar isNaviOpen={isNaviOpen}/>
-          <Routes>
-            <Route path="/" element={<HomePage />} />
+          <TopBarResponsive setIsNaviOpen={openNavi} isNaviOpen={isNaviOpen} />
+          <div className="flex flex-1 lg:flex-row">
+            <NavigateBar isNaviOpen={isNaviOpen} notification={notification} socketRef={socketRef} />
+            <Routes>
+              <Route path="/" element={<HomePage />} />
 
-            <Route path="/listpage/:title" element={<ListPage />} />
-            <Route path="/detail/:id" element={<Detail />} />
-            <Route path="/package" element={<PackagePage />} />
-            <Route path="/detailpackage/:id" element={<DetailPackage />} />
-            
-            <Route path="/profile" element={<ProfilePage />} />
-            <Route path="/profile/mainBusiness" element={<MainBusiness />} />
-            <Route
-              path="/profile/mainBusiness/createBusiness"
-              element={<CreateBusiness />}
-            />
-            <Route
-              path="/profile/mainBusiness/createBusiness/adddetails/:id"
-              element={<AddDetails />}
-            />
+              <Route path="/listpage/:title" element={<ListPage />} />
+              <Route path="/detail/:id" element={<Detail socketRef={socketRef} />} />
+              <Route path="/package" element={<PackagePage />} />
+              <Route path="/detailpackage/:id" element={<DetailPackage />} />
 
-            {/* <Route path="/detail/booking/:id/:index" element={<Booking />} />
+              <Route path="/profile" element={<ProfilePage />} />
+              <Route path="/profile/mainBusiness" element={<MainBusiness />} />
+              <Route
+                path="/profile/mainBusiness/createBusiness"
+                element={<CreateBusiness />}
+              />
+              <Route
+                path="/profile/mainBusiness/createBusiness/adddetails/:id"
+                element={<AddDetails />}
+              />
+
+              {/* <Route path="/detail/booking/:id/:index" element={<Booking />} />
             <Route path="/detail/:title/booking" element={<Booking />} /> */}
-            <Route path="/booking" element={<Booking />} />
-            <Route path="/payment" element={<Payment />} />
-            <Route path="/history" element={<BookingHistory />} />
-            <Route path="/packageHistory" element={<PackageHistory/>} />
-            <Route path="/paymentSelector" element={<PaymentSelector />} />
-            <Route path="/quotation" element={<QuotationPage />} />
-            <Route path="/verifyBusiness" element={<VerifyBusiness />} />
-            <Route path="/test" element={<Test />} />
-          </Routes>
-        </div>
+              <Route path="/booking" element={<Booking />} />
+              <Route path="/payment" element={<Payment />} />
+              <Route path="/history" element={<BookingHistory />} />
+              <Route path="/packageHistory" element={<PackageHistory />} />
+              <Route path="/paymentSelector" element={<PaymentSelector />} />
+              <Route path="/quotation" element={<QuotationPage socketRef={socketRef} />} />
+              <Route path="/verifyBusiness" element={<VerifyBusiness />} />
+              <Route path="/test" element={<Test />} />
+            </Routes>
+          </div>
         </>
       )}
     </>

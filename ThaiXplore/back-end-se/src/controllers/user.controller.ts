@@ -29,7 +29,7 @@ export const getUser = async (req: express.Request, res: express.Response): Prom
 
 export const updateUser = async (req: express.Request, res: express.Response): Promise<any> => {
     try {
-        const { firstName, lastName, address, phoneNumber } = req.body;
+        const { firstName, lastName, address, phoneNumber, notification } = req.body;
         const currentUserId: string = get(req, 'identity._id');
 
         const user = await updateUserById(currentUserId, {
@@ -37,7 +37,27 @@ export const updateUser = async (req: express.Request, res: express.Response): P
             lastName: lastName,
             address: address,
             phoneNumber: phoneNumber,
+            notification: notification,
         })
+
+        return res.status(200).json(user);
+    } catch (err) {
+        console.log(err);
+        return res.sendStatus(400);
+    }
+}
+
+export const updateNotification = async (req: express.Request, res: express.Response): Promise<any> => {
+    try {
+        const {id} = req.params;
+        const { notification } = req.body;
+        const currentUserId: string = get(req, 'identity._id');
+
+        const user = await getUserById(id);
+
+        const updated = await updateUserById(id , {
+            notification : user.notification ? user.notification + notification : notification
+        });
 
         return res.status(200).json(user);
     } catch (err) {
@@ -238,10 +258,7 @@ export const updateUserByAdmin = async (req: express.Request, res: express.Respo
         }
 
         const updatedUser = await updateUserById(id, {
-
-
             email : email,
-
             firstName: firstName,
             lastName: lastName,
             address: address,

@@ -6,7 +6,8 @@ import {
   faTimesCircle,
   faCheckCircle,
   faBuilding,
-  faBoxOpen
+  faBoxOpen,
+  faClipboardCheck
 } from "@fortawesome/free-solid-svg-icons";
 import { fetchData } from "../../services/apiService";
 import { useParams } from "react-router-dom";
@@ -16,6 +17,7 @@ import { useSelector } from "react-redux";
 import { BusinessEdit } from './component/BusinessEdit';
 import LoadingSpinner from "../../components/LoadingSpinner";
 import { ServiceBlock } from "./component/ServiceBlock";
+import BusinessBookingPage from "./component/BookingPage";
 
 const AddDetails = () => {
   const { id } = useParams();
@@ -54,12 +56,13 @@ const AddDetails = () => {
     ],
     event: ["Event Information", "Ticket details", "Description"],
     restaurant: [
-      "Working Date Information", 
-      "Course details", 
+      "Working Date Information",
+      "Course details",
       "Description"
     ],
     carRental: ["Working Date Information", "Car details", "Description"]
   };
+
 
   const topicBusines = topicConfig[type] || [];
 
@@ -74,9 +77,9 @@ const AddDetails = () => {
   return (
     <div className="container mx-auto px-4 py-6 bg-[#F7F7F7]">
       <div className="bg-white rounded-xl shadow-lg overflow-hidden">
-        <BusinessEdit 
-          business={business} 
-          fetchBusiness={fetchBusiness} 
+        <BusinessEdit
+          business={business}
+          fetchBusiness={fetchBusiness}
         />
 
         <div className="p-6">
@@ -86,8 +89,8 @@ const AddDetails = () => {
               onClick={() => setActiveTab('details')}
               className={`
                 flex items-center space-x-2 px-4 py-2 rounded-lg transition-all
-                ${activeTab === 'details' 
-                  ? 'bg-[#FF6F00] text-white' 
+                ${activeTab === 'details'
+                  ? 'bg-[#FF6F00] text-white'
                   : 'bg-[#F0F0F0] text-[#4A4A4A] hover:bg-[#E0E0E0]'}
               `}
             >
@@ -98,13 +101,25 @@ const AddDetails = () => {
               onClick={() => setActiveTab('package')}
               className={`
                 flex items-center space-x-2 px-4 py-2 rounded-lg transition-all
-                ${activeTab === 'package' 
-                  ? 'bg-[#FF6F00] text-white' 
+                ${activeTab === 'package'
+                  ? 'bg-[#FF6F00] text-white'
                   : 'bg-[#F0F0F0] text-[#4A4A4A] hover:bg-[#E0E0E0]'}
               `}
             >
               <FontAwesomeIcon icon={faBoxOpen} />
               <span>Package</span>
+            </button>
+            <button
+              onClick={() => setActiveTab('booking')}
+              className={`
+                flex items-center space-x-2 px-4 py-2 rounded-lg transition-all
+                ${activeTab === 'booking'
+                  ? 'bg-[#FF6F00] text-white'
+                  : 'bg-[#F0F0F0] text-[#4A4A4A] hover:bg-[#E0E0E0]'}
+              `}
+            >
+              <FontAwesomeIcon icon={faClipboardCheck} />
+              <span>Booking</span>
             </button>
           </div>
 
@@ -122,19 +137,27 @@ const AddDetails = () => {
                     topicBusines={topicBusines}
                   />
                 ))}
-                <ServiceBlock 
-                  title={topicBusines[1]} 
-                  type={type} 
-                  businessId={id} 
+                <ServiceBlock
+                  title={topicBusines[1]}
+                  type={type}
+                  businessId={id}
                   business={business}
                 />
               </div>
             )}
 
             {activeTab === 'package' && (
-              <PackageBlock 
-                businessId={id} 
-                userId={user?._id} 
+              <PackageBlock
+                businessId={id}
+                userId={user?._id}
+              />
+            )}
+
+            {activeTab === 'booking' && (
+              <BusinessBookingPage
+                business={business}
+                businessId={id}
+                userId={user?._id}
               />
             )}
           </div>

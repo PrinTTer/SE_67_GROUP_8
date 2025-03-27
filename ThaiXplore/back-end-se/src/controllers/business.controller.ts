@@ -5,6 +5,7 @@ import { getUserById } from "../models/users";
 import { BusinessCategoryFactory } from "../factory/BusinessCategoryFactory";
 import path from "path";
 import fs from "fs";
+import { getBookingByBusinessId } from "../models/booking";
 
 export const registerBusiness = async (req: express.Request, res: express.Response): Promise<any> => {
     try {
@@ -87,12 +88,13 @@ export const getBusinesses = async (req: express.Request, res: express.Response)
         const provideService = await categoryStrategy.getProvideService();
         const packages = await categoryStrategy.getPackageList();
 
+        // const booking = await getBookingByBusinessId(businessId);
 
         return res.status(200).json({
             business,
             details: businessDetail,
             services: provideService,
-            packages: packages
+            packages: packages,
         });
     } catch (err) {
         console.log(err);

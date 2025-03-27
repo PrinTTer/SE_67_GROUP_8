@@ -29,7 +29,6 @@ export default function WebSocket(io: Server<DefaultEventsMap, DefaultEventsMap,
             }
         });
 
-
         socket.on("disconnect", () => {
             console.log("User disconnected:", socket.id);
             for (const userId in users) {

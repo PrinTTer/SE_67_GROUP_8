@@ -29,6 +29,7 @@ export const createBooking = (values: Record<string , any>) => new bookingModel(
 export const getBooking = () => bookingModel.find();
 export const getBookingById = (id:String) => bookingModel.findById(id);
 export const getBookingByUserId = (userId:String) => bookingModel.find({userId : userId});
+export const getBookingByBusinessId = (businessId:String) => bookingModel.find({businessId : businessId});
 
 export const deleteBooking = (id:String) => bookingModel.findOneAndDelete({_id : id});
 export const updateBooking = (id:String , values:Record<string , any>) => bookingModel.findByIdAndUpdate(id , values);

@@ -20,7 +20,8 @@ const UserSchema = new mongoose.Schema({
             status : {type : String , require : true},
         }
     ],
-    media : {type : String , require : true}
+    media : {type : String , require : true},
+    notification : {type : Number , require : false}
 });
 
 export const UserModel = mongoose.model("User" , UserSchema);

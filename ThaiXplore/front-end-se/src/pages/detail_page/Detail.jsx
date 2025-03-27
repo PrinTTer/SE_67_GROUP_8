@@ -15,12 +15,13 @@ import { useSelector } from 'react-redux';
 
 import PictureShow from '../businessmanage_page/component/picture_show';
 
-function Detail() {
+function Detail(prop) {
+  const {socketRef} = prop;
   const maxLength = 200;
   const { id } = useParams()
   // const business = getBusiness("Hotel A")
   const { user } = useSelector((state) => state.auth);
-  const socketRef = useSocket(user);
+  // const socketRef = useSocket(user);
   const [show, setShow] = useState(true)
   const [showPopup, setShowPopup] = useState(false);
   const [showMore, setShowMore] = useState(false);
@@ -41,14 +42,14 @@ function Detail() {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-const [ media , setMedia] = useState([])
+  const [media, setMedia] = useState([])
   const fetch = async () => {
     try {
       setLoading(true);
       const data_format = await fetchData(`/businesses/${id}`);
       setData(data_format);
-      
-      setMedia(data_format?.business?.media )
+
+      setMedia(data_format?.business?.media)
     } catch (error) {
       setError(error.message);
     } finally {
@@ -63,19 +64,19 @@ const [ media , setMedia] = useState([])
     adult: 1,
     child: 0,
     bookingAmount: 1,
-    AmountDay : 1,
+    AmountDay: 1,
     startDate: safeDateGMT7(new Date()),  // ปรับเวลาที่นี่ให้ตรงกับ GMT+7
     endDate: safeDateGMT7(new Date()),    // ปรับเวลาที่นี่ให้ตรงกับ GMT+7
     time: "",
-    Business : data
+    Business: data
   });
 
-  
+
 
   useEffect(() => {
     fetch();
   }, []); // fetch จะถูกเรียกเมื่อคอมโพเนนต์แรกเริ่มทำงาน
-  
+
   useEffect(() => {
     // อัปเดต bookingDetail เมื่อ data ถูกดึงมาแล้ว
     if (data) {
@@ -96,10 +97,10 @@ const [ media , setMedia] = useState([])
 
   };
 
-  const descriptions = {
-    informationName: "description",
-    details: [data?.business?.description]
-  }
+  // const descriptions = {
+  //   informationName: "description",
+  //   details: [data?.business?.description]
+  // }
 
 
   console.log("this->", data);
@@ -126,93 +127,93 @@ const [ media , setMedia] = useState([])
       {/* Mid Bar */}
       <div className='flex flex-4 flex-col '>
 
-          {/* 1 Image */}
-      <div
-        className={`grid grid-cols-1 ${data?.business?.media?.length === 1 ? "block" : "hidden"}`}
-      >
-        <img
-          src={`http://localhost:3000/public/uploads/businesses/images/${data?.business?.media[0]}`}
-          alt="Business Image"
-          className="w-full h-[400px] object-cover"
-          onClick={() => setShowGallery(true)}
-        />
-      </div>
-
-      {/* No Image */}
-      <div
-        className={`col-span-2 ${data?.business?.media?.length === 0 ? "block" : "hidden"}`}
-      >
-        <img
-          src="https://st2.depositphotos.com/1561359/12101/v/950/depositphotos_121012076-stock-illustration-blank-photo-icon.jpg"
-          alt="Business Image"
-          className="w-full h-[400px] object-cover"
-          onClick={() => setShowGallery(true)}
-        />
-      </div>
-
-      {/* Image Gallery if there are 2 images */}
-      <div className={`${data?.business?.media?.length === 2 ? "block" : "hidden"}`}>
-        <div className="grid grid-cols-2 gap-2">
-          {media.slice(0, 2).map((img, idx) => (
-            <div key={idx} className="w-full h-[400px] overflow-hidden rounded">
-              <img
-                src={`http://localhost:3000/public/uploads/businesses/images/${img}`}
-                alt={`img-${idx}`}
-                className="w-full h-full object-cover"
-                onClick={() => setShowGallery(true)}
-              />
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Image Gallery if there are 3 or more images */}
-      <div className={`${data?.business?.media?.length >= 3 ? "block" : "hidden"}`}>
-      <div className="flex h-full w-full">
-        {/* รูปซ้ายใหญ่ (ภาพแรก) */}
-        <div className="w-2/3 h-full overflow-hidden rounded-l-lg">
-          {media[0] && (
-            <img
-              src={`http://localhost:3000/public/uploads/businesses/images/${media[0]}`}
-              alt="main-img"
-              className="w-full h-full object-cover" // เพิ่ม object-cover เพื่อให้รูปภาพไม่ผิดสัดส่วน
-              onClick={() => setShowGallery(true)}
-            />
-          )}
+        {/* 1 Image */}
+        <div
+          className={`grid grid-cols-1 ${data?.business?.media?.length === 1 ? "block" : "hidden"}`}
+        >
+          <img
+            src={`http://localhost:3000/public/uploads/businesses/images/${data?.business?.media[0]}`}
+            alt="Business Image"
+            className="w-full h-[400px] object-cover"
+            onClick={() => setShowGallery(true)}
+          />
         </div>
 
-        {/* รูปขวา 2 ช่องซ้อน */}
-        <div className="w-1/3 h-full flex flex-col gap-1 pl-1">
-          {media.slice(1, 3).map((img, idx) => (
-            <div key={idx} className="relative h-1/2 w-full overflow-hidden rounded">
-              <img
-                src={`http://localhost:3000/public/uploads/businesses/images/${img}`}
-                alt={`side-img-${idx}`}
-                className="w-full h-full object-cover" // เพิ่ม object-cover เพื่อให้รูปภาพไม่ผิดสัดส่วน
-                onClick={() => setShowGallery(true)}
-              />
-              {/* Overlay ถ้ามีรูปเหลือ */}
-              {idx === 1 && media.length > 3 && (
-                <div
-                  className="absolute inset-0 bg-gray-900/50 flex items-center justify-center text-white font-semibold text-xl rounded"
+        {/* No Image */}
+        <div
+          className={`col-span-2 ${data?.business?.media?.length === 0 ? "block" : "hidden"}`}
+        >
+          <img
+            src="https://st2.depositphotos.com/1561359/12101/v/950/depositphotos_121012076-stock-illustration-blank-photo-icon.jpg"
+            alt="Business Image"
+            className="w-full h-[400px] object-cover"
+            onClick={() => setShowGallery(true)}
+          />
+        </div>
+
+        {/* Image Gallery if there are 2 images */}
+        <div className={`${data?.business?.media?.length === 2 ? "block" : "hidden"}`}>
+          <div className="grid grid-cols-2 gap-2">
+            {media.slice(0, 2).map((img, idx) => (
+              <div key={idx} className="w-full h-[400px] overflow-hidden rounded">
+                <img
+                  src={`http://localhost:3000/public/uploads/businesses/images/${img}`}
+                  alt={`img-${idx}`}
+                  className="w-full h-full object-cover"
                   onClick={() => setShowGallery(true)}
-                >
-                  +{media.length - 3}
-                </div>
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Image Gallery if there are 3 or more images */}
+        <div className={`${data?.business?.media?.length >= 3 ? "block" : "hidden"}`}>
+          <div className="flex h-full w-full">
+            {/* รูปซ้ายใหญ่ (ภาพแรก) */}
+            <div className="w-2/3 h-full overflow-hidden rounded-l-lg">
+              {media[0] && (
+                <img
+                  src={`http://localhost:3000/public/uploads/businesses/images/${media[0]}`}
+                  alt="main-img"
+                  className="w-full h-full object-cover" // เพิ่ม object-cover เพื่อให้รูปภาพไม่ผิดสัดส่วน
+                  onClick={() => setShowGallery(true)}
+                />
               )}
             </div>
-          ))}
-        </div>
-      </div>
 
-      </div>
-        
-      {showGallery && (
-        <PictureShow
-          images={media}
-          onClose={() => setShowGallery(false)}
-        />
-      )}
+            {/* รูปขวา 2 ช่องซ้อน */}
+            <div className="w-1/3 h-full flex flex-col gap-1 pl-1">
+              {media.slice(1, 3).map((img, idx) => (
+                <div key={idx} className="relative h-1/2 w-full overflow-hidden rounded">
+                  <img
+                    src={`http://localhost:3000/public/uploads/businesses/images/${img}`}
+                    alt={`side-img-${idx}`}
+                    className="w-full h-full object-cover" // เพิ่ม object-cover เพื่อให้รูปภาพไม่ผิดสัดส่วน
+                    onClick={() => setShowGallery(true)}
+                  />
+                  {/* Overlay ถ้ามีรูปเหลือ */}
+                  {idx === 1 && media.length > 3 && (
+                    <div
+                      className="absolute inset-0 bg-gray-900/50 flex items-center justify-center text-white font-semibold text-xl rounded"
+                      onClick={() => setShowGallery(true)}
+                    >
+                      +{media.length - 3}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+
+        </div>
+
+        {showGallery && (
+          <PictureShow
+            images={media}
+            onClose={() => setShowGallery(false)}
+          />
+        )}
 
 
 
@@ -238,13 +239,18 @@ const [ media , setMedia] = useState([])
           </div>
           <div className='flex flex-2 justify-end'>
 
+            {
+              user?.role !== "tourist" ?
+                (
+                  <div className="flex cursor-pointer  gap-2 mt-1 shadow-md  rounded-full h-8 w-auto justify-center items-center p-5 mr-2 bg-blue-400 text-white font-bold" onClick={() => setShowPopup(true)}>
+                    <FontAwesomeIcon icon={faFileInvoice} />
+                    <p>Request Quotation</p>
+                  </div>
+                )
+                :
+                (<></>)
+            }
 
-            <Link >
-              <div className="flex  gap-2 mt-1 shadow-md  rounded-full h-8 w-auto justify-center items-center p-5 mr-2 bg-blue-400 text-white font-bold" onClick={() => setShowPopup(true)}>
-                <FontAwesomeIcon icon={faFileInvoice} />
-                <p>Request Quotation</p>
-              </div>
-            </Link>
             {showPopup && <QuotationPopUp socketRef={socketRef} onClose={() => setShowPopup(false)} business={data} serviceBusiness={data?.services} />}
 
 

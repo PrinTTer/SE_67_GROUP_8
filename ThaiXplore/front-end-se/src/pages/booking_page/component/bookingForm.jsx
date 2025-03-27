@@ -3,15 +3,14 @@ import { useNavigate } from 'react-router-dom';
 import { postData } from '../../../services/apiService';
 
 const BookingForm = (prop) => {
-    const {item, category , bookingDetail, userPackage} = prop;
+    const { item, category, bookingDetail, userPackage } = prop;
     const services = item?.services;
 
-    if(category==="package"){
-        console.log("From Package In Booking Form: ",item);
-        console.log("User Package",userPackage);
-    }
-    else{
-        console.log("Item from Service : ",item);
+    if (category === "package") {
+        console.log("From Package In Booking Form: ", item);
+        console.log("User Package", userPackage);
+    } else {
+        console.log("Item from Service : ", item);
     }
 
     const safeDate = (dateString) => {
@@ -29,11 +28,34 @@ const BookingForm = (prop) => {
     const [checkInDate, setCheckInDate] = useState(safeDate(bookingDetail.startDate));
     const [checkOutDate, setCheckOutDate] = useState(safeDate(bookingDetail.endDate));
     const [description, setDescription] = useState("");
-
+    
+    const [errors, setErrors] = useState({});
+    
     const navigate = useNavigate();
+
+    const validateForm = () => {
+        let formErrors = {};
+
+        if (!firstName) formErrors.firstName = "First Name is required";
+        if (!lastName) formErrors.lastName = "Last Name is required";
+        if (!email) formErrors.email = "Email is required";
+        else if (!/\S+@\S+\.\S+/.test(email)) formErrors.email = "Email is not valid";
+        if (!phoneNumber) formErrors.phoneNumber = "Phone Number is required";
+        else if (!/^[0-9]{10}$/.test(phoneNumber)) formErrors.phoneNumber = "Phone number must be in format xxx-xxxx-xxxx";
+        if (!checkInDate) formErrors.checkInDate = "Check-in Date is required";
+        if (!checkOutDate) formErrors.checkOutDate = "Check-out Date is required";
+        if (checkInDate && checkOutDate && new Date(checkInDate) > new Date(checkOutDate)) {
+            formErrors.checkOutDate = "Check-out Date must be later than Check-in Date";
+        }
+
+        setErrors(formErrors);
+        return Object.keys(formErrors).length === 0;
+    };
 
     const handleSubmit = (e) => {
         e.preventDefault();
+
+        if (!validateForm()) return;
 
         // สร้าง object จากข้อมูลที่กรอกในฟอร์ม
         const bookingData = {
@@ -48,15 +70,16 @@ const BookingForm = (prop) => {
 
         // ส่ง object ไปยังหน้า booking
         console.log(bookingData);
-        if(category === "package"){
+        if (category === "package") {
             console.log("package");
-        }
-        else{
-            navigate('/paymentSelector', { state: {bookingData,item,category,bookingDetail} });
+        } else {
+            navigate('/paymentSelector', { state: { bookingData, item, category, bookingDetail } });
         }
     };
 
     const handleConfirmBooking = async () => {
+        if (!validateForm()) return;
+
         try {
             // สร้าง formData สำหรับแต่ละ service ใน package
             const formDataArray = services.map((service) => {
@@ -79,7 +102,7 @@ const BookingForm = (prop) => {
                     ]
                 };
             });
-    
+
             // ส่ง formData ทั้งหมดไปที่ API
             console.log('Booking confirmed:', formDataArray[0]);
             console.log('userPackage ID:', userPackage._id);
@@ -91,7 +114,8 @@ const BookingForm = (prop) => {
             console.error('Error confirming booking:', error);
         }
     };
-    return(
+
+    return (
         <div className="flex flex-1 w-full h-full bg-gray-50">
             <div className="w-full max-w-5xl mx-auto my-8 bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
                 <div className="bg-gradient-to-r from-amber-500 to-amber-600 text-white px-6 py-4">
@@ -106,28 +130,32 @@ const BookingForm = (prop) => {
                                 type="date"
                                 icon="📅"
                                 value={checkInDate}
-                                onChange={(e) => setCheckInDate(e.target.value)} 
+                                onChange={(e) => setCheckInDate(e.target.value)}
+                                error={errors.checkInDate}
                             />
                             <TextField
                                 label="Check-out Date"
                                 type="date"
                                 icon="📅"
                                 value={checkOutDate}
-                                onChange={(e) => setCheckOutDate(e.target.value)} 
+                                onChange={(e) => setCheckOutDate(e.target.value)}
+                                error={errors.checkOutDate}
                             />
                             <TextField
                                 label="First Name"
                                 placeholder="John"
                                 icon="👤"
                                 value={firstName}
-                                onChange={(e) => setFirstName(e.target.value)} 
+                                onChange={(e) => setFirstName(e.target.value)}
+                                error={errors.firstName}
                             />
                             <TextField
                                 label="Last Name"
                                 placeholder="Doe"
                                 icon="👤"
                                 value={lastName}
-                                onChange={(e) => setLastName(e.target.value)} 
+                                onChange={(e) => setLastName(e.target.value)}
+                                error={errors.lastName}
                             />
                             <TextField
                                 label="Email"
@@ -135,16 +163,18 @@ const BookingForm = (prop) => {
                                 type="email"
                                 icon="✉️"
                                 value={email}
-                                onChange={(e) => setEmail(e.target.value)} 
+                                onChange={(e) => setEmail(e.target.value)}
+                                error={errors.email}
                             />
                             <TextField
                                 label="Phone Number"
-                                placeholder="+66 x-xxxx-xxxx"
+                                placeholder="xxx xxxx xxxx"
                                 type="tel"
                                 icon="📱"
                                 value={phoneNumber}
                                 limit={10}
-                                onChange={(e) => setPhoneNumber(e.target.value)} 
+                                onChange={(e) => setPhoneNumber(e.target.value)}
+                                error={errors.phoneNumber}
                             />
                             <div className="col-span-1 md:col-span-2">
                                 <TextArea
@@ -152,14 +182,14 @@ const BookingForm = (prop) => {
                                     placeholder="Any additional information or special requests..."
                                     icon="📋"
                                     value={description}
-                                    onChange={(e) => setDescription(e.target.value)} 
+                                    onChange={(e) => setDescription(e.target.value)}
                                 />
                             </div>
                         </div>
 
                         <div className="mt-8 flex justify-end">
                             {category === "package" ? (
-                                <button 
+                                <button
                                     onClick={handleConfirmBooking}
                                     className="px-6 py-3 bg-gradient-to-r from-amber-500 to-amber-600 text-white font-medium rounded-md shadow-sm hover:from-amber-600 hover:to-amber-700 transition-all duration-200 flex items-center"
                                 >
@@ -167,7 +197,7 @@ const BookingForm = (prop) => {
                                     <span>→</span>
                                 </button>
                             ) : (
-                                <button 
+                                <button
                                     onClick={handleSubmit}
                                     className="px-6 py-3 bg-gradient-to-r from-amber-500 to-amber-600 text-white font-medium rounded-md shadow-sm hover:from-amber-600 hover:to-amber-700 transition-all duration-200 flex items-center"
                                 >
@@ -196,8 +226,8 @@ const BookingForm = (prop) => {
 
 // TextField component with onChange handler for input field
 export const TextField = (prop) => {
-    const { label, placeholder, type = "text", icon, value, limit, onChange } = prop;
-    return(
+    const { label, placeholder, type = "text", icon, value, limit, onChange, error } = prop;
+    return (
         <div className="relative">
             <label className="text-gray-700 font-medium block mb-2 flex items-center">
                 {icon && <span className="mr-2">{icon}</span>}
@@ -207,18 +237,18 @@ export const TextField = (prop) => {
                 type={type}
                 value={value}
                 onChange={onChange} maxLength={limit}
-                className="w-full p-3 text-gray-700 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all duration-200 placeholder-gray-400"
+                className={`w-full p-3 text-gray-700 border ${error ? 'border-red-500' : 'border-gray-200'} rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all duration-200 placeholder-gray-400`}
                 placeholder={placeholder}
             />
+            {error && <span className="text-red-500 text-sm">{error}</span>}
         </div>
     );
-    
 };
 
 // TextArea component for longer text inputs
 export const TextArea = (prop) => {
     const { label, placeholder, icon, value, onChange } = prop;
-    return(
+    return (
         <div className="relative">
             <label className="text-gray-700 font-medium block mb-2 flex items-center">
                 {icon && <span className="mr-2">{icon}</span>}

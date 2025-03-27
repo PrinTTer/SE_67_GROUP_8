@@ -54,8 +54,10 @@ export const EventEdit = (prop) => {
     // สมมุติว่า putData เป็นฟังก์ชันที่ทำการอัพเดตข้อมูล
     if ( putData(`events/${item._id}`, event)) {
 
-      if(getImage != editImage){
-      await deleteData(`/events/${item._id}/images/1`)
+      if(getImage != editImage && editImage){
+
+      if(getImage)
+        await deleteData(`/events/${item._id}/images/1`)
       await postDataWithFiles(`/events/${item._id}/images`, [editImage] ,event, "services_events")
     }
       

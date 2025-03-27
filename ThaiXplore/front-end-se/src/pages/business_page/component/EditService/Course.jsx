@@ -47,8 +47,10 @@ export const RestaurantEdit = (prop) => {
       // สมมุติว่า putData เป็นฟังก์ชันที่ทำการอัพเดตข้อมูล
       if (await putData(`courses/${item._id}`, course)) {
 
-        if(getImage != editImage){
-          await deleteData(`/courses/${item._id}/images/1`)
+        if(getImage != editImage && editImage){
+          if(getImage)
+            await deleteData(`/courses/${item._id}/images/1`)
+          
           await postDataWithFiles(`/courses/${item._id}/images`, [editImage] ,course, "services_courses")}
         
          fetchData();

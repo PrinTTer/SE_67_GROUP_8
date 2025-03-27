@@ -5,7 +5,7 @@ import { BusinessEditBtn } from "./BusinessEditBtn";
 import { Link } from 'react-router-dom';
 import { deleteData, postDataWithFiles } from "../services/apiService";
 import { toast } from "react-toastify";
-
+import { putData } from "../services/apiService";
 export const BusinessBlock = (prop) => {
     const { business, fetchBusinesses } = prop;
     const [description, setDescription] = useState("");
@@ -72,6 +72,25 @@ export const BusinessBlock = (prop) => {
         }
         setShowConfirm(false);
     };
+
+    const handleStatusChange = async (newStatus) => {
+        try {
+            await putData(`/businesses/${business._id}`, {
+                verify: {
+                    document: business.verify.document,
+                    status: newStatus,
+                    description: "",
+                },
+            });
+            toast.success("✅ Status updated to pending");
+            setShowDescription(false);
+            fetchBusinesses(); // refresh ข้อมูล
+        } catch (error) {
+            console.error("Error updating status:", error);
+            toast.error("❌ Failed to update status");
+        }
+    };
+
 
     const deleteDocument = async (index) => {
         try {
@@ -264,10 +283,18 @@ export const BusinessBlock = (prop) => {
             {showDescription && (
                 <div className="fixed inset-0 flex items-center justify-center bg-black/30 z-50">
                     <div className="bg-white rounded-lg shadow-lg p-6 w-[350px]">
-                        <h2 className="text-lg font-bold text-gray-800">Description</h2>
-                        <p className="text-gray-700 mt-1">{business.verify.description}</p>
-                        <div className="mt-4 flex justify-end">
+                        <div className="flex items-center justify-between mb-4 pb-3 border-b border-gray-200">
+
+                            <h2 className="text-lg font-bold text-gray-800">Reject Description</h2>
+                        </div>
+                        <p className="text-gray-700 my-4">{business.verify.description}</p>
+                        <p className="text-red-700 mt-1 text-sm">*Upload new documents or update business first</p>
+                        <div className="mt-4 flex justify-between">
                             <button className="bg-gray-400 text-white px-4 py-2 rounded" onClick={() => setShowDescription(false)}>Close</button>
+                            <button className="bg-amber-500 text-white px-4 py-2 rounded hover:bg-amber-600" onClick={() => handleStatusChange("pending")}>
+                                Pending Approval
+                            </button>
+
                         </div>
                     </div>
                 </div>

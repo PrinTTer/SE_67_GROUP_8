@@ -129,9 +129,46 @@ export const BusinessBlock = (prop) => {
         <>
             <div className="bg-white grid lg:grid-cols-[25%_60%_15%] w-full drop-shadow-xl rounded-xl">
                 <div className="w-full aspect-[3/2] bg-gray-100 flex items-center justify-center relative overflow-hidden rounded-lg">
-                    {business.media.length > 0 ? (
+                    {/* ไม่มีรูป */}
+                    {(!business.media || business.media.length === 0) && (
+                        <div className="flex flex-col items-center justify-center text-gray-400 h-full w-full">
+                            <FontAwesomeIcon icon={faImage} className="text-4xl mb-2" />
+                            <span className="text-sm">No picture</span>
+                        </div>
+                    )}
+
+                    {/* มี 1 รูป */}
+                    {business.media?.length === 1 && (
+                        <div className="w-full h-full overflow-hidden rounded-lg">
+                            <img
+                                src={`http://localhost:3000/public/uploads/businesses/images/${business.media[0]}`}
+                                alt="main-img"
+                                className="w-full h-full object-cover"
+                                onClick={() => setShowGallery(true)}
+                            />
+                        </div>
+                    )}
+
+                    {/* มี 2 รูป */}
+                    {business.media?.length === 2 && (
+                        <div className="grid grid-cols-2 w-full h-full gap-1">
+                            {business.media.map((img, idx) => (
+                                <div key={idx} className="h-full w-full overflow-hidden rounded">
+                                    <img
+                                        src={`http://localhost:3000/public/uploads/businesses/images/${img}`}
+                                        alt={`img-${idx}`}
+                                        className="w-full h-full object-cover"
+                                        onClick={() => setShowGallery(true)}
+                                    />
+                                </div>
+                            ))}
+                        </div>
+                    )}
+
+                    {/* มี 3 รูปขึ้นไป */}
+                    {business.media?.length >= 3 && (
                         <div className="flex h-full w-full">
-                            {/* รูปซ้ายใหญ่ (ภาพแรก) */}
+                            {/* รูปซ้ายใหญ่ */}
                             <div className="w-2/3 h-full overflow-hidden rounded-l-lg">
                                 <img
                                     src={`http://localhost:3000/public/uploads/businesses/images/${business.media[0]}`}
@@ -141,7 +178,7 @@ export const BusinessBlock = (prop) => {
                                 />
                             </div>
 
-                            {/* รูปขวา 2 ช่องซ้อน */}
+                            {/* รูปขวา 2 ซ้อน */}
                             <div className="w-1/3 h-full flex flex-col gap-1 pl-1">
                                 {business.media.slice(1, 3).map((img, idx) => (
                                     <div key={idx} className="relative h-1/2 w-full overflow-hidden rounded">
@@ -151,33 +188,22 @@ export const BusinessBlock = (prop) => {
                                             className="w-full h-full object-cover"
                                             onClick={() => setShowGallery(true)}
                                         />
-                                        {/* Overlay ถ้ามีรูปเหลือ */}
+                                        {/* overlay ถ้ามีเกิน 3 รูป */}
                                         {idx === 1 && business.media.length > 3 && (
-                                            <div className="absolute inset-0 bg-gray-900/50 flex items-center justify-center text-white font-semibold text-xl rounded"
-                                                onClick={() => setShowGallery(true)}>
+                                            <div
+                                                className="absolute inset-0 bg-gray-900/50 flex items-center justify-center text-white font-semibold text-xl rounded"
+                                                onClick={() => setShowGallery(true)}
+                                            >
                                                 +{business.media.length - 3}
                                             </div>
-
                                         )}
                                     </div>
                                 ))}
                             </div>
                         </div>
-                    ) : (
-                        <div className="flex flex-col items-center justify-center text-gray-400 h-full w-full">
-                            <FontAwesomeIcon icon={faImage} className="text-4xl mb-2" />
-                            <span className="text-sm">No picture</span>
-                        </div>
                     )}
-
-                    {/* {category && (
-                                <div className="absolute top-3 left-3">
-                                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-800">
-                                    {category}
-                                  </span>
-                                </div>
-                              )} */}
                 </div>
+
                 <div className="mx-5 p-5">
                     {/* <div className="flex text-2xl items-start justify-between font-semibold"> */}
                     <div className="flex items-start justify-between mb-2 text-2xl font-semibold">

@@ -2,7 +2,8 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-const ProvinceDropdown = () => {
+const ProvinceDropdown = (prop) => {
+  const { type } = prop;
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -29,7 +30,7 @@ const ProvinceDropdown = () => {
   const handleSelectChange = (event) => {
     setSelectedProvince(event.target.value);
     
-    navi(`/listpage/${event.target.value}`)
+    navi(`/listpage/${event.target.value+" "+type}`)
   };
 
   if (loading) return <p>Loading...</p>;

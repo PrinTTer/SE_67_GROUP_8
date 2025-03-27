@@ -37,17 +37,17 @@ export const RightSideBar = (prop) => {
         const slots = [];
         for (let i = 0; i < 7; i++) {
             const slotStart = startTotalMinutes + i * adjustedSlotDuration;
-            const slotEnd = slotStart + adjustedSlotDuration;
+            //const slotEnd = slotStart + adjustedSlotDuration;
     
             // แปลงกลับเป็นชั่วโมงและนาที
             const slotStartHour = Math.floor(slotStart / 60);
             const slotStartMinute = slotStart % 60;
-            const slotEndHour = Math.floor(slotEnd / 60);
-            const slotEndMinute = slotEnd % 60;
+            // const slotEndHour = Math.floor(slotEnd / 60);
+            // const slotEndMinute = slotEnd % 60;
     
             // สร้าง string เวลาของแต่ละรอบ
             const startTimeFormatted = `${String(slotStartHour).padStart(2, '0')}:${String(slotStartMinute).padStart(2, '0')}`;
-            const endTimeFormatted = `${String(slotEndHour).padStart(2, '0')}:${String(slotEndMinute).padStart(2, '0')}`;
+           // const endTimeFormatted = `${String(slotEndHour).padStart(2, '0')}:${String(slotEndMinute).padStart(2, '0')}`;
     
             slots.push(`${startTimeFormatted}`); // ใช้เวลาเริ่มต้นเท่านั้น
         }

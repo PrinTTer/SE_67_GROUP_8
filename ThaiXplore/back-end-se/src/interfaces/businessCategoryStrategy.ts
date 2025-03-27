@@ -5,4 +5,5 @@ export interface BusinessCategoryStrategy {
     getProvideServiceById(id:String) : object;
     updateBookedDatesById(id: String , date: Date , bookedAmount: Number , status: Boolean) : object;
     getProvideServiceBookedDates(id: String , date: Date): object;
+    getServices(): Promise<any[]>;
 }

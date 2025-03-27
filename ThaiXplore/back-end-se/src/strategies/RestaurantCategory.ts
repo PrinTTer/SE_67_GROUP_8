@@ -76,5 +76,8 @@ export class RestaurantCategory implements BusinessCategoryStrategy {
             );
         }
     }
+    getServices(): Promise<any[]> {
+            return CourseModel.find({ businessId: this.businessId });
+          }
 }
 

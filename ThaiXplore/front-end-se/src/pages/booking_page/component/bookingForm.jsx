@@ -125,22 +125,29 @@ const BookingForm = (prop) => {
                 <form onSubmit={handleSubmit}>
                     <div className="p-6">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <TextField
-                                label="Check-in Date"
-                                type="date"
-                                icon="📅"
-                                value={checkInDate}
-                                onChange={(e) => setCheckInDate(e.target.value)}
-                                error={errors.checkInDate}
-                            />
-                            <TextField
-                                label="Check-out Date"
-                                type="date"
-                                icon="📅"
-                                value={checkOutDate}
-                                onChange={(e) => setCheckOutDate(e.target.value)}
-                                error={errors.checkOutDate}
-                            />
+                            {category === "event" ? (
+                                <div className="col-span-2">
+                                </div>
+                            ) : (
+                                <div className="grid col-span-2 grid-cols-2 gap-6">
+                                    <TextField
+                                    label="Check-in Date"
+                                    type="date"
+                                    icon="📅"
+                                    value={checkInDate}
+                                    onChange={(e) => setCheckInDate(e.target.value)}
+                                    error={errors.checkInDate}
+                                    />
+                                    <TextField
+                                        label="Check-out Date"
+                                        type="date"
+                                        icon="📅"
+                                        value={checkOutDate}
+                                        onChange={(e) => setCheckOutDate(e.target.value)}
+                                        error={errors.checkOutDate}
+                                    />
+                                </div>
+                            )}
                             <TextField
                                 label="First Name"
                                 placeholder="John"

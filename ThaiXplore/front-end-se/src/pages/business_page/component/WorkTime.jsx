@@ -121,7 +121,7 @@ const TimeSchedule = (prop) => {
             })}
             <button
                 onClick={handleAddDay}
-                className="w-full flex items-center justify-center bg-green-500 hover:bg-green-600 text-white py-2 rounded-md transition-colors mt-4"
+                className="w-full flex items-center justify-center bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded-md transition-colors mt-4"
             >
                 <FontAwesomeIcon icon={faPlus} className="mr-2 w-5 h-5" />
                 Add Day

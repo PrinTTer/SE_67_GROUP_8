@@ -12,12 +12,13 @@ const Payment = () => {
     const { bookingData, item, category, method, bookingDetail } = location.state || {};
     const navigate = useNavigate();
     const socketRef = useSocket(user); // เชื่อมต่อกับ WebSocket
+
     // สร้าง state สำหรับฟอร์มข้อมูลการชำระเงิน
     const [cardName, setCardName] = useState("");
     const [cardNumber, setCardNumber] = useState("");
     const [validUntil, setValidUntil] = useState("");
     const [cvc, setCvc] = useState("");
-
+    const [error, setError] = useState("");
 
     // เตรียมข้อมูลที่จะส่งไปยัง API
     const formData = {
@@ -53,10 +54,30 @@ const Payment = () => {
         if (socket) {
             socket.emit("sendRequest", { receiverId, status }); // ส่งข้อมูลไปยัง server ผ่าน WebSocket
         }
-    }
+    };
 
     // ฟังก์ชันสำหรับ handle การกดยืนยันการชำระเงิน
     const handleConfirmPayment = async () => {
+        // Validate form fields
+        if (!cardName || !/^[a-zA-Z\s]+$/.test(cardName)) {
+            setError("Please enter a valid name on the card.");
+            return;
+        }
+        if (!/^\d{16}$/.test(cardNumber)) {
+            setError("Please enter a valid 16-digit card number.");
+            return;
+        }
+        if (!/^\d{2}\/\d{2}$/.test(validUntil)) {
+            setError("Please enter a valid expiration date (MM/YY).");
+            return;
+        }
+        if (!/^\d{3}$/.test(cvc)) {
+            setError("Please enter a valid 3-digit CVC.");
+            return;
+        }
+
+        setError(""); // Clear any existing errors
+
         try {
             const sendData = {
                 transaction: {
@@ -89,6 +110,9 @@ const Payment = () => {
             </div>
             <div className="flex flex-[3.8] bg-gray-50">
                 <div className="flex flex-1 flex-col w-auto h-auto bg-white p-4 m-8 rounded-lg shadow-lg gap-6">
+                    {/* Error Message */}
+                    {error && <div className="text-red-500">{error}</div>}
+                    
                     <div className="flex flex-[2.5] flex-col border border-gray-100 rounded-lg shadow-md overflow-hidden">
                         <div className="w-auto bg-gradient-to-r from-amber-500 to-amber-600 px-6 py-4">
                             <h1 className="font-bold text-xl text-white">Card Details</h1>
@@ -101,10 +125,10 @@ const Payment = () => {
                                 <PaymentForm label={"Credit Card Number"} word={"XXXX XXXX XXXX XXXX"} value={cardNumber} setValue={setCardNumber} limit={16} />
                             </div>
                             <div>
-                                <PaymentForm label={"Valid Until"} word={"MM/YY"} value={validUntil} setValue={setValidUntil} />
+                                <PaymentForm label={"Valid Until"} word={"MM/YY"} value={validUntil} setValue={setValidUntil} limit={5}/>
                             </div>
                             <div>
-                                <PaymentForm label={"CVC Number"} word={"XXX"} value={cvc} setValue={setCvc} />
+                                <PaymentForm label={"CVC Number"} word={"XXX"} value={cvc} setValue={setCvc} limit={3} />
                             </div>
                         </div>
                     </div>
@@ -124,7 +148,7 @@ const Payment = () => {
                         <div className="flex flex-1 justify-between items-center px-6 py-4 border-b border-gray-100">
                             <h1 className="font-bold text-xl text-gray-800">Total Amount</h1>
                             <h1 className="font-bold text-xl text-amber-600">THB  {
-                                Array.isArray(item?.services) ? item.quotation.total : item?.price * bookingDetail.bookingAmount *bookingDetail.AmountDay
+                                Array.isArray(item?.services) ? item.quotation.total : item?.price * bookingDetail.bookingAmount * bookingDetail.AmountDay
                             }  ฿</h1>
                         </div>
                         <div className="flex flex-1 justify-center items-center p-6">
@@ -145,7 +169,7 @@ const Payment = () => {
 export default Payment;
 
 export const PaymentForm = (prop) => {
-    const { label, word, value, setValue, limit } = prop
+    const { label, word, value, setValue, limit } = prop;
 
     return (
         <div className="flex flex-col">

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUser, faUserPlus, faUserMinus, faBed, faUsers } from "@fortawesome/free-solid-svg-icons";
+import { faUser, faUserPlus, faUserMinus, faBed, faUsers, faBowlFood, faCar, faCalendar } from "@fortawesome/free-solid-svg-icons";
 
 const GuestSelector = (prop) => {
   const { type, bookingDetail } = prop;
@@ -40,6 +40,22 @@ const GuestSelector = (prop) => {
     togglePopup();
   };
 
+  // Function to check category and return corresponding icon
+  const checkCategory = () => {
+    switch (type) {
+      case "hotel":
+        return faBed;
+      case "event":
+        return faCalendar;
+      case "restaurant":
+        return faBowlFood;
+      case "carRental":
+        return faCar;
+      default:
+        return faUsers; // Default icon if no match
+    }
+  };
+
   return (
     <div className="relative w-52"> {/* Smaller width */}
       {/* Button to open popup */}
@@ -47,7 +63,7 @@ const GuestSelector = (prop) => {
         onClick={togglePopup}
         className="w-full border border-gray-300 rounded-md px-2 py-2 flex justify-between items-center text-black text-sm font-medium"
       >
-       {type === "hotel" 
+        {type === "hotel" 
           ? `${finalAdults} Adult, ${finalChildren} Child, ${finalRooms} ${amount}` 
           : `${finalRooms} ${amount}`}
         <FontAwesomeIcon icon={faUsers} className="text-gray-500 ml-2 text-xs" />
@@ -103,7 +119,7 @@ const GuestSelector = (prop) => {
           }
           {/* Room Selector */}
           <div className="flex justify-between items-center py-1">
-            <span className="font-medium"><FontAwesomeIcon icon={faBed} className="mr-1"/> {amount}</span>
+            <span className="font-medium"><FontAwesomeIcon icon={checkCategory()} className="mr-1"/> {amount}</span>
             <div className="flex items-center space-x-1">
               <button
                 onClick={() => setRooms(Math.max(1, rooms - 1))}

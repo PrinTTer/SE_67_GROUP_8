@@ -49,28 +49,48 @@ export const EditingField = (prop) => {
 
     const handleSave = () => {
         setIsEditing(false);
-        setShowPopup(false);
-
+        setShowPopup(true);  // ให้ popup แสดงก่อน
+        setError("");  // เคลียร์ข้อผิดพลาดก่อน
         if (field === "password") {
             if (newPassword !== confirmNewPassword) {
                 setError("New passwords do not match!");
                 return;
             }
+            if (newPassword.length < 8) {
+                setError("Password must be at least 8 characters long!");
+                return;
+            }
             onSave(field, { currentPassword, newPassword });
         } else if (field === "name") {
+            if (!firstName || !lastName) {
+                setError("Both first name and last name are required!");
+                return;
+            }
             onSave(field, `${firstName} ${lastName}`);
         } else if (field === "email") {
             if (!newEmail || !password) {
                 setError("New email and password are required!");
                 return;
             }
+            const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+            if (!emailPattern.test(newEmail)) {
+                setError("Please enter a valid email address.");
+                return;
+            }
             onSave(field, { newEmail, password });
         } else {
+            if (!inputValue.trim()) {
+                setError("Field cannot be empty!");
+                return;
+            }
             onSave(field, inputValue);
         }
-
-        window.location.reload();
+    
+        // เมื่อ validation สำเร็จและไม่มีข้อผิดพลาด ให้ปิด popup
+        setShowPopup(false);  // ปิด popup
     };
+    
+    
     
     return (
         <div className="flex items-center bg-white w-3xl h-[5rem] rounded-lg p-4 shadow-md border border-gray-200 hover:shadow-lg transition-all duration-300 ">
@@ -123,7 +143,7 @@ export const EditingField = (prop) => {
                     ) : (
                         <input 
                             type="text" 
-                            value={inputValue} 
+                            value={inputValue} maxLength={field === 'phoneNumber' ? 10 : undefined} 
                             onChange={(e) => setInputValue(e.target.value)}
                             className="w-2/3 p-2 text-lg border rounded-md focus:ring-2 focus:ring-amber-400"
                         />

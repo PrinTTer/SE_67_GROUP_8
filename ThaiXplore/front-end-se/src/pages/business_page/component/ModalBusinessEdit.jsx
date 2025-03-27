@@ -46,12 +46,12 @@ export const ModalEditBusiness = (prop) => {
 
   const validateForm = () => {
     const newErrors = {};
-
+  
     // Validate Business Name
     if (!form.businessName?.trim()) {
       newErrors.businessName = "Business name is required.";
     }
-
+  
     // Validate Email
     const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
     if (!form.email?.trim()) {
@@ -59,7 +59,7 @@ export const ModalEditBusiness = (prop) => {
     } else if (!emailPattern.test(form.email)) {
       newErrors.email = "Invalid email format.";
     }
-
+  
     // Validate Phone Number
     const phonePattern = /^[0-9]{10}$/; // ตรวจสอบเบอร์โทรศัพท์ 10 หลัก
     if (!form.phone?.trim()) {
@@ -67,35 +67,39 @@ export const ModalEditBusiness = (prop) => {
     } else if (!phonePattern.test(form.phone)) {
       newErrors.phone = "Invalid phone number format.";
     }
-
+  
     // Validate Address
     if (!form.address?.trim()) {
       newErrors.address = "Address is required.";
     }
-
+  
     // Validate Province
     if (!form.province?.trim()) {
       newErrors.province = "Province is required.";
     }
-
+  
     // Validate Sub District
     if (!form.subDistrict?.trim()) {
       newErrors.subDistrict = "Sub district is required.";
     }
-
+  
     // Validate District
     if (!form.district?.trim()) {
       newErrors.district = "District is required.";
     }
-
-    // Validate Postal Code
+  
+    // Validate Postal Code (5 digit check)
+    const postalCodePattern = /^[0-9]{5}$/; // ตรวจสอบรหัสไปรษณีย์ 5 หลัก
     if (!form.postalCode?.trim()) {
       newErrors.postalCode = "Postal code is required.";
+    } else if (!postalCodePattern.test(form.postalCode)) {
+      newErrors.postalCode = "Postal code must be 5 digits.";
     }
-
+  
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0; // ถ้าไม่มี error คืนค่า true
   };
+  
 
   const handleSaveChanges = async () => {
     if (!validateForm()) {

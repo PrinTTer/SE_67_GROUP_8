@@ -7,18 +7,19 @@ import { putData } from '../../../services/apiService';
 import TimeSchedule from './WorkTime';
 
 const Addblock = (prop) => {
-  const { title, type, detailId, details } = prop
-  const [show, setShow] = useState(true)
-  const detail = getTopic({ title: title, type: type })
+  const { title, type, detailId, details } = prop;
+  const [show, setShow] = useState(true);
+  const detail = getTopic({ title: title, type: type });
   const [inputs, setInputs] = useState([]);
+  
   const toggle = (values) => {
     setInputs(values);
-    setShow(!show)
+    setShow(!show);
   }
   
-  useEffect(()=>{
+  useEffect(() => {
     setInputs(details.details);
-  },[])
+  }, [details]);
 
   const handleCheck = async () => {
     try {
@@ -104,14 +105,14 @@ const Addblock = (prop) => {
               <div key={index} className="text-[#8B4513] mr-20">
                 <div className={`${show ? "flex" : "hidden"} bg-[#ffff] w-60 m-2 p-3 rounded-3xl  shadow-md`}>
                   {detail === "Day Work" ? (
-                    <div className="grid grid-cols-2 gap-3">
-                    {/* ตรวจสอบว่า item ไม่เป็น null หรือ undefined ก่อนการใช้ replace */}
-                    <div className="text-[#8B4513]">
-                      {item ? item.replace(",", " ").split(" ")[0] : ""}
-                    </div>
-                    <div className="text-[#8B4513]">
-                      {item ? item.replace(",", " ").replace(",", "-").split(" ")[1] : ""}
-                    </div>
+                    <div className='grid grid-cols-2 gap-3'>
+                      {/* ตรวจสอบให้มั่นใจว่า item เป็น string ก่อนใช้งาน replace และ split */}
+                      <div className="text-[#8B4513]">
+                        {item && typeof item === 'string' ? item.replace(",", " ").split(" ")[0] : ''}
+                      </div>
+                      <div className="text-[#8B4513]">
+                        {item && typeof item === 'string' ? item.replace(",", " ").replace(",", "-").split(" ")[1] : ''}
+                      </div>
                     </div>
                   ) : (
                     <div className="text-[#8B4513]">{item}</div>

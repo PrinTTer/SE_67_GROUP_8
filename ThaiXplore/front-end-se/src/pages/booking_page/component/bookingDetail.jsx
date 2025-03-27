@@ -1,4 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { formatDateTime } from "../../../utils/FormatDateTime";
 import { faHotel, faCalendar, faCar, faUtensils } from '@fortawesome/free-solid-svg-icons';
 const BookingDetail = (prop) => {
     const { item, category } = prop;
@@ -108,13 +109,20 @@ const getTopic = (category) => {
 
 
 const ContentComponent = (prop) => {
-    const {Topic , item, formatFieldName, quotation} = prop;
+    const { Topic, item, formatFieldName, quotation } = prop;
+    
+    const formatDate = (dateField) => {
+        if (dateField && (dateField === 'eventDate' || dateField === 'start' || dateField === 'end')) {
+            return formatDateTime(item[dateField], { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+        }
+        return item[dateField];
+    };
+
     return (
         <div className="flex-1 overflow-y-auto p-6">
             <div className="space-y-5">
                 {Topic.map((field, index) => (
-                    <div key={index} className="bg-white rounded-lg border border-gray-100 shadow-sm p-4 
-                                                   transition-all duration-200 hover:shadow-md">
+                    <div key={index} className="bg-white rounded-lg border border-gray-100 shadow-sm p-4 transition-all duration-200 hover:shadow-md">
                         <div className="font-medium text-gray-700 mb-3">
                             {formatFieldName(field)}
                         </div>
@@ -136,15 +144,12 @@ const ContentComponent = (prop) => {
                             </ul>
                         ) : (
                             <div className={`${field === 'price' ? 'font-semibold text-amber-600' : 'text-gray-600'}`}>
-                                {
-                                    quotation && field === 'price' ? quotation.quotation.servicesDetails[0].price
-                                    : (field === 'price' ? `${item[field]} THB` : item[field])
-                                }
+                                {field === 'price' ? `${quotation ? quotation.quotation.servicesDetails[0].price : item[field]} THB` : formatDate(field)}
                             </div>
                         )}
                     </div>
                 ))}
             </div>
         </div>
-    )
-}
+    );
+};

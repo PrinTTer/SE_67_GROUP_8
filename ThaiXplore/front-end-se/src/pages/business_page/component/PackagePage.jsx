@@ -26,7 +26,7 @@ export const PackageBlock = ({ businessId, userId }) => {
   const [serviceDetails, setServiceDetails] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [saveLoading, setSaveLoading] = useState(null);
-  
+
   // Pagination states
   const [currentPage, setCurrentPage] = useState(1);
   const [packagesPerPage] = useState(3); // Show 3 packages per page
@@ -51,17 +51,32 @@ export const PackageBlock = ({ businessId, userId }) => {
     const loadData = async () => {
       setIsLoading(true);
       try {
+        // 1. ดึง services ของตัวเอง
+        const userServices = await fetchData(`/users/${userId}/services`);
+        const mappedUserServices = userServices.map((s) => ({
+          ...s,
+          businessId: s.businessId,
+          businessCategory: s.category,
+          serviceId: s._id,
+          isOwnService: true,
+        }));
+        console.log(mappedUserServices);
+  
+        // 2. ดึง quotations ที่ user เป็นคนขอ
         const allQuotations = await fetchData("/quotations");
         const userQuotations = allQuotations.filter((q) => q.userId === userId);
         setQuotations(userQuotations);
-
+  
+        // 3. ดึง businesses จาก quotations เหล่านั้น
         const businessIds = [
           ...new Set(userQuotations.map((q) => q.toBusinessId)),
         ];
         const businesses = await Promise.all(
           businessIds.map((id) => fetchData(`/businesses/${id}`))
         );
-        const allServices = businesses.flatMap((b) =>
+  
+        // 4. สร้างรายการ services จาก quotations
+        const quotationServices = businesses.flatMap((b) =>
           b.services.map((s) => ({
             ...s,
             businessId: b.business._id,
@@ -69,15 +84,19 @@ export const PackageBlock = ({ businessId, userId }) => {
             businessName: b.business.businessName,
           }))
         );
-        setServiceDetails(allServices);
-
+  
+        // ✅ 5. รวมทั้ง services ของตัวเองและจาก quotation
+        const combinedServices = [...quotationServices, ...mappedUserServices];
+        setServiceDetails(combinedServices);
+  
+        // 6. โหลด packages
         const pkgRes = await fetchData(`/packages/business/${businessId}`);
         const pkgMapped = pkgRes.map((pkg) => ({
           id: pkg._id,
-          data: { 
-            ...pkg, 
+          data: {
+            ...pkg,
             media: [],
-            existingMedia: pkg.media || []
+            existingMedia: pkg.media || [],
           },
         }));
         setPackages(
@@ -92,9 +111,10 @@ export const PackageBlock = ({ businessId, userId }) => {
         setIsLoading(false);
       }
     };
-
+  
     if (businessId && userId) loadData();
   }, [businessId, userId]);
+  
 
   const updatePackageData = (id, newData) => {
     setPackages((prev) =>
@@ -114,11 +134,16 @@ export const PackageBlock = ({ businessId, userId }) => {
       totalExpirationDate: data.totalExpirationDate,
       price: data.price,
       totalPackage: data.totalPackage,
-      services: data.services.map((s) => ({
-        quotationId: s.quotationId,
-        serviceId: s.serviceId,
-        businessId: s.businessId,
-      })),
+      services: data.services.map((s) => {
+        const item = {
+          serviceId: s.serviceId,
+          businessId: s.businessId,
+        };
+        if (s.quotationId) {
+          item.quotationId = s.quotationId;
+        }
+        return item;
+      }),
     };
 
     try {
@@ -144,7 +169,7 @@ export const PackageBlock = ({ businessId, userId }) => {
           {},
           "services_packages"
         );
-        
+
         const updatedPackage = await fetchData(`/packages/${packageId}`);
         updateIdCallback(packageId, updatedPackage.media);
       }
@@ -159,7 +184,8 @@ export const PackageBlock = ({ businessId, userId }) => {
   };
 
   const handleDeletePackage = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this package?")) return;
+    if (!window.confirm("Are you sure you want to delete this package?"))
+      return;
     try {
       await deleteData(`/packages/${id}`);
       setPackages((prev) => prev.filter((p) => p.id !== id));
@@ -178,7 +204,9 @@ export const PackageBlock = ({ businessId, userId }) => {
               ...pkg,
               data: {
                 ...pkg.data,
-                existingMedia: pkg.data.existingMedia.filter((path) => path !== imagePath),
+                existingMedia: pkg.data.existingMedia.filter(
+                  (path) => path !== imagePath
+                ),
               },
             }
           : pkg
@@ -190,7 +218,11 @@ export const PackageBlock = ({ businessId, userId }) => {
     }
   };
 
-  const allServices = quotations.flatMap(
+  const userOwnedServices = serviceDetails.filter((s) => s.isOwnService);
+
+const allServices = [
+  // From quotations
+  ...quotations.flatMap(
     (q) =>
       q.servicesDetails?.map((s) => {
         const matched = serviceDetails.find(
@@ -202,17 +234,24 @@ export const PackageBlock = ({ businessId, userId }) => {
           ...matched,
         };
       }) || []
-  );
+  ),
+  // From own services
+  ...userOwnedServices,
+];
 
   // Get current packages for pagination
   const indexOfLastPackage = currentPage * packagesPerPage;
   const indexOfFirstPackage = indexOfLastPackage - packagesPerPage;
-  const currentPackages = packages.slice(indexOfFirstPackage, indexOfLastPackage);
+  const currentPackages = packages.slice(
+    indexOfFirstPackage,
+    indexOfLastPackage
+  );
   const totalPages = Math.ceil(packages.length / packagesPerPage);
 
   // Change page
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
-  const nextPage = () => setCurrentPage((prev) => Math.min(prev + 1, totalPages));
+  const nextPage = () =>
+    setCurrentPage((prev) => Math.min(prev + 1, totalPages));
   const prevPage = () => setCurrentPage((prev) => Math.max(prev - 1, 1));
 
   // Add new package handler with page navigation
@@ -323,8 +362,13 @@ export const PackageBlock = ({ businessId, userId }) => {
                 {/* Image Upload Section */}
                 <div className="bg-yellow-50 p-6 rounded-lg mb-8">
                   <div className="flex items-center mb-4">
-                    <FontAwesomeIcon icon={faImage} className="text-yellow-500 mr-2" />
-                    <h4 className="text-lg font-medium text-gray-800">Package Images</h4>
+                    <FontAwesomeIcon
+                      icon={faImage}
+                      className="text-yellow-500 mr-2"
+                    />
+                    <h4 className="text-lg font-medium text-gray-800">
+                      Package Images
+                    </h4>
                   </div>
 
                   <div className="space-y-2 mb-6">
@@ -349,40 +393,53 @@ export const PackageBlock = ({ businessId, userId }) => {
                   </div>
 
                   {/* Existing Images */}
-                  {pkg.data._id && pkg.data.existingMedia && pkg.data.existingMedia.length > 0 && (
-                    <div className="mb-6">
-                      <h5 className="font-medium text-gray-700 mb-3 flex items-center">
-                        <FontAwesomeIcon icon={faCheckCircle} className="text-yellow-500 mr-2" />
-                        Existing Images
-                      </h5>
-                      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                        {pkg.data.existingMedia.map((img, idx) => (
-                          <div key={idx} className="relative group">
-                            <div className="aspect-square overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
-                              <img
-                                src={`http://localhost:3000/public/uploads/services/packages/${img}`}
-                                className="object-cover w-full h-full"
-                                alt={`Package image ${idx + 1}`}
-                              />
+                  {pkg.data._id &&
+                    pkg.data.existingMedia &&
+                    pkg.data.existingMedia.length > 0 && (
+                      <div className="mb-6">
+                        <h5 className="font-medium text-gray-700 mb-3 flex items-center">
+                          <FontAwesomeIcon
+                            icon={faCheckCircle}
+                            className="text-yellow-500 mr-2"
+                          />
+                          Existing Images
+                        </h5>
+                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                          {pkg.data.existingMedia.map((img, idx) => (
+                            <div key={idx} className="relative group">
+                              <div className="aspect-square overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
+                                <img
+                                  src={`http://localhost:3000/public/uploads/services/packages/${img}`}
+                                  className="object-cover w-full h-full"
+                                  alt={`Package image ${idx + 1}`}
+                                />
+                              </div>
+                              <button
+                                onClick={() =>
+                                  handleDeleteImage(pkg.data._id, img, idx + 1)
+                                }
+                                className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-200 shadow-md"
+                                title="Delete image"
+                              >
+                                <FontAwesomeIcon
+                                  icon={faTimesCircle}
+                                  className="w-4 h-4"
+                                />
+                              </button>
                             </div>
-                            <button
-                              onClick={() => handleDeleteImage(pkg.data._id, img, idx + 1)}
-                              className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-200 shadow-md"
-                              title="Delete image"
-                            >
-                              <FontAwesomeIcon icon={faTimesCircle} className="w-4 h-4" />
-                            </button>
-                          </div>
-                        ))}
+                          ))}
+                        </div>
                       </div>
-                    </div>
-                  )}
+                    )}
 
                   {/* New Images Preview */}
                   {pkg.data.media && pkg.data.media.length > 0 && (
                     <div>
                       <h5 className="font-medium text-gray-700 mb-3 flex items-center">
-                        <FontAwesomeIcon icon={faPlusCircle} className="text-yellow-500 mr-2" />
+                        <FontAwesomeIcon
+                          icon={faPlusCircle}
+                          className="text-yellow-500 mr-2"
+                        />
                         New Images to Upload
                       </h5>
                       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
@@ -396,16 +453,21 @@ export const PackageBlock = ({ businessId, userId }) => {
                               />
                             </div>
                             <button
-                              onClick={() => 
+                              onClick={() =>
                                 updatePackageData(pkg.id, {
                                   ...pkg.data,
-                                  media: Array.from(pkg.data.media).filter((_, i) => i !== idx)
+                                  media: Array.from(pkg.data.media).filter(
+                                    (_, i) => i !== idx
+                                  ),
                                 })
                               }
                               className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-200 shadow-md"
                               title="Remove from upload"
                             >
-                              <FontAwesomeIcon icon={faTimesCircle} className="w-4 h-4" />
+                              <FontAwesomeIcon
+                                icon={faTimesCircle}
+                                className="w-4 h-4"
+                              />
                             </button>
                           </div>
                         ))}
@@ -416,8 +478,10 @@ export const PackageBlock = ({ businessId, userId }) => {
 
                 {/* Services Section */}
                 <div className="bg-yellow-50 p-6 rounded-lg mb-8">
-                  <h4 className="text-lg font-medium text-gray-800 mb-4">Package Services</h4>
-                  
+                  <h4 className="text-lg font-medium text-gray-800 mb-4">
+                    Package Services
+                  </h4>
+
                   <div className="mb-6">
                     <label className="block text-gray-700 font-medium mb-2">
                       Add Services to Package
@@ -447,6 +511,9 @@ export const PackageBlock = ({ businessId, userId }) => {
                       {allServices.map((s, i) => (
                         <option key={i} value={s.serviceId}>
                           [{s.businessCategory}] {renderServiceName(s)}
+                          {s.quotationId
+                            ? " (from quotation)"
+                            : " (your own service)"}
                         </option>
                       ))}
                     </select>
@@ -455,12 +522,15 @@ export const PackageBlock = ({ businessId, userId }) => {
                   {/* Selected Services */}
                   {pkg.data.services.length > 0 && (
                     <div className="space-y-3">
-                      <h5 className="font-medium text-gray-700">Selected Services</h5>
+                      <h5 className="font-medium text-gray-700">
+                        Selected Services
+                      </h5>
                       {pkg.data.services.map((s, i) => {
-                        const serviceDetail = allServices.find(
-                          (detail) => detail.serviceId === s.serviceId
-                        ) || {};
-                        
+                        const serviceDetail =
+                          allServices.find(
+                            (detail) => detail.serviceId === s.serviceId
+                          ) || {};
+
                         return (
                           <div
                             key={i}
@@ -474,27 +544,38 @@ export const PackageBlock = ({ businessId, userId }) => {
                                 onClick={() =>
                                   updatePackageData(pkg.id, {
                                     ...pkg.data,
-                                    services: pkg.data.services.filter((_, idx) => idx !== i),
+                                    services: pkg.data.services.filter(
+                                      (_, idx) => idx !== i
+                                    ),
                                   })
                                 }
                                 className="text-red-500 hover:text-red-700 transition-colors duration-200"
                               >
-                                <FontAwesomeIcon icon={faTimesCircle} className="mr-1" />
+                                <FontAwesomeIcon
+                                  icon={faTimesCircle}
+                                  className="mr-1"
+                                />
                                 <span className="text-sm">Remove</span>
                               </button>
                             </div>
-                            
+
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mt-2 text-xs text-gray-600">
                               <div className="bg-gray-50 p-2 rounded">
-                                <span className="font-semibold block">Service ID:</span>
+                                <span className="font-semibold block">
+                                  Service ID:
+                                </span>
                                 <div className="truncate">{s.serviceId}</div>
                               </div>
                               <div className="bg-gray-50 p-2 rounded">
-                                <span className="font-semibold block">Business ID:</span>
+                                <span className="font-semibold block">
+                                  Business ID:
+                                </span>
                                 <div className="truncate">{s.businessId}</div>
                               </div>
                               <div className="bg-gray-50 p-2 rounded">
-                                <span className="font-semibold block">Quotation ID:</span>
+                                <span className="font-semibold block">
+                                  Quotation ID:
+                                </span>
                                 <div className="truncate">{s.quotationId}</div>
                               </div>
                             </div>
@@ -513,15 +594,16 @@ export const PackageBlock = ({ businessId, userId }) => {
                         setPackages((prev) =>
                           prev.map((p) =>
                             p.id === pkg.id
-                              ? { 
-                                  ...p, 
-                                  id: newId, 
-                                  data: { 
-                                    ...p.data, 
+                              ? {
+                                  ...p,
+                                  id: newId,
+                                  data: {
+                                    ...p.data,
                                     _id: newId,
-                                    existingMedia: updatedMedia || p.data.existingMedia,
-                                    media: []
-                                  } 
+                                    existingMedia:
+                                      updatedMedia || p.data.existingMedia,
+                                    media: [],
+                                  },
                                 }
                               : p
                           )
@@ -567,7 +649,7 @@ export const PackageBlock = ({ businessId, userId }) => {
                 >
                   <FontAwesomeIcon icon={faChevronLeft} />
                 </button>
-                
+
                 <div className="flex space-x-1">
                   {Array.from({ length: totalPages }, (_, index) => (
                     <button
@@ -583,7 +665,7 @@ export const PackageBlock = ({ businessId, userId }) => {
                     </button>
                   ))}
                 </div>
-                
+
                 <button
                   onClick={nextPage}
                   disabled={currentPage === totalPages}
@@ -596,7 +678,7 @@ export const PackageBlock = ({ businessId, userId }) => {
                   <FontAwesomeIcon icon={faChevronRight} />
                 </button>
               </div>
-              
+
               <div className="ml-4 text-sm text-gray-500">
                 Page {currentPage} of {totalPages} ({packages.length} packages)
               </div>
@@ -625,5 +707,3 @@ const renderServiceName = (s) => {
       return `Service ID: ${s._id}`;
   }
 };
-
-

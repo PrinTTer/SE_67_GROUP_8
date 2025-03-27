@@ -54,9 +54,11 @@ export const RightSideBar = (prop) => {
     
         setTimeSlots(slots); // เก็บเวลาแต่ละรอบใน state
     };
+    
 
     // ฟังก์ชันที่ใช้ในการอัปเดตค่า date
     const handleDateChange = (e) => {
+        
         const selectedDate = e.target.value; // ค่าของวันที่ที่เลือก
         setDate(selectedDate); // อัปเดตค่าของ date
     
@@ -65,7 +67,9 @@ export const RightSideBar = (prop) => {
         const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]; // อาร์เรย์ของวันในสัปดาห์
         const dayName = daysOfWeek[dateObject.getDay()]; // getDay() จะให้หมายเลขวัน (0-6)
         console.log("Selected day: " + dayName); // แสดงชื่อวัน
-    
+        bookingDetail.startDate = selectedDate
+        bookingDetail.endDate = selectedDate
+        setTimeSlots([])
         // ตรวจสอบว่า bookingDetail และ Business.details มีข้อมูลหรือไม่
         if (bookingDetail?.Business?.details) {
             let de = bookingDetail?.Business?.details[0];
@@ -91,6 +95,14 @@ export const RightSideBar = (prop) => {
         setTime(value); // อัปเดตค่าของเวลาใน state
     };
 
+    const getCurrentDate = () => {
+        const today = new Date();
+        const yyyy = today.getFullYear();
+        const mm = (today.getMonth() + 1).toString().padStart(2, '0'); // เดือนต้องใช้ 2 หลัก
+        const dd = today.getDate().toString().padStart(2, '0'); // วันต้องใช้ 2 หลัก
+        return `${yyyy}-${mm}-${dd}`; // รูปแบบที่ input type="date" ต้องการ
+    };
+
     return (
         <div className="flex flex-1 flex-col items-center border-solid border-gray-300 border-l-2 sticky top-0 h-screen">
             <div className="mt-7 mb-4">
@@ -114,6 +126,7 @@ export const RightSideBar = (prop) => {
                                 type="date"
                                 value={date} // แสดงค่าของ date ที่เลือก
                                 onChange={handleDateChange} // เมื่อมีการเลือกวันที่ใหม่จะอัปเดตค่า date
+                                min={getCurrentDate()}
                             />
                         )
                     ) : null // ถ้า type เป็น "event" จะไม่แสดงอะไรเลย

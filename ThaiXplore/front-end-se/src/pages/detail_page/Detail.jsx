@@ -15,6 +15,8 @@ import { useSelector } from 'react-redux';
 
 import PictureShow from '../businessmanage_page/component/picture_show';
 
+import { formatDateTime } from '../../utils/FormatDateTime';
+
 function Detail(prop) {
   const {socketRef} = prop;
   const maxLength = 200;
@@ -367,7 +369,8 @@ const Info = (prop) => {
   const { infoTitle, category } = prop;
   const { title } = useParams();
   console.log("param=>", category);
-
+  const event = ["Start Date", "End Date", "Sale Period"]
+  const hotel = ["Hotel Standard", "Total Rooms"]
   const checkCategory = () => {
     switch (category) {
       case "hotel":
@@ -381,6 +384,7 @@ const Info = (prop) => {
       default:
         return null; // หากไม่ตรงกับ category ใดๆ
     }
+
   };
 
   const isValidArray = Array.isArray(infoTitle.details) && infoTitle.details.length > 0;
@@ -406,7 +410,13 @@ const Info = (prop) => {
                 </div>
               </div>
             ) : (
-              <div className="text-[#8B4513]">{element}</div>
+              <div className="text-[#8B4513] flex-col flex">
+                <div className='font-bold'>{category == "event" ?  event[index] : ""}  </div>
+                <div className='font-bold'>{category == "hotel" && infoTitle?.informationName == "Hotel Information" ?  hotel[index] : ""}  </div>
+
+                <div>{element.includes("-") ?  formatDateTime(element, { dateOnly: true }) : element} {hotel[index] == "Hotel Standard" ? "Star" :""} </div>
+              </div>
+
             )}
 
             </div>

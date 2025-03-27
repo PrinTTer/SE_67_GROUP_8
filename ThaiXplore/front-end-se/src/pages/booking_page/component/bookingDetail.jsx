@@ -145,6 +145,8 @@ const ContentComponent = (prop) => {
                         ) : (
                             <div className={`${field === 'price' ? 'font-semibold text-amber-600' : 'text-gray-600'}`}>
                                 {field === 'price' ? `${quotation ? quotation.quotation.servicesDetails[0].price : item[field]} THB` : formatDate(field)}
+                     
+
                             </div>
                         )}
                     </div>

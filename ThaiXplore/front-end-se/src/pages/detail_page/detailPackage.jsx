@@ -26,7 +26,9 @@ const DetailPackage = () => {
       // navigate(`/user/orders/${result.orderId}`);
     } catch (error) {
       console.error("Failed to purchase package", error);
-      alert("An error occurred while purchasing the package. Please try again later");
+      alert(
+        "An error occurred while purchasing the package. Please try again later"
+      );
     } finally {
       setIsBuying(false); // ✅ Stop loading whether success or fail
     }
@@ -73,9 +75,7 @@ const DetailPackage = () => {
       <div className="flex justify-center items-center min-h-screen bg-gray-50">
         <div className="animate-pulse flex flex-col items-center">
           <div className="h-32 w-32 bg-gray-200 rounded-full mb-4"></div>
-          <div className="text-gray-400 text-xl font-light">
-            Loading...
-          </div>
+          <div className="text-gray-400 text-xl font-light">Loading...</div>
         </div>
       </div>
     );
@@ -228,15 +228,15 @@ const DetailPackage = () => {
   return (
     <div className="flex flex-col lg:flex-row bg-gray-50 min-h-screen">
       <div className="w-full lg:w-3/4 p-6 lg:p-10">
-        <div className="relative rounded-2xl overflow-hidden shadow-lg mb-8">
+        <div className="relative w-full aspect-video overflow-hidden rounded-2xl shadow-lg mb-8">
           <img
             src={
               packageData.media?.length > 0
                 ? getPackageImageUrl(packageData.media[0])
-                : huahinPoster // fallback if no image
+                : huahinPoster
             }
             alt="poster"
-            className="w-full h-auto object-cover"
+            className="w-full h-full object-cover object-center"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
           <div className="absolute bottom-0 left-0 p-8 w-full">

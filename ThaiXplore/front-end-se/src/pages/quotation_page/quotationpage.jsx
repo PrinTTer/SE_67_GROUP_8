@@ -15,6 +15,8 @@ const QuotationPage = () => {
     const [completeQuotation, setCompleteQuotation] = useState([]);
     const [loading, setLoading] = useState(false);
 
+
+    console.log("user:" , user);
     useEffect(() => {
         const socket = socketRef.current;
 

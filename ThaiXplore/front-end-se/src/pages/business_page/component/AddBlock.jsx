@@ -118,6 +118,7 @@ const Addblock = (prop) => {
                   )}
                 </div>
               </div>
+
             ))}
             <div className={`${!show ? "flex" : "hidden"}`}>
               {detail === "Day Work" ? (

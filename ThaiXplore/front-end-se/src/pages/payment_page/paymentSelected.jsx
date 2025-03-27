@@ -82,7 +82,7 @@ const PaymentSelector = () => {
                             <div className="text-gray-600">Total amount:</div>
                             <div className="text-xl font-bold text-amber-600">THB 
                             { 
-                                Array.isArray(item?.services)  ? item.quotation.total : item?.price*bookingDetail.bookingAmount
+                                Array.isArray(item?.services)  ? item.quotation.total : item?.price * bookingDetail.bookingAmount *bookingDetail.AmountDay
                             } ฿</div>
                         </div>
                     </div>

@@ -8,6 +8,7 @@ export const Service = (prop) => {
     const navigate = useNavigate();
     
     const serviceDetails = (item) => {
+        //console.log(bookingDetail)
         navigate('/booking', {
             state: { item, category, bookingDetail }
         });

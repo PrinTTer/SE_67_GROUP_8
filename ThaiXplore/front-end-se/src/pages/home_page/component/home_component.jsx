@@ -67,7 +67,7 @@ export const CategoryGrid = (prop) => {
 }
 
 export const Section = (prop) => {
-  let { title, viewType = "list" } = prop;
+  let { title, viewType = "list" ,selectedProvince ,setSelectedProvince} = prop;
   let isPackage = title === "Package";
   const [data, setData] = useState([]);
   const [pack, setPackage] = useState([]);
@@ -84,6 +84,7 @@ export const Section = (prop) => {
         const result = await fetchData("businesses");
         const verified = result.filter(item => item.verify?.status === "approved");
         setData(verified);
+        
       } catch (error) {
         setError(error.message);
       } finally {
@@ -136,22 +137,24 @@ export const Section = (prop) => {
 
   useEffect(() => {
     fetchProvince();
-    
+    console.log(title)
   }, []);
+
+  
 
   let post;
   if (isPackage) {
     post = pack;
   } else if (types.includes(title)) {
     post = getDataBusiness({ category: title, json: data });
-    
-  } else if (
-    dataProvince.some(province => province.name_th === title.trim()[0]) ||
-    dataProvince.some(province => province.name_en === title.trim()[0])
-  ) {
-    post = data.filter(item => 
-      item.address.includes(title) && item.category === title.trim()[1]
+    if(selectedProvince){
+      
+      post = post.filter(item => 
+      item.address.includes(selectedProvince)
     );
+    
+    }
+    
   } else {
     post = getBusinessbyName({ businessName: title, json: data });
     title = `${post.length} Results Found for "${title}"`;
@@ -417,7 +420,7 @@ export const PostList = (prop) => {
   );
 }
 
-export const RightBar = ({ pagetitle, filterRecommended, setFilterRecommended }) => {
+export const RightBar = ({ pagetitle, filterRecommended, setFilterRecommended , setSelectedProvince }) => {
   const isFilterEnabled = typeof setFilterRecommended === "function";
   console.log("🧪 filterRecommended:", filterRecommended); // ✅ เพิ่มบรรทัดนี้
 
@@ -451,7 +454,7 @@ export const RightBar = ({ pagetitle, filterRecommended, setFilterRecommended })
           <div className="border-l-4 border-amber-500 pl-3 mb-4">
             <h4 className="text-gray-800 font-bold">Province</h4>
           </div>
-          <ProvinceDropdown type={pagetitle}/>
+          <ProvinceDropdown setProvince={setSelectedProvince}/>
         </div>
       </div>
     </div>
@@ -473,4 +476,3 @@ const ChkBox = ({ title, group, isChecked, onChange }) => {
     </label>
   );
 };
-

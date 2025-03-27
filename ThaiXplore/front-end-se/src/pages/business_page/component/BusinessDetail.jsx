@@ -6,12 +6,12 @@ import { UploadDocumentBlock } from "./UploadDocumentBlock";
 import { Link, useNavigate } from "react-router-dom";
 import { postData, postDataWithFiles } from "../../../services/apiService";
 import { UploadImageBlock } from "./UploadImageBlock";
-import { ProvinceDropdown } from './dropDownProvince';  // ให้แน่ใจว่าคุณได้ import ProvinceDropdown ที่ถูกต้อง
+import { ProvinceDropdown } from './dropDownProvince';
 
 export const BusinessInformation = () => {
   const [category, setCategory] = useState("hotel");
   const [address, setAddress] = useState("");
-  const [province, setProvince] = useState("");
+  const [province, setProvince] = useState("Bangkok");
   const [district, setDistrict] = useState("");
   const [subDistrict, setSubDistrict] = useState("");
   const [postalCode, setPostalCode] = useState("");
@@ -30,6 +30,8 @@ export const BusinessInformation = () => {
       document: []
     }
   });
+
+  const [errors, setErrors] = useState({});
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -43,15 +45,15 @@ export const BusinessInformation = () => {
     } else if (id === "email") {
       setDataForm((prev) => ({ ...prev, email: value }));
     } else if (id === "address") {
-      setAddress((prev) => ({ ...prev, value }));
+      setAddress(value);
     } else if (id === "province") {
-      setProvince((prev) => ({ ...prev, value }));
+      setProvince(value);
     } else if (id === "district") {
-      setDistrict((prev) => ({ ...prev, value }));
+      setDistrict(value);
     } else if (id === "subDistrict") {
-      setSubDistrict((prev) => ({ ...prev, value }));
+      setSubDistrict(value);
     } else if (id === "postalCode") {
-      setPostalCode((prev) => ({ ...prev, value }));
+      setPostalCode(value);
     }
   };
 
@@ -62,12 +64,33 @@ export const BusinessInformation = () => {
   useEffect(() => {
     setDataForm((prev) => ({
       ...prev,
-      address: `${address.value},${subDistrict.value},${district.value},${province},${postalCode.value}`,
+      address: `${address}, ${subDistrict}, ${district}, ${province}, ${postalCode}`,
       category: category,
     }));
   }, [category, address, subDistrict, district, province, postalCode]);
 
+  const validate = () => {
+    const newErrors = {};
+    if (!dataForm.businessName) newErrors.businessName = "Business name is required.";
+    if (!dataForm.description) newErrors.description = "Description is required.";
+    if (!dataForm.phoneNumber) newErrors.phoneNumber = "Phone number is required.";
+    // ตรวจสอบเบอร์โทรศัพท์ให้เป็นตัวเลข 10 หลัก
+    else if (!/^\d{10}$/.test(dataForm.phoneNumber)) newErrors.phoneNumber = "Phone number must be 10 digits.";
+    
+    if (!dataForm.email || !/\S+@\S+\.\S+/.test(dataForm.email)) newErrors.email = "Valid email is required.";
+    if (!address || !district || !subDistrict || !province || !postalCode) newErrors.address = "Complete address is required.";
+    // ตรวจสอบรหัสไปรษณีย์ให้เป็นตัวเลข 5 หลัก
+    if (!/^\d{5}$/.test(postalCode)) newErrors.postalCode = "Postal code must be 5 digits.";
+    
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0; // Return true if no errors
+  };
+  
+  
+
   const onSubmit = async () => {
+    if (!validate()) return; // Stop submission if validation fails
+
     try {
       let type = category || "event";
       let topicBusines;
@@ -123,42 +146,26 @@ export const BusinessInformation = () => {
                 id="businessName"
                 className="border-[#ff6600] focus:ring-[#ff6600]"
               />
+              {errors.businessName && <div className="text-red-500">{errors.businessName}</div>}
+              
               <CreateInformation
                 title="Descriptions"
                 handleChange={handleChange}
                 id="description"
                 className="border-[#ff6600] focus:ring-[#ff6600]"
               />
+              {errors.description && <div className="text-red-500">{errors.description}</div>}
 
               <div className="bg-white border border-gray-200 rounded-lg shadow-sm">
                 <div className="px-6 py-4">
                   <div className="font-semibold text-lg mb-4 text-[#ff6600]">Category</div>
                   <div className="flex justify-between gap-4 px-8">
-                    {[
-                      { value: "hotel", icon: faBed, label: "Hotels & Resorts" },
-                      { value: "carRental", icon: faCarSide, label: "Car Rental" },
-                      { value: "restaurant", icon: faUtensils, label: "Restaurant" },
-                      { value: "event", icon: faPersonHiking, label: "Activities & Events" },
-                    ].map((item) => (
-                      <div
-                        key={item.value}
-                        onClick={() => setCategory(item.value)}
-                        className="flex flex-col items-center cursor-pointer group"
-                      >
-                        <div
-                          className={`w-16 h-16 flex items-center justify-center rounded-full transition-all duration-300
-                          ${category === item.value
-                            ? "bg-[#ff6600] text-white"
-                            : "bg-gray-100 text-gray-500 group-hover:bg-[#ffd6b0]"}
-                        `}
-                        >
+                    {[{ value: "hotel", icon: faBed, label: "Hotels & Resorts" }, { value: "carRental", icon: faCarSide, label: "Car Rental" }, { value: "restaurant", icon: faUtensils, label: "Restaurant" }, { value: "event", icon: faPersonHiking, label: "Activities & Events" }].map((item) => (
+                      <div key={item.value} onClick={() => setCategory(item.value)} className="flex flex-col items-center cursor-pointer group">
+                        <div className={`w-16 h-16 flex items-center justify-center rounded-full transition-all duration-300 ${category === item.value ? "bg-[#ff6600] text-white" : "bg-gray-100 text-gray-500 group-hover:bg-[#ffd6b0]"}`}>
                           <FontAwesomeIcon icon={item.icon} size="lg" />
                         </div>
-                        <div
-                          className={`mt-2 text-sm text-center ${
-                            category === item.value ? "text-[#ff6600]" : "text-gray-500 group-hover:text-[#ff6600]"
-                          }`}
-                        >
+                        <div className={`mt-2 text-sm text-center ${category === item.value ? "text-[#ff6600]" : "text-gray-500 group-hover:text-[#ff6600]"}`}>
                           {item.label}
                         </div>
                       </div>
@@ -167,19 +174,11 @@ export const BusinessInformation = () => {
                 </div>
               </div>
 
-              <CreateInformation
-                title="Email Contact"
-                placeholder="example@gmail.com"
-                handleChange={handleChange}
-                id="email"
-                className="border-[#ff6600] focus:ring-[#ff6600]"
-              />
-              <CreateInformation
-                title="Phone Number"
-                handleChange={handleChange}
-                id="phoneNumber"
-                className="border-[#ff6600] focus:ring-[#ff6600]"
-              />
+              <CreateInformation title="Email Contact" placeholder="example@gmail.com" handleChange={handleChange} id="email" className="border-[#ff6600] focus:ring-[#ff6600]" />
+              {errors.email && <div className="text-red-500">{errors.email}</div>}
+              
+              <CreateInformation title="Phone Number" handleChange={handleChange} id="phoneNumber" className="border-[#ff6600] focus:ring-[#ff6600]" />
+              {errors.phoneNumber && <div className="text-red-500">{errors.phoneNumber}</div>}
 
               <div className="bg-white border border-gray-200 rounded-lg shadow-sm">
                 <div className="px-6 py-4">
@@ -210,6 +209,9 @@ export const BusinessInformation = () => {
                       placeholder="Postal Code"
                     />
                   </div>
+                  {errors.address && <div className="text-red-500">{errors.address}</div>}
+                  {errors.postalCode && <div className="text-red-500">{errors.postalCode}</div>}
+
                 </div>
               </div>
 

@@ -3,12 +3,13 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 const ProvinceDropdown = (prop) => {
-  const { type } = prop;
+  const { setProvince } = prop;
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [selectedProvince, setSelectedProvince] = useState(""); // เพิ่ม state สำหรับเก็บค่าที่เลือก
-    const navi = useNavigate();
+  
+  const navi = useNavigate();
   const fetchData = async () => {
     try {
       setLoading(true);
@@ -23,14 +24,16 @@ const ProvinceDropdown = (prop) => {
     }
   };
 
+  
+
   useEffect(() => {
     fetchData();
   }, []);
 
   const handleSelectChange = (event) => {
     setSelectedProvince(event.target.value);
-    
-    navi(`/listpage/${event.target.value+" "+type}`)
+    setProvince(event.target.value);
+    //navi(`/listpage/${event.target.value}`)
   };
 
   if (loading) return <p>Loading...</p>;

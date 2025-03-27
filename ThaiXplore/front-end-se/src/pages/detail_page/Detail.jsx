@@ -306,6 +306,8 @@ const Info = (prop) => {
     }
   };
 
+  const isValidArray = Array.isArray(infoTitle.details) && infoTitle.details.length > 0;
+
   return (
     <div className="p-4 rounded-lg gap-5 mb-5 bg-[#FAFAD2] shadow-md ">
       <div className="col-span-2 border-b-2 border-[#D2691E] p-2 flex items-center font-bold text-[#6B4423]">
@@ -313,23 +315,28 @@ const Info = (prop) => {
         <span>{infoTitle.informationName}</span>
       </div>
 
-      <div className={`grid ${Array.isArray(infoTitle.details) ? "grid-cols-2" : "grid-cols-1"} gap-4 p-2`}>
-        {infoTitle.details.map((element, index) => (
-          <div key={index} className="flex items-center text-[#6B4423]">
-            {infoTitle.informationName.includes('Working') ? (
-              <div className='grid grid-cols-2 gap-3 bg-white p-3 px-5 rounded-full shadow-md'>
-                <div className="text-[#8B4513]">{element.replace(",", " ").split(" ")[0]}</div>
-                <div className="text-[#8B4513]">{element.replace(",", " ").replace(",", "-").split(" ")[1]}</div>
-              </div>
-            ) : (
-              <div className="text-[#8B4513]">{element}</div>
-            )}
-          </div>
-        ))}
+      <div className={`grid ${isValidArray ? "grid-cols-2" : "grid-cols-1"} gap-4 p-2`}>
+        {isValidArray ? (
+          infoTitle.details.map((element, index) => (
+            <div key={index} className="flex items-center text-[#6B4423]">
+              {infoTitle.informationName.includes('Working') ? (
+                <div className='grid grid-cols-2 gap-3 bg-white p-3 px-5 rounded-full shadow-md'>
+                  <div className="text-[#8B4513]">{element.replace(",", " ").split(" ")[0]}</div>
+                  <div className="text-[#8B4513]">{element.replace(",", " ").replace(",", "-").split(" ")[1]}</div>
+                </div>
+              ) : (
+                <div className="text-[#8B4513]">{element}</div>
+              )}
+            </div>
+          ))
+        ) : (
+          <div className="text-[#8B4513]">Not Found Information</div>
+        )}
       </div>
     </div>
   );
 };
+
 
 
 

@@ -4,19 +4,20 @@ import { faXmark,faCircleXmark,faCirclePlus  } from "@fortawesome/free-solid-svg
 import { postDataWithFiles , deleteData ,putData } from "../../../services/apiService";
 import { ProvinceDropdown } from './dropDownProvince';  // ให้แน่ใจว่าคุณได้ import ProvinceDropdown ที่ถูกต้อง
 
+
 export const ModalEditBusiness = (prop) => {
   const { closeModal, business, fetchBusiness } = prop;
   const [uploadImages, setUploadImages] = useState([]);
   const [form, setForm] = useState({
-    businessName: business?.businessName,
-    description: business?.description,
-    phone: business?.phoneNumber,
-    email: business?.email,
-    address: business?.address.split(",").slice(0, -4).join(" "),
-    subDistrict: business?.address.split(",").slice(-4)[0],
-    district: business?.address.split(",").slice(-4)[1],
-    province: business?.address.split(",").slice(-4)[2],
-    postalCode: business?.address.split(",").slice(-4)[3],
+    businessName: business?.businessName || '',
+    description: business?.description || '',
+    phone: business?.phoneNumber || '',
+    email: business?.email || '',
+    address: business?.address?.split(",").slice(0, -4).join(" ") || '',
+    subDistrict: business?.address?.split(",").slice(-4)[0] || '',
+    district: business?.address?.split(",").slice(-4)[1] || '',
+    province: business?.address?.split(",").slice(-4)[2] || '',
+    postalCode: business?.address?.split(",").slice(-4)[3] || '',
   });
 
   const [errors, setErrors] = useState({});
@@ -45,12 +46,55 @@ export const ModalEditBusiness = (prop) => {
 
   const validateForm = () => {
     const newErrors = {};
-    // Validate logic for form inputs
-    if (!form.province.trim()) {
-      newErrors.province = "Province cannot be empty.";
+
+    // Validate Business Name
+    if (!form.businessName?.trim()) {
+      newErrors.businessName = "Business name is required.";
     }
+
+    // Validate Email
+    const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+    if (!form.email?.trim()) {
+      newErrors.email = "Email is required.";
+    } else if (!emailPattern.test(form.email)) {
+      newErrors.email = "Invalid email format.";
+    }
+
+    // Validate Phone Number
+    const phonePattern = /^[0-9]{10}$/; // ตรวจสอบเบอร์โทรศัพท์ 10 หลัก
+    if (!form.phone?.trim()) {
+      newErrors.phone = "Phone number is required.";
+    } else if (!phonePattern.test(form.phone)) {
+      newErrors.phone = "Invalid phone number format.";
+    }
+
+    // Validate Address
+    if (!form.address?.trim()) {
+      newErrors.address = "Address is required.";
+    }
+
+    // Validate Province
+    if (!form.province?.trim()) {
+      newErrors.province = "Province is required.";
+    }
+
+    // Validate Sub District
+    if (!form.subDistrict?.trim()) {
+      newErrors.subDistrict = "Sub district is required.";
+    }
+
+    // Validate District
+    if (!form.district?.trim()) {
+      newErrors.district = "District is required.";
+    }
+
+    // Validate Postal Code
+    if (!form.postalCode?.trim()) {
+      newErrors.postalCode = "Postal code is required.";
+    }
+
     setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    return Object.keys(newErrors).length === 0; // ถ้าไม่มี error คืนค่า true
   };
 
   const handleSaveChanges = async () => {
@@ -72,8 +116,8 @@ export const ModalEditBusiness = (prop) => {
       email: form.email,
       address: updatedAddress,
     };
-    console.log(updatedForm)
-    try { 
+
+    try {
       const response = await putData(`/businesses/${business._id}`, updatedForm);
       if (response) {
         fetchBusiness();  // Refresh data
@@ -106,6 +150,7 @@ export const ModalEditBusiness = (prop) => {
               value={form.businessName}
               onChange={handleInputChange}
             />
+            {errors.businessName && <div className="text-red-500 text-sm">{errors.businessName}</div>}
           </div>
 
           {/* Address, Sub District, District, Province, Postal Code */}
@@ -187,6 +232,7 @@ export const ModalEditBusiness = (prop) => {
     </div>
   );
 };
+
 
 
 export const ModalEditImage = (prop) => {

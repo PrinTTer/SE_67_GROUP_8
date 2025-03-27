@@ -29,7 +29,7 @@ const MainBusiness = () => {
     <div className="min-h-screen bg-gray-100 w-full">
       <div className="container mx-auto px-4 py-8">
         <div className="bg-white shadow-md rounded-lg overflow-hidden">
-          <div className="bg-[#ff6600] text-white px-6 py-4">
+          <div className="bg-gradient-to-r from-amber-500 to-amber-600 text-white px-6 py-4">
             <div className="text-2xl font-bold">My Business</div>
           </div>
           

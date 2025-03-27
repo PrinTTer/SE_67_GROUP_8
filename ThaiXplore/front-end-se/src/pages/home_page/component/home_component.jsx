@@ -394,8 +394,8 @@ export const PostList = (prop) => {
 }
 
 export const RightBar = ({ pagetitle, filterRecommended, setFilterRecommended }) => {
-
-  // const { pagetitle } = prop;
+  const isFilterEnabled = typeof setFilterRecommended === "function";
+  console.log("🧪 filterRecommended:", filterRecommended); // ✅ เพิ่มบรรทัดนี้
 
   return (
     <div className="hidden lg:flex flex-col gap-6 py-6 px-4 bg-gray-50 border-l border-gray-200 lg:sticky lg:top-0 h-screen w-80">
@@ -413,10 +413,13 @@ export const RightBar = ({ pagetitle, filterRecommended, setFilterRecommended })
             <ChkBox
               title="Recommended"
               group="Recommended"
-              isChecked={filterRecommended}
-              onChange={() => setFilterRecommended(prev => !prev)}
+              isChecked={!!filterRecommended}
+              onChange={() => {
+                if (isFilterEnabled) {
+                  setFilterRecommended(prev => !prev);
+                }
+              }}
             />
-
           </form>
         </div>
 
@@ -429,13 +432,14 @@ export const RightBar = ({ pagetitle, filterRecommended, setFilterRecommended })
       </div>
     </div>
   );
-}
+};
+
 
 const ChkBox = ({ title, group, isChecked, onChange }) => {
   return (
     <label className="flex items-center gap-3 py-1 px-2 rounded hover:bg-gray-100 cursor-pointer transition-colors">
       <input
-        type="radio"
+        type="checkbox"
         name={group}
         checked={isChecked}
         onChange={onChange}

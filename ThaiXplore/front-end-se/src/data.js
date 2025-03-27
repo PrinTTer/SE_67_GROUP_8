@@ -260,13 +260,13 @@ const topic =[
     },
     { 
         "type" : "carRental",
-        "Working Date Information" : ["Date", "Time"],
+        "Working Date Information" : "Day Work",
         "Car details" :["Brand","Price","Amount Seat","Image"],
         "Description" : "description"
     },
     {
         "type" : "restaurant",
-        "Working Date Information" : ["Date", "Time"],
+        "Working Date Information" : "Day Work",
         "Course details" :["Course Name", "Price", "Menu List","Amount","Image"],
         "Description" : "description"
     }

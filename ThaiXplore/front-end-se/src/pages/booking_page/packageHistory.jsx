@@ -96,10 +96,10 @@ const PackageHistory = () => {
                         >
                             {/* Image Section */}
                             <div className="w-1/3 relative">
-                                {pkg.image ? (
+                                {pkg?.image ? (
                                     <img 
-                                        src={pkg.image} 
-                                        alt={pkg.name} 
+                                        src={pkg?.image} 
+                                        alt={pkg?.name} 
                                         className="w-full h-full object-cover"
                                     />
                                 ) : (
@@ -126,7 +126,7 @@ const PackageHistory = () => {
                                     >
                                         {user?.packages[index]?.status.charAt(0).toUpperCase() + user?.packages[index]?.status.slice(1)}
                                     </span>
-                                    {user.packages[index]?.status === "unused" ? (
+                                    {user?.packages[index]?.status === "unused" ? (
                                         <span 
                                             className={"px-3 py-1 bg-amber-100 text-amber-800 rounded-full text-sm font-medium hover:cursor-pointer hover:bg-amber-200 hover:shadow-md"}
                                             onClick={()=>handlePackage(user?.packages[index])}
@@ -140,11 +140,11 @@ const PackageHistory = () => {
                                 {/* Package Details */}
                                 <div className="bg-gray-50 rounded-lg p-4 mb-4 border border-gray-200">
                                     <h3 className="text-lg font-medium text-gray-700">
-                                        {pkg.description}
+                                        {pkg?.description}
                                     </h3>
                                     <div className="text-gray-600">
                                         <div className="flex justify-between">
-                                            <p>Expiration Date: {new Date(user.packages[index]?.expirationDate).toLocaleDateString()}</p>
+                                            <p>Expiration Date: {new Date(user?.packages[index]?.expirationDate).toLocaleDateString()}</p>
                                         </div>
                                     </div>
                                 </div>

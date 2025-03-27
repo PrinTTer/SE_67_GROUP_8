@@ -695,20 +695,22 @@ console.log("allServices",allServices);
 };
 
 const renderServiceName = (s) => {
-  console.log("=====>",s);
+  const showAmount = s.quotationId ? ` (${s.remainingAmount})` : "";
+
   switch (s.businessCategory) {
     case "hotel":
-      return `Room ${s.roomType} (${s.guestAmount} guests)  (${s.remainingAmount})`;
+      return `Room ${s.roomType} (${s.guestAmount} guests)${showAmount}`;
     case "carRental":
-      return `Car ${s.carBrand} (${s.amountSeat} seats) (${s.remainingAmount})`;
+      return `Car ${s.carBrand} (${s.amountSeat} seats)${showAmount}`;
     case "event":
       return `Ticket ${s.ticketType} - ${new Date(
         s.eventDate
-      ).toLocaleDateString("en-US")} (${s.remainingAmount})`;
+      ).toLocaleDateString("en-US")}${showAmount}`;
     case "course":
     case "restaurant":
-      return `Course ${s.courseName} (${s.remainingAmount})`;
+      return `Course ${s.courseName}${showAmount}`;
     default:
-      return `Service ID: ${s._id} (${s.remainingAmount})`;
+      return `Service ID: ${s._id}${showAmount}`;
   }
 };
+

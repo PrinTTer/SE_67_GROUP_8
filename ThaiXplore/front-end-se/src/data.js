@@ -375,15 +375,14 @@ export const getDataBusiness = ({category , json}) =>{
     
     }
 
-    export const getBusinessbyProvince = ({province , json}) =>{
-    
-    
-        return Object.values(json).filter(
-            item => item.address.toLowerCase().includes(province.toLowerCase())
+    export const getBusinessbyProvince = ({ province, json }) => {
+        if (!province || typeof province !== "string") return [];
+      
+        return json.filter((item) =>
+          item?.address?.toLowerCase().includes(province.toLowerCase())
         );
-        
-    
-    }
+      };
+      
 
 
 

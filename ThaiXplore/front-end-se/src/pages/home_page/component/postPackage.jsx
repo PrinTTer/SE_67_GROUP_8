@@ -18,7 +18,7 @@ export const PostCardPackage = ({ name, id, description, date, media }) => {
 
             <div className="w-full h-full overflow-hidden rounded-l-lg">
               <img
-                src={`http://localhost:3000/public/uploads/businesses/images/${media[0]}`}
+                src={`http://localhost:3000/public/uploads/services/packages/${media[0]}`}
                 alt="main-img"
                 className="w-full h-full object-cover"
 

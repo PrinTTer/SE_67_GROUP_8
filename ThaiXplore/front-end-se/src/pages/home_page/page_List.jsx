@@ -21,6 +21,7 @@ function ListPage() {
         </div>
       </div>
 
+    <div>
       {/* RIGHT SIDE */}
       <RightBar
         pagetitle={title}
@@ -29,6 +30,7 @@ function ListPage() {
         setSelectedProvince={setSelectedProvince}
       />
     </div>
+    </>
   );
 }
 

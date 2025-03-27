@@ -1,4 +1,4 @@
-import { faCalendarAlt, faClipboardCheck, faImage, faMoneyBillWave } from "@fortawesome/free-solid-svg-icons";
+import { faCalendarAlt, faClipboardCheck, faImage, faMoneyBillWave, faClock } from "@fortawesome/free-solid-svg-icons"; // เพิ่ม faClock
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
 import { fetchData } from "../../../services/apiService";
@@ -160,6 +160,7 @@ export const BusinessBookingPage = (prop) => {
 
 export default BusinessBookingPage;
 
+// ฟังก์ชันที่ใช้แปลงหมวดหมู่เป็นชื่อไฟล์
 const checkService = (categoryForImage) => {
     const categoryMap = {
         "hotel": "rooms",
@@ -170,6 +171,15 @@ const checkService = (categoryForImage) => {
     return categoryMap[categoryForImage] || categoryForImage;
 };
 
+const formatFieldLabel = (field) => {
+    return field
+        .replace(/([A-Z])/g, ' $1')  // แทรกช่องว่างก่อนตัวพิมพ์ใหญ่
+        .replace(/^./, str => str.toUpperCase()); // ตัวอักษรแรกให้เป็นตัวพิมพ์ใหญ่
+};
+
+
+
+// ฟังก์ชันที่ใช้ดึงข้อมูลหัวข้อ
 const getTopic = (category) => {
     const topicMap = {
         'roomType': ['roomType', 'guestAmount', 'roomSize', 'price', 'facilities'],
@@ -180,18 +190,7 @@ const getTopic = (category) => {
     return topicMap[category] || [];
 };
 
-const formatFieldName = (field) => {
-    return field
-        .charAt(0).toUpperCase() +
-        field.slice(1).replace(/([A-Z])/g, ' $1');
-};
-
-const formatFieldLabel = (field) => {
-    return field
-        .replace(/([A-Z])/g, ' $1')
-        .replace(/^./, str => str.toUpperCase());
-};
-
+// ฟังก์ชันแสดงข้อมูล Service
 function renderServiceDetails(service) {
     const matchedFields = findAllServiceFields(service);
     const topicFields = getTopic(matchedFields[0]);
@@ -206,32 +205,33 @@ function renderServiceDetails(service) {
     return (
         <div className="bg-white rounded-lg border border-gray-100 shadow-sm p-5 space-y-4">
             {matchedFields.map((field) => {
-                const formattedLabel = formatFieldLabel(field);
-                const fieldValue = service[field];
+    const formattedLabel = formatFieldLabel(field);  // เรียกใช้ฟังก์ชันนี้เพื่อแสดงชื่อที่มีการเว้นวรรคและตัวพิมพ์ใหญ่
+    const fieldValue = service[field];
 
-                return (
-                    <div key={field} className="space-y-3">
-                        <div className="space-y-3">
-                            {topicFields.map((topicField, topicIndex) => (
-                                topicField !== 'price' && (
-                                    <div
-                                        key={topicIndex}
-                                        className="bg-gray-50 rounded-lg p-4 transition-all duration-200 hover:bg-gray-100"
-                                    >
-                                        <div className="text-sm font-medium text-gray-600 mb-2 flex items-center">
-                                            {isDateTimeField(topicField) && (
-                                                <FontAwesomeIcon icon={faClock} className="mr-2 text-amber-600" />
-                                            )}
-                                            {formatFieldName(topicField)}
-                                        </div>
-                                        {renderTopicContent(service[topicField], topicField)}
-                                    </div>
-                                )
-                            ))}
+    return (
+        <div key={field} className="space-y-3">
+            <div className="space-y-3">
+                {topicFields.map((topicField, topicIndex) => (
+                    topicField !== 'price' && (
+                        <div
+                            key={topicIndex}
+                            className="bg-gray-50 rounded-lg p-4 transition-all duration-200 hover:bg-gray-100"
+                        >
+                            <div className="text-sm font-medium text-gray-600 mb-2 flex items-center">
+                                {isDateTimeField(topicField) && (
+                                    <FontAwesomeIcon icon={faClock} className="mr-2 text-amber-600" />
+                                )}
+                                {formattedLabel}  {/* แสดงชื่อฟิลด์ที่ผ่านการจัดการแล้ว */}
+                            </div>
+                            {renderTopicContent(service[topicField], topicField)}
                         </div>
-                    </div>
-                );
-            })}
+                    )
+                ))}
+            </div>
+        </div>
+    );
+})}
+
         </div>
     );
 }
@@ -241,8 +241,8 @@ function findAllServiceFields(service) {
     return fieldsToCheck.filter((field) => field in service);
 }
 
+// ฟังก์ชันจัดการการแสดงผลของแต่ละฟิลด์
 const renderTopicContent = (content, topicField) => {
-    //console.log("What is content",content, topicField);
     const isDateTimeField = (field) => {
         const dateTimeKeywords = ['date', 'time', 'start', 'end', 'datetime'];
         return dateTimeKeywords.some(keyword =>
@@ -273,6 +273,4 @@ const renderTopicContent = (content, topicField) => {
             {isDateTimeField(topicField) ? formatDateTime(content, { dateOnly: true }) : content}
         </div>
     );
-
-
 };

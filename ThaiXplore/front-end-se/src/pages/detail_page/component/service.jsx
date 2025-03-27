@@ -2,11 +2,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBed } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from "react";
+import { useSelector } from 'react-redux';
+
 
 export const Service = (prop) => {
     const { title, category, id, bookingDetail } = prop;
     const navigate = useNavigate();
-    
+    const { user } = useSelector((state) => state.auth);
     const serviceDetails = (item) => {
         //console.log(bookingDetail)
         navigate('/booking', {
@@ -17,6 +19,9 @@ export const Service = (prop) => {
     let Topic = getTopic(category);
     const [service, setService] = useState();
     const [head, setHead] = useState([]);
+    
+
+   
 
     useEffect(() => {
         switch(category){
@@ -123,12 +128,17 @@ export const Service = (prop) => {
                         </div>
                     ))}
 
-                    <div className="flex justify-end items-center font-bold col-span-3">
-                        <button onClick={() => serviceDetails(item)} 
-                            className="border border-[#FFA500] py-2 px-6 rounded-2xl bg-[#FFA500] text-white cursor-pointer hover:bg-[#FFD700] hover:text-[#8B4513]">
-                            Choose
-                        </button>   
-                    </div> 
+{(user.role === "tourist" ) && (
+  <div className="flex justify-end items-center font-bold col-span-3">
+    <button
+      onClick={() => serviceDetails(item)}
+      className="border border-[#FFA500] py-2 px-6 rounded-2xl bg-[#FFA500] text-white cursor-pointer hover:bg-[#FFD700] hover:text-[#8B4513]"
+    >
+      Choose
+    </button>
+  </div>
+)}
+ 
                 </div>
             ))}
         </div>

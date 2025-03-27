@@ -22,14 +22,18 @@ function ListPage() {
         />
       </div>
 
+    <div>
+      {/* RIGHT SIDE */}
       <RightBar
         pagetitle={title}
         filterRecommended={filterRecommended}
         setFilterRecommended={setFilterRecommended}
         setSelectedProvince={setSelectedProvince}
       />
+    </div>
     </>
   );
 }
 
 export default ListPage;
+

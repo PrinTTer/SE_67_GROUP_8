@@ -353,7 +353,9 @@ function Detail(prop) {
       </div>
 
       {/* Right Bar */}
-      <RightSideBar type={data?.business?.category} bookingDetail={bookingDetail} />
+      {(user?.role === "tourist") && (
+  <RightSideBar type={data?.business?.category} bookingDetail={bookingDetail} />
+)}
 
     </>
   )

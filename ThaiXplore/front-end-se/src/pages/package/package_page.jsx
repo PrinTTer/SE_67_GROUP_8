@@ -91,6 +91,13 @@ const PackagePage = () => {
     <div className="flex flex-5 w-full bg-gray-50 min-h-screen">
       <div className="flex-1 p-6 lg:p-10">
         <div className="max-w-7xl mx-auto">
+          <div className="bg-white px-6 rounded-lg shadow-sm">
+            <div className=" py-4 mb-4 border-b border-gray-100 flex items-center justify-between">
+              <h2 className="text-2xl font-bold text-gray-800 flex items-center capitalize">
+                <span className="inline-block w-1 h-6 bg-amber-500 mr-3 "></span>
+                package
+              </h2>
+            </div>
           {isLoading ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
               {Array.from({ length: 6 }).map((_, index) => (
@@ -179,6 +186,8 @@ const PackagePage = () => {
               )}
             </>
           )}
+          </div>
+          
         </div>
       </div>
       <RightBar pagetitle="package" />

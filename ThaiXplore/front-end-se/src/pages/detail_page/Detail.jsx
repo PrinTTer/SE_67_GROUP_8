@@ -319,14 +319,19 @@ const Info = (prop) => {
         {isValidArray ? (
           infoTitle.details.map((element, index) => (
             <div key={index} className="flex items-center text-[#6B4423]">
-              {infoTitle.informationName.includes('Working') ? (
-                <div className='grid grid-cols-2 gap-3 bg-white p-3 px-5 rounded-full shadow-md'>
-                  <div className="text-[#8B4513]">{element.replace(",", " ").split(" ")[0]}</div>
-                  <div className="text-[#8B4513]">{element.replace(",", " ").replace(",", "-").split(" ")[1]}</div>
+            {infoTitle.informationName.includes('Working') ? (
+              <div className='grid grid-cols-2 gap-3 bg-white p-3 px-5 rounded-full shadow-md'>
+                <div className="text-[#8B4513]">
+                  {element && typeof element === 'string' ? element.replace(",", " ").split(" ")[0] : ""}
                 </div>
-              ) : (
-                <div className="text-[#8B4513]">{element}</div>
-              )}
+                <div className="text-[#8B4513]">
+                  {element && typeof element === 'string' ? element.replace(",", " ").replace(",", "-").split(" ")[1] : ""}
+                </div>
+              </div>
+            ) : (
+              <div className="text-[#8B4513]">{element}</div>
+            )}
+
             </div>
           ))
         ) : (

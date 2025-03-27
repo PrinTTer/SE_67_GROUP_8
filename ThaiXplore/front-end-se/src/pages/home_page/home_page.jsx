@@ -6,9 +6,9 @@ const HomePage = () => {
     console.log("🧪 filterRecommended:", filterRecommended); // ✅ เพิ่มบรรทัดนี้
 
     return (
-      <div className="flex flex-5 w-full bg-gray-50 min-h-[1200px]">
+      <div className="flex flex-5 w-full bg-gray-50 min-h-screen">
         <div className="flex-1 p-6 lg:p-10">
-        <div className="w-full mx-auto">
+        <div className="max-w-7xl mx-auto">
           {filterRecommended ? (
             <Section title="Recommended" viewType="list" />
           ) : (

@@ -8,10 +8,14 @@ function ListPage() {
 
   return (
     <div className="flex flex-5 w-full bg-gray-50 min-h-screen">
+      {/* LEFT SIDE */}
       <div className="flex-1 p-6 lg:p-10">
-        <Section title={filterRecommended ? "Recommended" : title} />
+        <div className="max-w-7xl mx-auto">
+          <Section title={filterRecommended ? "Recommended" : title} />
+        </div>
       </div>
 
+      {/* RIGHT SIDE */}
       <RightBar
         pagetitle="listpage"
         filterRecommended={filterRecommended}

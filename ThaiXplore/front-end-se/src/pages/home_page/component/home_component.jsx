@@ -100,7 +100,8 @@ export const Section = (prop) => {
       setLoading(true);
       try {
         const result = await fetchData("packages");
-        setPackage(result);
+        const result2 = result.filter((item)=>(item.totalPackage-item.packageTransactionHistory.length)>0);
+        setPackage(result2);
       } catch (error) {
         setError(error.message);
       } finally {

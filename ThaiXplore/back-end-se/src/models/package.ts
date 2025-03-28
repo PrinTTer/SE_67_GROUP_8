@@ -27,7 +27,8 @@ const PackageSchema = new mongoose.Schema({
             amount : {type : String , require : true},
             totalPrice : {type : Number , require : true}
         }
-    ]
+    ],
+    status : {type : String , require : true},
 });
 
 export const PackageModel = mongoose.model("Packages" , PackageSchema);

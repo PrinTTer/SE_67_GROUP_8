@@ -185,12 +185,18 @@ export const buyPackages = async (req: express.Request, res: express.Response): 
 
         if (!packageId || !amount) {
             return res.sendStatus(400);
-        }
+        } 
 
         const dateNow = new Date();
         const packages = await getPackageById(packageId);
 
         if (!packages) {
+            return res.sendStatus(400);
+        }
+
+        const remainingAmount = packages.totalPackage - packages.packageTransactionHistory.length;
+
+        if(amount > remainingAmount) {
             return res.sendStatus(400);
         }
 

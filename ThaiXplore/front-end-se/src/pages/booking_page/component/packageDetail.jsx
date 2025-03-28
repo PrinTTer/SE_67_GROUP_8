@@ -4,7 +4,7 @@ import { faImage, faBoxArchive } from '@fortawesome/free-solid-svg-icons';
 const PackageDetail = (prop) => {
     const { item, category } = prop;
     const services = item?.services;
-
+    console.log("item in package",item);
     const formatFieldName = (field) => {
         return field
             .charAt(0).toUpperCase() + 

@@ -44,9 +44,11 @@ const BookingForm = (prop) => {
         if (!phoneNumber) formErrors.phoneNumber = "Phone Number is required";
         else if (!/^[0-9]{10}$/.test(phoneNumber)) formErrors.phoneNumber = "Phone number must be in format xxx-xxxx-xxxx";
         if (!checkInDate) formErrors.checkInDate = "Check-in Date is required";
-        if (!checkOutDate) formErrors.checkOutDate = "Check-out Date is required";
-        if (checkInDate && checkOutDate && new Date(checkInDate) > new Date(checkOutDate)) {
-            formErrors.checkOutDate = "Check-out Date must be later than Check-in Date";
+        if (category !== "package") {
+            if (!checkOutDate) formErrors.checkOutDate = "Check-out Date is required";
+            if (checkInDate && checkOutDate && new Date(checkInDate) > new Date(checkOutDate)) {
+                formErrors.checkOutDate = "Check-out Date must be later than Check-in Date";
+            }
         }
 
         setErrors(formErrors);
@@ -97,7 +99,7 @@ const BookingForm = (prop) => {
                         {
                             serviceId: item?.packages?._id,  // serviceId ที่เกี่ยวข้องกับ booking
                             startDate: new Date(checkInDate).toISOString(),
-                            endDate: new Date(checkOutDate).toISOString(),
+                            endDate: category === "package" ? new Date(checkInDate).toISOString() : new Date(checkOutDate).toISOString(),
                             amount: "1"  // ปรับจาก bookingDetail.bookingAmount เป็น service?.bookingAmount
                         }
                     ]

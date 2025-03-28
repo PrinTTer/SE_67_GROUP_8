@@ -15,6 +15,8 @@ const PaymentSelector = () => {
     const navigate = useNavigate();
 
 
+
+
     const handleSelect = (selectedMethod) => {
         
         setMethod(selectedMethod);  // Set the method (either "credit card" or "paypal")
@@ -24,7 +26,9 @@ const PaymentSelector = () => {
     return (
         <>
             <div className="flex flex-[1.2]">
-                <BookingDetail item={item} category={category} />
+                {
+                    bookingDetail?.type === "package" ? <PackageDetail item={item} category={category} /> : <BookingDetail item={item} category={category} />
+                }
             </div>
             <div className="flex flex-[3.8] bg-gray-50">
                 <div className="flex flex-1 flex-col w-full bg-white border border-gray-100 rounded-lg shadow-lg p-8 m-8">
@@ -82,7 +86,7 @@ const PaymentSelector = () => {
                             <div className="text-gray-600">Total amount:</div>
                             <div className="text-xl font-bold text-amber-600">THB 
                             { 
-                                Array.isArray(item?.services)  ? item.quotation.total : item?.price * bookingDetail.bookingAmount *bookingDetail.AmountDay
+                                bookingDetail.type === "package" ? bookingDetail?.package[bookingDetail?.package.length - 2]?.price : Array.isArray(item?.services)  ? item.quotation.total : item?.price * bookingDetail.bookingAmount *bookingDetail.AmountDay
                             } ฿</div>
                         </div>
                     </div>

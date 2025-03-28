@@ -2,12 +2,15 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import huahinPoster from "../../assets/huahin_desktop.jpg";
 import { fetchData, postData } from "../../services/apiService";
+import { useSelector } from "react-redux";
 
 const DetailPackage = () => {
   const navigate = useNavigate();
+  const { user } = useSelector((state) => state.auth);
   const { id } = useParams();
   const [packageData, setPackageData] = useState(null);
   const [mergedServices, setMergedServices] = useState([]);
+  const [servicesMerge, setServicesMerge] = useState([]);
   const [isBuying, setIsBuying] = useState(false); // ✅ Added loading state
   const packageAmount = packageData?.totalPackage-packageData?.packageTransactionHistory.length
 
@@ -23,10 +26,30 @@ const DetailPackage = () => {
         amount: 1,
         paymentMethod: "credit card",
       };
+      const bookingData = {
+        checkInDate: Date.now(),
+        checkOutDate: Date.now(),
+        description: packageData.description,
+        email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        phoneNumber: user.phoneNumber,
+      }
+      const item = {
+        services : servicesMerge?.filter((item , index) => index < servicesMerge.length-2),
+      }
+      console.log("item",item);
+      const category = servicesMerge[servicesMerge.length-1]?.business?.category;
+      console.log("category",category);
+      const bookingDetail = {
+        user_Id: user._id,
+        bookingAmount: 1,
+        type: "package",
+        total : packageData.price,
+        package : servicesMerge
+      }
+      navigate("/paymentSelector", { state: { bookingData, item, category, bookingDetail } });
 
-      const result = await postData("/users/packages", body);
-
-      alert("Package purchased successfully!");
       // If you want to navigate to another page after successful purchase:
       // navigate(`/user/orders/${result.orderId}`);
     } catch (error) {
@@ -44,7 +67,8 @@ const DetailPackage = () => {
       try {
         const pkg = await fetchData(`/packages/${id}`);
         setPackageData(pkg);
-
+        const packagebussiness = await fetchData(`/businesses/${pkg?.businessId}`);
+  
         const businessIds = [...new Set(pkg.services.map((s) => s.businessId))];
         const businessList = await Promise.all(
           businessIds.map((id) => fetchData(`/businesses/${id}`))
@@ -56,6 +80,7 @@ const DetailPackage = () => {
             businessId: b.business._id,
             businessName: b.business.businessName,
             businessCategory: b.business.category,
+            
           }))
         );
 
@@ -65,8 +90,16 @@ const DetailPackage = () => {
           );
           return { ...s, ...matched };
         });
-
-        setMergedServices(fullServices);
+        setMergedServices(pkg.services.map((s) => {
+          const matched = allBusinessServices.find(
+            (b) => b._id === s.serviceId
+          );
+          return { ...s, ...matched };
+        }));
+        fullServices.push(pkg);
+        fullServices.push(packagebussiness);
+        console.log("service",fullServices)
+        setServicesMerge(fullServices);
       } catch (error) {
         console.error("Error loading data:", error);
       }
@@ -240,7 +273,7 @@ const DetailPackage = () => {
             src={
               packageData.media?.length > 0
                 ? getPackageImageUrl(packageData.media[0])
-                : huahinPoster
+                : "https://placehold.co/700x700?text=No+Image"
             }
             alt="poster"
             className="w-svw h-svh object-cover object-center"
@@ -258,7 +291,7 @@ const DetailPackage = () => {
               </p>
               <div className="h-4 w-px bg-gray-300"></div>
               <p className="text-sm font-medium bg-amber-500/90 text-white px-4 py-1 rounded-full">
-                Remaining : {packageData.totalPackage-packageData.packageTransactionHistory.length} Package
+                Remaining : {packageAmount} Package
               </p>
             </div>
           </div>

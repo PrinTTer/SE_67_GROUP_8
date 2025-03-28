@@ -133,7 +133,7 @@ export const ModalEditBusiness = (prop) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50 p-4">
+    <div className="fixed inset-0 bg-[rga(0,0,0,0.5)] bg-opacity-40 flex justify-center items-center z-50 p-4">
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto transform transition-all duration-300 ease-in-out">
         <div className="bg-gradient-to-r from-indigo-50 to-blue-50 p-6 rounded-t-2xl border-b border-gray-100 flex justify-between items-center">
           <h2 className="text-3xl font-light text-gray-800">Edit Business Details</h2>
@@ -262,7 +262,7 @@ export const ModalEditImage = (prop) => {
  }
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-30 flex justify-center items-center z-50 p-4">
+    <div className="fixed inset-0 bg-[rga(0,0,0,0.5)] bg-opacity-30 flex justify-center items-center z-50 p-4">
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto transform transition-all duration-300 ease-in-out">
         {/* ส่วนของเนื้อหาใน Modal */}
         <div className="p-6 flex flex-col">

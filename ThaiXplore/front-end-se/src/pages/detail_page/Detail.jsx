@@ -52,7 +52,9 @@ function Detail(prop) {
       setLoading(true);
       const data_format = await fetchData(`/businesses/${id}`);
       const pkgData = await fetchData(`/packages/business/${id}`);
-      setPackages(pkgData);
+      const pkgData2 = pkgData.filter((item)=>(item.totalPackage-item.packageTransactionHistory.length)>0);
+
+      setPackages(pkgData2);
       setData(data_format);
 
       setMedia(data_format?.business?.media)
@@ -83,7 +85,7 @@ function Detail(prop) {
       : null;
   
     return (
-      <div className="p-4 rounded-lg gap-5 mb-5 bg-yellow-50 shadow-md border border-gray-300">
+      <div className="p-4 rounded-lg gap-5 mb-5 bg-[#FAFAD2] shadow-md">
         {imageUrl && (
           <div className="mb-4 rounded-lg overflow-hidden">
             <img
@@ -94,35 +96,44 @@ function Detail(prop) {
           </div>
         )}
   
-        <div className="border-b-2 p-2 flex items-center font-bold mb-4">
-          <FontAwesomeIcon icon={faBed} className="mr-3 text-lg" />
+        <div className="col-span-2 border-b-2 border-[#D2691E] p-2 flex items-center font-bold text-[#6B4423]">
+          <FontAwesomeIcon icon={faBed} className="mr-3 text-lg text-[#D2691E]" />
           <span>{item.title}</span>
         </div>
   
         <div className="grid grid-cols-2 gap-4 p-2">
-          <div className="flex items-center">
-            <FontAwesomeIcon icon={faStar} className="mr-3 text-lg" />
-            <strong>Price:</strong> ฿{item.price}
+          <div className="text-[#8B4513] flex flex-col">
+            <div className="font-bold">Price</div>
+            <div>฿{item.price}</div>
           </div>
-          <div className="flex items-center">
-            <FontAwesomeIcon icon={faStar} className="mr-3 text-lg" />
-            <strong>Quantity:</strong> {item.totalPackage}
+          <div className="text-[#8B4513] flex flex-col">
+            <div className="font-bold">Total Quantity</div>
+            <div>{item.totalPackage}</div>
           </div>
-          <div className="flex items-center">
-            <FontAwesomeIcon icon={faStar} className="mr-3 text-lg" />
-            <strong>Valid:</strong> {item.totalExpirationDate} days
+          <div className="text-[#8B4513] flex flex-col">
+            <div className="font-bold">Valid Period</div>
+            <div>{item.totalExpirationDate} days</div>
           </div>
-          <div className="flex items-center">
-            <FontAwesomeIcon icon={faStar} className="mr-3 text-lg" />
-            <strong>Period:</strong> {new Date(item.startDate).toLocaleDateString()} - {new Date(item.endDate).toLocaleDateString()}
+          <div className="text-[#8B4513] flex flex-col">
+            <div className="font-bold">Date Range</div>
+            <div>
+              {formatDateTime(item.startDate, { dateOnly: true })} - {formatDateTime(item.endDate, { dateOnly: true })}
+            </div>
+          </div>
+          <div className="text-[#8B4513] flex flex-col">
+            <div className="font-bold">Remaining Packages</div>
+            <div>{item.totalPackage - item.packageTransactionHistory.length}</div>
           </div>
         </div>
   
         <div className="mt-4">
-          <p className="text-gray-600 mb-4">{item.description}</p>
+          <div className="text-[#8B4513]">
+            <div className="font-bold">Description</div>
+            <p>{item.description}</p>
+          </div>
         </div>
   
-        <div className="flex justify-end">
+        <div className="flex justify-end mt-4">
           <Link
             to={`/detailpackage/${item._id}`}
             className="flex gap-2 mt-1 shadow-md rounded-full h-8 w-auto justify-center items-center p-5 mr-2 bg-blue-400 text-white font-bold"

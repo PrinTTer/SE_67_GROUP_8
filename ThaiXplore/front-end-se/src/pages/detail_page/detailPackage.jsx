@@ -17,7 +17,7 @@ const DetailPackage = () => {
 
   const handleBuyPackage = async () => {
     try {
-      setIsBuying(true); // ✅ Start loading
+      setIsBuying(true); // Start loading
       const body = {
         packageId: packageData._id,
         amount: 1,

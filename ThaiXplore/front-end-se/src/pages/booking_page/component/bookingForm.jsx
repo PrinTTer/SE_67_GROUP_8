@@ -149,17 +149,16 @@ const BookingForm = (prop) => {
                                                 onChange={bookingDetail.time}  // เปลี่ยนค่า time ใน bookingDetail
                                                 error={errors.checkOutDate}
                                             />
-                                        ):(
-                                             <TextField
-                                                label="Check-out Date"
-                                                type="date"
-                                                icon="📅"
-                                                value={checkOutDate}
-                                                onChange={(e) => setCheckOutDate(e.target.value)}
-                                                error={errors.checkOutDate}
-                                            />      
-                                        )
-                                    }
+                                        ): category !== "package" ? (
+                                                <TextField
+                                                    label="Check-out Date"
+                                                    type="date"
+                                                    icon="📅"
+                                                    value={checkOutDate}
+                                                    onChange={(e) => setCheckOutDate(e.target.value)}
+                                                    error={errors.checkOutDate}
+                                                />
+                                            ) : null}
                                    
                                     
                                 </div>

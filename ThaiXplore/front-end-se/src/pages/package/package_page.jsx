@@ -41,9 +41,11 @@ const PackagePage = () => {
               : "https://placehold.co/600x400?text=No+Image",
           price: pkg.price || 0,
           dateCreate: pkg.dateCreate || new Date().toISOString(),
+          remainingamount: pkg.totalPackage-pkg.packageTransactionHistory.length
         }));
-
-        setPackages(formatted);
+        console.log("===>",formatted);
+        const formatted2 = formatted.filter((item)=>item.remainingamount>0);
+        setPackages(formatted2);
       } catch (err) {
         console.error("Error loading packages", err);
       } finally {

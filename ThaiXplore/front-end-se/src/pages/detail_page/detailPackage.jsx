@@ -9,6 +9,11 @@ const DetailPackage = () => {
   const [packageData, setPackageData] = useState(null);
   const [mergedServices, setMergedServices] = useState([]);
   const [isBuying, setIsBuying] = useState(false); // ✅ Added loading state
+  const packageAmount = packageData?.totalPackage-packageData?.packageTransactionHistory.length
+
+
+ 
+
 
   const handleBuyPackage = async () => {
     try {
@@ -223,6 +228,8 @@ const DetailPackage = () => {
         </div>
       </div>
     );
+
+
   };
 
   return (
@@ -249,6 +256,10 @@ const DetailPackage = () => {
               <p className="text-sm font-medium bg-amber-500/90 text-white px-4 py-1 rounded-full">
                 {formattedPrice} / person
               </p>
+              <div className="h-4 w-px bg-gray-300"></div>
+              <p className="text-sm font-medium bg-amber-500/90 text-white px-4 py-1 rounded-full">
+                Remaining : {packageData.totalPackage-packageData.packageTransactionHistory.length} Package
+              </p>
             </div>
           </div>
         </div>
@@ -272,8 +283,8 @@ const DetailPackage = () => {
           </h2>
 
           <div className="space-y-6">
-            {mergedServices.map((service) => (
-              <div key={service.serviceId}>
+            {mergedServices.map((service,index) => (
+              <div key={index}>
                 {renderServiceByCategory(service)}
               </div>
             ))}
